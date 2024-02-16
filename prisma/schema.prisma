@@ -11,10 +11,12 @@ datasource db {
 }
 
 model User {
-  id             String    @id @default(cuid())
-  username       String    @unique
+  id             String       @id @default(cuid())
+  username       String       @unique
   hashedPassword String
   sessions       Session[]
+  books          Book[]
+  Collection     Collection[]
 }
 
 model Session {
@@ -22,4 +24,35 @@ model Session {
   userId    String
   expiresAt DateTime
   user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
+}
+
+model Book {
+  id          String       @id @default(cuid())
+  title       String
+  author      String
+  pages       Int
+  readEvents  ReadEvent[]
+  collections Collection[]
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+}
+
+model ReadEvent {
+  id     String   @id @default(cuid())
+  readAt DateTime
+
+  pagesRead Int
+
+  book   Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  bookId String
+}
+
+model Collection {
+  id     String @id @default(cuid())
+  name   String
+  books  Book[]
+  
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
 }

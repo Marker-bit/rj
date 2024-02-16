@@ -40,7 +40,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className + "  overflow-x-hidden"}>
-        {children}
+        <div className="min-h-screen">{children}</div>
         <BottomBar />
       </body>
     </html>

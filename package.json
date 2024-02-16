@@ -9,9 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.3.4",
     "@lucia-auth/adapter-prisma": "^4.0.0",
     "@prisma/client": "^5.9.1",
+    "@radix-ui/react-label": "^2.0.2",
+    "@radix-ui/react-slot": "^1.0.2",
     "chart.js": "^2.9.4",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.0",
     "cookies-next": "^4.1.1",
     "framer-motion": "^11.0.3",
     "lucia": "^3.0.1",
@@ -21,8 +26,11 @@
     "oslo": "^1.1.1",
     "react": "^18",
     "react-dom": "^18",
+    "react-hook-form": "^7.50.1",
     "recharts": "^2.11.0",
-    "tailwind-merge": "^2.2.1"
+    "tailwind-merge": "^2.2.1",
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/node": "^20",

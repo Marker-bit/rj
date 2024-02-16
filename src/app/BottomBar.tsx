@@ -23,7 +23,7 @@ export function BottomBar() {
   const pathname = usePathname();
   return (
     <>
-      <div
+      {/* <div
         className={cn(
           "fixed bottom-0 left-0 z-10 p-4 rounded-t-3xl bg-black w-full text-white max-h-[50vh] overflow-auto transition-all",
           !open && "translate-y-full"
@@ -50,8 +50,8 @@ export function BottomBar() {
             <div>Создать полку</div>
           </div>
         </div>
-      </div>
-      <div className="fixed bottom-0 left-0 w-full bg-gray-200 grid grid-cols-5 items-center justify-around p-2 min-h-[10vh]">
+      </div> */}
+      <div className="sticky bottom-0 left-0 w-full bg-gray-200 grid grid-cols-5 items-center justify-around p-2 min-h-[10vh]">
         <Link href="/">
           <div
             className={cn(
