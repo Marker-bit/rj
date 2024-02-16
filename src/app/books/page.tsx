@@ -89,8 +89,17 @@ function BookView({ book }: { book: Book }) {
                   onBlur={() => setChoosingPages(false)}
                   onKeyUp={(evt: any) => {
                     if (evt.key === "Enter") {
-                      console.log(parseInt(evt.target.value));
+                      const num = parseInt(evt.target.value);
+                      console.log(num);
+                      if (num >= book.pages || num < 1) return;
                       setChoosingPages(false);
+                      if (isNaN(num)) return;
+                      fetch(`/api/books/${book.id}/read/`, {
+                        method: "POST",
+                        body: JSON.stringify({
+                          pages: num
+                        })
+                      }).then(res => res.json()).then(console.log)
                     }
                   }}
                 />
@@ -119,8 +128,16 @@ function BookView({ book }: { book: Book }) {
                     onBlur={() => setChoosingPages(false)}
                     onKeyUp={(evt: any) => {
                       if (evt.key === "Enter") {
-                        console.log(parseInt(evt.target.value));
                         setChoosingPages(false);
+                        const num = parseInt(evt.target.value);
+                        console.log(num);
+                        if (isNaN(num)) return;
+                        fetch(`/api/books/${book.id}/read/`, {
+                          method: "POST",
+                          body: JSON.stringify({
+                            pages: num
+                          })
+                        }).then(res => res.json()).then(console.log)
                       }
                     }}
                   />
