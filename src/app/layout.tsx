@@ -6,6 +6,7 @@ import Transition from "./Transition";
 import { validateRequest } from "./api/auth/session/route";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Provider } from "./QueryClientProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -40,8 +41,10 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className + "  overflow-x-hidden"}>
-        <div className="min-h-screen">{children}</div>
-        <BottomBar />
+        <Provider>
+          <div className="min-h-screen">{children}</div>
+          <BottomBar />
+        </Provider>
       </body>
     </html>
   );

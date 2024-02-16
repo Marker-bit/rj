@@ -9,6 +9,7 @@ import {
   ChevronLeft,
   Loader,
   Plus,
+  Undo,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -28,6 +29,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -36,7 +38,64 @@ const bookSchema = z.object({
 });
 
 function BookView({ book }: { book: Book }) {
+  const queryClient = useQueryClient();
   const [choosingPages, setChoosingPages] = useState(false);
+  const [undoLoading, setUndoLoading] = useState(false);
+  const [doneLoading, setDoneLoading] = useState(false);
+  const [readLoading, setReadLoading] = useState(false);
+
+  const undoEventMutation = useMutation({
+    mutationFn: () =>
+      fetch(`/api/books/${book.id}/undo`, {
+        method: "DELETE",
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["books"],
+      });
+    },
+  });
+
+  const doneMutation = useMutation({
+    mutationFn: () =>
+      fetch(`/api/books/${book.id}/read/`, {
+        method: "POST",
+        body: JSON.stringify({
+          pages: book.pages,
+        }),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["books"],
+      });
+    },
+  });
+
+  const readMutation = useMutation({
+    mutationFn: ({ pages }: { pages: number }) =>
+      fetch(`/api/books/${book.id}/read/`, {
+        method: "POST",
+        body: JSON.stringify({
+          pages: pages,
+        }),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["books"],
+      });
+    },
+  });
+
+  // function undoEvent() {
+  //   setUndoLoading(true);
+  //   fetch(`/api/books/${book.id}/undo`, {
+  //     method: "DELETE",
+  //   }).then(() => {
+  //     setUndoLoading(false);
+  //   });
+  // }
+
+  const lastEvent = book.readEvents[book.readEvents.length - 1];
 
   return (
     <div className="border border-zinc-200 p-2 rounded-md hover:shadow transition-shadow flex gap-2">
@@ -55,62 +114,71 @@ function BookView({ book }: { book: Book }) {
             <div className="bg-orange-100 flex gap-2 items-center text-orange-500 px-3 rounded-xl cursor-default">
               <CalendarDays className="w-4 h-4" /> Запланирована
             </div>
+          ) : lastEvent.pagesRead === book.pages ? (
+            <>
+              <div className="bg-green-100 flex gap-2 items-center text-green-500 px-3 rounded-xl cursor-default">
+                <BookOpenCheck className="w-4 h-4" /> Прочитана
+                <button
+                  className="p-1 hover:bg-green-500/10 transition-all cursor-pointer rounded-md my-1"
+                  onClick={() => undoEventMutation.mutate()}
+                >
+                  {undoEventMutation.isPending ? (
+                    <Loader className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Undo className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
+              <div className="bg-green-100 flex gap-2 items-center text-green-500 px-3 rounded-xl cursor-default">
+                <BookOpen className="w-4 h-4" /> {book.pages} страниц всего
+              </div>
+            </>
           ) : (
             <>
               <div className="bg-blue-100 flex gap-2 items-center text-blue-500 px-3 rounded-xl cursor-default">
                 <BookIcon className="w-4 h-4" /> Читается
               </div>
               <div className="bg-green-100 flex gap-2 items-center text-green-500 px-3 rounded-xl cursor-default">
-                <BookOpen className="w-4 h-4" /> 10 страниц
+                <BookOpen className="w-4 h-4" /> {lastEvent.pagesRead} страниц
+                из {book.pages}
+                <button
+                  className="p-1 hover:bg-green-500/10 transition-all cursor-pointer rounded-md my-1"
+                  onClick={() => undoEventMutation.mutate()}
+                >
+                  {undoEventMutation.isPending ? (
+                    <Loader className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Undo className="w-4 h-4" />
+                  )}
+                </button>
               </div>
             </>
           )}
-          {/* <div className="bg-blue-100 flex gap-2 items-center text-blue-500 px-3 rounded-xl cursor-default">
-            <BookIcon className="w-4 h-4" /> Читается
-          </div>
-          <div className="bg-green-100 flex gap-2 items-center text-green-500 px-3 rounded-xl cursor-default">
-            <BookOpen className="w-4 h-4" /> 10 страниц
-          </div> */}
         </div>
         <div className="flex gap-2 flex-wrap">
-          {book.readEvents.length === 0 ? (
-            <button
-              className="flex gap-2 items-center w-fit bg-gray-100 rounded-xl py-1 px-3 active:opacity-50 transition-all select-none disabled:opacity-40 border border-zinc-200"
-              onClick={() => {
-                setChoosingPages(true);
-              }}
-            >
-              <BookOpen className="w-4 h-4" />
-              {/* <img src="https://em-content.zobj.net/source/telegram/386/open-book_1f4d6.webp" className="w-6 h-6" /> */}
-              {choosingPages ? (
-                <AutoResizeInput
-                  autoFocus
-                  className="outline-none border-b border-black w-6 bg-transparent"
-                  onBlur={() => setChoosingPages(false)}
-                  onKeyUp={(evt: any) => {
-                    if (evt.key === "Enter") {
-                      const num = parseInt(evt.target.value);
-                      console.log(num);
-                      if (num >= book.pages || num < 1) return;
-                      setChoosingPages(false);
-                      if (isNaN(num)) return;
-                      fetch(`/api/books/${book.id}/read/`, {
-                        method: "POST",
-                        body: JSON.stringify({
-                          pages: num
-                        })
-                      }).then(res => res.json()).then(console.log)
-                    }
-                  }}
-                />
-              ) : (
-                <div>Отметить страницы</div>
-              )}
-            </button>
-          ) : (
+          {!(lastEvent?.pagesRead === book.pages) && (
             <>
-              <button className="flex gap-2 items-center w-fit bg-blue-500 rounded-xl text-white py-1 px-3 active:opacity-50 transition-all select-none disabled:opacity-40">
-                <BookOpenCheck className="w-4 h-4" />
+              <button
+                className="flex gap-2 items-center w-fit bg-blue-500 rounded-xl text-white py-1 px-3 active:opacity-50 transition-all select-none disabled:opacity-40"
+                // onClick={() => {
+                //   setDoneLoading(true);
+                //   fetch(`/api/books/${book.id}/read/`, {
+                //     method: "POST",
+                //     body: JSON.stringify({
+                //       pages: book.pages,
+                //     }),
+                //   }).then(() => {
+                //     setDoneLoading(false);
+                //   });
+                // }}
+                onClick={() => doneMutation.mutate()}
+                disabled={doneMutation.isPending}
+              >
+                {doneMutation.isPending ? (
+                  <Loader className="w-4 h-4 animate-spin" />
+                ) : (
+                  <BookOpenCheck className="w-4 h-4" />
+                )}
                 Прочитана
               </button>
               <button
@@ -119,7 +187,11 @@ function BookView({ book }: { book: Book }) {
                   setChoosingPages(true);
                 }}
               >
-                <BookOpen className="w-4 h-4" />
+                {readMutation.isPending ? (
+                  <Loader className="w-4 h-4 animate-spin" />
+                ) : (
+                  <BookOpen className="w-4 h-4" />
+                )}
                 {/* <img src="https://em-content.zobj.net/source/telegram/386/open-book_1f4d6.webp" className="w-6 h-6" /> */}
                 {choosingPages ? (
                   <AutoResizeInput
@@ -128,16 +200,23 @@ function BookView({ book }: { book: Book }) {
                     onBlur={() => setChoosingPages(false)}
                     onKeyUp={(evt: any) => {
                       if (evt.key === "Enter") {
-                        setChoosingPages(false);
                         const num = parseInt(evt.target.value);
                         console.log(num);
+                        if (num >= book.pages || num < 1) return;
+                        setChoosingPages(false);
                         if (isNaN(num)) return;
-                        fetch(`/api/books/${book.id}/read/`, {
-                          method: "POST",
-                          body: JSON.stringify({
-                            pages: num
-                          })
-                        }).then(res => res.json()).then(console.log)
+                        readMutation.mutate({
+                          pages: num
+                        });
+                        // setReadLoading(true);
+                        // fetch(`/api/books/${book.id}/read/`, {
+                        //   method: "POST",
+                        //   body: JSON.stringify({
+                        //     pages: num,
+                        //   }),
+                        // }).then(() => {
+                        //   setReadLoading(false);
+                        // });
                       }
                     }}
                   />
@@ -158,7 +237,11 @@ export default function BooksPage() {
   const form = useForm<z.infer<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
   });
-  const [books, setBooks] = useState<any[]>([]);
+  // const [books, setBooks] = useState<any[]>([]);
+  const booksQuery = useQuery({
+    queryKey: ["books"],
+    queryFn: () => fetch("/api/books").then((res) => res.json()),
+  });
 
   function onSubmit(values: z.infer<typeof bookSchema>) {
     setCreateLoading(true);
@@ -178,14 +261,16 @@ export default function BooksPage() {
       });
   }
 
-  useEffect(() => {
-    fetch("/api/books")
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        setBooks(data);
-      });
-  }, []);
+  // useEffect(() => {
+  //   fetch("/api/books")
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       console.log(data);
+  //       setBooks(data);
+  //     });
+  // }, []);
+
+  const books = booksQuery.data || [];
 
   return (
     <div>

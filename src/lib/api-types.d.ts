@@ -5,5 +5,10 @@ type Book = {
   pages: number;
   userId: string;
   collections: any[];
-  readEvents: any[];
+  readEvents: {
+    bookId: string;
+    id: string;
+    pagesRead: number;
+    readAt: string;
+  }[];
 };
