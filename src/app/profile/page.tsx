@@ -43,21 +43,66 @@ export default function ProfilePage() {
   // const [userData, setUserData] = useState<User | null>(null);
 
   const userQuery = useQuery({
-    queryKey: ['user'],
+    queryKey: ["user"],
     queryFn: async () => {
       return (await validateRequest()).user;
-    }
-  })
+    },
+  });
 
-  const data01 = [
-    { name: "Понедельник", value: 40 },
-    { name: "Вторник", value: 300 },
-    { name: "Среда", value: 300 },
-    { name: "Четверг", value: 200 },
-    { name: "Пятница", value: 278 },
-    { name: "Суббота", value: 189 },
-    { name: "Воскресенье", value: 189 },
+  const eventsQuery = useQuery({
+    queryKey: ["events"],
+    queryFn: () => fetch("/api/journal").then((res) => res.json()),
+  });
+
+  const startAndEndOfWeek = (date: Date) => {
+    const now = date ? new Date(date) : new Date().setHours(0, 0, 0, 0);
+    const monday = new Date(now);
+    monday.setDate(monday.getDate() - monday.getDay() + 1);
+    const sunday = new Date(now);
+    sunday.setDate(sunday.getDate() - sunday.getDay() + 7);
+    return [monday, sunday];
+  };
+  const [startOfWeek, _] = startAndEndOfWeek(new Date());
+
+  let booksStats: { [key: string]: number } = {
+    "0": 0,
+    "1": 0,
+    "2": 0,
+    "3": 0,
+    "4": 0,
+    "5": 0,
+    "6": 0,
+  };
+  let readWeek = 0;
+  if (eventsQuery.data) {
+    for (const event of eventsQuery.data) {
+      const date = new Date(event.readAt);
+      booksStats[date.getDay().toString()] += event.pagesRead;
+      if (date >= startOfWeek) {
+        readWeek += event.pagesRead;
+      }
+    }
+  }
+
+  const data = [
+    { name: "Понедельник", value: booksStats["1"] },
+    { name: "Вторник", value: booksStats["2"] },
+    { name: "Среда", value: booksStats["3"] },
+    { name: "Четверг", value: booksStats["4"] },
+    { name: "Пятница", value: booksStats["5"] },
+    { name: "Суббота", value: booksStats["6"] },
+    { name: "Воскресенье", value: booksStats["0"] },
   ];
+
+  // const data01 = [
+  //   { name: "Понедельник", value: 40 },
+  //   { name: "Вторник", value: 300 },
+  //   { name: "Среда", value: 300 },
+  //   { name: "Четверг", value: 200 },
+  //   { name: "Пятница", value: 278 },
+  //   { name: "Суббота", value: 189 },
+  //   { name: "Воскресенье", value: 189 },
+  // ];
   // useEffect(() => {
   //   (async () => {
   //     const { user } = await validateRequest();
@@ -66,7 +111,7 @@ export default function ProfilePage() {
   //   })();
   // }, []);
 
-  if (userQuery.isPending) { 
+  if (userQuery.isPending) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <Loader className="w-6 h-6 animate-spin" />
@@ -78,18 +123,6 @@ export default function ProfilePage() {
 
   return (
     <div>
-      {/* <div className="flex gap-2 pb-2">
-        <Link href="/">
-          <button className="p-1 hover:bg-black/10 transition-colors rounded-md">
-            <HomeIcon className="w-6 h-6" />
-          </button>
-        </Link>
-        <Link href="/profile/settings" className="ml-auto">
-          <button className="p-1 hover:bg-black/10 transition-colors rounded-md">
-            <Settings className="w-6 h-6" />
-          </button>
-        </Link>
-      </div> */}
       <div className="flex p-1 items-center bg-zinc-100 border-b border-zinc-200 min-h-10">
         <Link href="/">
           <button className="p-1 hover:text-blue-600 rounded-md flex items-center gap-1 text-blue-500 active:scale-95 transition-all">
@@ -100,14 +133,11 @@ export default function ProfilePage() {
         <div className="font-semibold absolute left-[50%] translate-x-[-50%]">
           Профиль
         </div>
-        {/* <Link href="/profile/settings" className="ml-auto">
-          <button className="p-1 hover:text-blue-600 rounded-md flex items-center gap-1 text-blue-500 active:scale-95 transition-all">
-            <div className="font-semibold"><Edit className="w-6 h-6" /></div>
-          </button>
-        </Link> */}
         <Link href="/profile/settings" className="ml-auto">
           <button className="p-1 hover:text-blue-600 rounded-md flex items-center gap-1 text-blue-500 active:scale-95 transition-all">
-            <div className="font-semibold"><Edit className="w-6 h-6" /></div>
+            <div className="font-semibold">
+              <Edit className="w-6 h-6" />
+            </div>
           </button>
         </Link>
       </div>
@@ -143,7 +173,7 @@ export default function ProfilePage() {
         <div className="p-2 border border-zinc-300 rounded-md flex gap-1 items-center">
           <BookOpen className="w-6 h-6" />
           <div className="flex flex-col">
-            <div className="font-bold">10</div>
+            <div className="font-bold">{readWeek}</div>
             <div className="text-black/50 lowercase text-xs -mt-1 font-semibold">
               страниц прочитано за последнюю неделю
             </div>
@@ -176,7 +206,7 @@ export default function ProfilePage() {
       </div>
       <div className="mt-3 h-[20vh]">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data01}>
+          <BarChart data={data}>
             <Bar
               dataKey="value"
               style={
