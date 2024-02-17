@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import {
+  BookMinus,
   BookOpen,
   BookOpenCheck,
   Check,
@@ -36,6 +37,12 @@ export default function JournalPage() {
         </div>
       </div>
       <div className="p-3 flex flex-col gap-2">
+        {eventsQuery.data?.length === 0 && (
+          <div className="rounded-xl border border-zinc-200 p-2 flex gap-2 items-center">
+            <BookMinus className="w-10 h-10" />
+            Журнал пуст
+          </div>
+        )}
         {eventsQuery.data.map(
           (event: {
             id: string;
@@ -46,11 +53,11 @@ export default function JournalPage() {
           }) => (
             <div
               key={event.id}
-              className="rounded-xl border border-zinc-200 p-2 cursor-default flex items-center gap-1"
+              className="rounded-xl border border-zinc-200 p-2 cursor-default flex flex-wrap items-center gap-1"
             >
               {event.pagesRead === event.book.pages ? (
                 <>
-                  <BookOpenCheck className="w-4 h-4 text-green-500 mr-1" />
+                  <BookOpenCheck className="w-4 h-4 text-green-500" />
                   <Link
                     href={`/books#book-${event.bookId}`}
                     className="font-semibold"

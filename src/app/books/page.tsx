@@ -2,6 +2,7 @@
 
 import {
   BookIcon,
+  BookMinus,
   BookOpen,
   BookOpenCheck,
   BookOpenTextIcon,
@@ -163,7 +164,10 @@ export function BookView({ book }: { book: Book }) {
   }
 
   return (
-    <div className="border border-zinc-200 p-2 rounded-md hover:shadow transition-shadow flex gap-2 group relative" id={`book-${book.id}`}>
+    <div
+      className="border border-zinc-200 p-2 rounded-md hover:shadow transition-shadow flex gap-2 group relative"
+      id={`book-${book.id}`}
+    >
       <Image
         src="/book.png"
         alt="book"
@@ -554,6 +558,19 @@ export default function BooksPage() {
             Скрывать не начатые книги
           </div>
         </div>
+        {booksQuery?.data?.length === 0 && (
+          <div className="p-2 flex gap-2 items-center rounded-xl border border-zinc-200 text-xl">
+            <BookMinus className="w-10 h-10" />
+            <div className="flex flex-col">
+              <div>Нет книг</div>
+            </div>
+          </div>
+        )}
+        {booksQuery.isPending && (
+          <div className="p-2 flex gap-2 items-center justify-center rounded-xl bg-zinc-100 py-5">
+            <Loader className="w-6 h-6 animate-spin" />
+          </div>
+        )}
         {books.map((book: Book) => (
           <BookView book={book} key={book.id} />
         ))}
