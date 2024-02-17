@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
         sessionCookie.attributes
       );
       return NextResponse.json({
-        status: "authorized"
+        status: "authorized",
       });
     } else {
       return NextResponse.json(
@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
   return NextResponse.json({
     // ...createdUser,
     // hashedPassword: null,
-    status: "created"
+    status: "created",
   });
 }
 
@@ -79,7 +79,7 @@ export async function PATCH(request: NextRequest) {
   if (!user) {
     return new NextResponse("Not Authorized", {
       status: 401,
-    })
+    });
   }
 
   const data = await request.json();
@@ -89,8 +89,8 @@ export async function PATCH(request: NextRequest) {
     },
     data: {
       ...data,
-      active: true
-    }
+      active: true,
+    },
   });
 
   return NextResponse.json(updatedUser);
@@ -98,15 +98,19 @@ export async function PATCH(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   const { session } = await validateRequest();
-	if (!session) {
-		return {
-			error: "Unauthorized"
-		};
-	}
+  if (!session) {
+    return NextResponse.json({
+      error: "Unauthorized",
+    });
+  }
 
-	await lucia.invalidateSession(session.id);
+  await lucia.invalidateSession(session.id);
 
-	const sessionCookie = lucia.createBlankSessionCookie();
-	cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
-	return new NextResponse();
+  const sessionCookie = lucia.createBlankSessionCookie();
+  cookies().set(
+    sessionCookie.name,
+    sessionCookie.value,
+    sessionCookie.attributes
+  );
+  return new NextResponse();
 }
