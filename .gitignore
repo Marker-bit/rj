@@ -4,6 +4,7 @@
 /node_modules
 /.pnp
 .pnp.js
+*.db
 .yarn/install-state.gz
 
 # testing
@@ -15,7 +16,6 @@
 
 # production
 /build
-dev.db
 
 # misc
 .DS_Store

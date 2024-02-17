@@ -82,6 +82,9 @@ export function BookView({ book }: { book: Book }) {
       queryClient.invalidateQueries({
         queryKey: ["books"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["events"],
+      });
     },
   });
 
@@ -96,6 +99,9 @@ export function BookView({ book }: { book: Book }) {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["books"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["events"],
       });
     },
   });
@@ -112,6 +118,9 @@ export function BookView({ book }: { book: Book }) {
       queryClient.invalidateQueries({
         queryKey: ["books"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["events"],
+      });
     },
   });
 
@@ -125,6 +134,9 @@ export function BookView({ book }: { book: Book }) {
       queryClient.invalidateQueries({
         queryKey: ["books"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["events"],
+      });
     },
   });
 
@@ -137,6 +149,9 @@ export function BookView({ book }: { book: Book }) {
       queryClient.invalidateQueries({
         queryKey: ["books"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["events"],
+      });
     },
   });
 
@@ -148,7 +163,7 @@ export function BookView({ book }: { book: Book }) {
   }
 
   return (
-    <div className="border border-zinc-200 p-2 rounded-md hover:shadow transition-shadow flex gap-2 group relative">
+    <div className="border border-zinc-200 p-2 rounded-md hover:shadow transition-shadow flex gap-2 group relative" id={`book-${book.id}`}>
       <Image
         src="/book.png"
         alt="book"
