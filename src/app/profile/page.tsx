@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -24,6 +24,8 @@ import {
   Tooltip,
   XAxis,
 } from "recharts";
+import { User } from "lucia";
+import { validateRequest } from "@/lib/validate-request";
 
 const data02 = [
   { name: "Group A", value: 2400 },
@@ -35,6 +37,7 @@ const data02 = [
 ];
 
 export default function ProfilePage() {
+  const [userData, setUserData] = useState<User | null>(null);
   const data01 = [
     { name: "Понедельник", value: 40 },
     { name: "Вторник", value: 300 },
@@ -44,6 +47,13 @@ export default function ProfilePage() {
     { name: "Суббота", value: 189 },
     { name: "Воскресенье", value: 189 },
   ];
+  useEffect(() => {
+    (async () => {
+      const { user } = await validateRequest();
+      console.log(user);
+      setUserData(user);
+    })();
+  }, []);
   return (
     <div>
       {/* <div className="flex gap-2 pb-2">
@@ -76,15 +86,17 @@ export default function ProfilePage() {
       </div>
       <div className="m-3 p-4 rounded-md border border-zinc-200 flex gap-2 items-center">
         <Image
-          src="/avatar.jpg"
+          src="/no-avatar.png"
           alt="avatar"
           width={100}
           height={100}
           className="rounded-full w-20 h-20"
         />
         <div className="flex flex-col">
-          <div className="text-3xl font-semibold">Mark Pentus</div>
-          <div className="text-sm text-black/70">@mark.pentus</div>
+          <div className="text-3xl font-semibold">
+            {userData?.firstName} {userData?.lastName}
+          </div>
+          <div className="text-sm text-black/70">@{userData?.username}</div>
           {/* <div className="bg-blue-500 p-2 rounded-md shadow-md shadow-blue-300 cursor-pointer flex items-center justify-center text-white text-sm mt-2">
             <UserPlus className="w-4 h-4 mr-2" />
             Добавить в друзья

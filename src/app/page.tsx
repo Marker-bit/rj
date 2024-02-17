@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { ChevronRight, Loader } from "lucide-react";
+import { BookDashed, BookMinus, ChevronRight, Loader } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { BookView } from "./books/page";
@@ -48,6 +48,17 @@ export default function Home() {
               {booksQuery?.data.slice(0, 3).map((book: Book) => (
                 <BookView book={book} key={book.id} />
               ))}
+            </div>
+          )}
+          {booksQuery?.data?.length === 0 && (
+            <div className="p-2 flex gap-2 items-center rounded-xl border border-zinc-200 text-xl">
+              <BookMinus className="w-10 h-10" />
+              <div className="flex flex-col">
+                <div>Нет книг</div>
+                <div className="text-sm text-blue-500 underline underline-offset-4">
+                  <Link href="/books">Добавить книгу</Link>
+                </div>
+              </div>
             </div>
           )}
         </div>

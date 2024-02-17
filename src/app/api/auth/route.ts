@@ -38,13 +38,12 @@ export async function POST(request: NextRequest) {
         sessionCookie.attributes
       );
       return NextResponse.json({
-        ...user,
-        hashedPassword: null,
+        status: "authorized"
       });
     } else {
       return NextResponse.json(
         {
-          errors: ["Invalid password"],
+          status: "invalid-password",
         },
         {
           status: 400,
@@ -69,9 +68,32 @@ export async function POST(request: NextRequest) {
     sessionCookie.attributes
   );
   return NextResponse.json({
-    ...createdUser,
-    hashedPassword: null,
+    // ...createdUser,
+    // hashedPassword: null,
+    status: "created"
   });
+}
+
+export async function PATCH(request: NextRequest) {
+  const { user } = await validateRequest();
+  if (!user) {
+    return new NextResponse("Not Authorized", {
+      status: 401,
+    })
+  }
+
+  const data = await request.json();
+  const updatedUser = await db.user.update({
+    where: {
+      id: user.id,
+    },
+    data: {
+      ...data,
+      active: true
+    }
+  });
+
+  return NextResponse.json(updatedUser);
 }
 
 export async function DELETE(request: NextRequest) {

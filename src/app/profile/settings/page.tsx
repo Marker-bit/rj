@@ -1,11 +1,12 @@
 "use client";
 
-import { ChevronLeft, Loader, Save } from "lucide-react";
+import { ChevronLeft, Loader, LogOut, Save } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
 export default function SettingsPage() {
   const [saveLoading, setSaveLoading] = useState(false);
+  const [logOutLoading, setLogOutLoading] = useState(false);
 
   function save() {
     setSaveLoading(true);
@@ -23,7 +24,9 @@ export default function SettingsPage() {
             <div className="font-semibold">Профиль</div>
           </button>
         </Link>
-        <div className="font-semibold absolute left-[50%] translate-x-[-50%]">Настройки</div>
+        <div className="font-semibold absolute left-[50%] translate-x-[-50%]">
+          Настройки
+        </div>
       </div>
       <div className="m-3 p-4 rounded-md border border-zinc-200 grid grid-cols-2 flex-col gap-2 items-center">
         <label className="font-semibold" htmlFor="username">
@@ -54,6 +57,25 @@ export default function SettingsPage() {
           defaultValue="Pentus"
         />
       </div>
+      <button
+        className="flex gap-2 items-center w-fit bg-gray-100 rounded-xl py-1 px-3 active:opacity-50 transition-all select-none disabled:opacity-40 border border-zinc-200 mx-auto"
+        onClick={() => {
+          setLogOutLoading(true);
+          fetch("/api/auth/", {
+            method: "DELETE",
+          }).then(() => {
+            setLogOutLoading(false);
+            window.location.href = "/";
+          });
+        }}
+      >
+        {logOutLoading ? (
+          <Loader className="w-6 h-6 animate-spin" />
+        ) : (
+          <LogOut className="w-6 h-6" />
+        )}
+        Выйти из аккаунта
+      </button>
     </div>
   );
 }

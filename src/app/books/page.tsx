@@ -356,7 +356,11 @@ export function BookView({ book }: { book: Book }) {
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <button className="bg-gray-100 rounded-md p-1 active:opacity-50 transition-all select-none disabled:opacity-40 border border-zinc-200 h-fit w-fit">
-                  <Trash className="w-4 h-4" />
+                  {deleteMutation.isPending ? (
+                    <Loader className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Trash className="w-4 h-4" />
+                  )}
                 </button>
               </AlertDialogTrigger>
               <AlertDialogContent>
