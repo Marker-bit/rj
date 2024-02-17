@@ -49,16 +49,18 @@ export default function Page() {
       return fetch("/api/auth", {
         body: JSON.stringify(values),
         method: "POST",
-      }).then((res) => res.json()).then((res: {
-        status: "authorized" | "created" | "invalid-password";
-      }) => {
-        console.log(res.status);
-        if (res.status === "authorized") {
-          router.push("/");
-        } else if (res.status === "created") {
-          router.push("/auth/activate-account");
-        }
-      });
+      })
+        .then((res) => res.json())
+        .then(
+          (res: { status: "authorized" | "created" | "invalid-password" }) => {
+            console.log(res.status);
+            if (res.status === "authorized") {
+              router.push("/");
+            } else if (res.status === "created") {
+              router.push("/auth/activate-account");
+            }
+          }
+        );
     },
   });
 

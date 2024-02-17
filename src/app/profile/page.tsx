@@ -5,7 +5,9 @@ import {
   CalendarDays,
   CalendarRange,
   ChevronLeft,
+  Edit,
   HomeIcon,
+  Loader,
   Plus,
   Settings,
   UserPlus,
@@ -26,6 +28,7 @@ import {
 } from "recharts";
 import { User } from "lucia";
 import { validateRequest } from "@/lib/validate-request";
+import { useQuery } from "@tanstack/react-query";
 
 const data02 = [
   { name: "Group A", value: 2400 },
@@ -37,7 +40,15 @@ const data02 = [
 ];
 
 export default function ProfilePage() {
-  const [userData, setUserData] = useState<User | null>(null);
+  // const [userData, setUserData] = useState<User | null>(null);
+
+  const userQuery = useQuery({
+    queryKey: ['user'],
+    queryFn: async () => {
+      return (await validateRequest()).user;
+    }
+  })
+
   const data01 = [
     { name: "Понедельник", value: 40 },
     { name: "Вторник", value: 300 },
@@ -47,13 +58,24 @@ export default function ProfilePage() {
     { name: "Суббота", value: 189 },
     { name: "Воскресенье", value: 189 },
   ];
-  useEffect(() => {
-    (async () => {
-      const { user } = await validateRequest();
-      console.log(user);
-      setUserData(user);
-    })();
-  }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     const { user } = await validateRequest();
+  //     console.log(user);
+  //     setUserData(user);
+  //   })();
+  // }, []);
+
+  if (userQuery.isPending) { 
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader className="w-6 h-6 animate-spin" />
+      </div>
+    );
+  }
+
+  const userData = userQuery.data!;
+
   return (
     <div>
       {/* <div className="flex gap-2 pb-2">
@@ -78,9 +100,14 @@ export default function ProfilePage() {
         <div className="font-semibold absolute left-[50%] translate-x-[-50%]">
           Профиль
         </div>
+        {/* <Link href="/profile/settings" className="ml-auto">
+          <button className="p-1 hover:text-blue-600 rounded-md flex items-center gap-1 text-blue-500 active:scale-95 transition-all">
+            <div className="font-semibold"><Edit className="w-6 h-6" /></div>
+          </button>
+        </Link> */}
         <Link href="/profile/settings" className="ml-auto">
           <button className="p-1 hover:text-blue-600 rounded-md flex items-center gap-1 text-blue-500 active:scale-95 transition-all">
-            <div className="font-semibold">Настройки</div>
+            <div className="font-semibold"><Edit className="w-6 h-6" /></div>
           </button>
         </Link>
       </div>
