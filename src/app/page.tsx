@@ -4,9 +4,9 @@ import { useQuery } from "@tanstack/react-query";
 import { BookDashed, BookMinus, ChevronRight, Loader } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { BookView } from "./books/page";
 import { validateRequest } from "@/lib/validate-request";
 import { Stats } from "./Stats";
+import { BookView } from "./BookView";
 
 export default function Home() {
   const booksQuery = useQuery({
