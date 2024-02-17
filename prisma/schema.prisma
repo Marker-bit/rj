@@ -11,7 +11,7 @@ generator client {
 // }
 datasource db {
   provider  = "postgresql"
-  url  	    = env("DATABASE_URL")
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
@@ -24,7 +24,10 @@ model User {
   hashedPassword String
   sessions       Session[]
   books          Book[]
-  Collection     Collection[]
+  collections     Collection[]
+
+  follower  Follow[] @relation("FollowerToUser")
+  following Follow[] @relation("FollowingToUser")
 }
 
 model Session {
@@ -57,10 +60,19 @@ model ReadEvent {
 }
 
 model Collection {
-  id     String @id @default(cuid())
-  name   String
-  books  Book[]
-  
+  id    String @id @default(cuid())
+  name  String
+  books Book[]
+
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
+}
+
+model Follow {
+  id      String @id @default(cuid())
+  first   User   @relation("FollowerToUser", fields: [firstId], references: [id])
+  firstId String
+
+  second   User   @relation("FollowingToUser", fields: [secondId], references: [id])
+  secondId String
 }
