@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
-import { validateRequest } from "../auth/session/route";
+import { validateRequest } from "@/lib/server-validate-request";
 
 export async function GET(req: NextRequest) {
   const { user } = await validateRequest();

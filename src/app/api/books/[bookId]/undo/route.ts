@@ -1,4 +1,4 @@
-import { validateRequest } from "@/app/api/auth/session/route";
+import { validateRequest } from "@/lib/server-validate-request";
 import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 export async function DELETE(

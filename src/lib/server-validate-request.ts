@@ -1,16 +1,16 @@
-import { cookies } from "next/headers";
-import { lucia } from "@/lib/auth";
-import { NextRequest, NextResponse } from "next/server";
-import { cache } from "react";
 import { Session, User } from "lucia";
+import { cookies } from "next/headers";
+import { cache } from "react";
+import { lucia } from "./auth";
 
-export async function GET(req: NextRequest) {
-  const sessionId = cookies().get(lucia.sessionCookieName)?.value ?? null;
+export const validateRequest = cache(
+	async (): Promise<{ user: User; session: Session } | { user: null; session: null }> => {
+		const sessionId = cookies().get(lucia.sessionCookieName)?.value ?? null;
 		if (!sessionId) {
-			return NextResponse.json({
+			return {
 				user: null,
 				session: null
-			});
+			};
 		}
 
 		const result = await lucia.validateSession(sessionId);
@@ -25,5 +25,6 @@ export async function GET(req: NextRequest) {
 				cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
 			}
 		} catch {}
-		return NextResponse.json(result);
-}
+		return result;
+	}
+);

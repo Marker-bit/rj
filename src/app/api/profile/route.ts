@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { validateRequest } from "../auth/session/route";
+import { validateRequest } from "@/lib/server-validate-request";
 import { db } from "@/lib/db";
 
 export async function GET(req: NextRequest) {

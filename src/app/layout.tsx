@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { BottomBar } from "./BottomBar";
 import Transition from "./Transition";
-import { validateRequest } from "./api/auth/session/route";
+import { validateRequest } from "@/lib/server-validate-request";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Provider } from "./QueryClientProvider";
