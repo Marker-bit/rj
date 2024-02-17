@@ -29,6 +29,7 @@ import {
 import { User } from "lucia";
 import { validateRequest } from "@/lib/validate-request";
 import { useQuery } from "@tanstack/react-query";
+import { Stats } from "../Stats";
 
 const data02 = [
   { name: "Group A", value: 2400 },
@@ -44,8 +45,8 @@ export default function ProfilePage() {
 
   const userQuery = useQuery({
     queryKey: ["user"],
-    queryFn: async () => {
-      return (await validateRequest()).user;
+    queryFn: () => {
+      return fetch("/api/profile").then((res) => res.json());
     },
   });
 
@@ -74,6 +75,7 @@ export default function ProfilePage() {
     "6": 0,
   };
   let readWeek = 0;
+  let streak = 0;
   if (eventsQuery.data) {
     for (const event of eventsQuery.data) {
       const date = new Date(event.readAt);
@@ -81,6 +83,28 @@ export default function ProfilePage() {
       if (date >= startOfWeek) {
         readWeek += event.pagesRead;
       }
+    }
+    const day = new Date();
+    day.setTime(day.getTime() - 86400000);
+    while (true) {
+      if (
+        eventsQuery.data.find(
+          (e: any) => new Date(e.readAt).toDateString() === day.toDateString()
+        )
+      ) {
+        streak++;
+        day.setTime(day.getTime() - 86400000);
+      } else {
+        break;
+      }
+    }
+    if (
+      eventsQuery.data.find(
+        (e: any) =>
+          new Date(e.readAt).toDateString() === new Date().toDateString()
+      )
+    ) {
+      streak++;
     }
   }
 
@@ -160,67 +184,7 @@ export default function ProfilePage() {
           </div> */}
         </div>
       </div>
-      <div id="stats" className="grid grid-cols-2 grid-rows-2 gap-2 p-2">
-        <div className="p-2 border border-zinc-300 rounded-md flex gap-1 items-center">
-          <CalendarRange className="w-6 h-6" />
-          <div className="flex flex-col">
-            <div className="font-bold">10</div>
-            <div className="text-black/50 lowercase text-xs -mt-1 font-semibold">
-              дней подряд
-            </div>
-          </div>
-        </div>
-        <div className="p-2 border border-zinc-300 rounded-md flex gap-1 items-center">
-          <BookOpen className="w-6 h-6" />
-          <div className="flex flex-col">
-            <div className="font-bold">{readWeek}</div>
-            <div className="text-black/50 lowercase text-xs -mt-1 font-semibold">
-              страниц прочитано за последнюю неделю
-            </div>
-          </div>
-        </div>
-        <div className="p-2 border border-zinc-300 rounded-md flex gap-1 items-center">
-          <Users2 className="w-6 h-6" />
-          <div className="flex flex-col">
-            <div className="font-bold">10</div>
-            <div className="text-black/50 lowercase text-xs -mt-1 font-semibold">
-              подписок
-            </div>
-          </div>
-        </div>
-        <div className="p-2 border border-zinc-300 rounded-md flex gap-1 items-center">
-          <UsersIcon className="w-6 h-6" />
-          <div className="flex flex-col">
-            <div className="font-bold">10</div>
-            <div className="text-black/50 lowercase text-xs -mt-1 font-semibold">
-              подписчиков
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="flex gap-2 shadow-md w-fit mx-auto my-2 p-2 rounded-md bg-black/5">
-        <div className="bg-black/10 p-2 rounded-md cursor-pointer shadow-md">
-          Дни недели
-        </div>
-        <div className="p-2 rounded-md cursor-pointer">Книги</div>
-      </div>
-      <div className="mt-3 h-[20vh]">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data}>
-            <Bar
-              dataKey="value"
-              style={
-                {
-                  fill: "black",
-                  opacity: 0.9,
-                } as React.CSSProperties
-              }
-              label
-            />
-            <XAxis dataKey="name" />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
+      <Stats />
     </div>
   );
 }

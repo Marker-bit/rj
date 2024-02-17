@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { BookView } from "./books/page";
 import { validateRequest } from "@/lib/validate-request";
+import { Stats } from "./Stats";
 
 export default function Home() {
   const booksQuery = useQuery({
@@ -73,7 +74,8 @@ export default function Home() {
               <ChevronRight className="w-12 h-12" strokeWidth={3} />
             </h2>
           </Link>
-          <div>???</div>
+          {/* <div>???</div> */}
+          <Stats />
         </div>
         <div className="flex flex-col gap-3 border-b border-zinc-300 p-3 cursor-default">
           <Link href="/profile">
