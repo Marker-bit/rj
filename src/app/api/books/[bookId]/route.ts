@@ -1,4 +1,4 @@
-import { validateRequest } from "@/app/api/auth/session/route";
+import { validateRequest } from "@/lib/server-validate-request";
 import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -17,12 +17,12 @@ export async function PATCH(
   const updateBook = await db.book.update({
     where: {
       id: bookId,
-      userId: user.id
+      userId: user.id,
     },
     data: {
       ...data,
       userId: user.id,
-    }
+    },
   });
   return NextResponse.json(updateBook, {
     status: 200,
@@ -43,12 +43,15 @@ export async function DELETE(
   await db.book.delete({
     where: {
       id: bookId,
-      userId: user.id
+      userId: user.id,
+    },
+  });
+  return NextResponse.json(
+    {
+      ok: true,
+    },
+    {
+      status: 200,
     }
-  });
-  return NextResponse.json({
-    ok: true
-  }, {
-    status: 200,
-  });
+  );
 }

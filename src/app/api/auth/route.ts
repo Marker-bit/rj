@@ -1,10 +1,9 @@
 import { lucia } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { setCookie } from "cookies-next";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { Argon2id } from "oslo/password";
-import { validateRequest } from "./session/route";
+import { validateRequest } from "@/lib/server-validate-request";
 
 export async function POST(request: NextRequest) {
   const data = await request.json();
