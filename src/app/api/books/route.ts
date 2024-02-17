@@ -13,9 +13,21 @@ export async function GET(req: NextRequest) {
       collections: true,
       readEvents: true,
       user: false
-    }
+    },
   });
-  return NextResponse.json(books);
+  const compareBooks = (a: any, b: any) => {
+    const aPages = a.readEvents[a.readEvents.length - 1]?.pagesRead;
+    const bPages = b.readEvents[b.readEvents.length - 1]?.pagesRead;
+    if (!aPages && !bPages) return 0;
+    if (!aPages) return 1;
+    if (!bPages) return -1;
+    if (aPages > bPages) return -1;
+    if (aPages == bPages) return 0;
+    if (aPages < bPages) return 1;
+    return 0;
+  }
+  const sortedBooks = books.toSorted(compareBooks);
+  return NextResponse.json(sortedBooks);
 }
 
 export async function POST(req: NextRequest) {

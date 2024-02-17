@@ -4,11 +4,14 @@ import {
   BookIcon,
   BookOpen,
   BookOpenCheck,
+  BookOpenTextIcon,
   CalendarDays,
   Check,
   ChevronLeft,
+  Edit,
   Loader,
   Plus,
+  Trash,
   Undo,
 } from "lucide-react";
 import Image from "next/image";
@@ -30,6 +33,26 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -37,12 +60,18 @@ const bookSchema = z.object({
   pages: z.coerce.number().min(1),
 });
 
-function BookView({ book }: { book: Book }) {
+export function BookView({ book }: { book: Book }) {
   const queryClient = useQueryClient();
   const [choosingPages, setChoosingPages] = useState(false);
-  const [undoLoading, setUndoLoading] = useState(false);
-  const [doneLoading, setDoneLoading] = useState(false);
-  const [readLoading, setReadLoading] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const form = useForm({
+    resolver: zodResolver(bookSchema),
+    defaultValues: {
+      title: book.title,
+      author: book.author,
+      pages: book.pages,
+    },
+  });
 
   const undoEventMutation = useMutation({
     mutationFn: () =>
@@ -86,19 +115,40 @@ function BookView({ book }: { book: Book }) {
     },
   });
 
-  // function undoEvent() {
-  //   setUndoLoading(true);
-  //   fetch(`/api/books/${book.id}/undo`, {
-  //     method: "DELETE",
-  //   }).then(() => {
-  //     setUndoLoading(false);
-  //   });
-  // }
+  const editMutation = useMutation({
+    mutationFn: (values: z.infer<typeof bookSchema>) =>
+      fetch(`/api/books/${book.id}/`, {
+        method: "PATCH",
+        body: JSON.stringify(values),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["books"],
+      });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: () =>
+      fetch(`/api/books/${book.id}/`, {
+        method: "DELETE",
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["books"],
+      });
+    },
+  });
 
   const lastEvent = book.readEvents[book.readEvents.length - 1];
 
+  async function onSubmit(values: z.infer<typeof bookSchema>) {
+    await editMutation.mutateAsync(values);
+    setEditOpen(false);
+  }
+
   return (
-    <div className="border border-zinc-200 p-2 rounded-md hover:shadow transition-shadow flex gap-2">
+    <div className="border border-zinc-200 p-2 rounded-md hover:shadow transition-shadow flex gap-2 group relative">
       <Image
         src="/book.png"
         alt="book"
@@ -111,9 +161,14 @@ function BookView({ book }: { book: Book }) {
         <div className="text-sm">{book.author}</div>
         <div className="flex gap-2 flex-wrap my-2">
           {book.readEvents.length === 0 ? (
-            <div className="bg-orange-100 flex gap-2 items-center text-orange-500 px-3 rounded-xl cursor-default">
-              <CalendarDays className="w-4 h-4" /> Запланирована
-            </div>
+            <>
+              <div className="bg-orange-100 flex gap-2 items-center text-orange-500 px-3 rounded-xl cursor-default">
+                <CalendarDays className="w-4 h-4" /> Запланирована
+              </div>
+              <div className="bg-green-100 flex gap-2 items-center text-green-500 px-3 rounded-xl cursor-default">
+                <BookOpen className="w-4 h-4" /> {book.pages} страниц всего
+              </div>
+            </>
           ) : lastEvent.pagesRead === book.pages ? (
             <>
               <div className="bg-green-100 flex gap-2 items-center text-green-500 px-3 rounded-xl cursor-default">
@@ -206,17 +261,8 @@ function BookView({ book }: { book: Book }) {
                         setChoosingPages(false);
                         if (isNaN(num)) return;
                         readMutation.mutate({
-                          pages: num
+                          pages: num,
                         });
-                        // setReadLoading(true);
-                        // fetch(`/api/books/${book.id}/read/`, {
-                        //   method: "POST",
-                        //   body: JSON.stringify({
-                        //     pages: num,
-                        //   }),
-                        // }).then(() => {
-                        //   setReadLoading(false);
-                        // });
                       }
                     }}
                   />
@@ -224,8 +270,115 @@ function BookView({ book }: { book: Book }) {
                   <div>Отметить страницы</div>
                 )}
               </button>
+              <button
+                className="flex gap-2 items-center w-fit bg-gray-100 rounded-xl py-1 px-3 active:opacity-50 transition-all select-none disabled:opacity-40 border border-zinc-200"
+                onClick={() => alert("Будет добавлено")}
+              >
+                <BookOpenTextIcon className="w-4 h-4" />
+                Отметить прочтение в прошлом
+              </button>
             </>
           )}
+          <div className="flex gap-2 m-2 group-hover:opacity-100 opacity-0 absolute top-0 right-0 transition-all scale-0 group-hover:scale-100">
+            <Dialog open={editOpen} onOpenChange={setEditOpen}>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle className="flex gap-1 items-center">
+                    <Edit className="w-4 h-4" /> Редактировать книгу
+                  </DialogTitle>
+                </DialogHeader>
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-2"
+                  >
+                    <FormField
+                      control={form.control}
+                      name="title"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Название</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="author"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Автор</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="pages"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Кол-во страниц</FormLabel>
+                          <FormControl>
+                            <Input {...field} type="number" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <button
+                      className="flex gap-2 items-center w-fit bg-blue-500 rounded-xl text-white py-1 px-3 active:opacity-50 transition-all select-none disabled:opacity-40"
+                      type="submit"
+                      disabled={editMutation.isPending}
+                    >
+                      {editMutation.isPending ? (
+                        <Loader className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Edit className="w-4 h-4" />
+                      )}
+                      Редактировать
+                    </button>
+                  </form>
+                </Form>
+              </DialogContent>
+            </Dialog>
+            <button
+              className="bg-gray-100 rounded-md p-1 active:opacity-50 transition-all select-none disabled:opacity-40 border border-zinc-200 h-fit w-fit"
+              onClick={() => setEditOpen(true)}
+            >
+              <Edit className="w-4 h-4" />
+            </button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <button className="bg-gray-100 rounded-md p-1 active:opacity-50 transition-all select-none disabled:opacity-40 border border-zinc-200 h-fit w-fit">
+                  <Trash className="w-4 h-4" />
+                </button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Вы уверены?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Вы удалите книгу &quot;{book.title}&quot; без возможности
+                    возврата.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Отмена</AlertDialogCancel>
+                  <AlertDialogAction
+                    className="bg-red-500 hover:bg-red-600"
+                    onClick={() => deleteMutation.mutate()}
+                  >
+                    Удалить
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </div>
       </div>
     </div>
@@ -233,44 +386,58 @@ function BookView({ book }: { book: Book }) {
 }
 
 export default function BooksPage() {
-  const [createLoading, setCreateLoading] = useState(false);
+  const queryClient = useQueryClient();
+  const [readBooks, setReadBooks] = useState(false);
+  const [notStarted, setNotStarted] = useState(false);
   const form = useForm<z.infer<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
   });
-  // const [books, setBooks] = useState<any[]>([]);
+
   const booksQuery = useQuery({
     queryKey: ["books"],
     queryFn: () => fetch("/api/books").then((res) => res.json()),
   });
 
-  function onSubmit(values: z.infer<typeof bookSchema>) {
-    setCreateLoading(true);
-    fetch("/api/books", {
-      method: "POST",
-      body: JSON.stringify(values),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setCreateLoading(false);
-        console.log(data);
-        form.reset({
-          title: "",
-          author: "",
-          pages: 0,
-        });
+  const bookMutation = useMutation({
+    mutationFn: (values: z.infer<typeof bookSchema>) =>
+      fetch("/api/books", {
+        method: "POST",
+        body: JSON.stringify(values),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["books"],
       });
+      form.reset({
+        title: "",
+        author: "",
+        pages: NaN,
+      });
+    },
+  });
+
+  function onSubmit(values: z.infer<typeof bookSchema>) {
+    bookMutation.mutate(values);
   }
 
-  // useEffect(() => {
-  //   fetch("/api/books")
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       console.log(data);
-  //       setBooks(data);
-  //     });
-  // }, []);
+  let books = booksQuery.data || [];
 
-  const books = booksQuery.data || [];
+  if (readBooks) {
+    books = books.filter((book: Book) => {
+      if (book.readEvents.length === 0) {
+        return true;
+      }
+      return !(
+        book.pages === book.readEvents[book.readEvents.length - 1].pagesRead
+      );
+    });
+  }
+
+  if (notStarted) {
+    books = books.filter((book: Book) => {
+      return book.readEvents.length !== 0;
+    });
+  }
 
   return (
     <div>
@@ -329,11 +496,10 @@ export default function BooksPage() {
             />
             <button
               className="flex gap-2 items-center w-fit bg-blue-500 rounded-xl text-white py-1 px-3 active:opacity-50 transition-all select-none disabled:opacity-40"
-              // onClick={createBook}
               type="submit"
-              disabled={createLoading}
+              disabled={bookMutation.isPending}
             >
-              {createLoading ? (
+              {bookMutation.isPending ? (
                 <Loader className="w-4 h-4 animate-spin" />
               ) : (
                 <Plus className="w-4 h-4" />
@@ -345,6 +511,30 @@ export default function BooksPage() {
         {/* <Input className="mb-2" /> */}
       </div>
       <div className="p-3 flex flex-col">
+        <div
+          className="items-center flex space-x-2 cursor-pointer p-2 rounded-md border border-zinc-200 mb-2 hover:bg-zinc-100 transition-all select-none"
+          onClick={() => setReadBooks(!readBooks)}
+        >
+          <Switch id="readBooks" checked={readBooks} />
+          <div
+            className="text-sm font-medium leading-none peer-disabled:opacity-70 cursor-pointer select-none"
+            onClick={() => setReadBooks(!readBooks)}
+          >
+            Скрывать прочитанные книги
+          </div>
+        </div>
+        <div
+          className="items-center flex space-x-2 cursor-pointer p-2 rounded-md border border-zinc-200 mb-2 hover:bg-zinc-100 transition-all select-none"
+          onClick={() => setNotStarted(!notStarted)}
+        >
+          <Switch id="readBooks" checked={notStarted} />
+          <div
+            className="text-sm font-medium leading-none peer-disabled:opacity-70 cursor-pointer select-none"
+            onClick={() => setNotStarted(!notStarted)}
+          >
+            Скрывать не начатые книги
+          </div>
+        </div>
         {books.map((book: Book) => (
           <BookView book={book} key={book.id} />
         ))}

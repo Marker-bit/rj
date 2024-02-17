@@ -1,8 +1,31 @@
-import { ChevronRight } from "lucide-react";
+"use client";
+
+import { useQuery } from "@tanstack/react-query";
+import { ChevronRight, Loader } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { BookView } from "./books/page";
 
 export default function Home() {
+  const booksQuery = useQuery({
+    queryKey: ["books"],
+    queryFn: () => fetch("/api/books").then((res) => res.json()),
+  });
+
+  let booksData;
+  // if (booksQuery?.data) {
+  //   const compareBooks = (a: Book, b: Book) => {
+  //     const aPages = a.readEvents[a.readEvents.length - 1]?.pagesRead;
+  //     const bPages = b.readEvents[b.readEvents.length - 1]?.pagesRead;
+  //     if (!aPages && !bPages) return 0;
+  //     if (!aPages) return -1;
+  //     if (!bPages) return 1;
+  //     if (aPages > bPages) return 1;
+  //     if (aPages == bPages) return 0;
+  //     if (aPages < bPages) return -1;
+  //   }
+  //   booksData = booksQuery.data.sort(compareBooks);
+  // }
   return (
     <div>
       <div className="flex p-1 min-h-10 items-center bg-zinc-100 border-b border-zinc-200 relative">
@@ -16,7 +39,17 @@ export default function Home() {
               <ChevronRight className="w-12 h-12" strokeWidth={3} />
             </h2>
           </Link>
-          <div>???</div>
+          {booksQuery.isPending ? (
+            <div className="flex h-[20vh] justify-center items-center">
+              <Loader className="w-6 h-6 animate-spin" />
+            </div>
+          ) : (
+            <div className="flex flex-col gap-2">
+              {booksQuery?.data.slice(0, 3).map((book: Book) => (
+                <BookView book={book} key={book.id} />
+              ))}
+            </div>
+          )}
         </div>
         <div className="flex flex-col gap-3 border-b border-zinc-300 p-3 cursor-default">
           <Link href="/profile">
@@ -27,7 +60,7 @@ export default function Home() {
           </Link>
           <div className="p-2 rounded-md border border-zinc-200 flex gap-2 items-center">
             <Image
-              src="/avatar.jpg"
+              src="/no-avatar.png"
               alt="avatar"
               width={100}
               height={100}
