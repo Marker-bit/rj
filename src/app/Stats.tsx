@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
   BookOpen,
   CalendarRange,
+  Copy,
   Loader,
   Users2,
   UsersIcon,
@@ -43,15 +44,16 @@ export function Stats() {
   date.setHours(0, 0, 0, 0);
   const [startOfWeek, _] = startAndEndOfWeek();
 
-  let booksStats: { [key: string]: number } = {
-    "0": 0,
-    "1": 0,
-    "2": 0,
-    "3": 0,
-    "4": 0,
-    "5": 0,
-    "6": 0,
+  let booksStats: { [key: string]: { [key: string]: number } } = {
+    "0": {},
+    "1": {},
+    "2": {},
+    "3": {},
+    "4": {},
+    "5": {},
+    "6": {},
   };
+  let booksStatsNum: { [key: string]: number } = {};
   // let readWeek = 0;
   let readWeek: { [key: string]: number } = {};
   let readWeekSum = 0;
@@ -60,7 +62,15 @@ export function Stats() {
   if (eventsQuery.data) {
     for (const event of eventsQuery.data) {
       const date = new Date(event.readAt);
-      booksStats[date.getDay().toString()] += event.pagesRead;
+      if (!booksStats[date.getDay().toString()]) {
+        booksStats[date.getDay().toString()] = {};
+      }
+      if (
+        event.pagesRead >
+        (booksStats[date.getDay().toString()][event.bookId] ?? 0)
+      ) {
+        booksStats[date.getDay().toString()][event.bookId] = event.pagesRead;
+      }
       if (date >= startOfWeek) {
         if (!readWeek[event.bookId]) {
           readWeek[event.bookId] = 0;
@@ -97,14 +107,20 @@ export function Stats() {
     }
   }
 
+  for (const [m, i] of Object.entries(booksStats)) {
+    for (const x of Object.values(i)) {
+      booksStatsNum[m] = x;
+    }
+  }
+
   const data = [
-    { name: "Пн", value: booksStats["1"] },
-    { name: "Вт", value: booksStats["2"] },
-    { name: "Ср", value: booksStats["3"] },
-    { name: "Чт", value: booksStats["4"] },
-    { name: "Пт", value: booksStats["5"] },
-    { name: "Сб", value: booksStats["6"] },
-    { name: "Вс", value: booksStats["0"] },
+    { name: "Пн", value: booksStatsNum["1"] },
+    { name: "Вт", value: booksStatsNum["2"] },
+    { name: "Ср", value: booksStatsNum["3"] },
+    { name: "Чт", value: booksStatsNum["4"] },
+    { name: "Пт", value: booksStatsNum["5"] },
+    { name: "Сб", value: booksStatsNum["6"] },
+    { name: "Вс", value: booksStatsNum["0"] },
   ];
 
   return (

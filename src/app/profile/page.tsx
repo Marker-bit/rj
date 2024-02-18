@@ -4,7 +4,9 @@ import {
   BookOpen,
   CalendarDays,
   CalendarRange,
+  Check,
   ChevronLeft,
+  Copy,
   Edit,
   HomeIcon,
   Loader,
@@ -30,15 +32,7 @@ import { User } from "lucia";
 import { validateRequest } from "@/lib/validate-request";
 import { useQuery } from "@tanstack/react-query";
 import { Stats } from "../Stats";
-
-const data02 = [
-  { name: "Group A", value: 2400 },
-  { name: "Group B", value: 4567 },
-  { name: "Group C", value: 1398 },
-  { name: "Group D", value: 9800 },
-  { name: "Group E", value: 3908 },
-  { name: "Group F", value: 4800 },
-];
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function ProfilePage() {
   // const [userData, setUserData] = useState<User | null>(null);
@@ -50,73 +44,7 @@ export default function ProfilePage() {
     },
   });
 
-  const eventsQuery = useQuery({
-    queryKey: ["events"],
-    queryFn: () => fetch("/api/journal").then((res) => res.json()),
-  });
-
-  const startAndEndOfWeek = (date: Date) => {
-    const now = date ? new Date(date) : new Date().setHours(0, 0, 0, 0);
-    const monday = new Date(now);
-    monday.setDate(monday.getDate() - monday.getDay() + 1);
-    const sunday = new Date(now);
-    sunday.setDate(sunday.getDate() - sunday.getDay() + 7);
-    return [monday, sunday];
-  };
-  const [startOfWeek, _] = startAndEndOfWeek(new Date());
-
-  let booksStats: { [key: string]: number } = {
-    "0": 0,
-    "1": 0,
-    "2": 0,
-    "3": 0,
-    "4": 0,
-    "5": 0,
-    "6": 0,
-  };
-  let readWeek = 0;
-  let streak = 0;
-  if (eventsQuery.data) {
-    for (const event of eventsQuery.data) {
-      const date = new Date(event.readAt);
-      booksStats[date.getDay().toString()] += event.pagesRead;
-      if (date >= startOfWeek) {
-        readWeek += event.pagesRead;
-      }
-    }
-    const day = new Date();
-    day.setTime(day.getTime() - 86400000);
-    while (true) {
-      if (
-        eventsQuery.data.find(
-          (e: any) => new Date(e.readAt).toDateString() === day.toDateString()
-        )
-      ) {
-        streak++;
-        day.setTime(day.getTime() - 86400000);
-      } else {
-        break;
-      }
-    }
-    if (
-      eventsQuery.data.find(
-        (e: any) =>
-          new Date(e.readAt).toDateString() === new Date().toDateString()
-      )
-    ) {
-      streak++;
-    }
-  }
-
-  const data = [
-    { name: "Понедельник", value: booksStats["1"] },
-    { name: "Вторник", value: booksStats["2"] },
-    { name: "Среда", value: booksStats["3"] },
-    { name: "Четверг", value: booksStats["4"] },
-    { name: "Пятница", value: booksStats["5"] },
-    { name: "Суббота", value: booksStats["6"] },
-    { name: "Воскресенье", value: booksStats["0"] },
-  ];
+  const [copy, setCopy] = useState(false);
 
   // const data01 = [
   //   { name: "Понедельник", value: 40 },
@@ -145,6 +73,8 @@ export default function ProfilePage() {
 
   const userData = userQuery.data!;
 
+  const url = `${window.location.origin}/profile/${userData?.username}`;
+
   return (
     <div>
       <div className="flex p-1 items-center bg-zinc-100 border-b border-zinc-200 min-h-10">
@@ -157,7 +87,12 @@ export default function ProfilePage() {
         <div className="font-semibold absolute left-[50%] translate-x-[-50%]">
           Профиль
         </div>
-        <Link href="/profile/settings" className="ml-auto">
+        <Link href="/followers" className="ml-auto">
+          <button className="p-1 hover:text-blue-600 rounded-md flex items-center gap-1 text-blue-500 active:scale-95 transition-all">
+            <div className="font-semibold">Подписчики</div>
+          </button>
+        </Link>
+        <Link href="/profile/settings">
           <button className="p-1 hover:text-blue-600 rounded-md flex items-center gap-1 text-blue-500 active:scale-95 transition-all">
             <div className="font-semibold">
               <Edit className="w-6 h-6" />
@@ -182,6 +117,59 @@ export default function ProfilePage() {
             <UserPlus className="w-4 h-4 mr-2" />
             Добавить в друзья
           </div> */}
+        </div>
+      </div>
+      <div className="flex items-center justify-center">
+        <div className="p-2 border border-zinc-200 rounded-xl flex gap-2 items-center">
+          {url}
+          <div
+            className="hover:bg-black/10 flex items-center justify-center p-2 rounded-xl cursor-pointer relative"
+            onClick={() => {
+              navigator.clipboard.writeText(url);
+              if (copy) return;
+              setCopy(true);
+              setTimeout(() => {
+                setCopy(false);
+              }, 1000);
+            }}
+          >
+            <Copy className="opacity-0 w-4 h-4" />
+            <AnimatePresence>
+              {/* {copy ? ( */}
+                <motion.div
+                  variants={{
+                    copy: { scale: 1, opacity: 1 },
+                    notCopy: { scale: 0, opacity: 0 },
+                  }}
+                  animate={copy ? "copy" : "notCopy"}
+                  transition={{
+                    type: "spring",
+                    stiffness: 260,
+                    damping: 20,
+                  }}
+                  className="absolute"
+                >
+                  <Check className="text-green-500 w-4 h-4" />
+                </motion.div>
+              {/* ) : ( */}
+                <motion.div
+                  variants={{
+                    copy: { scale: 1, opacity: 1 },
+                    notCopy: { scale: 0, opacity: 0 },
+                  }}
+                  animate={!copy ? "copy" : "notCopy"}
+                  transition={{
+                    type: "spring",
+                    stiffness: 260,
+                    damping: 20,
+                  }}
+                  className="absolute"
+                >
+                  <Copy className="w-4 h-4" />
+                </motion.div>
+              {/* )} */}
+            </AnimatePresence>
+          </div>
         </div>
       </div>
       <Stats />
