@@ -1,8 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { ChevronLeft, ChevronRight, Loader, UserX } from "lucide-react";
-import Image from "next/image";
+import { ChevronLeft, Loader } from "lucide-react";
 import Link from "next/link";
 import { FriendView } from "../FriendView";
 
@@ -11,6 +10,7 @@ export default function FollowersPage() {
     queryKey: ["followers"],
     queryFn: () => fetch("/api/profile/followers").then((res) => res.json()),
   });
+
   if (friendsQuery.isPending) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -43,64 +43,22 @@ export default function FollowersPage() {
           {friendsQuery.data.map(
             ({
               first: friend,
+              following
             }: {
               first: {
                 firstName: string;
                 lastName: string;
                 username: string;
                 id: string;
-                following: boolean;
               };
-            }) => (
-              // <Link href={`/friends/${"a"}`} key={friend.id}>
-              //   <div className="p-4 rounded-md border border-zinc-200 flex gap-2 items-center cursor-pointer group hover:bg-zinc-100 transition-colors">
-              //     <Image
-              //       src="/no-avatar.png"
-              //       alt="avatar"
-              //       width={100}
-              //       height={100}
-              //       className="rounded-full w-16 h-16"
-              //     />
-              //     <div className="flex flex-col">
-              //       <div className="text-xl font-semibold">{friend.firstName} {friend.lastName}</div>
-              //       <div className="text-sm text-black/70">@{friend.username}</div>
-              //       <div className="bg-blue-500 p-2 rounded-md shadow-md shadow-blue-300 cursor-pointer flex items-center justify-center text-white text-sm mt-2">
-              //         <UserX className="w-4 h-4 mr-2" />
-              //         Удалить из друзей
-              //       </div>
-              //     </div>
-              //     <button className="ml-auto">
-              //       <ChevronRight className="w-7 h-7 text-black/50 group-hover:text-black transition-colors" />
-              //     </button>
-              //   </div>
-              // </Link>
+              following: boolean
+            }) => {
+              return (
               <>
-              <FriendView key={friend.id} friend={friend} />
+                <FriendView key={friend.id} friend={friend} following={following} />
               </>
-            )
+            )}
           )}
-          {/* <Link href={`/friends/${"a"}`}>
-            <div className="p-4 rounded-md border border-zinc-200 flex gap-2 items-center cursor-pointer group hover:bg-zinc-100 transition-colors">
-              <Image
-                src="/avatar.jpg"
-                alt="avatar"
-                width={100}
-                height={100}
-                className="rounded-full w-16 h-16"
-              />
-              <div className="flex flex-col">
-                <div className="text-xl font-semibold">Mark Pentus</div>
-                <div className="text-sm text-black/70">@mark.pentus</div>
-                <div className="bg-blue-500 p-2 rounded-md shadow-md shadow-blue-300 cursor-pointer flex items-center justify-center text-white text-sm mt-2">
-                  <UserX className="w-4 h-4 mr-2" />
-                  Удалить из друзей
-                </div>
-              </div>
-              <button className="ml-auto">
-                <ChevronRight className="w-7 h-7 text-black/50 group-hover:text-black transition-colors" />
-              </button>
-            </div>
-          </Link> */}
         </div>
       </div>
     </div>

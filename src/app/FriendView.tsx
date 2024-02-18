@@ -3,24 +3,24 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ChevronRight, Loader, UserPlus, UserX } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 
 export function FriendView({
   friend,
+  following,
 }: {
   friend: {
     firstName: string;
     lastName: string;
     username: string;
     id: string;
-    following: boolean;
   };
+  following: boolean;
 }) {
   const queryClient = useQueryClient();
   const followMutation = useMutation({
     mutationFn: () => {
       return fetch(`/api/profile/${friend.username}/follow`, {
-        method: friend.following ? "DELETE" : "POST",
+        method: following ? "DELETE" : "POST",
       });
     },
     onSuccess: () => {
@@ -49,7 +49,7 @@ export function FriendView({
           {friend.firstName} {friend.lastName}
         </div>
         <div className="text-sm text-black/70">@{friend.username}</div>
-        {friend.following ? (
+        {following ? (
           <button
             className="flex gap-2 items-center w-fit bg-gray-100 rounded-xl py-1 px-3 active:opacity-50 transition-all select-none disabled:opacity-40 border border-zinc-200 mx-auto"
             onClick={() => followMutation.mutate()}
