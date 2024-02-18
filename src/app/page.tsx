@@ -16,7 +16,7 @@ export default function Home() {
 
   const userQuery = useQuery({
     queryKey: ["user"],
-    queryFn: () => validateRequest(),
+    queryFn: () => fetch("/api/profile").then((res) => res.json())
   });
   // if (booksQuery?.data) {
   //   const compareBooks = (a: Book, b: Book) => {
@@ -99,11 +99,11 @@ export default function Home() {
               />
               <div className="flex flex-col">
                 <div className="text-3xl font-semibold">
-                  {userQuery.data.user?.firstName}{" "}
-                  {userQuery.data.user?.lastName}
+                  {userQuery.data?.firstName}{" "}
+                  {userQuery.data?.lastName}
                 </div>
                 <div className="text-sm text-black/70">
-                  @{userQuery.data.user?.username}
+                  @{userQuery.data?.username}
                 </div>
                 {/* <div className="bg-blue-500 p-2 rounded-md shadow-md shadow-blue-300 cursor-pointer flex items-center justify-center text-white text-sm mt-2">
             <UserPlus className="w-4 h-4 mr-2" />

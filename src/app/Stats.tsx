@@ -9,10 +9,11 @@ import {
   UsersIcon,
 } from "lucide-react";
 import { Bar, BarChart, ResponsiveContainer, XAxis } from "recharts";
+import moment from "moment";
 
 export function Stats() {
   const userQuery = useQuery({
-    queryKey: ["stats"],
+    queryKey: ["user"],
     queryFn: () => fetch("/api/profile").then((res) => res.json()),
   });
   const eventsQuery = useQuery({
@@ -27,15 +28,20 @@ export function Stats() {
     );
   }
 
-  const startAndEndOfWeek = (date: Date) => {
-    const now = date ? new Date(date) : new Date().setHours(0, 0, 0, 0);
-    const monday = new Date(now);
-    monday.setDate(monday.getDate() - monday.getDay() + 1);
-    const sunday = new Date(now);
-    sunday.setDate(sunday.getDate() - sunday.getDay() + 7);
+  const startAndEndOfWeek = () => {
+    moment.updateLocale("ru", {
+      week: {
+        dow: 1, // Monday is the first day of the week.
+      },
+    });
+    // moment().locale("ru");
+    const monday = moment().startOf("week").toDate();
+    const sunday = moment().endOf("week").toDate();
     return [monday, sunday];
   };
-  const [startOfWeek, _] = startAndEndOfWeek(new Date());
+  const date = new Date();
+  date.setHours(0, 0, 0, 0);
+  const [startOfWeek, _] = startAndEndOfWeek();
 
   let booksStats: { [key: string]: number } = {
     "0": 0,
@@ -48,6 +54,7 @@ export function Stats() {
   };
   let readWeek = 0;
   let streak = 0;
+  console.log(startOfWeek);
   if (eventsQuery.data) {
     for (const event of eventsQuery.data) {
       const date = new Date(event.readAt);
