@@ -24,6 +24,14 @@ export async function GET(req: NextRequest) {
           id: true
         },
       },
+      first: {
+        select: {
+          firstName: true,
+          lastName: true,
+          username: true,
+          id: true
+        },
+      },
     },
   });
 

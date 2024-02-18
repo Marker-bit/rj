@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ChevronRight, Loader, UserX } from "lucide-react";
+import { ChevronRight, Loader, UserPlus, UserX } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -30,6 +30,9 @@ export function FriendView({
       queryClient.invalidateQueries({
         queryKey: ["friends"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["followers"],
+      });
     },
   });
   return (
@@ -46,18 +49,33 @@ export function FriendView({
           {friend.firstName} {friend.lastName}
         </div>
         <div className="text-sm text-black/70">@{friend.username}</div>
-        <button
-          className="flex gap-2 items-center w-fit bg-gray-100 rounded-xl py-1 px-3 active:opacity-50 transition-all select-none disabled:opacity-40 border border-zinc-200 mx-auto"
-          onClick={() => followMutation.mutate()}
-          disabled={followMutation.isPending}
-        >
-          {followMutation.isPending ? (
-            <Loader className="w-4 h-4 animate-spin" />
-          ) : (
-            <UserX className="w-4 h-4" />
-          )}
-          Удалить из друзей
-        </button>
+        {friend.following ? (
+          <button
+            className="flex gap-2 items-center w-fit bg-gray-100 rounded-xl py-1 px-3 active:opacity-50 transition-all select-none disabled:opacity-40 border border-zinc-200 mx-auto"
+            onClick={() => followMutation.mutate()}
+            disabled={followMutation.isPending}
+          >
+            {followMutation.isPending ? (
+              <Loader className="w-4 h-4 animate-spin" />
+            ) : (
+              <UserX className="w-4 h-4" />
+            )}
+            Удалить из друзей
+          </button>
+        ) : (
+          <button
+            className="flex gap-2 items-center w-fit bg-blue-500 rounded-xl text-white py-1 px-3 active:opacity-50 transition-all select-none disabled:opacity-40"
+            onClick={() => followMutation.mutate()}
+            disabled={followMutation.isPending}
+          >
+            {followMutation.isPending ? (
+              <Loader className="w-4 h-4 animate-spin" />
+            ) : (
+              <UserPlus className="w-4 h-4" />
+            )}
+            Добавить в друзья
+          </button>
+        )}
       </div>
       <button className="ml-auto">
         <ChevronRight className="w-7 h-7 text-black/50 group-hover:text-black transition-colors" />
