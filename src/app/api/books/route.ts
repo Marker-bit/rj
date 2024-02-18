@@ -28,8 +28,8 @@ export async function GET(req: NextRequest) {
     if (aPages < bPages) return 1;
     return 0;
   };
-  const sortedBooks = books.toSorted(compareBooks);
-  return NextResponse.json(sortedBooks);
+  books.sort(compareBooks);
+  return NextResponse.json(books);
 }
 
 export async function POST(req: NextRequest) {
