@@ -8,7 +8,7 @@ import { FriendView } from "../FriendView";
 
 export default function FollowersPage() {
   const friendsQuery = useQuery({
-    queryKey: ["friends"],
+    queryKey: ["followers"],
     queryFn: () => fetch("/api/profile/followers").then((res) => res.json()),
   });
   if (friendsQuery.isPending) {
@@ -42,9 +42,9 @@ export default function FollowersPage() {
           </div> */}
           {friendsQuery.data.map(
             ({
-              second: friend,
+              first: friend,
             }: {
-              second: {
+              first: {
                 firstName: string;
                 lastName: string;
                 username: string;
@@ -74,7 +74,9 @@ export default function FollowersPage() {
               //     </button>
               //   </div>
               // </Link>
+              <>
               <FriendView key={friend.id} friend={friend} />
+              </>
             )
           )}
           {/* <Link href={`/friends/${"a"}`}>

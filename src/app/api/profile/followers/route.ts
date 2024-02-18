@@ -24,6 +24,14 @@ export async function GET(req: NextRequest) {
           id: true
         },
       },
+      first: {
+        select: {
+          firstName: true,
+          lastName: true,
+          username: true,
+          id: true
+        },
+      },
     },
   });
 
@@ -35,6 +43,6 @@ export async function GET(req: NextRequest) {
 
   return NextResponse.json(follows.map(follow => ({
     ...follow,
-    following: myFollows.find((v) => v.secondId === follow.firstId)
+    following: !!(myFollows.find((v) => v.secondId === follow.firstId))
   })));
 }
