@@ -12,10 +12,8 @@ import { Bar, BarChart, ResponsiveContainer, XAxis } from "recharts";
 
 export function Stats() {
   const userQuery = useQuery({
-    queryKey: ["user"],
-    queryFn: () => {
-      return fetch("/api/profile").then((res) => res.json());
-    },
+    queryKey: ["stats"],
+    queryFn: () => fetch("/api/profile").then((res) => res.json()),
   });
   const eventsQuery = useQuery({
     queryKey: ["events"],
