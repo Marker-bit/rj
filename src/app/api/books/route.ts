@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
       user: false,
     },
   });
-  console.log(books, typeof books);
+  console.log(books, Array.isArray(books));
   const compareBooks = (a: any, b: any) => {
     const aPages = a.readEvents[a.readEvents.length - 1]?.pagesRead;
     const bPages = b.readEvents[b.readEvents.length - 1]?.pagesRead;
