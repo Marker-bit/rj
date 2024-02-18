@@ -52,7 +52,9 @@ export function Stats() {
     "5": 0,
     "6": 0,
   };
-  let readWeek = 0;
+  // let readWeek = 0;
+  let readWeek: { [key: string]: number } = {};
+  let readWeekSum = 0;
   let streak = 0;
   console.log(startOfWeek);
   if (eventsQuery.data) {
@@ -60,8 +62,16 @@ export function Stats() {
       const date = new Date(event.readAt);
       booksStats[date.getDay().toString()] += event.pagesRead;
       if (date >= startOfWeek) {
-        readWeek += event.pagesRead;
+        if (!readWeek[event.bookId]) {
+          readWeek[event.bookId] = 0;
+        }
+        if (event.pagesRead > readWeek[event.bookId]) {
+          readWeek[event.bookId] = event.pagesRead;
+        }
       }
+    }
+    for (const n of Object.values(readWeek)) {
+      readWeekSum += n;
     }
     const day = new Date();
     day.setTime(day.getTime() - 86400000);
@@ -88,13 +98,13 @@ export function Stats() {
   }
 
   const data = [
-    { name: "Понедельник", value: booksStats["1"] },
-    { name: "Вторник", value: booksStats["2"] },
-    { name: "Среда", value: booksStats["3"] },
-    { name: "Четверг", value: booksStats["4"] },
-    { name: "Пятница", value: booksStats["5"] },
-    { name: "Суббота", value: booksStats["6"] },
-    { name: "Воскресенье", value: booksStats["0"] },
+    { name: "Пн", value: booksStats["1"] },
+    { name: "Вт", value: booksStats["2"] },
+    { name: "Ср", value: booksStats["3"] },
+    { name: "Чт", value: booksStats["4"] },
+    { name: "Пт", value: booksStats["5"] },
+    { name: "Сб", value: booksStats["6"] },
+    { name: "Вс", value: booksStats["0"] },
   ];
 
   return (
@@ -112,7 +122,7 @@ export function Stats() {
         <div className="p-2 border border-zinc-300 rounded-md flex gap-1 items-center">
           <BookOpen className="w-6 h-6" />
           <div className="flex flex-col">
-            <div className="font-bold">{readWeek}</div>
+            <div className="font-bold">{readWeekSum}</div>
             <div className="text-black/50 lowercase text-xs -mt-1 font-semibold">
               страниц прочитано за последнюю неделю
             </div>
