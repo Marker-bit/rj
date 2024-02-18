@@ -60,7 +60,7 @@ export function FriendView({
             ) : (
               <UserX className="w-4 h-4" />
             )}
-            Удалить из друзей
+            Отменить подписку
           </button>
         ) : (
           <button
@@ -73,7 +73,7 @@ export function FriendView({
             ) : (
               <UserPlus className="w-4 h-4" />
             )}
-            Добавить в друзья
+            Подписаться
           </button>
         )}
       </div>
