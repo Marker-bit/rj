@@ -199,6 +199,7 @@ export function BookView({ book }: { book: Book }) {
               onSelect={setDate}
               className="rounded-md border w-fit max-sm:w-full"
               disabled={[{ from: new Date(), to: new Date(3000, 1) }]}
+              weekStartsOn={0}
             />
             <form onSubmit={(evt) => evt.preventDefault()}>
               <div className="flex gap-2">

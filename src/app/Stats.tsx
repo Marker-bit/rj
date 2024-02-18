@@ -57,6 +57,8 @@ export function Stats() {
   let booksStatsNum: { [key: string]: number } = {};
   let readWeek: { [key: string]: number } = {};
   let readWeekSum = 0;
+  let currentWeek: { [key: string]: { [key: string]: number } } = {};
+  let currentWeekNum: { [key: string]: number } = {};
   let streak = 0;
 
   console.log(startOfWeek);
@@ -64,6 +66,32 @@ export function Stats() {
   if (eventsQuery.data) {
     for (const event of eventsQuery.data) {
       const date = new Date(event.readAt);
+      if (!currentWeek[event.bookId]) {
+        currentWeek[event.bookId] = {}; // date.getDay().toString()
+      }
+      if (date >= startOfWeek) {
+        if (
+          event.pagesRead >
+          (currentWeek[event.bookId][date.getDay().toString()] ?? 0)
+        ) {
+          const currentBook = eventsQuery.data.filter(
+            (evt: any) => evt.bookId === event.bookId
+          );
+          const beforeEventIndex = currentBook.indexOf(event) - 1;
+          const beforeEventPages =
+            currentBook[beforeEventIndex]?.pagesRead ?? 0;
+          currentWeek[event.bookId][date.getDay().toString()] =
+            event.pagesRead - beforeEventPages;
+        }
+
+        if (!readWeek[event.bookId]) {
+          readWeek[event.bookId] = 0;
+        }
+        if (event.pagesRead > readWeek[event.bookId]) {
+          readWeek[event.bookId] = event.pagesRead;
+        }
+      }
+
       if (!booksStats[event.bookId]) {
         booksStats[event.bookId] = {}; // date.getDay().toString()
       }
@@ -71,18 +99,13 @@ export function Stats() {
         event.pagesRead >
         (booksStats[event.bookId][date.getDay().toString()] ?? 0)
       ) {
-        const currentBook = eventsQuery.data.filter((evt: any) => evt.bookId === event.bookId);
+        const currentBook = eventsQuery.data.filter(
+          (evt: any) => evt.bookId === event.bookId
+        );
         const beforeEventIndex = currentBook.indexOf(event) - 1;
         const beforeEventPages = currentBook[beforeEventIndex]?.pagesRead ?? 0;
-        booksStats[event.bookId][date.getDay().toString()] = event.pagesRead - beforeEventPages;
-      }
-      if (date >= startOfWeek) {
-        if (!readWeek[event.bookId]) {
-          readWeek[event.bookId] = 0;
-        }
-        if (event.pagesRead > readWeek[event.bookId]) {
-          readWeek[event.bookId] = event.pagesRead;
-        }
+        booksStats[event.bookId][date.getDay().toString()] =
+          event.pagesRead - beforeEventPages;
       }
     }
     for (const n of Object.values(readWeek)) {
@@ -112,6 +135,7 @@ export function Stats() {
     }
   }
 
+
   for (const days of Object.values(booksStats)) {
     for (const [day, num] of Object.entries(days)) {
       if (!booksStatsNum[day]) {
@@ -120,6 +144,25 @@ export function Stats() {
       booksStatsNum[day] += num;
     }
   }
+
+  for (const days of Object.values(currentWeek)) {
+    for (const [day, num] of Object.entries(days)) {
+      if (!currentWeekNum[day]) {
+        currentWeekNum[day] = 0;
+      }
+      currentWeekNum[day] += num;
+    }
+  }
+
+  const currentWeekData = [
+    { name: "Пн", value: currentWeekNum["1"] },
+    { name: "Вт", value: currentWeekNum["2"] },
+    { name: "Ср", value: currentWeekNum["3"] },
+    { name: "Чт", value: currentWeekNum["4"] },
+    { name: "Пт", value: currentWeekNum["5"] },
+    { name: "Сб", value: currentWeekNum["6"] },
+    { name: "Вс", value: currentWeekNum["0"] },
+  ];
 
   const data = [
     { name: "Пн", value: booksStatsNum["1"] },
@@ -170,6 +213,26 @@ export function Stats() {
             </div>
           </div>
         </div>
+      </div>
+      <div className="flex gap-2 shadow-md w-fit mx-auto my-2 p-2 rounded-md bg-black/5">
+        Эта неделя
+      </div>
+      <div className="mt-3 h-[20vh]">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={currentWeekData}>
+            <Bar
+              dataKey="value"
+              style={
+                {
+                  fill: "black",
+                  opacity: 0.9,
+                } as React.CSSProperties
+              }
+              label
+            />
+            <XAxis dataKey="name" />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
       <div className="flex gap-2 shadow-md w-fit mx-auto my-2 p-2 rounded-md bg-black/5">
         <div className="bg-black/10 p-2 rounded-md cursor-pointer shadow-md">
