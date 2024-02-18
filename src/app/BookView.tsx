@@ -192,12 +192,12 @@ export function BookView({ book }: { book: Book }) {
           <DialogHeader>
             <DialogTitle>Отметить прочтение в прошлом</DialogTitle>
           </DialogHeader>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-col">
             <Calendar
               mode="single"
               selected={date}
               onSelect={setDate}
-              className="rounded-md border"
+              className="rounded-md border w-fit max-sm:w-full"
               disabled={[{ from: new Date(), to: new Date(3000, 1) }]}
             />
             <form onSubmit={(evt) => evt.preventDefault()}>
