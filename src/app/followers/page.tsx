@@ -6,10 +6,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { FriendView } from "../FriendView";
 
-export default function FriendsPage() {
+export default function FollowersPage() {
   const friendsQuery = useQuery({
     queryKey: ["friends"],
-    queryFn: () => fetch("/api/profile/following").then((res) => res.json()),
+    queryFn: () => fetch("/api/profile/followers").then((res) => res.json()),
   });
   if (friendsQuery.isPending) {
     return (
@@ -28,7 +28,7 @@ export default function FriendsPage() {
           </button>
         </Link>
         <div className="font-semibold absolute left-[50%] translate-x-[-50%]">
-          Друзья
+          Подписчики
         </div>
       </div>
       <div className="p-3">
@@ -49,6 +49,7 @@ export default function FriendsPage() {
                 lastName: string;
                 username: string;
                 id: string;
+                following: boolean;
               };
             }) => (
               // <Link href={`/friends/${"a"}`} key={friend.id}>
@@ -73,7 +74,7 @@ export default function FriendsPage() {
               //     </button>
               //   </div>
               // </Link>
-              <FriendView key={friend.id} friend={{...friend, following: true}} />
+              <FriendView key={friend.id} friend={friend} />
             )
           )}
           {/* <Link href={`/friends/${"a"}`}>
