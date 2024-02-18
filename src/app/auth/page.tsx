@@ -55,9 +55,11 @@ export default function Page() {
           (res: { status: "authorized" | "created" | "invalid-password" }) => {
             console.log(res.status);
             if (res.status === "authorized") {
-              router.push("/");
+              window.location.href = "/";
             } else if (res.status === "created") {
               router.push("/auth/activate-account");
+            } else if (res.status === "invalid-password") {
+              alert("Неправильный пароль");
             }
           }
         );
@@ -150,7 +152,7 @@ export default function Page() {
               />
               <Button type="submit" disabled={userMutation.isPending}>
                 {userMutation.isPending && (
-                  <Loader className="w-4 h-4 animate-spin" />
+                  <Loader className="w-4 h-4 animate-spin mr-2" />
                 )}
                 Авторизоваться
               </Button>
