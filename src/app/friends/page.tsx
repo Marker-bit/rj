@@ -73,7 +73,7 @@ export default function FriendsPage() {
               //     </button>
               //   </div>
               // </Link>
-              <FriendView key={friend.id} friend={{...friend, following: true}} />
+              <FriendView key={friend.id} friend={friend} following={true} />
             )
           )}
           {/* <Link href={`/friends/${"a"}`}>
