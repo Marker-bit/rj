@@ -44,32 +44,37 @@ export function Stats() {
   date.setHours(0, 0, 0, 0);
   const [startOfWeek, _] = startAndEndOfWeek();
 
-  let booksStats: { [key: string]: { [key: string]: number } } = {
-    "0": {},
-    "1": {},
-    "2": {},
-    "3": {},
-    "4": {},
-    "5": {},
-    "6": {},
-  };
+  // let booksStats: { [key: string]: { [key: string]: number } } = {
+  //   "0": {},
+  //   "1": {},
+  //   "2": {},
+  //   "3": {},
+  //   "4": {},
+  //   "5": {},
+  //   "6": {},
+  // };
+  let booksStats: { [key: string]: { [key: string]: number } } = {};
   let booksStatsNum: { [key: string]: number } = {};
-  // let readWeek = 0;
   let readWeek: { [key: string]: number } = {};
   let readWeekSum = 0;
   let streak = 0;
+
   console.log(startOfWeek);
+
   if (eventsQuery.data) {
     for (const event of eventsQuery.data) {
       const date = new Date(event.readAt);
-      if (!booksStats[date.getDay().toString()]) {
-        booksStats[date.getDay().toString()] = {};
+      if (!booksStats[event.bookId]) {
+        booksStats[event.bookId] = {}; // date.getDay().toString()
       }
       if (
         event.pagesRead >
-        (booksStats[date.getDay().toString()][event.bookId] ?? 0)
+        (booksStats[event.bookId][date.getDay().toString()] ?? 0)
       ) {
-        booksStats[date.getDay().toString()][event.bookId] = event.pagesRead;
+        const currentBook = eventsQuery.data.filter((evt: any) => evt.bookId === event.bookId);
+        const beforeEventIndex = currentBook.indexOf(event) - 1;
+        const beforeEventPages = currentBook[beforeEventIndex]?.pagesRead ?? 0;
+        booksStats[event.bookId][date.getDay().toString()] = event.pagesRead - beforeEventPages;
       }
       if (date >= startOfWeek) {
         if (!readWeek[event.bookId]) {
@@ -107,9 +112,12 @@ export function Stats() {
     }
   }
 
-  for (const [m, i] of Object.entries(booksStats)) {
-    for (const x of Object.values(i)) {
-      booksStatsNum[m] = x;
+  for (const days of Object.values(booksStats)) {
+    for (const [day, num] of Object.entries(days)) {
+      if (!booksStatsNum[day]) {
+        booksStatsNum[day] = 0;
+      }
+      booksStatsNum[day] += num;
     }
   }
 

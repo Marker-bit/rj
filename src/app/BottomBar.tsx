@@ -8,6 +8,7 @@ import {
   HomeIcon,
   ListPlus,
   Plus,
+  Search,
   Settings,
   Users2,
   X,
@@ -18,8 +19,6 @@ import { useState } from "react";
 import { twMerge as cn } from "tailwind-merge";
 
 export function BottomBar() {
-  const [open, setOpen] = useState(false);
-  const [selectedTab, setSelectedTab] = useState(0);
   const pathname = usePathname();
   return (
     <>
@@ -58,7 +57,6 @@ export function BottomBar() {
               "flex flex-col text-gray-500 rounded-md p-2 items-center cursor-pointer transition-all",
               pathname === "/" && "bg-black/5 shadow-md text-black"
             )}
-            onClick={() => setSelectedTab(0)}
           >
             <HomeIcon className="w-6 h-6 m-2" />
             <div className="text-xs">Главная</div>
@@ -75,7 +73,7 @@ export function BottomBar() {
             <div className="text-xs">Книги</div>
           </div>
         </Link>
-        <Link href="/friends">
+        {/* <Link href="/friends">
           <div
             className={cn(
               "flex flex-col text-gray-500 rounded-md p-2 items-center cursor-pointer transition-all",
@@ -84,6 +82,17 @@ export function BottomBar() {
           >
             <Users2 className="w-6 h-6 m-2" />
             <div className="text-xs">Друзья</div>
+          </div>
+        </Link> */}
+        <Link href="/search">
+          <div
+            className={cn(
+              "flex flex-col text-gray-500 rounded-md p-2 items-center cursor-pointer transition-all",
+              pathname === "/search" && "bg-black/5 shadow-md text-black"
+            )}
+          >
+            <Search className="w-6 h-6 m-2" />
+            <div className="text-xs">Поиск</div>
           </div>
         </Link>
         <Link href="/journal">
@@ -113,7 +122,6 @@ export function BottomBar() {
               pathname.startsWith("/profile") &&
                 "bg-black/5 shadow-md text-black"
             )}
-            onClick={() => setSelectedTab(3)}
           >
             {pathname === "/profile/settings" ? (
               <Settings className="w-6 h-6 m-2" />

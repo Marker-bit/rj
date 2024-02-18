@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { ChevronLeft, Loader } from "lucide-react";
+import { ChevronLeft, Loader, UserX, Users2 } from "lucide-react";
 import Link from "next/link";
 import { FriendView } from "../FriendView";
 
@@ -30,20 +30,28 @@ export default function FollowersPage() {
         <div className="font-semibold absolute left-[50%] translate-x-[-50%]">
           Подписчики
         </div>
+        <Link href="/friends" className="ml-auto">
+          <button className="p-1 hover:text-blue-600 rounded-md flex items-center gap-1 text-blue-500 active:scale-95 transition-all">
+            <div className="font-semibold">Подписки</div>
+            <Users2 className="w-6 h-6" />
+          </button>
+        </Link>
       </div>
       <div className="p-3">
         <div className="flex flex-col gap-2">
-          {/* <div className="p-2 flex gap-2 items-center rounded-xl border border-zinc-200 text-xl">
-            <UserX className="w-10 h-10" />
-            <div className="flex flex-col">
-              <div>Скоро добавим функцию друзей</div>
-              <div className="text-xs text-black/50">Примерно завтра</div>
+          {friendsQuery.data.length === 0 && (
+            <div className="p-2 flex gap-2 items-center rounded-xl border border-zinc-200 text-xl">
+              <UserX className="w-10 h-10" />
+              <div className="flex flex-col">
+                <div>У вас нет подписчиков</div>
+                <div className="text-xs text-black/50">Зовите друзей!</div>
+              </div>
             </div>
-          </div> */}
+          )}
           {friendsQuery.data.map(
             ({
               first: friend,
-              following
+              following,
             }: {
               first: {
                 firstName: string;
@@ -51,13 +59,18 @@ export default function FollowersPage() {
                 username: string;
                 id: string;
               };
-              following: boolean
+              following: boolean;
             }) => {
               return (
-              <>
-                <FriendView key={friend.id} friend={friend} following={following} />
-              </>
-            )}
+                <>
+                  <FriendView
+                    key={friend.id}
+                    friend={friend}
+                    following={following}
+                  />
+                </>
+              );
+            }
           )}
         </div>
       </div>

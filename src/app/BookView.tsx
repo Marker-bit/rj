@@ -2,40 +2,32 @@
 
 import {
   BookIcon,
-  BookMinus,
   BookOpen,
   BookOpenCheck,
   BookOpenTextIcon,
   CalendarDays,
-  Check,
-  ChevronLeft,
   Edit,
   Loader,
-  Plus,
+  Save,
   Trash,
   Undo,
 } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import AutoResizeInput from "./AutoResize";
 import { Input } from "@/components/ui/input";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Switch } from "@/components/ui/switch";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -52,8 +44,10 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
+import { Calendar } from "@/components/ui/calendar";
+import moment from "moment";
+import { Button } from "@/components/ui/button";
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -65,6 +59,11 @@ export function BookView({ book }: { book: Book }) {
   const queryClient = useQueryClient();
   const [choosingPages, setChoosingPages] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
+  const [dateOpen, setDateOpen] = useState(false);
+  const yesterday = moment().subtract(1, "day").toDate();
+  const [date, setDate] = useState<Date | undefined>(yesterday);
+  const [changePages, setChangePages] = useState<number | string>("");
+
   const form = useForm({
     resolver: zodResolver(bookSchema),
     defaultValues: {
@@ -125,6 +124,26 @@ export function BookView({ book }: { book: Book }) {
     },
   });
 
+  const readDateMutation = useMutation({
+    mutationFn: () =>
+      fetch(`/api/books/${book.id}/read/`, {
+        method: "POST",
+        body: JSON.stringify({
+          pages: parseInt(changePages.toString()),
+          readAt: date!,
+        }),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["books"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["events"],
+      });
+      setDateOpen(false);
+    },
+  });
+
   const editMutation = useMutation({
     mutationFn: (values: z.infer<typeof bookSchema>) =>
       fetch(`/api/books/${book.id}/`, {
@@ -168,6 +187,40 @@ export function BookView({ book }: { book: Book }) {
       className="border border-zinc-200 p-2 rounded-md hover:shadow transition-shadow flex gap-2 group relative"
       id={`book-${book.id}`}
     >
+      <Dialog open={dateOpen} onOpenChange={setDateOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Отметить прочтение в прошлом</DialogTitle>
+          </DialogHeader>
+          <div className="flex gap-2">
+            <Calendar
+              mode="single"
+              selected={date}
+              onSelect={setDate}
+              className="rounded-md border"
+              disabled={[{ from: new Date(), to: new Date(3000, 1) }]}
+            />
+            <form onSubmit={(evt) => evt.preventDefault()}>
+              <div className="flex gap-2">
+                <Input
+                  type="number"
+                  min={1}
+                  value={changePages}
+                  onChange={(evt) => setChangePages(evt.target.value)}
+                  autoFocus
+                />
+                <Button onClick={() => readDateMutation.mutate()}>
+                  {readDateMutation.isPending ? (
+                    <Loader className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Save className="w-4 h-4" />
+                  )}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </DialogContent>
+      </Dialog>
       <Image
         src="/book.png"
         alt="book"
@@ -234,17 +287,6 @@ export function BookView({ book }: { book: Book }) {
             <>
               <button
                 className="flex gap-2 items-center w-fit bg-blue-500 rounded-xl text-white py-1 px-3 active:opacity-50 transition-all select-none disabled:opacity-40"
-                // onClick={() => {
-                //   setDoneLoading(true);
-                //   fetch(`/api/books/${book.id}/read/`, {
-                //     method: "POST",
-                //     body: JSON.stringify({
-                //       pages: book.pages,
-                //     }),
-                //   }).then(() => {
-                //     setDoneLoading(false);
-                //   });
-                // }}
                 onClick={() => doneMutation.mutate()}
                 disabled={doneMutation.isPending}
               >
@@ -291,7 +333,7 @@ export function BookView({ book }: { book: Book }) {
               </button>
               <button
                 className="flex gap-2 items-center w-fit bg-gray-100 rounded-xl py-1 px-3 active:opacity-50 transition-all select-none disabled:opacity-40 border border-zinc-200"
-                onClick={() => alert("Будет добавлено")}
+                onClick={() => setDateOpen(true)}
               >
                 <BookOpenTextIcon className="w-4 h-4" />
                 Отметить прочтение в прошлом
