@@ -55,14 +55,14 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { BookView } from "../BookView";
+import { Textarea } from "@/components/ui/textarea";
 
 const bookSchema = z.object({
   title: z.string().min(1),
   author: z.string().min(1),
   pages: z.coerce.number().min(1),
+  description: z.string().optional(),
 });
-
-
 
 export default function BooksPage() {
   const queryClient = useQueryClient();
@@ -168,6 +168,19 @@ export default function BooksPage() {
                   <FormLabel>Кол-во страниц</FormLabel>
                   <FormControl>
                     <Input {...field} type="number" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Описание</FormLabel>
+                  <FormControl>
+                    <Textarea {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

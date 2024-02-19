@@ -24,7 +24,7 @@ model User {
   hashedPassword String
   sessions       Session[]
   books          Book[]
-  collections     Collection[]
+  collections    Collection[]
 
   follower  Follow[] @relation("FollowerToUser")
   following Follow[] @relation("FollowingToUser")
@@ -44,6 +44,7 @@ model Book {
   pages       Int
   readEvents  ReadEvent[]
   collections Collection[]
+  description String       @default("")
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String

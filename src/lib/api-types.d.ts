@@ -11,4 +11,5 @@ type Book = {
     pagesRead: number;
     readAt: string;
   }[];
+  description?: string;
 };

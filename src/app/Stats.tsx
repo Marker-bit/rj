@@ -80,7 +80,10 @@ export function Stats() {
           const beforeEventIndex = currentBook.indexOf(event) - 1;
           const beforeEventPages =
             currentBook[beforeEventIndex]?.pagesRead ?? 0;
-          currentWeek[event.bookId][date.getDay().toString()] =
+          if (!currentWeek[event.bookId][date.getDay().toString()]) {
+            currentWeek[event.bookId][date.getDay().toString()] = 0;
+          }
+          currentWeek[event.bookId][date.getDay().toString()] +=
             event.pagesRead - beforeEventPages;
         }
 
@@ -104,7 +107,10 @@ export function Stats() {
         );
         const beforeEventIndex = currentBook.indexOf(event) - 1;
         const beforeEventPages = currentBook[beforeEventIndex]?.pagesRead ?? 0;
-        booksStats[event.bookId][date.getDay().toString()] =
+        if (!booksStats[event.bookId][date.getDay().toString()]) {
+          booksStats[event.bookId][date.getDay().toString()] = 0;
+        }
+        booksStats[event.bookId][date.getDay().toString()] +=
           event.pagesRead - beforeEventPages;
       }
     }
@@ -135,6 +141,7 @@ export function Stats() {
     }
   }
 
+  console.log(currentWeek);
 
   for (const days of Object.values(booksStats)) {
     for (const [day, num] of Object.entries(days)) {
