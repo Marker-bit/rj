@@ -53,6 +53,7 @@ import { Button } from "@/components/ui/button";
 import { ru } from "date-fns/locale";
 import { Textarea } from "@/components/ui/textarea";
 import { DrawerAlertDialog, DrawerDialog } from "./Drawer";
+import { Toaster, toast } from "react-hot-toast";
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -93,17 +94,19 @@ export function BookView({ book }: { book: Book }) {
       queryClient.invalidateQueries({
         queryKey: ["events"],
       });
+      toast.success("Сохранено!");
     },
   });
 
   const doneMutation = useMutation({
-    mutationFn: () =>
-      fetch(`/api/books/${book.id}/read/`, {
+    mutationFn: () => {
+      return fetch(`/api/books/${book.id}/read/`, {
         method: "POST",
         body: JSON.stringify({
           pages: book.pages,
         }),
-      }),
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["books"],
@@ -111,6 +114,7 @@ export function BookView({ book }: { book: Book }) {
       queryClient.invalidateQueries({
         queryKey: ["events"],
       });
+      toast.success("Сохранено!");
     },
   });
 
@@ -129,6 +133,8 @@ export function BookView({ book }: { book: Book }) {
       queryClient.invalidateQueries({
         queryKey: ["events"],
       });
+      toast.success("Сохранено!");
+      setChoosingPages(false);
     },
   });
 
@@ -149,6 +155,7 @@ export function BookView({ book }: { book: Book }) {
         queryKey: ["events"],
       });
       setDateOpen(false);
+      toast.success("Сохранено!");
     },
   });
 
@@ -181,6 +188,7 @@ export function BookView({ book }: { book: Book }) {
         queryKey: ["events"],
       });
       setDeleteDialogOpen(false);
+      toast.success("Сохранено!");
     },
   });
 
@@ -210,7 +218,12 @@ export function BookView({ book }: { book: Book }) {
             weekStartsOn={1}
             locale={ru}
           />
-          <form onSubmit={(evt) => evt.preventDefault()}>
+          <form
+            onSubmit={(evt) => {
+              evt.preventDefault();
+              readDateMutation.mutate();
+            }}
+          >
             <div className="flex gap-2">
               <Input
                 type="number"
@@ -219,8 +232,38 @@ export function BookView({ book }: { book: Book }) {
                 onChange={(evt) => setChangePages(evt.target.value)}
                 autoFocus
               />
-              <Button onClick={() => readDateMutation.mutate()}>
+              <Button type="submit" className="w-full">
                 {readDateMutation.isPending ? (
+                  <Loader className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Save className="w-4 h-4" />
+                )}
+              </Button>
+            </div>
+          </form>
+        </div>
+      </DrawerDialog>
+      <DrawerDialog open={choosingPages} onOpenChange={setChoosingPages}>
+        <DialogHeader>
+          <DialogTitle>Отметить прочтение</DialogTitle>
+        </DialogHeader>
+        <div className="flex gap-2 flex-col">
+          <form
+            onSubmit={(evt) => {
+              evt.preventDefault();
+              readMutation.mutate({ pages: parseInt(changePages.toString()) });
+            }}
+          >
+            <div className="flex gap-2 flex-col mt-2">
+              <Input
+                type="number"
+                min={1}
+                value={changePages}
+                onChange={(evt) => setChangePages(evt.target.value)}
+                autoFocus
+              />
+              <Button type="submit" className="w-full md:w-fit md:ml-auto">
+                {readMutation.isPending ? (
                   <Loader className="w-4 h-4 animate-spin" />
                 ) : (
                   <Save className="w-4 h-4" />
@@ -312,12 +355,12 @@ export function BookView({ book }: { book: Book }) {
                   setChoosingPages(true);
                 }}
               >
-                {readMutation.isPending ? (
+                {/* <img src="https://em-content.zobj.net/source/telegram/386/open-book_1f4d6.webp" className="w-6 h-6" /> */}
+                {/* {readMutation.isPending ? (
                   <Loader className="w-4 h-4 animate-spin" />
                 ) : (
                   <BookOpen className="w-4 h-4" />
                 )}
-                {/* <img src="https://em-content.zobj.net/source/telegram/386/open-book_1f4d6.webp" className="w-6 h-6" /> */}
                 {choosingPages ? (
                   <AutoResizeInput
                     autoFocus
@@ -338,7 +381,9 @@ export function BookView({ book }: { book: Book }) {
                   />
                 ) : (
                   <div>Отметить страницы</div>
-                )}
+                )} */}
+                <BookOpen className="w-4 h-4" />
+                Отметить страницы
               </button>
               <button
                 className="flex gap-2 items-center w-fit bg-gray-100 rounded-xl py-1 px-3 active:opacity-50 transition-all select-none disabled:opacity-40 border border-zinc-200"
@@ -456,9 +501,13 @@ export function BookView({ book }: { book: Book }) {
                 </DialogDescription>
               </DialogHeader>
               <div className="gap-2 flex max-sm:flex-col md:ml-auto md:w-fit mt-2">
-                <Button onClick={() => setDeleteDialogOpen(false)} variant="outline">
+                <Button
+                  onClick={() => setDeleteDialogOpen(false)}
+                  variant="outline"
+                >
                   Отмена
                 </Button>
+
                 <Button
                   variant="destructive"
                   onClick={() => deleteMutation.mutate()}
@@ -479,6 +528,7 @@ export function BookView({ book }: { book: Book }) {
           </div>
         )}
       </div>
+      <Toaster />
     </div>
   );
 }
