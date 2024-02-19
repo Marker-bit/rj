@@ -6,6 +6,7 @@ import {
   BookOpenCheck,
   BookOpenTextIcon,
   CalendarDays,
+  ChevronDown,
   Edit,
   Loader,
   Save,
@@ -42,6 +43,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -49,11 +51,14 @@ import { Calendar } from "@/components/ui/calendar";
 import moment from "moment";
 import { Button } from "@/components/ui/button";
 import { ru } from "date-fns/locale";
+import { Textarea } from "@/components/ui/textarea";
+import { DrawerAlertDialog, DrawerDialog } from "./Drawer";
 
 const bookSchema = z.object({
   title: z.string().min(1),
   author: z.string().min(1),
   pages: z.coerce.number().min(1),
+  description: z.string().optional(),
 });
 
 export function BookView({ book }: { book: Book }) {
@@ -64,13 +69,15 @@ export function BookView({ book }: { book: Book }) {
   const yesterday = moment().subtract(1, "day").toDate();
   const [date, setDate] = useState<Date | undefined>(yesterday);
   const [changePages, setChangePages] = useState<number | string>("");
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
-  const form = useForm({
+  const form = useForm<z.infer<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
     defaultValues: {
       title: book.title,
       author: book.author,
       pages: book.pages,
+      description: book.description ?? "",
     },
   });
 
@@ -173,6 +180,7 @@ export function BookView({ book }: { book: Book }) {
       queryClient.invalidateQueries({
         queryKey: ["events"],
       });
+      setDeleteDialogOpen(false);
     },
   });
 
@@ -188,42 +196,40 @@ export function BookView({ book }: { book: Book }) {
       className="border border-zinc-200 p-2 rounded-md hover:shadow transition-shadow flex gap-2 group relative"
       id={`book-${book.id}`}
     >
-      <Dialog open={dateOpen} onOpenChange={setDateOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Отметить прочтение в прошлом</DialogTitle>
-          </DialogHeader>
-          <div className="flex gap-2 flex-col">
-            <Calendar
-              mode="single"
-              selected={date}
-              onSelect={setDate}
-              className="rounded-md border w-fit max-sm:w-full"
-              disabled={[{ from: new Date(), to: new Date(3000, 1) }]}
-              weekStartsOn={1}
-              locale={ru}
-            />
-            <form onSubmit={(evt) => evt.preventDefault()}>
-              <div className="flex gap-2">
-                <Input
-                  type="number"
-                  min={1}
-                  value={changePages}
-                  onChange={(evt) => setChangePages(evt.target.value)}
-                  autoFocus
-                />
-                <Button onClick={() => readDateMutation.mutate()}>
-                  {readDateMutation.isPending ? (
-                    <Loader className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Save className="w-4 h-4" />
-                  )}
-                </Button>
-              </div>
-            </form>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <DrawerDialog open={dateOpen} onOpenChange={setDateOpen}>
+        <DialogHeader>
+          <DialogTitle>Отметить прочтение в прошлом</DialogTitle>
+        </DialogHeader>
+        <div className="flex gap-2 flex-col">
+          <Calendar
+            mode="single"
+            selected={date}
+            onSelect={setDate}
+            className="rounded-md border w-fit max-sm:w-full"
+            disabled={[{ from: new Date(), to: new Date(3000, 1) }]}
+            weekStartsOn={1}
+            locale={ru}
+          />
+          <form onSubmit={(evt) => evt.preventDefault()}>
+            <div className="flex gap-2">
+              <Input
+                type="number"
+                min={1}
+                value={changePages}
+                onChange={(evt) => setChangePages(evt.target.value)}
+                autoFocus
+              />
+              <Button onClick={() => readDateMutation.mutate()}>
+                {readDateMutation.isPending ? (
+                  <Loader className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Save className="w-4 h-4" />
+                )}
+              </Button>
+            </div>
+          </form>
+        </div>
+      </DrawerDialog>
       <Image
         src="/book.png"
         alt="book"
@@ -344,110 +350,134 @@ export function BookView({ book }: { book: Book }) {
             </>
           )}
           <div className="flex gap-2 m-2 group-hover:opacity-100 opacity-0 absolute top-0 right-0 transition-all scale-0 group-hover:scale-100">
-            <Dialog open={editOpen} onOpenChange={setEditOpen}>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle className="flex gap-1 items-center">
-                    <Edit className="w-4 h-4" /> Редактировать книгу
-                  </DialogTitle>
-                </DialogHeader>
-                <Form {...form}>
-                  <form
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    className="space-y-2"
+            <DrawerDialog open={editOpen} onOpenChange={setEditOpen}>
+              <DialogHeader>
+                <DialogTitle className="flex gap-1 items-center">
+                  <Edit className="w-4 h-4" /> Редактировать книгу
+                </DialogTitle>
+              </DialogHeader>
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-2"
+                >
+                  <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Название</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="author"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Автор</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="pages"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Кол-во страниц</FormLabel>
+                        <FormControl>
+                          <Input {...field} type="number" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Описание</FormLabel>
+                        <FormControl>
+                          <Textarea {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <button
+                    className="flex gap-2 items-center w-fit bg-blue-500 rounded-xl text-white py-1 px-3 active:opacity-50 transition-all select-none disabled:opacity-40"
+                    type="submit"
+                    disabled={editMutation.isPending}
                   >
-                    <FormField
-                      control={form.control}
-                      name="title"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Название</FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="author"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Автор</FormLabel>
-                          <FormControl>
-                            <Input {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="pages"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Кол-во страниц</FormLabel>
-                          <FormControl>
-                            <Input {...field} type="number" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <button
-                      className="flex gap-2 items-center w-fit bg-blue-500 rounded-xl text-white py-1 px-3 active:opacity-50 transition-all select-none disabled:opacity-40"
-                      type="submit"
-                      disabled={editMutation.isPending}
-                    >
-                      {editMutation.isPending ? (
-                        <Loader className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <Edit className="w-4 h-4" />
-                      )}
-                      Редактировать
-                    </button>
-                  </form>
-                </Form>
-              </DialogContent>
-            </Dialog>
+                    {editMutation.isPending ? (
+                      <Loader className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Edit className="w-4 h-4" />
+                    )}
+                    Редактировать
+                  </button>
+                </form>
+              </Form>
+            </DrawerDialog>
             <button
               className="bg-gray-100 rounded-md p-1 active:opacity-50 transition-all select-none disabled:opacity-40 border border-zinc-200 h-fit w-fit"
               onClick={() => setEditOpen(true)}
             >
               <Edit className="w-4 h-4" />
             </button>
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <button className="bg-gray-100 rounded-md p-1 active:opacity-50 transition-all select-none disabled:opacity-40 border border-zinc-200 h-fit w-fit">
-                  {deleteMutation.isPending ? (
-                    <Loader className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Trash className="w-4 h-4" />
+            <button
+              className="bg-gray-100 rounded-md p-1 active:opacity-50 transition-all select-none disabled:opacity-40 border border-zinc-200 h-fit w-fit"
+              onClick={() => setDeleteDialogOpen(true)}
+            >
+              {deleteMutation.isPending ? (
+                <Loader className="w-4 h-4 animate-spin" />
+              ) : (
+                <Trash className="w-4 h-4" />
+              )}
+            </button>
+            <DrawerDialog
+              open={deleteDialogOpen}
+              onOpenChange={setDeleteDialogOpen}
+            >
+              <DialogHeader>
+                <DialogTitle>Вы уверены?</DialogTitle>
+                <DialogDescription>
+                  Вы удалите книгу &quot;{book.title}&quot; без возможности
+                  возврата.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="gap-2 flex max-sm:flex-col md:ml-auto md:w-fit mt-2">
+                <Button onClick={() => setDeleteDialogOpen(false)} variant="outline">
+                  Отмена
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={() => deleteMutation.mutate()}
+                  disabled={deleteMutation.isPending}
+                >
+                  {deleteMutation.isPending && (
+                    <Loader className="h-4 w-4 mr-2 animate-spin" />
                   )}
-                </button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Вы уверены?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Вы удалите книгу &quot;{book.title}&quot; без возможности
-                    возврата.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Отмена</AlertDialogCancel>
-                  <AlertDialogAction
-                    className="bg-red-500 hover:bg-red-600"
-                    onClick={() => deleteMutation.mutate()}
-                  >
-                    Удалить
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+                  Удалить
+                </Button>
+              </div>
+            </DrawerDialog>
           </div>
         </div>
+        {book.description && (
+          <div className="relative text-black/70 whitespace-pre-wrap">
+            {book.description}
+          </div>
+        )}
       </div>
     </div>
   );
