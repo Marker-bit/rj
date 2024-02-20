@@ -220,7 +220,7 @@ export function BookView({ book }: { book: Book }) {
         <DialogHeader>
           <DialogTitle>Описание</DialogTitle>
         </DialogHeader>
-        <pre className="relative overflow-hidden font-sans block mt-2 cursor-pointer">
+        <pre className="relative overflow-hidden font-sans block mt-2 cursor-pointer text-wrap">
           {book.description}
         </pre>
       </DrawerDialog>
@@ -254,10 +254,11 @@ export function BookView({ book }: { book: Book }) {
               )}
               {book.description && (
                 <pre
-                  className="relative text-black/70 overflow-hidden font-sans block mt-2 cursor-pointer"
+                  className="relative text-black/70 overflow-hidden font-sans block mt-2 cursor-pointer text-wrap"
                   onClick={() => setDescriptionDrawerOpen(true)}
                 >
-                  {book.description.split("\n").slice(0, 5).join("\n")}{book.description.split("\n").length > 5 && "..."}
+                  {book.description.split("\n").slice(0, 5).join("\n")}
+                  {book.description.split("\n").length > 5 && "..."}
                 </pre>
               )}
               {/* <div className="flex gap-2 flex-wrap">
@@ -641,8 +642,11 @@ export function BookView({ book }: { book: Book }) {
           </div>
         </div>
         {book.description && (
-          <pre className="relative text-black/70 overflow-hidden font-sans block">
-            {book.description.split("\n").slice(0, 3).join("\n")}{book.description.split("\n").length > 3 && "..."}
+          <pre className="relative text-black/70 overflow-hidden font-sans block text-wrap">
+            {isMobile
+              ? book.description.split("\n").slice(0, 3).join("\n")
+              : book.description}
+            {(book.description.split("\n").length > 3 && isMobile) && "..."}
           </pre>
         )}
       </div>

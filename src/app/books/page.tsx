@@ -247,7 +247,7 @@ function MobileForm() {
             <DrawerHeader>
               <DrawerTitle>Добавить книгу</DrawerTitle>
             </DrawerHeader>
-            <div className="overflow-auto p-4 rounded-t-[10px]">
+            <div className="p-4">
               <BookForm />
             </div>
           </DrawerContent>
