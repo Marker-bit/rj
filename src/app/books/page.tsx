@@ -57,6 +57,7 @@ import {
 import { BookView } from "../BookView";
 import { Textarea } from "@/components/ui/textarea";
 import { upload } from "@vercel/blob/client";
+import { UploadButton } from "@/components/uploadthing";
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -140,12 +141,17 @@ export default function BooksPage() {
       const resp = await fetch("/api/upload", {
         method: "PUT",
         body: formData,
-      })
-      const data = await resp.json();
+      });
+      const text = await resp.text();
+      if (text.includes("Request Entity Too Large")) {
+        alert("Файл слишком большой");
+        setImageLoading(false);
+      }
+      const data = JSON.parse(text);
       field.onChange(data.url);
       setImageLoading(false);
     };
-  }
+  };
 
   return (
     <div>
@@ -178,7 +184,7 @@ export default function BooksPage() {
                         alt="cover"
                       />
                       <div className="flex flex-col gap-2 absolute top-2 right-0 translate-x-[50%]">
-                        <Button
+                        {/* <Button
                           size="icon"
                           className="w-fit h-fit p-1"
                           variant="outline"
@@ -186,7 +192,7 @@ export default function BooksPage() {
                           onClick={() => uploadImage(field)}
                         >
                           <Edit className="w-4 h-4" />
-                        </Button>
+                        </Button> */}
                         <Button
                           size="icon"
                           className="w-fit h-fit p-1"
@@ -200,7 +206,7 @@ export default function BooksPage() {
                     </div>
                   ) : (
                     <div className="flex items-center gap-2">
-                      <Button
+                      {/* <Button
                         variant="outline"
                         className="w-32 h-52"
                         type="button"
@@ -211,7 +217,20 @@ export default function BooksPage() {
                         ) : (
                           <Plus className="w-4 h-4" />
                         )}
-                      </Button>
+                      </Button> */}
+                      <UploadButton
+                        endpoint="bookCover"
+                        onClientUploadComplete={(res) => {
+                          // Do something with the response
+                          console.log("Files: ", res);
+                          field.onChange(res[0].url);
+                        }}
+                        onUploadError={(error: Error) => {
+                          // Do something with the error.
+                          alert(`ERROR! ${error.message}`);
+                        }}
+                        className="w-32 h-52"
+                      />
                       <div className="flex flex-col">
                         {imageLoading ? (
                           <>
