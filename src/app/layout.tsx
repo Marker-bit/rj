@@ -2,13 +2,10 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { BottomBar } from "./BottomBar";
-import Transition from "./Transition";
 import { validateRequest } from "@/lib/server-validate-request";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Provider } from "./QueryClientProvider";
 
-const inter = Inter({ subsets: ["latin"] });
+const font = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -20,27 +17,9 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const data = await validateRequest();
-  // if (!data.session) {
-  //   return (
-  //     <html lang="en">
-  //       <body className={inter.className + "  overflow-x-hidden"}>
-  //         <div className="w-full py-[20%]">
-  //           <Link
-  //             className="flex gap-2 items-center w-fit bg-blue-500 rounded-xl text-white py-1 px-3 active:opacity-50 transition-all select-none disabled:opacity-40 mx-auto"
-  //             href="/auth"
-  //           >
-  //             Авторизация
-  //           </Link>
-  //         </div>
-  //         <BottomBar />
-  //       </body>
-  //     </html>
-  //   );
-  // }
   return (
     <html lang="en">
-      <body className={inter.className + "  overflow-x-hidden"}>
+      <body className={font.className + "  overflow-x-hidden"}>
         <Provider>
           <div className="min-h-screen">{children}</div>
           <BottomBar />
