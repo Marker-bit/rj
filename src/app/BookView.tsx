@@ -56,6 +56,7 @@ import { DrawerAlertDialog, DrawerDialog } from "./Drawer";
 import { Toaster, toast } from "react-hot-toast";
 import { useMediaQuery } from "usehooks-ts";
 import { Drawer } from "@/components/ui/drawer";
+import { DialogTrigger } from "@radix-ui/react-dialog";
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -74,6 +75,7 @@ export function BookView({ book }: { book: Book }) {
   const [changePages, setChangePages] = useState<number | string>("");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [actionsDrawerOpen, setActionsDrawerOpen] = useState(false);
+  const [descriptionDrawerOpen, setDescriptionDrawerOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
 
   const form = useForm<z.infer<typeof bookSchema>>({
@@ -212,13 +214,56 @@ export function BookView({ book }: { book: Book }) {
       id={`book-${book.id}`}
     >
       <DrawerDialog
+        open={descriptionDrawerOpen}
+        onOpenChange={setDescriptionDrawerOpen}
+      >
+        <DialogHeader>
+          <DialogTitle>Описание</DialogTitle>
+        </DialogHeader>
+        <pre className="relative overflow-hidden font-sans block mt-2 cursor-pointer">
+          {book.description}
+        </pre>
+      </DrawerDialog>
+      <DrawerDialog
         open={actionsDrawerOpen}
         onOpenChange={setActionsDrawerOpen}
       >
-        <DialogHeader>
-          <DialogTitle>Действия</DialogTitle>
-        </DialogHeader>
         <div className="flex gap-2 flex-col mt-2">
+          <div className="flex">
+            {book.coverUrl && (
+              <Image
+                src={book.coverUrl}
+                alt="book"
+                width={500}
+                height={500}
+                className="rounded-md h-52 w-auto"
+              />
+            )}
+            <div className="flex flex-col m-2 mt-0">
+              <div className="font-bold text-xl">{book.title}</div>
+              <div className="text-sm">{book.author}</div>
+              <div className="text-sm">{book.pages} страниц</div>
+              {lastEvent?.pagesRead === book.pages && (
+                <div className="text-sm text-green-500">Прочитана</div>
+              )}
+              {!lastEvent && (
+                <div className="text-sm text-orange-500">Запланирована</div>
+              )}
+              {lastEvent?.pagesRead !== book.pages && (
+                <div className="text-sm text-blue-500">Читается</div>
+              )}
+              {book.description && (
+                <pre
+                  className="relative text-black/70 overflow-hidden font-sans block mt-2 cursor-pointer"
+                  onClick={() => setDescriptionDrawerOpen(true)}
+                >
+                  {book.description.split("\n").slice(0, 5).join("\n")}{book.description.split("\n").length > 5 && "..."}
+                </pre>
+              )}
+              {/* <div className="flex gap-2 flex-wrap">
+              </div> */}
+            </div>
+          </div>
           <Button
             className="gap-2"
             variant="outline"
@@ -228,7 +273,7 @@ export function BookView({ book }: { book: Book }) {
             Редактировать
           </Button>
           <Button
-            className="gap-2 text-red-500"
+            className="gap-2 text-red-500 hover:text-red-700"
             variant="outline"
             onClick={() => setDeleteDialogOpen(true)}
           >
@@ -269,7 +314,7 @@ export function BookView({ book }: { book: Book }) {
         </div>
       </DrawerDialog>
       <DrawerDialog open={dateOpen} onOpenChange={setDateOpen}>
-        <DialogHeader>
+        <DialogHeader className="mb-2">
           <DialogTitle>Отметить прочтение в прошлом</DialogTitle>
         </DialogHeader>
         <div className="flex gap-2 flex-col">
@@ -296,7 +341,7 @@ export function BookView({ book }: { book: Book }) {
                 onChange={(evt) => setChangePages(evt.target.value)}
                 autoFocus
               />
-              <Button type="submit" className="w-full">
+              <Button type="submit">
                 {readDateMutation.isPending ? (
                   <Loader className="w-4 h-4 animate-spin" />
                 ) : (
@@ -308,7 +353,7 @@ export function BookView({ book }: { book: Book }) {
         </div>
       </DrawerDialog>
       <DrawerDialog open={choosingPages} onOpenChange={setChoosingPages}>
-        <DialogHeader>
+        <DialogHeader className="mb-2">
           <DialogTitle>Отметить прочтение</DialogTitle>
         </DialogHeader>
         <div className="flex gap-2 flex-col">
@@ -457,7 +502,7 @@ export function BookView({ book }: { book: Book }) {
           )}
           <div className="flex gap-2 m-2 group-hover:opacity-100 opacity-0 absolute top-0 right-0 transition-all scale-0 group-hover:scale-100">
             <DrawerDialog open={editOpen} onOpenChange={setEditOpen}>
-              <DialogHeader>
+              <DialogHeader className="mb-2">
                 <DialogTitle className="flex gap-1 items-center">
                   <Edit className="w-4 h-4" /> Редактировать книгу
                 </DialogTitle>
@@ -519,7 +564,19 @@ export function BookView({ book }: { book: Book }) {
                       </FormItem>
                     )}
                   />
-                  <button
+                  <Button
+                    type="submit"
+                    disabled={editMutation.isPending}
+                    className="gap-2"
+                  >
+                    {editMutation.isPending ? (
+                      <Loader className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Edit className="w-4 h-4" />
+                    )}
+                    Редактировать
+                  </Button>
+                  {/* <button
                     className="flex gap-2 items-center w-fit bg-blue-500 rounded-xl text-white py-1 px-3 active:opacity-50 transition-all select-none disabled:opacity-40"
                     type="submit"
                     disabled={editMutation.isPending}
@@ -530,7 +587,7 @@ export function BookView({ book }: { book: Book }) {
                       <Edit className="w-4 h-4" />
                     )}
                     Редактировать
-                  </button>
+                  </button> */}
                 </form>
               </Form>
             </DrawerDialog>
@@ -584,9 +641,9 @@ export function BookView({ book }: { book: Book }) {
           </div>
         </div>
         {book.description && (
-          <div className="relative text-black/70 whitespace-pre-wrap">
-            {book.description}
-          </div>
+          <pre className="relative text-black/70 overflow-hidden font-sans block">
+            {book.description.split("\n").slice(0, 3).join("\n")}{book.description.split("\n").length > 3 && "..."}
+          </pre>
         )}
       </div>
       <Toaster />
