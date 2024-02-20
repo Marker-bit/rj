@@ -56,6 +56,7 @@ import {
 } from "@/components/ui/dialog";
 import { BookView } from "../BookView";
 import { Textarea } from "@/components/ui/textarea";
+import { upload } from "@vercel/blob/client";
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -124,8 +125,11 @@ export default function BooksPage() {
     const input = document.createElement("input");
     input.type = "file";
     input.click();
-    input.onchange = () => {
+    input.onchange = async () => {
       const file = input.files?.[0];
+      if (!file) {
+        return;
+      }
       // if (!file?.name.endsWith('.jpg') || !file?.name.endsWith('.jpeg') || !file?.name.endsWith('.png')) {
       //   return;
       // }
@@ -133,15 +137,13 @@ export default function BooksPage() {
       const formData = new FormData();
       formData.append("file", file!);
       setImageLoading(true);
-      fetch("/api/upload", {
+      const resp = await fetch("/api/upload", {
         method: "PUT",
         body: formData,
       })
-        .then((res) => res.json())
-        .then((res) => {
-          field.onChange(res.url);
-          setImageLoading(false);
-        });
+      const data = await resp.json();
+      field.onChange(data.url);
+      setImageLoading(false);
     };
   }
 
