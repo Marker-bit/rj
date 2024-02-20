@@ -8,6 +8,7 @@ import {
   CalendarDays,
   ChevronDown,
   Edit,
+  Info,
   Loader,
   Save,
   Trash,
@@ -467,7 +468,7 @@ export function BookView({ book }: { book: Book }) {
                   variant="outline"
                   onClick={() => setActionsDrawerOpen(true)}
                 >
-                  Действия
+                  <Info className="w-4 h-4" />
                 </Button>
               ) : (
                 <>
@@ -594,13 +595,19 @@ export function BookView({ book }: { book: Book }) {
             </DrawerDialog>
             <button
               className="bg-gray-100 rounded-md p-1 active:opacity-50 transition-all select-none disabled:opacity-40 border border-zinc-200 h-fit w-fit"
-              onClick={() => setEditOpen(true)}
+              onClick={(evt) => {
+                evt.stopPropagation();
+                setEditOpen(true);
+              }}
             >
               <Edit className="w-4 h-4" />
             </button>
             <button
               className="bg-gray-100 rounded-md p-1 active:opacity-50 transition-all select-none disabled:opacity-40 border border-zinc-200 h-fit w-fit"
-              onClick={() => setDeleteDialogOpen(true)}
+              onClick={(evt) => {
+                evt.stopPropagation();
+                setDeleteDialogOpen(true);
+              }}
             >
               {deleteMutation.isPending ? (
                 <Loader className="w-4 h-4 animate-spin" />
@@ -646,7 +653,7 @@ export function BookView({ book }: { book: Book }) {
             {isMobile
               ? book.description.split("\n").slice(0, 3).join("\n")
               : book.description}
-            {(book.description.split("\n").length > 3 && isMobile) && "..."}
+            {book.description.split("\n").length > 3 && isMobile && "..."}
           </pre>
         )}
       </div>
