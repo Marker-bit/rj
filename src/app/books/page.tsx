@@ -58,6 +58,13 @@ import { BookView } from "../BookView";
 import { Textarea } from "@/components/ui/textarea";
 import { upload } from "@vercel/blob/client";
 import { UploadButton } from "@/components/uploadthing";
+import { useMediaQuery } from "usehooks-ts";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+} from "@/components/ui/drawer";
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -66,6 +73,195 @@ const bookSchema = z.object({
   description: z.string().optional(),
   coverUrl: z.string().optional(),
 });
+
+function BookForm() {
+  const queryClient = useQueryClient();
+  const form = useForm<z.infer<typeof bookSchema>>({
+    resolver: zodResolver(bookSchema),
+  });
+
+  const bookMutation = useMutation({
+    mutationFn: (values: z.infer<typeof bookSchema>) =>
+      fetch("/api/books", {
+        method: "POST",
+        body: JSON.stringify(values),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["books"],
+      });
+      form.reset({
+        title: "",
+        author: "",
+        pages: NaN,
+      });
+    },
+  });
+
+  function onSubmit(values: z.infer<typeof bookSchema>) {
+    bookMutation.mutate(values);
+  }
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+        <FormField
+          control={form.control}
+          name="coverUrl"
+          render={({ field }) => (
+            <FormItem>
+              {field.value ? (
+                <div className="relative w-fit">
+                  <Image
+                    src={field.value}
+                    width={500}
+                    height={500}
+                    className="h-52 w-auto rounded-md"
+                    alt="cover"
+                  />
+                  <div className="flex flex-col gap-2 absolute top-2 right-0 translate-x-[50%]">
+                    {/* <Button
+                          size="icon"
+                          className="w-fit h-fit p-1"
+                          variant="outline"
+                          type="button"
+                          onClick={() => uploadImage(field)}
+                        >
+                          <Edit className="w-4 h-4" />
+                        </Button> */}
+                    <Button
+                      size="icon"
+                      className="w-fit h-fit p-1"
+                      variant="outline"
+                      onClick={() => field.onChange("")}
+                      type="button"
+                    >
+                      <Trash className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <UploadButton
+                    endpoint="bookCover"
+                    content={{
+                      button: "Обложка",
+                      allowedContent: "Картинка (до 8МБ)",
+                    }}
+                    onClientUploadComplete={(res) => {
+                      // Do something with the response
+                      console.log("Files: ", res);
+                      field.onChange(res[0].url);
+                    }}
+                    onUploadError={(error: Error) => {
+                      // Do something with the error.
+                      alert(`ERROR! ${error.message}`);
+                    }}
+                  />
+                </div>
+              )}
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="title"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Название</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="author"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Автор</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="pages"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Кол-во страниц</FormLabel>
+              <FormControl>
+                <Input {...field} type="number" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Описание</FormLabel>
+              <FormControl>
+                <Textarea {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <button
+          className="flex gap-2 items-center w-fit bg-blue-500 rounded-xl text-white py-1 px-3 active:opacity-50 transition-all select-none disabled:opacity-40"
+          type="submit"
+          disabled={bookMutation.isPending}
+        >
+          {bookMutation.isPending ? (
+            <Loader className="w-4 h-4 animate-spin" />
+          ) : (
+            <Plus className="w-4 h-4" />
+          )}
+          Создать
+        </button>
+      </form>
+    </Form>
+  );
+}
+
+function MobileForm() {
+  const isMobile = useMediaQuery("(max-width: 768px)");
+  const [open, setOpen] = useState(false);
+
+  if (isMobile) {
+    return (
+      <>
+        <Button onClick={() => setOpen(true)}>
+          <Plus className="mr-2 h-4 w-4" /> Добавить книгу
+        </Button>
+        <Drawer open={open} onOpenChange={setOpen}>
+          <DrawerContent className="bg-white flex flex-col fixed bottom-0 left-0 right-0 max-h-[96%] rounded-t-[10px]">
+            <DrawerHeader>
+              <DrawerTitle>Добавить книгу</DrawerTitle>
+            </DrawerHeader>
+            <div className="overflow-auto p-4 rounded-t-[10px]">
+              <BookForm />
+            </div>
+          </DrawerContent>
+        </Drawer>
+      </>
+    );
+  }
+
+  return (
+    <div className="p-3 bg-zinc-100 border-b border-zinc-300">
+      <BookForm />
+    </div>
+  );
+}
 
 export default function BooksPage() {
   const queryClient = useQueryClient();
@@ -166,162 +362,10 @@ export default function BooksPage() {
           Книги
         </div>
       </div>
-      <div className="p-3 bg-zinc-100 border-b border-zinc-300">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
-            <FormField
-              control={form.control}
-              name="coverUrl"
-              render={({ field }) => (
-                <FormItem>
-                  {field.value ? (
-                    <div className="relative w-fit">
-                      <Image
-                        src={field.value}
-                        width={500}
-                        height={500}
-                        className="h-52 w-auto rounded-md"
-                        alt="cover"
-                      />
-                      <div className="flex flex-col gap-2 absolute top-2 right-0 translate-x-[50%]">
-                        {/* <Button
-                          size="icon"
-                          className="w-fit h-fit p-1"
-                          variant="outline"
-                          type="button"
-                          onClick={() => uploadImage(field)}
-                        >
-                          <Edit className="w-4 h-4" />
-                        </Button> */}
-                        <Button
-                          size="icon"
-                          className="w-fit h-fit p-1"
-                          variant="outline"
-                          onClick={() => field.onChange("")}
-                          type="button"
-                        >
-                          <Trash className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-2">
-                      {/* <Button
-                        variant="outline"
-                        className="w-32 h-52"
-                        type="button"
-                        onClick={() => uploadImage(field)}
-                      >
-                        {imageLoading ? (
-                          <Loader className="w-4 h-4 animate-spin" />
-                        ) : (
-                          <Plus className="w-4 h-4" />
-                        )}
-                      </Button> */}
-                      <UploadButton
-                        endpoint="bookCover"
-                        onClientUploadComplete={(res) => {
-                          // Do something with the response
-                          console.log("Files: ", res);
-                          field.onChange(res[0].url);
-                        }}
-                        onUploadError={(error: Error) => {
-                          // Do something with the error.
-                          alert(`ERROR! ${error.message}`);
-                        }}
-                        className="w-32 h-52"
-                      />
-                      <div className="flex flex-col">
-                        {imageLoading ? (
-                          <>
-                            <div className="font-semibold">Загрузка...</div>
-                            <div className="text-zinc-500">
-                              Загружаем обложку
-                            </div>
-                          </>
-                        ) : (
-                          <>
-                            <div className="font-semibold">Обложка</div>
-                            <div className="text-zinc-500">
-                              Добавьте обложку
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Название</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="author"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Автор</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="pages"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Кол-во страниц</FormLabel>
-                  <FormControl>
-                    <Input {...field} type="number" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Описание</FormLabel>
-                  <FormControl>
-                    <Textarea {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <button
-              className="flex gap-2 items-center w-fit bg-blue-500 rounded-xl text-white py-1 px-3 active:opacity-50 transition-all select-none disabled:opacity-40"
-              type="submit"
-              disabled={bookMutation.isPending}
-            >
-              {bookMutation.isPending ? (
-                <Loader className="w-4 h-4 animate-spin" />
-              ) : (
-                <Plus className="w-4 h-4" />
-              )}
-              Создать
-            </button>
-          </form>
-        </Form>
-        {/* <Input className="mb-2" /> */}
-      </div>
+      {/* <div className="p-3 bg-zinc-100 border-b border-zinc-300">
+        <BookForm />
+      </div> */}
+      <MobileForm />
       <div className="p-3 flex flex-col">
         <div
           className="items-center flex space-x-2 cursor-pointer p-2 rounded-md border border-zinc-200 mb-2 hover:bg-zinc-100 transition-all select-none"
@@ -363,6 +407,7 @@ export default function BooksPage() {
         {books.map((book: Book) => (
           <BookView book={book} key={book.id} />
         ))}
+        M
       </div>
     </div>
   );
