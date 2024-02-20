@@ -239,7 +239,7 @@ function MobileForm() {
   if (isMobile) {
     return (
       <>
-        <Button onClick={() => setOpen(true)}>
+        <Button onClick={() => setOpen(true)} className="mx-auto my-2">
           <Plus className="mr-2 h-4 w-4" /> Добавить книгу
         </Button>
         <Drawer open={open} onOpenChange={setOpen}>
@@ -407,7 +407,6 @@ export default function BooksPage() {
         {books.map((book: Book) => (
           <BookView book={book} key={book.id} />
         ))}
-        M
       </div>
     </div>
   );

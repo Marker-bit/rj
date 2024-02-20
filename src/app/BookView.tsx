@@ -54,6 +54,8 @@ import { ru } from "date-fns/locale";
 import { Textarea } from "@/components/ui/textarea";
 import { DrawerAlertDialog, DrawerDialog } from "./Drawer";
 import { Toaster, toast } from "react-hot-toast";
+import { useMediaQuery } from "usehooks-ts";
+import { Drawer } from "@/components/ui/drawer";
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -71,6 +73,8 @@ export function BookView({ book }: { book: Book }) {
   const [date, setDate] = useState<Date | undefined>(yesterday);
   const [changePages, setChangePages] = useState<number | string>("");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [actionsDrawerOpen, setActionsDrawerOpen] = useState(false);
+  const isMobile = useMediaQuery("(max-width: 768px)");
 
   const form = useForm<z.infer<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
@@ -115,6 +119,7 @@ export function BookView({ book }: { book: Book }) {
         queryKey: ["events"],
       });
       toast.success("Сохранено!");
+      setActionsDrawerOpen(false);
     },
   });
 
@@ -135,6 +140,7 @@ export function BookView({ book }: { book: Book }) {
       });
       toast.success("Сохранено!");
       setChoosingPages(false);
+      setActionsDrawerOpen(false);
     },
   });
 
@@ -156,6 +162,7 @@ export function BookView({ book }: { book: Book }) {
       });
       setDateOpen(false);
       toast.success("Сохранено!");
+      setActionsDrawerOpen(false);
     },
   });
 
@@ -204,6 +211,63 @@ export function BookView({ book }: { book: Book }) {
       className="border border-zinc-200 p-2 rounded-md hover:shadow transition-shadow flex gap-2 group relative"
       id={`book-${book.id}`}
     >
+      <DrawerDialog
+        open={actionsDrawerOpen}
+        onOpenChange={setActionsDrawerOpen}
+      >
+        <DialogHeader>
+          <DialogTitle>Действия</DialogTitle>
+        </DialogHeader>
+        <div className="flex gap-2 flex-col mt-2">
+          <Button
+            className="gap-2"
+            variant="outline"
+            onClick={() => setEditOpen(true)}
+          >
+            <Edit className="w-4 h-4" />
+            Редактировать
+          </Button>
+          <Button
+            className="gap-2 text-red-500"
+            variant="outline"
+            onClick={() => setDeleteDialogOpen(true)}
+          >
+            <Trash className="w-4 h-4" />
+            Удалить
+          </Button>
+          <Button
+            className="gap-2"
+            variant="outline"
+            disabled={doneMutation.isPending}
+            onClick={() => doneMutation.mutate()}
+          >
+            {doneMutation.isPending ? (
+              <Loader className="w-4 h-4 animate-spin" />
+            ) : (
+              <BookOpenCheck className="w-4 h-4" />
+            )}
+            Прочитана
+          </Button>
+          <Button
+            className="gap-2"
+            variant="outline"
+            onClick={() => {
+              setChoosingPages(true);
+            }}
+          >
+            <BookOpen className="w-4 h-4" />
+            Отметить страницы
+          </Button>
+          <Button
+            className="gap-2"
+            variant="outline"
+            onClick={() => setDateOpen(true)}
+          >
+            <BookOpenTextIcon className="w-4 h-4" />
+            Отметить прочтение в прошлом
+          </Button>
+        </div>
+      </DrawerDialog>
       <DrawerDialog open={dateOpen} onOpenChange={setDateOpen}>
         <DialogHeader>
           <DialogTitle>Отметить прочтение в прошлом</DialogTitle>
@@ -339,7 +403,7 @@ export function BookView({ book }: { book: Book }) {
         <div className="flex gap-2 flex-wrap">
           {!(lastEvent?.pagesRead === book.pages) && (
             <>
-              <button
+              {/* <button
                 className="flex gap-2 items-center w-fit bg-blue-500 rounded-xl text-white py-1 px-3 active:opacity-50 transition-all select-none disabled:opacity-40"
                 onClick={() => doneMutation.mutate()}
                 disabled={doneMutation.isPending}
@@ -350,50 +414,45 @@ export function BookView({ book }: { book: Book }) {
                   <BookOpenCheck className="w-4 h-4" />
                 )}
                 Прочитана
-              </button>
-              <button
-                className="flex gap-2 items-center w-fit bg-gray-100 rounded-xl py-1 px-3 active:opacity-50 transition-all select-none disabled:opacity-40 border border-zinc-200"
-                onClick={() => {
-                  setChoosingPages(true);
-                }}
-              >
-                {/* <img src="https://em-content.zobj.net/source/telegram/386/open-book_1f4d6.webp" className="w-6 h-6" /> */}
-                {/* {readMutation.isPending ? (
-                  <Loader className="w-4 h-4 animate-spin" />
-                ) : (
-                  <BookOpen className="w-4 h-4" />
-                )}
-                {choosingPages ? (
-                  <AutoResizeInput
-                    autoFocus
-                    className="outline-none border-b border-black w-6 bg-transparent"
-                    onBlur={() => setChoosingPages(false)}
-                    onKeyUp={(evt: any) => {
-                      if (evt.key === "Enter") {
-                        const num = parseInt(evt.target.value);
-                        console.log(num);
-                        if (num >= book.pages || num < 1) return;
-                        setChoosingPages(false);
-                        if (isNaN(num)) return;
-                        readMutation.mutate({
-                          pages: num,
-                        });
-                      }
+              </button> */}
+              {isMobile ? (
+                <Button
+                  className="gap-2"
+                  variant="outline"
+                  onClick={() => setActionsDrawerOpen(true)}
+                >
+                  Действия
+                </Button>
+              ) : (
+                <>
+                  <Button className="gap-2" variant="outline">
+                    {doneMutation.isPending ? (
+                      <Loader className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <BookOpenCheck className="w-4 h-4" />
+                    )}
+                    Прочитана
+                  </Button>
+                  <Button
+                    className="gap-2"
+                    variant="outline"
+                    onClick={() => {
+                      setChoosingPages(true);
                     }}
-                  />
-                ) : (
-                  <div>Отметить страницы</div>
-                )} */}
-                <BookOpen className="w-4 h-4" />
-                Отметить страницы
-              </button>
-              <button
-                className="flex gap-2 items-center w-fit bg-gray-100 rounded-xl py-1 px-3 active:opacity-50 transition-all select-none disabled:opacity-40 border border-zinc-200"
-                onClick={() => setDateOpen(true)}
-              >
-                <BookOpenTextIcon className="w-4 h-4" />
-                Отметить прочтение в прошлом
-              </button>
+                  >
+                    <BookOpen className="w-4 h-4" />
+                    Отметить страницы
+                  </Button>
+                  <Button
+                    className="gap-2"
+                    variant="outline"
+                    onClick={() => setDateOpen(true)}
+                  >
+                    <BookOpenTextIcon className="w-4 h-4" />
+                    Отметить прочтение в прошлом
+                  </Button>
+                </>
+              )}
             </>
           )}
           <div className="flex gap-2 m-2 group-hover:opacity-100 opacity-0 absolute top-0 right-0 transition-all scale-0 group-hover:scale-100">
