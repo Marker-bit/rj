@@ -52,6 +52,7 @@ model Book {
   readEvents  ReadEvent[]
   collections Collection[]
   description String       @default("")
+  coverUrl    String?
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
