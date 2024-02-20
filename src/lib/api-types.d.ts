@@ -12,4 +12,5 @@ type Book = {
     readAt: string;
   }[];
   description?: string;
+  coverUrl?: string;
 };

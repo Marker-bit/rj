@@ -273,13 +273,15 @@ export function BookView({ book }: { book: Book }) {
           </form>
         </div>
       </DrawerDialog>
-      <Image
-        src="/book.png"
-        alt="book"
-        width={100}
-        height={100}
-        className="rounded-md h-40 w-auto"
-      />
+      {book.coverUrl && (
+        <Image
+          src={book.coverUrl}
+          alt="book"
+          width={500}
+          height={500}
+          className="rounded-md h-40 w-auto"
+        />
+      )}
       <div className="flex flex-col">
         <div className="font-bold text-xl">{book.title}</div>
         <div className="text-sm">{book.author}</div>

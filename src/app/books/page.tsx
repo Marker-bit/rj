@@ -62,12 +62,14 @@ const bookSchema = z.object({
   author: z.string().min(1),
   pages: z.coerce.number().min(1),
   description: z.string().optional(),
+  coverUrl: z.string().optional(),
 });
 
 export default function BooksPage() {
   const queryClient = useQueryClient();
   const [readBooks, setReadBooks] = useState(false);
   const [notStarted, setNotStarted] = useState(false);
+  const [imageLoading, setImageLoading] = useState(false);
   const form = useForm<z.infer<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
   });
@@ -118,6 +120,31 @@ export default function BooksPage() {
     });
   }
 
+  const uploadImage = (field: any) => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.click();
+    input.onchange = () => {
+      const file = input.files?.[0];
+      // if (!file?.name.endsWith('.jpg') || !file?.name.endsWith('.jpeg') || !file?.name.endsWith('.png')) {
+      //   return;
+      // }
+      field.onChange("");
+      const formData = new FormData();
+      formData.append("file", file!);
+      setImageLoading(true);
+      fetch("/api/upload", {
+        method: "PUT",
+        body: formData,
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          field.onChange(res.url);
+          setImageLoading(false);
+        });
+    };
+  }
+
   return (
     <div>
       <div className="flex p-1 items-center bg-zinc-100 border-b border-zinc-200 min-h-10">
@@ -134,6 +161,78 @@ export default function BooksPage() {
       <div className="p-3 bg-zinc-100 border-b border-zinc-300">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+            <FormField
+              control={form.control}
+              name="coverUrl"
+              render={({ field }) => (
+                <FormItem>
+                  {field.value ? (
+                    <div className="relative w-fit">
+                      <Image
+                        src={field.value}
+                        width={500}
+                        height={500}
+                        className="h-52 w-auto rounded-md"
+                        alt="cover"
+                      />
+                      <div className="flex flex-col gap-2 absolute top-2 right-0 translate-x-[50%]">
+                        <Button
+                          size="icon"
+                          className="w-fit h-fit p-1"
+                          variant="outline"
+                          type="button"
+                          onClick={() => uploadImage(field)}
+                        >
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          size="icon"
+                          className="w-fit h-fit p-1"
+                          variant="outline"
+                          onClick={() => field.onChange("")}
+                          type="button"
+                        >
+                          <Trash className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        className="w-32 h-52"
+                        type="button"
+                        onClick={() => uploadImage(field)}
+                      >
+                        {imageLoading ? (
+                          <Loader className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Plus className="w-4 h-4" />
+                        )}
+                      </Button>
+                      <div className="flex flex-col">
+                        {imageLoading ? (
+                          <>
+                            <div className="font-semibold">Загрузка...</div>
+                            <div className="text-zinc-500">
+                              Загружаем обложку
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <div className="font-semibold">Обложка</div>
+                            <div className="text-zinc-500">
+                              Добавьте обложку
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="title"
