@@ -272,7 +272,7 @@ export function BookView({ book }: { book: Book }) {
                     <div className="flex flex-col">
                       <div>Прочитана</div>
                       <div className="text-xs text-black/50">
-                        {event.pagesRead} страниц
+                        {dateToString(new Date(event.readAt))}
                       </div>
                     </div>
                   </>
