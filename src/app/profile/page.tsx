@@ -72,7 +72,9 @@ export default function ProfilePage() {
         </div>
         <Link href="/friends" className="ml-auto">
           <button className="p-1 hover:text-blue-600 rounded-md flex items-center gap-1 text-blue-500 active:scale-95 transition-all">
-            <div className="font-semibold"><Users2 className="w-6 h-6" /></div>
+            <div className="font-semibold">
+              <Users2 className="w-6 h-6" />
+            </div>
           </button>
         </Link>
         <Link href="/profile/settings">
@@ -118,39 +120,36 @@ export default function ProfilePage() {
           >
             <Copy className="opacity-0 w-4 h-4" />
             <AnimatePresence>
-              {/* {copy ? ( */}
-                <motion.div
-                  variants={{
-                    copy: { scale: 1, opacity: 1 },
-                    notCopy: { scale: 0, opacity: 0 },
-                  }}
-                  animate={copy ? "copy" : "notCopy"}
-                  transition={{
-                    type: "spring",
-                    stiffness: 260,
-                    damping: 20,
-                  }}
-                  className="absolute"
-                >
-                  <Check className="text-green-500 w-4 h-4" />
-                </motion.div>
-              {/* ) : ( */}
-                <motion.div
-                  variants={{
-                    copy: { scale: 1, opacity: 1 },
-                    notCopy: { scale: 0, opacity: 0 },
-                  }}
-                  animate={!copy ? "copy" : "notCopy"}
-                  transition={{
-                    type: "spring",
-                    stiffness: 260,
-                    damping: 20,
-                  }}
-                  className="absolute"
-                >
-                  <Copy className="w-4 h-4" />
-                </motion.div>
-              {/* )} */}
+              <motion.div
+                variants={{
+                  copy: { scale: 1, opacity: 1 },
+                  notCopy: { scale: 0, opacity: 0 },
+                }}
+                animate={copy ? "copy" : "notCopy"}
+                transition={{
+                  type: "spring",
+                  stiffness: 260,
+                  damping: 20,
+                }}
+                className="absolute"
+              >
+                <Check className="text-green-500 w-4 h-4" />
+              </motion.div>
+              <motion.div
+                variants={{
+                  copy: { scale: 1, opacity: 1 },
+                  notCopy: { scale: 0, opacity: 0 },
+                }}
+                animate={!copy ? "copy" : "notCopy"}
+                transition={{
+                  type: "spring",
+                  stiffness: 260,
+                  damping: 20,
+                }}
+                className="absolute"
+              >
+                <Copy className="w-4 h-4" />
+              </motion.div>
             </AnimatePresence>
           </div>
         </div>

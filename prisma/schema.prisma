@@ -29,6 +29,7 @@ model User {
   lastName       String?
   active         Boolean      @default(false)
   hashedPassword String
+  avatarUrl      String       @default("")
   sessions       Session[]
   books          Book[]
   collections    Collection[]
