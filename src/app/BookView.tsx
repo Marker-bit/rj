@@ -245,7 +245,7 @@ export function BookView({ book }: { book: Book }) {
                   <Badge>Прочитана</Badge>
                 )}
                 {!lastEvent && <Badge>Запланирована</Badge>}
-                {lastEvent?.pagesRead !== book.pages && <Badge>Читается</Badge>}
+                {(lastEvent && lastEvent?.pagesRead !== book.pages) && <Badge>Читается</Badge>}
               </div>
               {book.description && (
                 <pre

@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  BookMinus,
-  ChevronLeft,
-  Loader,
-  Plus,
-  Trash,
-} from "lucide-react";
+import { BookMinus, ChevronLeft, Loader, Plus, Trash } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -44,7 +38,7 @@ const bookSchema = z.object({
   coverUrl: z.string().optional(),
 });
 
-function BookForm() {
+function BookForm({ onSuccess }: { onSuccess?: () => void }) {
   const queryClient = useQueryClient();
   const form = useForm<z.infer<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
@@ -65,6 +59,7 @@ function BookForm() {
         author: "",
         pages: NaN,
       });
+      if (onSuccess) onSuccess();
     },
   });
 
@@ -216,7 +211,7 @@ function MobileForm() {
               <DrawerTitle>Добавить книгу</DrawerTitle>
             </DrawerHeader>
             <div className="p-4">
-              <BookForm />
+              <BookForm onSuccess={() => setOpen(false)} />
             </div>
           </DrawerContent>
         </Drawer>
