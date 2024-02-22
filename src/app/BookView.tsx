@@ -31,26 +31,11 @@ import {
 } from "@/components/ui/form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import {
-  Dialog,
-  DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
-import { da, ru } from "date-fns/locale";
 import { Textarea } from "@/components/ui/textarea";
 import { DrawerDialog } from "./Drawer";
 import { Toaster, toast } from "react-hot-toast";
@@ -58,7 +43,7 @@ import { useMediaQuery } from "usehooks-ts";
 import { Badge } from "@/components/ui/badge";
 import { DateReadModal } from "@/components/dialogs/date-read-modal";
 import { dateToString } from "@/lib/utils";
-import { isEqual, isSameDay } from "date-fns";
+import { isSameDay } from "date-fns";
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -111,26 +96,6 @@ export function BookView({ book }: { book: Book }) {
         }),
       });
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["books"],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["events"],
-      });
-      toast.success("Сохранено!");
-      setActionsDrawerOpen(false);
-    },
-  });
-
-  const readMutation = useMutation({
-    mutationFn: ({ pages }: { pages: number }) =>
-      fetch(`/api/books/${book.id}/read/`, {
-        method: "POST",
-        body: JSON.stringify({
-          pages: pages,
-        }),
-      }),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["books"],
@@ -384,7 +349,7 @@ export function BookView({ book }: { book: Book }) {
               <Badge>
                 <CalendarDays className="w-4 h-4 mr-2" /> Запланирована
               </Badge>
-              <Badge variant="outline">
+              <Badge variant="secondary">
                 <BookOpen className="w-4 h-4 mr-2" /> {book.pages} страниц всего
               </Badge>
             </>
@@ -406,34 +371,26 @@ export function BookView({ book }: { book: Book }) {
                   <Undo className="w-4 h-4" />
                 )}
               </Button>
-              <Badge variant="outline">
+              <Badge variant="secondary">
                 <BookOpen className="w-4 h-4 mr-2" /> {book.pages} страниц всего
               </Badge>
-              {/* <div className="bg-green-100 flex gap-2 items-center text-green-500 px-3 rounded-xl cursor-default">
-                <BookOpenCheck className="w-4 h-4" /> Прочитана
-                <button
-                  className="p-1 hover:bg-green-500/10 transition-all cursor-pointer rounded-md my-1"
-                  onClick={() => undoEventMutation.mutate()}
-                >
-                  {undoEventMutation.isPending ? (
-                    <Loader className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Undo className="w-4 h-4" />
-                  )}
-                </button>
-              </div>
-              <div className="bg-green-100 flex gap-2 items-center text-green-500 px-3 rounded-xl cursor-default">
-                <BookOpen className="w-4 h-4" /> {book.pages} страниц всего
-              </div> */}
+              <Badge variant="outline">
+                <CalendarDays className="w-4 h-4 mr-2" />
+                {dateToString(new Date(lastEvent.readAt))}
+              </Badge>
             </>
           ) : (
             <>
               <Badge>
                 <BookIcon className="w-4 h-4 mr-2" /> Читается
               </Badge>
-              <Badge variant="outline">
+              <Badge variant="secondary">
                 <BookOpen className="w-4 h-4 mr-2" /> {lastEvent.pagesRead}{" "}
                 страниц из {book.pages}
+              </Badge>
+              <Badge variant="outline">
+                <CalendarDays className="w-4 h-4 mr-2" />
+                {dateToString(new Date(lastEvent.readAt))}
               </Badge>
               <Button
                 variant="outline"
