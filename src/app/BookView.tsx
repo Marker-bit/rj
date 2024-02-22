@@ -197,7 +197,7 @@ export function BookView({ book }: { book: Book }) {
     },
   });
 
-  const lastEvent = book.readEvents[book.readEvents.length - 1];
+  const lastEvent = book.readEvents[0];
 
   async function onSubmit(values: z.infer<typeof bookSchema>) {
     await editMutation.mutateAsync(values);
