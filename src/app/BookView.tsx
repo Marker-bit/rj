@@ -49,7 +49,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Calendar } from "@/components/ui/calendar";
-import moment from "moment";
 import { Button } from "@/components/ui/button";
 import { ru } from "date-fns/locale";
 import { Textarea } from "@/components/ui/textarea";
@@ -68,11 +67,6 @@ const bookSchema = z.object({
 });
 
 export function BookView({ book }: { book: Book }) {
-  moment.updateLocale("ru", {
-    week: {
-      dow: 1,
-    },
-  });
   const queryClient = useQueryClient();
   const [editOpen, setEditOpen] = useState(false);
   const [dateOpen, setDateOpen] = useState(false);
@@ -270,7 +264,7 @@ export function BookView({ book }: { book: Book }) {
                   <>
                     <BookOpenCheck className="text-green-500 w-4 h-4" />
                     <div className="flex flex-col">
-                      <div>Прочитана</div>
+                      <div>Книга прочитана!</div>
                       <div className="text-xs text-black/50">
                         {dateToString(new Date(event.readAt))}
                       </div>

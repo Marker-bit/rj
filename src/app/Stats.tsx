@@ -10,8 +10,8 @@ import {
   UsersIcon,
 } from "lucide-react";
 import { Bar, BarChart, ResponsiveContainer, XAxis } from "recharts";
-import moment from "moment";
 import Link from "next/link";
+import { endOfISOWeek, startOfISOWeek } from "date-fns";
 
 export function Stats() {
   const userQuery = useQuery({
@@ -31,14 +31,8 @@ export function Stats() {
   }
 
   const startAndEndOfWeek = () => {
-    moment.updateLocale("ru", {
-      week: {
-        dow: 1, // Monday is the first day of the week.
-      },
-    });
-    // moment().locale("ru");
-    const monday = moment().startOf("week").toDate();
-    const sunday = moment().endOf("week").toDate();
+    const monday = startOfISOWeek(new Date());
+    const sunday = endOfISOWeek(new Date());
     return [monday, sunday];
   };
   const date = new Date();
