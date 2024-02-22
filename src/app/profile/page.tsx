@@ -46,23 +46,6 @@ export default function ProfilePage() {
 
   const [copy, setCopy] = useState(false);
 
-  // const data01 = [
-  //   { name: "Понедельник", value: 40 },
-  //   { name: "Вторник", value: 300 },
-  //   { name: "Среда", value: 300 },
-  //   { name: "Четверг", value: 200 },
-  //   { name: "Пятница", value: 278 },
-  //   { name: "Суббота", value: 189 },
-  //   { name: "Воскресенье", value: 189 },
-  // ];
-  // useEffect(() => {
-  //   (async () => {
-  //     const { user } = await validateRequest();
-  //     console.log(user);
-  //     setUserData(user);
-  //   })();
-  // }, []);
-
   if (userQuery.isPending) {
     return (
       <div className="flex min-h-screen items-center justify-center">

@@ -44,12 +44,14 @@ import { Badge } from "@/components/ui/badge";
 import { DateReadModal } from "@/components/dialogs/date-read-modal";
 import { dateToString } from "@/lib/utils";
 import { isSameDay } from "date-fns";
+import { UploadButton } from "@/components/uploadthing";
 
 const bookSchema = z.object({
   title: z.string().min(1),
   author: z.string().min(1),
   pages: z.coerce.number().min(1),
   description: z.string().optional(),
+  coverUrl: z.string().optional(),
 });
 
 export function BookView({ book }: { book: Book }) {
@@ -68,6 +70,7 @@ export function BookView({ book }: { book: Book }) {
       author: book.author,
       pages: book.pages,
       description: book.description ?? "",
+      coverUrl: book.coverUrl ?? "",
     },
   });
 
@@ -191,7 +194,7 @@ export function BookView({ book }: { book: Book }) {
         open={actionsDrawerOpen}
         onOpenChange={setActionsDrawerOpen}
       >
-        <div className="flex gap-2 flex-col mt-2">
+        <div className="flex gap-2 flex-col mt-2 min-w-[50vw]">
           <div className="flex">
             {book.coverUrl && (
               <Image
@@ -301,36 +304,130 @@ export function BookView({ book }: { book: Book }) {
         setIsOpen={setDateOpen}
         readDateMutation={readDateMutation}
       />
-      {/* <DrawerDialog open={choosingPages} onOpenChange={setChoosingPages}>
-        <DialogHeader className="mb-2">
-          <DialogTitle>Отметить прочтение</DialogTitle>
-        </DialogHeader>
-        <div className="flex gap-2 flex-col">
-          <form
-            onSubmit={(evt) => {
-              evt.preventDefault();
-              readMutation.mutate({ pages: parseInt(changePages.toString()) });
-            }}
-          >
-            <div className="flex gap-2 flex-col mt-2">
-              <Input
-                type="number"
-                min={1}
-                value={changePages}
-                onChange={(evt) => setChangePages(evt.target.value)}
-                autoFocus
+      <DrawerDialog open={editOpen} onOpenChange={setEditOpen}>
+        <div className="min-w-[50vw]">
+          <DialogHeader className="mb-2">
+            <DialogTitle className="flex gap-1 items-center">
+              <Edit className="w-4 h-4" /> Редактировать книгу
+            </DialogTitle>
+          </DialogHeader>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+              <FormField
+                control={form.control}
+                name="coverUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    {field.value ? (
+                      <div className="relative w-fit">
+                        <Image
+                          src={field.value}
+                          width={500}
+                          height={500}
+                          className="h-52 w-auto rounded-md"
+                          alt="cover"
+                        />
+                        <div className="flex flex-col gap-2 absolute top-2 right-0 translate-x-[50%]">
+                          <Button
+                            size="icon"
+                            className="w-fit h-fit p-1"
+                            variant="outline"
+                            onClick={() => field.onChange("")}
+                            type="button"
+                          >
+                            <Trash className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <UploadButton
+                          endpoint="bookCover"
+                          content={{
+                            button: "Обложка",
+                            allowedContent: "Картинка (до 8МБ)",
+                          }}
+                          onClientUploadComplete={(res) => {
+                            field.onChange(res[0].url);
+                          }}
+                          onUploadError={(error: Error) => {
+                            alert(`ERROR! ${error.message}`);
+                          }}
+                        />
+                      </div>
+                    )}
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-              <Button type="submit" className="w-full md:w-fit md:ml-auto">
-                {readMutation.isPending ? (
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Название</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="author"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Автор</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="pages"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Кол-во страниц</FormLabel>
+                    <FormControl>
+                      <Input {...field} type="number" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Описание</FormLabel>
+                    <FormControl>
+                      <Textarea {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button
+                type="submit"
+                disabled={editMutation.isPending}
+                className="gap-2"
+              >
+                {editMutation.isPending ? (
                   <Loader className="w-4 h-4 animate-spin" />
                 ) : (
-                  <Save className="w-4 h-4" />
+                  <Edit className="w-4 h-4" />
                 )}
+                Редактировать
               </Button>
-            </div>
-          </form>
+            </form>
+          </Form>
         </div>
-      </DrawerDialog> */}
+      </DrawerDialog>
       {book.coverUrl && (
         <Image
           src={book.coverUrl}
@@ -432,146 +529,48 @@ export function BookView({ book }: { book: Book }) {
           </Button>
           {!(lastEvent?.pagesRead === book.pages) && (
             <>
-              {!isMobile && (
-                <>
-                  <Button
-                    className="gap-2"
-                    variant="outline"
-                    onClick={() => doneMutation.mutate()}
-                    disabled={doneMutation.isPending}
-                  >
-                    {doneMutation.isPending ? (
-                      <Loader className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <BookOpenCheck className="w-4 h-4" />
-                    )}
-                    Прочитана
-                  </Button>
-                  <Button
-                    className="gap-2"
-                    variant="outline"
-                    onClick={() => setDateOpen(true)}
-                  >
-                    <BookOpenTextIcon className="w-4 h-4" />
-                    Отметить прочтение
-                  </Button>
-                </>
-              )}
+              <>
+                <Button
+                  className="gap-2"
+                  variant="outline"
+                  onClick={() => doneMutation.mutate()}
+                  disabled={doneMutation.isPending}
+                >
+                  {doneMutation.isPending ? (
+                    <Loader className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <BookOpenCheck className="w-4 h-4" />
+                  )}
+                  <div className="max-sm:hidden">Прочитана</div>
+                </Button>
+                <Button
+                  className="gap-2"
+                  variant="outline"
+                  onClick={() => setDateOpen(true)}
+                >
+                  <BookOpenTextIcon className="w-4 h-4" />
+                  <div className="max-sm:hidden">Отметить прочтение</div>
+                </Button>
+              </>
             </>
           )}
           <div className="flex gap-2 m-2 group-hover:opacity-100 opacity-0 absolute top-0 right-0 transition-all scale-0 group-hover:scale-100">
-            <DrawerDialog open={editOpen} onOpenChange={setEditOpen}>
-              <DialogHeader className="mb-2">
-                <DialogTitle className="flex gap-1 items-center">
-                  <Edit className="w-4 h-4" /> Редактировать книгу
-                </DialogTitle>
-              </DialogHeader>
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-2"
-                >
-                  <FormField
-                    control={form.control}
-                    name="title"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Название</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="author"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Автор</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="pages"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Кол-во страниц</FormLabel>
-                        <FormControl>
-                          <Input {...field} type="number" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="description"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Описание</FormLabel>
-                        <FormControl>
-                          <Textarea {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <Button
-                    type="submit"
-                    disabled={editMutation.isPending}
-                    className="gap-2"
-                  >
-                    {editMutation.isPending ? (
-                      <Loader className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <Edit className="w-4 h-4" />
-                    )}
-                    Редактировать
-                  </Button>
-                  {/* <button
-                    className="flex gap-2 items-center w-fit bg-blue-500 rounded-xl text-white py-1 px-3 active:opacity-50 transition-all select-none disabled:opacity-40"
-                    type="submit"
-                    disabled={editMutation.isPending}
-                  >
-                    {editMutation.isPending ? (
-                      <Loader className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <Edit className="w-4 h-4" />
-                    )}
-                    Редактировать
-                  </button> */}
-                </form>
-              </Form>
-            </DrawerDialog>
-            <button
-              className="bg-gray-100 rounded-md p-1 active:opacity-50 transition-all select-none disabled:opacity-40 border border-zinc-200 h-fit w-fit"
-              onClick={(evt) => {
-                evt.stopPropagation();
-                setEditOpen(true);
-              }}
+            <Button
+              size="icon"
+              variant="outline"
+              className="p-1 w-fit h-fit"
+              onClick={() => setEditOpen(true)}
             >
               <Edit className="w-4 h-4" />
-            </button>
-            <button
-              className="bg-gray-100 rounded-md p-1 active:opacity-50 transition-all select-none disabled:opacity-40 border border-zinc-200 h-fit w-fit"
-              onClick={(evt) => {
-                evt.stopPropagation();
-                setDeleteDialogOpen(true);
-              }}
+            </Button>
+            <Button
+              size="icon"
+              variant="outline"
+              className="p-1 w-fit h-fit"
+              onClick={() => setDeleteDialogOpen(true)}
             >
-              {deleteMutation.isPending ? (
-                <Loader className="w-4 h-4 animate-spin" />
-              ) : (
-                <Trash className="w-4 h-4" />
-              )}
-            </button>
+              <Trash className="w-4 h-4" />
+            </Button>
             <DrawerDialog
               open={deleteDialogOpen}
               onOpenChange={setDeleteDialogOpen}

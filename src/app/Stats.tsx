@@ -136,8 +136,6 @@ export function Stats() {
     }
   }
 
-  console.log(currentWeek);
-
   for (const days of Object.values(booksStats)) {
     for (const [day, num] of Object.entries(days)) {
       if (!booksStatsNum[day]) {

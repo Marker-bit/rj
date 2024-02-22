@@ -58,6 +58,8 @@ function BookForm({ onSuccess }: { onSuccess?: () => void }) {
         title: "",
         author: "",
         pages: NaN,
+        coverUrl: "",
+        description: "",
       });
       if (onSuccess) onSuccess();
     },
@@ -84,15 +86,6 @@ function BookForm({ onSuccess }: { onSuccess?: () => void }) {
                     alt="cover"
                   />
                   <div className="flex flex-col gap-2 absolute top-2 right-0 translate-x-[50%]">
-                    {/* <Button
-                          size="icon"
-                          className="w-fit h-fit p-1"
-                          variant="outline"
-                          type="button"
-                          onClick={() => uploadImage(field)}
-                        >
-                          <Edit className="w-4 h-4" />
-                        </Button> */}
                     <Button
                       size="icon"
                       className="w-fit h-fit p-1"
@@ -113,12 +106,9 @@ function BookForm({ onSuccess }: { onSuccess?: () => void }) {
                       allowedContent: "Картинка (до 8МБ)",
                     }}
                     onClientUploadComplete={(res) => {
-                      // Do something with the response
-                      console.log("Files: ", res);
                       field.onChange(res[0].url);
                     }}
                     onUploadError={(error: Error) => {
-                      // Do something with the error.
                       alert(`ERROR! ${error.message}`);
                     }}
                   />
@@ -227,40 +217,13 @@ function MobileForm() {
 }
 
 export default function BooksPage() {
-  const queryClient = useQueryClient();
   const [readBooks, setReadBooks] = useState(false);
   const [notStarted, setNotStarted] = useState(false);
-  const [imageLoading, setImageLoading] = useState(false);
-  const form = useForm<z.infer<typeof bookSchema>>({
-    resolver: zodResolver(bookSchema),
-  });
 
   const booksQuery = useQuery({
     queryKey: ["books"],
     queryFn: () => fetch("/api/books").then((res) => res.json()),
   });
-
-  const bookMutation = useMutation({
-    mutationFn: (values: z.infer<typeof bookSchema>) =>
-      fetch("/api/books", {
-        method: "POST",
-        body: JSON.stringify(values),
-      }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["books"],
-      });
-      form.reset({
-        title: "",
-        author: "",
-        pages: NaN,
-      });
-    },
-  });
-
-  function onSubmit(values: z.infer<typeof bookSchema>) {
-    bookMutation.mutate(values);
-  }
 
   let books = booksQuery.data || [];
 
@@ -270,7 +233,7 @@ export default function BooksPage() {
         return true;
       }
       return !(
-        book.pages === book.readEvents[book.readEvents.length - 1].pagesRead
+        book.pages === book.readEvents[0].pagesRead
       );
     });
   }
@@ -280,37 +243,6 @@ export default function BooksPage() {
       return book.readEvents.length !== 0;
     });
   }
-
-  const uploadImage = (field: any) => {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.click();
-    input.onchange = async () => {
-      const file = input.files?.[0];
-      if (!file) {
-        return;
-      }
-      // if (!file?.name.endsWith('.jpg') || !file?.name.endsWith('.jpeg') || !file?.name.endsWith('.png')) {
-      //   return;
-      // }
-      field.onChange("");
-      const formData = new FormData();
-      formData.append("file", file!);
-      setImageLoading(true);
-      const resp = await fetch("/api/upload", {
-        method: "PUT",
-        body: formData,
-      });
-      const text = await resp.text();
-      if (text.includes("Request Entity Too Large")) {
-        alert("Файл слишком большой");
-        setImageLoading(false);
-      }
-      const data = JSON.parse(text);
-      field.onChange(data.url);
-      setImageLoading(false);
-    };
-  };
 
   return (
     <div>
@@ -325,9 +257,6 @@ export default function BooksPage() {
           Книги
         </div>
       </div>
-      {/* <div className="p-3 bg-zinc-100 border-b border-zinc-300">
-        <BookForm />
-      </div> */}
       <MobileForm />
       <div className="p-3 flex flex-col gap-2">
         <div
@@ -346,7 +275,7 @@ export default function BooksPage() {
           className="items-center flex space-x-2 cursor-pointer p-2 rounded-md border border-zinc-200 mb-2 hover:bg-zinc-100 transition-all select-none"
           onClick={() => setNotStarted(!notStarted)}
         >
-          <Switch id="readBooks" checked={notStarted} />
+          <Switch id="notStarted" checked={notStarted} />
           <div
             className="text-sm font-medium leading-none peer-disabled:opacity-70 cursor-pointer select-none"
             onClick={() => setNotStarted(!notStarted)}

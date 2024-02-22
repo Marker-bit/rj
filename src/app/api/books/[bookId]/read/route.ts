@@ -16,7 +16,6 @@ export async function POST(
     pages: number;
     readAt?: string;
   } = await req.json();
-  console.log(data);
   const event = await db.readEvent.create({
     data: {
       readAt: data.readAt || new Date(),

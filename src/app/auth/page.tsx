@@ -53,7 +53,6 @@ export default function Page() {
         .then((res) => res.json())
         .then(
           (res: { status: "authorized" | "created" | "invalid-password" }) => {
-            console.log(res.status);
             if (res.status === "authorized") {
               window.location.href = "/";
             } else if (res.status === "created") {
@@ -67,7 +66,6 @@ export default function Page() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
     userMutation.mutate(values);
   }
 
