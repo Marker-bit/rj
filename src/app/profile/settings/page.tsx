@@ -68,9 +68,7 @@ export default function SettingsPage() {
     },
   });
 
-  // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
     userMutation.mutate(values);
   }
 

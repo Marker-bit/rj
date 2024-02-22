@@ -30,7 +30,6 @@ export async function POST(request: NextRequest) {
     if (validPassword) {
       const session = await lucia.createSession(user.id, {});
       const sessionCookie = lucia.createSessionCookie(session.id);
-      console.log(sessionCookie);
       cookies().set(
         sessionCookie.name,
         sessionCookie.value,
@@ -60,7 +59,6 @@ export async function POST(request: NextRequest) {
 
   const session = await lucia.createSession(createdUser.id, {});
   const sessionCookie = lucia.createSessionCookie(session.id);
-  console.log(sessionCookie);
   cookies().set(
     sessionCookie.name,
     sessionCookie.value,
