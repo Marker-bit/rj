@@ -194,6 +194,7 @@ export function BookView({ book }: { book: Book }) {
         queryKey: ["events"],
       });
       setDeleteDialogOpen(false);
+      setActionsDrawerOpen(false);
       toast.success("Сохранено!");
     },
   });
@@ -245,7 +246,9 @@ export function BookView({ book }: { book: Book }) {
                   <Badge>Прочитана</Badge>
                 )}
                 {!lastEvent && <Badge>Запланирована</Badge>}
-                {(lastEvent && lastEvent?.pagesRead !== book.pages) && <Badge>Читается</Badge>}
+                {lastEvent && lastEvent?.pagesRead !== book.pages && (
+                  <Badge>Читается</Badge>
+                )}
               </div>
               {book.description && (
                 <pre
