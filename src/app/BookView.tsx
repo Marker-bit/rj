@@ -58,6 +58,7 @@ import { Toaster, toast } from "react-hot-toast";
 import { useMediaQuery } from "usehooks-ts";
 import { Badge } from "@/components/ui/badge";
 import { DateReadModal } from "@/components/dialogs/date-read-modal";
+import { dateToString } from "@/lib/utils";
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -67,17 +68,18 @@ const bookSchema = z.object({
 });
 
 export function BookView({ book }: { book: Book }) {
+  moment.updateLocale("ru", {
+    week: {
+      dow: 1,
+    },
+  });
   const queryClient = useQueryClient();
-  const [choosingPages, setChoosingPages] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [dateOpen, setDateOpen] = useState(false);
-  const [date, setDate] = useState<Date | undefined>(new Date());
-  const [changePages, setChangePages] = useState<number | string>("");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [actionsDrawerOpen, setActionsDrawerOpen] = useState(false);
   const [descriptionDrawerOpen, setDescriptionDrawerOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
-  const tomorrow = moment().add(1, "day").toDate();
 
   const form = useForm<z.infer<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
@@ -142,7 +144,6 @@ export function BookView({ book }: { book: Book }) {
         queryKey: ["events"],
       });
       toast.success("Сохранено!");
-      setChoosingPages(false);
       setActionsDrawerOpen(false);
     },
   });
@@ -244,15 +245,13 @@ export function BookView({ book }: { book: Book }) {
               <div className="font-bold text-xl">{book.title}</div>
               <div className="text-sm">{book.author}</div>
               <div className="text-sm">{book.pages} страниц</div>
-              {lastEvent?.pagesRead === book.pages && (
-                <div className="text-sm text-green-500">Прочитана</div>
-              )}
-              {!lastEvent && (
-                <div className="text-sm text-orange-500">Запланирована</div>
-              )}
-              {lastEvent?.pagesRead !== book.pages && (
-                <div className="text-sm text-blue-500">Читается</div>
-              )}
+              <div className="w-fit">
+                {lastEvent?.pagesRead === book.pages && (
+                  <Badge>Прочитана</Badge>
+                )}
+                {!lastEvent && <Badge>Запланирована</Badge>}
+                {lastEvent?.pagesRead !== book.pages && <Badge>Читается</Badge>}
+              </div>
               {book.description && (
                 <pre
                   className="relative text-black/70 overflow-hidden font-sans block mt-2 cursor-pointer text-wrap"
@@ -263,6 +262,33 @@ export function BookView({ book }: { book: Book }) {
                 </pre>
               )}
             </div>
+          </div>
+          <div className="flex flex-col gap-2">
+            {book.readEvents.map((event) => (
+              <div className="flex items-center gap-2" key={event.id}>
+                {event.pagesRead === book.pages ? (
+                  <>
+                    <BookOpenCheck className="text-green-500 w-4 h-4" />
+                    <div className="flex flex-col">
+                      <div>Прочитана</div>
+                      <div className="text-xs text-black/50">
+                        {event.pagesRead} страниц
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <BookOpen className="w-4 h-4" />
+                    <div className="flex flex-col">
+                      <div>{event.pagesRead} страниц прочитано</div>
+                      <div className="text-xs text-black/50">
+                        {dateToString(new Date(event.readAt))}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            ))}
           </div>
           <Button
             className="gap-2"
@@ -280,37 +306,31 @@ export function BookView({ book }: { book: Book }) {
             <Trash className="w-4 h-4" />
             Удалить
           </Button>
-          <Button
-            className="gap-2"
-            variant="outline"
-            disabled={doneMutation.isPending}
-            onClick={() => doneMutation.mutate()}
-          >
-            {doneMutation.isPending ? (
-              <Loader className="w-4 h-4 animate-spin" />
-            ) : (
-              <BookOpenCheck className="w-4 h-4" />
-            )}
-            Прочитана
-          </Button>
-          {/* <Button
-            className="gap-2"
-            variant="outline"
-            onClick={() => {
-              setChoosingPages(true);
-            }}
-          >
-            <BookOpen className="w-4 h-4" />
-            Отметить страницы
-          </Button> */}
-          <Button
-            className="gap-2"
-            variant="outline"
-            onClick={() => setDateOpen(true)}
-          >
-            <BookOpenTextIcon className="w-4 h-4" />
-            Отметить прочтение
-          </Button>
+          {lastEvent?.pagesRead !== book.pages && (
+            <>
+              <Button
+                className="gap-2"
+                variant="outline"
+                disabled={doneMutation.isPending}
+                onClick={() => doneMutation.mutate()}
+              >
+                {doneMutation.isPending ? (
+                  <Loader className="w-4 h-4 animate-spin" />
+                ) : (
+                  <BookOpenCheck className="w-4 h-4" />
+                )}
+                Прочитана
+              </Button>
+              <Button
+                className="gap-2"
+                variant="outline"
+                onClick={() => setDateOpen(true)}
+              >
+                <BookOpenTextIcon className="w-4 h-4" />
+                Отметить прочтение
+              </Button>
+            </>
+          )}
         </div>
       </DrawerDialog>
       <DateReadModal
@@ -448,17 +468,16 @@ export function BookView({ book }: { book: Book }) {
           )}
         </div>
         <div className="flex gap-2 flex-wrap">
+          <Button
+            className="gap-2"
+            variant="outline"
+            onClick={() => setActionsDrawerOpen(true)}
+          >
+            <Info className="w-4 h-4" />
+          </Button>
           {!(lastEvent?.pagesRead === book.pages) && (
             <>
-              {isMobile ? (
-                <Button
-                  className="gap-2"
-                  variant="outline"
-                  onClick={() => setActionsDrawerOpen(true)}
-                >
-                  <Info className="w-4 h-4" />
-                </Button>
-              ) : (
+              {!isMobile && (
                 <>
                   <Button
                     className="gap-2"
