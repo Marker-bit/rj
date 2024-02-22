@@ -6,6 +6,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export function dateToString(date: Date) {
+  return date.toLocaleString();
+}
+
 // export function date(date: Date) {
 //   moment.updateLocale("ru", {
 //     week: {

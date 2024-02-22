@@ -12,7 +12,11 @@ export async function GET(req: NextRequest) {
     },
     include: {
       collections: true,
-      readEvents: true,
+      readEvents: {
+        orderBy: {
+          readAt: "desc"
+        }
+      },
       user: false,
     },
   });
