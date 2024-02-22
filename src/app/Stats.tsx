@@ -61,10 +61,10 @@ export function Stats() {
   let currentWeekNum: { [key: string]: number } = {};
   let streak = 0;
 
-  console.log(startOfWeek);
+  const events = eventsQuery.data?.toReversed();
 
-  if (eventsQuery.data) {
-    for (const event of eventsQuery.data) {
+  if (events) {
+    for (const event of events) {
       const date = new Date(event.readAt);
       if (!currentWeek[event.bookId]) {
         currentWeek[event.bookId] = {}; // date.getDay().toString()
@@ -74,7 +74,7 @@ export function Stats() {
           event.pagesRead >
           (currentWeek[event.bookId][date.getDay().toString()] ?? 0)
         ) {
-          const currentBook = eventsQuery.data.filter(
+          const currentBook = events.filter(
             (evt: any) => evt.bookId === event.bookId
           );
           const beforeEventIndex = currentBook.indexOf(event) - 1;
@@ -102,7 +102,7 @@ export function Stats() {
         event.pagesRead >
         (booksStats[event.bookId][date.getDay().toString()] ?? 0)
       ) {
-        const currentBook = eventsQuery.data.filter(
+        const currentBook = events.filter(
           (evt: any) => evt.bookId === event.bookId
         );
         const beforeEventIndex = currentBook.indexOf(event) - 1;
@@ -121,7 +121,7 @@ export function Stats() {
     day.setTime(day.getTime() - 86400000);
     while (true) {
       if (
-        eventsQuery.data.find(
+        events.find(
           (e: any) => new Date(e.readAt).toDateString() === day.toDateString()
         )
       ) {
@@ -132,7 +132,7 @@ export function Stats() {
       }
     }
     if (
-      eventsQuery.data.find(
+      events.find(
         (e: any) =>
           new Date(e.readAt).toDateString() === new Date().toDateString()
       )

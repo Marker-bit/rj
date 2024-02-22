@@ -1,24 +1,15 @@
 "use client";
 
 import {
-  BookIcon,
   BookMinus,
-  BookOpen,
-  BookOpenCheck,
-  BookOpenTextIcon,
-  CalendarDays,
-  Check,
   ChevronLeft,
-  Edit,
   Loader,
   Plus,
   Trash,
-  Undo,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import AutoResizeInput from "../AutoResize";
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -27,36 +18,15 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { BookView } from "../BookView";
 import { Textarea } from "@/components/ui/textarea";
-import { upload } from "@vercel/blob/client";
 import { UploadButton } from "@/components/uploadthing";
 import { useMediaQuery } from "usehooks-ts";
 import {
@@ -215,18 +185,14 @@ function BookForm() {
             </FormItem>
           )}
         />
-        <button
-          className="flex gap-2 items-center w-fit bg-blue-500 rounded-xl text-white py-1 px-3 active:opacity-50 transition-all select-none disabled:opacity-40"
-          type="submit"
-          disabled={bookMutation.isPending}
-        >
+        <Button type="submit" disabled={bookMutation.isPending}>
           {bookMutation.isPending ? (
-            <Loader className="w-4 h-4 animate-spin" />
+            <Loader className="w-4 h-4 animate-spin mr-2" />
           ) : (
-            <Plus className="w-4 h-4" />
+            <Plus className="w-4 h-4 mr-2" />
           )}
           Создать
-        </button>
+        </Button>
       </form>
     </Form>
   );
@@ -239,9 +205,11 @@ function MobileForm() {
   if (isMobile) {
     return (
       <>
-        <Button onClick={() => setOpen(true)} className="mx-auto my-2">
-          <Plus className="mr-2 h-4 w-4" /> Добавить книгу
-        </Button>
+        <div className="flex items-center justify-center m-2">
+          <Button onClick={() => setOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" /> Добавить книгу
+          </Button>
+        </div>
         <Drawer open={open} onOpenChange={setOpen}>
           <DrawerContent className="bg-white flex flex-col fixed bottom-0 left-0 right-0 max-h-[96%] rounded-t-[10px]">
             <DrawerHeader>
@@ -366,7 +334,7 @@ export default function BooksPage() {
         <BookForm />
       </div> */}
       <MobileForm />
-      <div className="p-3 flex flex-col">
+      <div className="p-3 flex flex-col gap-2">
         <div
           className="items-center flex space-x-2 cursor-pointer p-2 rounded-md border border-zinc-200 mb-2 hover:bg-zinc-100 transition-all select-none"
           onClick={() => setReadBooks(!readBooks)}
