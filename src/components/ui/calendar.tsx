@@ -7,12 +7,15 @@ import { DayPicker } from "react-day-picker"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 
-export type CalendarProps = React.ComponentProps<typeof DayPicker>
+export type CalendarProps = React.ComponentProps<typeof DayPicker> & {
+  showToday?: boolean
+}
 
 function Calendar({
   className,
   classNames,
   showOutsideDays = true,
+  showToday = true,
   ...props
 }: CalendarProps) {
   return (
@@ -44,7 +47,7 @@ function Calendar({
         day_range_end: "day-range-end",
         day_selected:
           "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
-        day_today: "bg-accent text-accent-foreground",
+        day_today: showToday ? "bg-accent text-accent-foreground" : "",
         day_outside:
           "day-outside text-muted-foreground opacity-50 aria-selected:bg-primary aria-selected:text-primary-foreground aria-selected:opacity-100",
         day_disabled: "text-muted-foreground opacity-50",
