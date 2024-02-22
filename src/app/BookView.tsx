@@ -293,7 +293,7 @@ export function BookView({ book }: { book: Book }) {
             )}
             Прочитана
           </Button>
-          <Button
+          {/* <Button
             className="gap-2"
             variant="outline"
             onClick={() => {
@@ -302,14 +302,14 @@ export function BookView({ book }: { book: Book }) {
           >
             <BookOpen className="w-4 h-4" />
             Отметить страницы
-          </Button>
+          </Button> */}
           <Button
             className="gap-2"
             variant="outline"
             onClick={() => setDateOpen(true)}
           >
             <BookOpenTextIcon className="w-4 h-4" />
-            Отметить прочтение в прошлом
+            Отметить прочтение
           </Button>
         </div>
       </DrawerDialog>
@@ -318,7 +318,7 @@ export function BookView({ book }: { book: Book }) {
         setIsOpen={setDateOpen}
         readDateMutation={readDateMutation}
       />
-      <DrawerDialog open={choosingPages} onOpenChange={setChoosingPages}>
+      {/* <DrawerDialog open={choosingPages} onOpenChange={setChoosingPages}>
         <DialogHeader className="mb-2">
           <DialogTitle>Отметить прочтение</DialogTitle>
         </DialogHeader>
@@ -347,7 +347,7 @@ export function BookView({ book }: { book: Book }) {
             </div>
           </form>
         </div>
-      </DrawerDialog>
+      </DrawerDialog> */}
       {book.coverUrl && (
         <Image
           src={book.coverUrl}
@@ -450,18 +450,6 @@ export function BookView({ book }: { book: Book }) {
         <div className="flex gap-2 flex-wrap">
           {!(lastEvent?.pagesRead === book.pages) && (
             <>
-              {/* <button
-                className="flex gap-2 items-center w-fit bg-blue-500 rounded-xl text-white py-1 px-3 active:opacity-50 transition-all select-none disabled:opacity-40"
-                onClick={() => doneMutation.mutate()}
-                disabled={doneMutation.isPending}
-              >
-                {doneMutation.isPending ? (
-                  <Loader className="w-4 h-4 animate-spin" />
-                ) : (
-                  <BookOpenCheck className="w-4 h-4" />
-                )}
-                Прочитана
-              </button> */}
               {isMobile ? (
                 <Button
                   className="gap-2"
@@ -488,20 +476,10 @@ export function BookView({ book }: { book: Book }) {
                   <Button
                     className="gap-2"
                     variant="outline"
-                    onClick={() => {
-                      setChoosingPages(true);
-                    }}
-                  >
-                    <BookOpen className="w-4 h-4" />
-                    Отметить страницы
-                  </Button>
-                  <Button
-                    className="gap-2"
-                    variant="outline"
                     onClick={() => setDateOpen(true)}
                   >
                     <BookOpenTextIcon className="w-4 h-4" />
-                    Отметить прочтение в прошлом
+                    Отметить прочтение
                   </Button>
                 </>
               )}
