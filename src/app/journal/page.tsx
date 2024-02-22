@@ -9,6 +9,7 @@ import {
   Check,
   ChevronLeft,
   Loader,
+  Undo,
 } from "lucide-react";
 import Link from "next/link";
 import { DrawerDialog } from "../Drawer";
@@ -26,7 +27,7 @@ import { useState } from "react";
 import { ru } from "date-fns/locale";
 import { ReadEvent } from "@prisma/client";
 import { DateRange } from "react-day-picker";
-import { dateToString } from "@/lib/utils";
+import { EventView } from "./EventView";
 
 export default function JournalPage() {
   const tomorrow = addDays(new Date(), 1);
@@ -127,37 +128,7 @@ export default function JournalPage() {
             pagesRead: number;
             readAt: string | Date;
           }) => (
-            <div
-              key={event.id}
-              className="rounded-xl border border-zinc-200 p-2 cursor-default flex flex-wrap items-center gap-1"
-            >
-              {event.pagesRead === event.book.pages ? (
-                <>
-                  <BookOpenCheck className="w-4 h-4 text-green-500" />
-                  <Link
-                    href={`/books#book-${event.bookId}`}
-                    className="font-semibold"
-                  >
-                    Книга &quot;{event.book.title}&quot; автора{" "}
-                    {event.book.author}
-                  </Link>
-                  прочитана {dateToString(new Date(event.readAt))}
-                </>
-              ) : (
-                <>
-                  <BookOpen className="w-4 h-4 mr-1" />
-                  {event.pagesRead} страниц прочитано{" "}
-                  {dateToString(new Date(event.readAt))}
-                  <Link
-                    href={`/books#book-${event.bookId}`}
-                    className="font-semibold"
-                  >
-                    в книге &quot;{event.book.title}&quot; автора{" "}
-                    {event.book.author}
-                  </Link>
-                </>
-              )}
-            </div>
+            <EventView event={event} key={event.id} />
           )
         )}
       </div>
