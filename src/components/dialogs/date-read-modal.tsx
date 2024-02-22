@@ -7,8 +7,8 @@ import { Calendar } from "@/components/ui/calendar";
 import { DrawerDialog } from "@/app/Drawer";
 import { useRef, useState } from "react";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import moment from "moment";
 import { Loader, Save } from "lucide-react";
+import { addDays } from "date-fns";
 
 export function DateReadModal({
   isOpen,
@@ -19,7 +19,7 @@ export function DateReadModal({
   setIsOpen: (open: boolean) => void;
   readDateMutation: any;
 }) {
-  const tomorrow = moment().add(1, "day").toDate();
+  const tomorrow = addDays(new Date(), 1);
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [changePages, setChangePages] = useState<string>("");
   const input = useRef<HTMLInputElement>(null);
