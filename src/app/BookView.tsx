@@ -53,11 +53,11 @@ import moment from "moment";
 import { Button } from "@/components/ui/button";
 import { ru } from "date-fns/locale";
 import { Textarea } from "@/components/ui/textarea";
-import { DrawerAlertDialog, DrawerDialog } from "./Drawer";
+import { DrawerDialog } from "./Drawer";
 import { Toaster, toast } from "react-hot-toast";
 import { useMediaQuery } from "usehooks-ts";
-import { Drawer } from "@/components/ui/drawer";
-import { DialogTrigger } from "@radix-ui/react-dialog";
+import { Badge } from "@/components/ui/badge";
+import { DateReadModal } from "@/components/dialogs/date-read-modal";
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -71,13 +71,13 @@ export function BookView({ book }: { book: Book }) {
   const [choosingPages, setChoosingPages] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [dateOpen, setDateOpen] = useState(false);
-  const yesterday = moment().subtract(1, "day").toDate();
-  const [date, setDate] = useState<Date | undefined>(yesterday);
+  const [date, setDate] = useState<Date | undefined>(new Date());
   const [changePages, setChangePages] = useState<number | string>("");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [actionsDrawerOpen, setActionsDrawerOpen] = useState(false);
   const [descriptionDrawerOpen, setDescriptionDrawerOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
+  const tomorrow = moment().add(1, "day").toDate();
 
   const form = useForm<z.infer<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
@@ -148,12 +148,12 @@ export function BookView({ book }: { book: Book }) {
   });
 
   const readDateMutation = useMutation({
-    mutationFn: () =>
+    mutationFn: ({ date, pages }: { date: Date; pages: number }) =>
       fetch(`/api/books/${book.id}/read/`, {
         method: "POST",
         body: JSON.stringify({
-          pages: parseInt(changePages.toString()),
-          readAt: date!,
+          pages: pages,
+          readAt: date,
         }),
       }),
     onSuccess: () => {
@@ -262,8 +262,6 @@ export function BookView({ book }: { book: Book }) {
                   {book.description.split("\n").length > 5 && "..."}
                 </pre>
               )}
-              {/* <div className="flex gap-2 flex-wrap">
-              </div> */}
             </div>
           </div>
           <Button
@@ -315,45 +313,11 @@ export function BookView({ book }: { book: Book }) {
           </Button>
         </div>
       </DrawerDialog>
-      <DrawerDialog open={dateOpen} onOpenChange={setDateOpen}>
-        <DialogHeader className="mb-2">
-          <DialogTitle>Отметить прочтение в прошлом</DialogTitle>
-        </DialogHeader>
-        <div className="flex gap-2 flex-col">
-          <Calendar
-            mode="single"
-            selected={date}
-            onSelect={setDate}
-            className="rounded-md border w-fit max-sm:w-full"
-            disabled={[{ from: new Date(), to: new Date(3000, 1) }]}
-            weekStartsOn={1}
-            locale={ru}
-          />
-          <form
-            onSubmit={(evt) => {
-              evt.preventDefault();
-              readDateMutation.mutate();
-            }}
-          >
-            <div className="flex gap-2">
-              <Input
-                type="number"
-                min={1}
-                value={changePages}
-                onChange={(evt) => setChangePages(evt.target.value)}
-                autoFocus
-              />
-              <Button type="submit">
-                {readDateMutation.isPending ? (
-                  <Loader className="w-4 h-4 animate-spin" />
-                ) : (
-                  <Save className="w-4 h-4" />
-                )}
-              </Button>
-            </div>
-          </form>
-        </div>
-      </DrawerDialog>
+      <DateReadModal
+        isOpen={dateOpen}
+        setIsOpen={setDateOpen}
+        readDateMutation={readDateMutation}
+      />
       <DrawerDialog open={choosingPages} onOpenChange={setChoosingPages}>
         <DialogHeader className="mb-2">
           <DialogTitle>Отметить прочтение</DialogTitle>
@@ -396,19 +360,38 @@ export function BookView({ book }: { book: Book }) {
       <div className="flex flex-col">
         <div className="font-bold text-xl">{book.title}</div>
         <div className="text-sm">{book.author}</div>
-        <div className="flex gap-2 flex-wrap my-2">
+        <div className="flex items-center gap-2 flex-wrap my-2">
           {book.readEvents.length === 0 ? (
             <>
-              <div className="bg-orange-100 flex gap-2 items-center text-orange-500 px-3 rounded-xl cursor-default">
-                <CalendarDays className="w-4 h-4" /> Запланирована
-              </div>
-              <div className="bg-green-100 flex gap-2 items-center text-green-500 px-3 rounded-xl cursor-default">
-                <BookOpen className="w-4 h-4" /> {book.pages} страниц всего
-              </div>
+              <Badge>
+                <CalendarDays className="w-4 h-4 mr-2" /> Запланирована
+              </Badge>
+              <Badge variant="outline">
+                <BookOpen className="w-4 h-4 mr-2" /> {book.pages} страниц всего
+              </Badge>
             </>
           ) : lastEvent.pagesRead === book.pages ? (
             <>
-              <div className="bg-green-100 flex gap-2 items-center text-green-500 px-3 rounded-xl cursor-default">
+              <Badge>
+                <BookOpenCheck className="w-4 h-4 mr-2" /> Прочитана
+              </Badge>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => undoEventMutation.mutate()}
+                disabled={undoEventMutation.isPending}
+                className="w-fit h-fit p-1"
+              >
+                {undoEventMutation.isPending ? (
+                  <Loader className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Undo className="w-4 h-4" />
+                )}
+              </Button>
+              <Badge variant="outline">
+                <BookOpen className="w-4 h-4 mr-2" /> {book.pages} страниц всего
+              </Badge>
+              {/* <div className="bg-green-100 flex gap-2 items-center text-green-500 px-3 rounded-xl cursor-default">
                 <BookOpenCheck className="w-4 h-4" /> Прочитана
                 <button
                   className="p-1 hover:bg-green-500/10 transition-all cursor-pointer rounded-md my-1"
@@ -423,14 +406,31 @@ export function BookView({ book }: { book: Book }) {
               </div>
               <div className="bg-green-100 flex gap-2 items-center text-green-500 px-3 rounded-xl cursor-default">
                 <BookOpen className="w-4 h-4" /> {book.pages} страниц всего
-              </div>
+              </div> */}
             </>
           ) : (
             <>
-              <div className="bg-blue-100 flex gap-2 items-center text-blue-500 px-3 rounded-xl cursor-default">
-                <BookIcon className="w-4 h-4" /> Читается
-              </div>
-              <div className="bg-green-100 flex gap-2 items-center text-green-500 px-3 rounded-xl cursor-default">
+              <Badge>
+                <BookIcon className="w-4 h-4 mr-2" /> Читается
+              </Badge>
+              <Badge variant="outline">
+                <BookOpen className="w-4 h-4 mr-2" /> {lastEvent.pagesRead}{" "}
+                страниц из {book.pages}
+              </Badge>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => undoEventMutation.mutate()}
+                disabled={undoEventMutation.isPending}
+                className="w-fit h-fit p-1"
+              >
+                {undoEventMutation.isPending ? (
+                  <Loader className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Undo className="w-4 h-4" />
+                )}
+              </Button>
+              {/* <div className="bg-green-100 flex gap-2 items-center text-green-500 px-3 rounded-xl cursor-default">
                 <BookOpen className="w-4 h-4" /> {lastEvent.pagesRead} страниц
                 из {book.pages}
                 <button
@@ -443,7 +443,7 @@ export function BookView({ book }: { book: Book }) {
                     <Undo className="w-4 h-4" />
                   )}
                 </button>
-              </div>
+              </div> */}
             </>
           )}
         </div>
@@ -472,7 +472,12 @@ export function BookView({ book }: { book: Book }) {
                 </Button>
               ) : (
                 <>
-                  <Button className="gap-2" variant="outline">
+                  <Button
+                    className="gap-2"
+                    variant="outline"
+                    onClick={() => doneMutation.mutate()}
+                    disabled={doneMutation.isPending}
+                  >
                     {doneMutation.isPending ? (
                       <Loader className="w-4 h-4 animate-spin" />
                     ) : (

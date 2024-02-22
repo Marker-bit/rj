@@ -19,6 +19,9 @@ export async function GET(req: NextRequest) {
     },
     include: {
       book: true
+    },
+    orderBy: {
+      readAt: "desc"
     }
   });
 
