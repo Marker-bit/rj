@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Bar, BarChart, ResponsiveContainer, XAxis } from "recharts";
 import moment from "moment";
+import Link from "next/link";
 
 export function Stats() {
   const userQuery = useQuery({
@@ -202,24 +203,32 @@ export function Stats() {
             </div>
           </div>
         </div>
-        <div className="p-2 border border-zinc-300 rounded-md flex gap-1 items-center">
-          <Users2 className="w-6 h-6" />
-          <div className="flex flex-col">
-            <div className="font-bold">{userQuery.data?.following?.length}</div>
-            <div className="text-black/50 lowercase text-xs -mt-1 font-semibold">
-              подписок
+        <Link href="/friends">
+          <div className="p-2 border border-zinc-300 rounded-md flex gap-1 items-center">
+            <Users2 className="w-6 h-6" />
+            <div className="flex flex-col">
+              <div className="font-bold">
+                {userQuery.data?.following?.length}
+              </div>
+              <div className="text-black/50 lowercase text-xs -mt-1 font-semibold">
+                подписок
+              </div>
             </div>
           </div>
-        </div>
-        <div className="p-2 border border-zinc-300 rounded-md flex gap-1 items-center">
-          <UsersIcon className="w-6 h-6" />
-          <div className="flex flex-col">
-            <div className="font-bold">{userQuery.data?.follower?.length}</div>
-            <div className="text-black/50 lowercase text-xs -mt-1 font-semibold">
-              подписчиков
+        </Link>
+        <Link href="/followers">
+          <div className="p-2 border border-zinc-300 rounded-md flex gap-1 items-center">
+            <UsersIcon className="w-6 h-6" />
+            <div className="flex flex-col">
+              <div className="font-bold">
+                {userQuery.data?.follower?.length}
+              </div>
+              <div className="text-black/50 lowercase text-xs -mt-1 font-semibold">
+                подписчиков
+              </div>
             </div>
           </div>
-        </div>
+        </Link>
       </div>
       <div className="flex gap-2 shadow-md w-fit mx-auto my-2 p-2 rounded-md bg-black/5">
         Эта неделя

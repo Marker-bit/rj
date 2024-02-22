@@ -28,7 +28,7 @@ export default function FriendsPage() {
           </button>
         </Link>
         <div className="font-semibold absolute left-[50%] translate-x-[-50%]">
-          Друзья
+          Подписки
         </div>
         <Link href="/followers" className="ml-auto">
           <button className="p-1 hover:text-blue-600 rounded-md flex items-center gap-1 text-blue-500 active:scale-95 transition-all">
