@@ -50,7 +50,7 @@ import {
 } from "@/components/ui/dialog";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
-import { ru } from "date-fns/locale";
+import { da, ru } from "date-fns/locale";
 import { Textarea } from "@/components/ui/textarea";
 import { DrawerDialog } from "./Drawer";
 import { Toaster, toast } from "react-hot-toast";
@@ -58,6 +58,7 @@ import { useMediaQuery } from "usehooks-ts";
 import { Badge } from "@/components/ui/badge";
 import { DateReadModal } from "@/components/dialogs/date-read-modal";
 import { dateToString } from "@/lib/utils";
+import { isEqual, isSameDay } from "date-fns";
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -148,7 +149,7 @@ export function BookView({ book }: { book: Book }) {
         method: "POST",
         body: JSON.stringify({
           pages: pages,
-          readAt: date,
+          readAt: isSameDay(date, new Date()) ? new Date() : date,
         }),
       }),
     onSuccess: () => {
