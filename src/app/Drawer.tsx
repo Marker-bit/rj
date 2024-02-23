@@ -5,18 +5,22 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import { Drawer as DrawerPrimitive } from "vaul";
 import { AlertDialog, AlertDialogContent } from "@/components/ui/alert-dialog";
+import { cn } from "@/lib/utils";
 
 export function DrawerDialog({
   children,
+  className,
   ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Root>) {
+}: React.ComponentProps<typeof DrawerPrimitive.Root> & { className?: string }) {
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
   if (isDesktop) {
     return (
       <>
         <Dialog {...props}>
-          <DialogContent className="w-fit">{children}</DialogContent>
+          <DialogContent className={cn("w-fit", className)}>
+            {children}
+          </DialogContent>
         </Dialog>
       </>
     );
