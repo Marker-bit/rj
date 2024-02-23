@@ -91,7 +91,7 @@ export default function Home() {
           ) : (
             <div className="p-2 rounded-md border border-zinc-200 flex gap-2 items-center">
               <Image
-                src="/no-avatar.png"
+                src={userQuery.data?.avatarUrl ? userQuery.data?.avatarUrl : "/no-avatar.png"}
                 alt="avatar"
                 width={100}
                 height={100}

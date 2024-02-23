@@ -11,7 +11,17 @@ import {
 } from "lucide-react";
 import { Bar, BarChart, ResponsiveContainer, XAxis } from "recharts";
 import Link from "next/link";
-import { endOfISOWeek, startOfISOWeek } from "date-fns";
+import {
+  addHours,
+  differenceInDays,
+  differenceInMinutes,
+  endOfDay,
+  endOfISOWeek,
+  max,
+  min,
+  startOfDay,
+  startOfISOWeek,
+} from "date-fns";
 
 export function Stats() {
   const userQuery = useQuery({
@@ -55,6 +65,7 @@ export function Stats() {
   let currentWeek: { [key: string]: { [key: string]: number } } = {};
   let currentWeekNum: { [key: string]: number } = {};
   let streak = 0;
+  let readSpeed = [];
 
   const events = eventsQuery.data?.toReversed();
 
@@ -63,6 +74,29 @@ export function Stats() {
       const date = new Date(event.readAt);
       if (!currentWeek[event.bookId]) {
         currentWeek[event.bookId] = {}; // date.getDay().toString()
+      }
+      const currentBook = events.filter(
+        (evt: any) => evt.bookId === event.bookId
+      );
+      const beforeEventIndex = currentBook.indexOf(event) - 1;
+      const beforeEvent = currentBook[beforeEventIndex];
+      if (beforeEvent) {
+        let beforeEventDate = new Date(beforeEvent.readAt);
+        if (differenceInDays(date, beforeEventDate) >= 1) {
+          beforeEventDate = max([
+            addHours(date, -5),
+            beforeEventDate,
+          ]);
+        }
+        console.log(beforeEventDate, date);
+        const minuteDifference = differenceInMinutes(date, beforeEventDate);
+        const pageDifference = event.pagesRead - (beforeEvent?.pagesRead ?? 0);
+        // console.log(
+        //   pageDifference,
+        //   minuteDifference,
+        //   pageDifference / minuteDifference
+        // );
+        readSpeed.push(pageDifference / minuteDifference);
       }
       if (date >= startOfWeek) {
         if (
@@ -153,6 +187,7 @@ export function Stats() {
       currentWeekNum[day] += num;
     }
   }
+  console.log(readSpeed);
 
   const currentWeekData = [
     { name: "Пн", value: currentWeekNum["1"] },
