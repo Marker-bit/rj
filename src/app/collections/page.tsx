@@ -1,8 +1,7 @@
-import { Button } from "@/components/ui/button";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
-import { Plus } from "lucide-react";
 import { CreateCollection } from "./create-collection";
+import { Collection } from "./collection";
 
 export default async function Page() {
   const { user } = await validateRequest();
@@ -10,18 +9,16 @@ export default async function Page() {
     where: {
       userId: user?.id,
     },
+    include: {
+      books: true,
+    },
   });
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-2">
       <CreateCollection />
       {collections.map((collection) => (
-        <div
-          key={collection.id}
-          className="flex flex-col gap-3 border-b border-zinc-300 p-3 cursor-default"
-        >
-          {collection.name}
-        </div>
+        <Collection key={collection.id} collection={collection} />
       ))}
     </div>
   );

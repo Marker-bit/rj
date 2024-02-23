@@ -17,7 +17,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Loader, Plus } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Поле обязательно для заполнения" }),
@@ -32,8 +34,24 @@ export function CreateCollection() {
     },
   });
 
+  const router = useRouter();
+
+  const collectionMutation = useMutation({
+    mutationFn: (values: z.infer<typeof formSchema>) => {
+      return fetch("/api/collections", {
+        method: "POST",
+        body: JSON.stringify(values),
+      });
+    },
+    onSuccess: () => {
+      router.refresh();
+      handleClose(false);
+    },
+  });
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
+    collectionMutation.mutate(values);
   }
 
   function handleClose(b: boolean) {
@@ -45,7 +63,10 @@ export function CreateCollection() {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)} className="md:w-fit items-center gap-2 m-2">
+      <Button
+        onClick={() => setOpen(true)}
+        className="md:w-fit items-center gap-2 m-2"
+      >
         <Plus className="w-4 h-4" />
         Создать коллекцию
       </Button>
@@ -54,7 +75,10 @@ export function CreateCollection() {
           <DialogTitle>Создать коллекцию</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="md:min-w-[40vw]">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="md:min-w-[40vw]"
+          >
             <FormField
               control={form.control}
               name="name"
@@ -68,7 +92,18 @@ export function CreateCollection() {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="mt-2 ml-auto">Создать</Button>
+            <Button
+              type="submit"
+              className="mt-2 ml-auto gap-2"
+              disabled={collectionMutation.isPending}
+            >
+              {collectionMutation.isPending ? (
+                <Loader className="w-4 h-4 animate-spin" />
+              ) : (
+                <Plus className="w-4 h-4" />
+              )}
+              Создать
+            </Button>
           </form>
         </Form>
       </DrawerDialog>
