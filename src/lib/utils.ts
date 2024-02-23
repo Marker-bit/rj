@@ -1,4 +1,3 @@
-import { useEffect, DependencyList } from "react";
 import { type ClassValue, clsx } from "clsx";
 import { formatRelative } from "date-fns";
 import { ru } from "date-fns/locale";
@@ -112,21 +111,4 @@ export async function imgPreview(image: HTMLImageElement, crop: PixelCrop) {
 
   previewUrl = URL.createObjectURL(blob);
   return previewUrl;
-}
-
-export function useDebounceEffect(
-  fn: () => void,
-  waitTime: number,
-  deps: DependencyList
-) {
-  useEffect(() => {
-    const t = setTimeout(() => {
-      fn.apply(undefined, deps as []);
-    }, waitTime);
-
-    return () => {
-      clearTimeout(t);
-    };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, deps);
 }

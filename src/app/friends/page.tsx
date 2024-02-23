@@ -1,8 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { ChevronLeft, ChevronRight, Loader, UserX, Users2 } from "lucide-react";
-import Image from "next/image";
+import { ChevronLeft, Loader, UserX, Users2 } from "lucide-react";
 import Link from "next/link";
 import { FriendView } from "../FriendView";
 
@@ -58,6 +57,7 @@ export default function FriendsPage() {
                 lastName: string;
                 username: string;
                 id: string;
+                avatarUrl: string;
               };
             }) => (
               <FriendView key={friend.id} friend={friend} following={true} />

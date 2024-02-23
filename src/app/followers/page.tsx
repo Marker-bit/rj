@@ -58,6 +58,7 @@ export default function FollowersPage() {
                 lastName: string;
                 username: string;
                 id: string;
+                avatarUrl: string;
               };
               following: boolean;
             }) => {
