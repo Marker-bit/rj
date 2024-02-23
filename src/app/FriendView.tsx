@@ -13,6 +13,7 @@ export function FriendView({
     lastName: string;
     username: string;
     id: string;
+    avatarUrl: string;
   };
   following: boolean;
 }) {
@@ -38,7 +39,7 @@ export function FriendView({
   return (
     <div className="p-4 rounded-md border border-zinc-200 flex gap-2 items-center cursor-pointer group transition-colors">
       <Image
-        src="/no-avatar.png"
+        src={friend.avatarUrl ? friend.avatarUrl : "/no-avatar.png"}
         alt="avatar"
         width={100}
         height={100}
