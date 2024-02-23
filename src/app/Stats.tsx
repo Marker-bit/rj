@@ -143,9 +143,6 @@ export function Stats() {
           event.pagesRead - beforeEventPages;
       }
     }
-    for (const n of Object.values(readWeek)) {
-      readWeekSum += n;
-    }
     const day = new Date();
     day.setTime(day.getTime() - 86400000);
     while (true) {
@@ -187,7 +184,10 @@ export function Stats() {
       currentWeekNum[day] += num;
     }
   }
-  console.log(readSpeed);
+  
+  for (const n of Object.values(currentWeekNum)) {
+    readWeekSum += n;
+  }
 
   const currentWeekData = [
     { name: "Пн", value: currentWeekNum["1"] },
