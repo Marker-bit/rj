@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { Button } from "../ui/button";
-import { dateToString } from "@/lib/utils";
+import { dateToString, declOfNum } from "@/lib/utils";
 import { Badge } from "../ui/badge";
 
 export function BookInfoModal({
@@ -55,7 +55,10 @@ export function BookInfoModal({
           <div className="flex flex-col m-2 mt-0">
             <div className="font-bold text-xl">{book.title}</div>
             <div className="text-sm">{book.author}</div>
-            <div className="text-sm">{book.pages} страниц</div>
+            <div className="text-sm">
+              {book.pages}{" "}
+              {declOfNum(book.pages, ["страница", "страницы", "страниц"])}
+            </div>
             <div className="w-fit">
               {lastEvent?.pagesRead === book.pages && <Badge>Прочитана</Badge>}
               {!lastEvent && <Badge>Запланирована</Badge>}
@@ -91,7 +94,15 @@ export function BookInfoModal({
                 <>
                   <BookOpen className="w-4 h-4" />
                   <div className="flex flex-col">
-                    <div>{event.pagesRead} страниц прочитано</div>
+                    <div>
+                      {event.pagesRead}{" "}
+                      {declOfNum(event.pagesRead, [
+                        "страница",
+                        "страницы",
+                        "страниц",
+                      ])}{" "}
+                      прочитано
+                    </div>
                     <div className="text-xs text-black/50">
                       {dateToString(new Date(event.readAt))}
                     </div>

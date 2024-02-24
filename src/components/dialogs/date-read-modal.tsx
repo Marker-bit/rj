@@ -38,7 +38,7 @@ export function DateReadModal({
   return (
     <DrawerDialog open={isOpen} onOpenChange={handleClose}>
       <DialogHeader className="mb-2">
-        <DialogTitle>Отметить прочтение в прошлом</DialogTitle>
+        <DialogTitle>Отметить прочтение</DialogTitle>
       </DialogHeader>
       <div className="flex gap-2 flex-col">
         <Calendar
