@@ -15,98 +15,96 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { twMerge as cn } from "tailwind-merge";
 
 export function BottomBar() {
   const pathname = usePathname();
   return (
     <>
-      {/* <div
-        className={cn(
-          "fixed bottom-0 left-0 z-10 p-4 rounded-t-3xl bg-black w-full text-white max-h-[50vh] overflow-auto transition-all",
-          !open && "translate-y-full"
-        )}
-      >
-        <div className="mx-auto bg-white/30 w-20 h-2 rounded-md mb-4" />
-        <div className="ml-auto w-fit">
-          <button onClick={() => setOpen(false)}>
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-
-        <div className="flex flex-col gap-5">
-          <div className="flex items-center gap-3 cursor-pointer">
-            <div className="bg-white p-2 rounded-full">
-              <BookPlus className="w-6 h-6 text-black" />
+      <div className="sticky bottom-0 left-0 w-fit bg-gray-200 grid grid-cols-5 items-center justify-center content-center p-2 min-h-[10vh] mx-auto rounded-t-xl">
+        <AnimatePresence>
+          <Link href="/" className="w-fit">
+            <div
+              className={cn(
+                "flex flex-col text-gray-500 rounded-md p-2 items-center cursor-pointer transition-all relative",
+                pathname === "/" && "text-black"
+              )}
+            >
+              <HomeIcon className="w-6 h-6 m-2" />
+              <div className="text-xs">Главная</div>
+              {pathname === "/" && (
+                <motion.div
+                  layoutId="current"
+                  className="w-full h-full absolute top-0 left-0 bg-black/5 shadow-md -z-10 rounded-md"
+                  transition={{
+                    type: "spring",
+                  }}
+                />
+              )}
             </div>
-            <div>Создать книгу</div>
-          </div>
-          <div className="flex items-center gap-3 cursor-pointer">
-            <div className="bg-white p-2 rounded-full">
-              <ListPlus className="w-6 h-6 text-black" />
+          </Link>
+          <Link href="/books" className="w-fit">
+            <div
+              className={cn(
+                "flex flex-col text-gray-500 rounded-md p-2 items-center cursor-pointer transition-all relative w-fit",
+                pathname === "/books" && "text-black"
+              )}
+            >
+              <Book className="w-6 h-6 m-2" />
+              <div className="text-xs">Книги</div>
+              {pathname === "/books" && (
+                <motion.div
+                  layoutId="current"
+                  className="w-full h-full absolute top-0 left-0 bg-black/5 shadow-md -z-10 rounded-md"
+                  transition={{
+                    type: "spring",
+                  }}
+                />
+              )}
             </div>
-            <div>Создать полку</div>
-          </div>
-        </div>
-      </div> */}
-      <div className="sticky bottom-0 left-0 w-full bg-gray-200 grid grid-cols-5 items-center justify-around p-2 min-h-[10vh]">
-        <Link href="/">
-          <div
-            className={cn(
-              "flex flex-col text-gray-500 rounded-md p-2 items-center cursor-pointer transition-all",
-              pathname === "/" && "bg-black/5 shadow-md text-black"
-            )}
-          >
-            <HomeIcon className="w-6 h-6 m-2" />
-            <div className="text-xs">Главная</div>
-          </div>
-        </Link>
-        <Link href="/books">
-          <div
-            className={cn(
-              "flex flex-col text-gray-500 rounded-md p-2 items-center cursor-pointer transition-all",
-              pathname === "/books" && "bg-black/5 shadow-md text-black"
-            )}
-          >
-            <Book className="w-6 h-6 m-2" />
-            <div className="text-xs">Книги</div>
-          </div>
-        </Link>
-        {/* <Link href="/friends">
-          <div
-            className={cn(
-              "flex flex-col text-gray-500 rounded-md p-2 items-center cursor-pointer transition-all",
-              pathname === "/friends" && "bg-black/5 shadow-md text-black"
-            )}
-          >
-            <Users2 className="w-6 h-6 m-2" />
-            <div className="text-xs">Друзья</div>
-          </div>
-        </Link> */}
-        <Link href="/search">
-          <div
-            className={cn(
-              "flex flex-col text-gray-500 rounded-md p-2 items-center cursor-pointer transition-all",
-              pathname === "/search" && "bg-black/5 shadow-md text-black"
-            )}
-          >
-            <Search className="w-6 h-6 m-2" />
-            <div className="text-xs">Поиск</div>
-          </div>
-        </Link>
-        <Link href="/journal">
-          <div
-            className={cn(
-              "flex flex-col text-gray-500 rounded-md p-2 items-center cursor-pointer transition-all",
-              pathname === "/journal" && "bg-black/5 shadow-md text-black"
-            )}
-          >
-            <BarChartBig className="w-6 h-6 m-2" />
-            <div className="text-xs">Журнал</div>
-          </div>
-        </Link>
-        {/* <div
+          </Link>
+          <Link href="/search" className="w-fit">
+            <div
+              className={cn(
+                "flex flex-col text-gray-500 rounded-md p-2 items-center cursor-pointer transition-all relative w-fit",
+                pathname === "/search" && "text-black"
+              )}
+            >
+              <Search className="w-6 h-6 m-2" />
+              <div className="text-xs">Поиск</div>
+              {pathname === "/search" && (
+                <motion.div
+                  layoutId="current"
+                  className="w-full h-full absolute top-0 left-0 bg-black/5 shadow-md -z-10 rounded-md"
+                  transition={{
+                    type: "spring",
+                  }}
+                />
+              )}
+            </div>
+          </Link>
+          <Link href="/journal" className="w-fit">
+            <div
+              className={cn(
+                "flex flex-col text-gray-500 rounded-md p-2 items-center cursor-pointer transition-all relative w-fit",
+                pathname === "/journal" && "text-black"
+              )}
+            >
+              <BarChartBig className="w-6 h-6 m-2" />
+              <div className="text-xs">Журнал</div>
+              {pathname === "/journal" && (
+                <motion.div
+                  layoutId="current"
+                  className="w-full h-full absolute top-0 left-0 bg-black/5 shadow-md -z-10 rounded-md"
+                  transition={{
+                    type: "spring",
+                  }}
+                />
+              )}
+            </div>
+          </Link>
+          {/* <div
           className="flex flex-col text-black items-center cursor-pointer"
           onClick={() => setOpen(true)}
         >
@@ -115,25 +113,33 @@ export function BottomBar() {
           </div>
           <div className="text-xs">Добавить</div>
         </div> */}
-        <Link href="/profile">
-          <div
-            className={cn(
-              "flex flex-col text-gray-500 rounded-md p-2 items-center cursor-pointer transition-all",
-              pathname.startsWith("/profile") &&
-                "bg-black/5 shadow-md text-black"
-            )}
-          >
-            {pathname === "/profile/settings" ? (
-              <Settings className="w-6 h-6 m-2" />
-            ) : (
-              <CircleUser className="w-6 h-6 m-2" />
-            )}
-            <div className="text-xs">
-              {pathname === "/profile/settings" ? "Настройки" : "Профиль"}
+          <Link href="/profile" className="w-fit">
+            <div
+              className={cn(
+                "flex flex-col text-gray-500 rounded-md p-2 items-center cursor-pointer transition-all relative w-fit",
+                pathname.startsWith("/profile") && "text-black"
+              )}
+            >
+              {pathname === "/profile/settings" ? (
+                <Settings className="w-6 h-6 m-2" />
+              ) : (
+                <CircleUser className="w-6 h-6 m-2" />
+              )}
+              <div className="text-xs">
+                {pathname === "/profile/settings" ? "Настройки" : "Профиль"}
+              </div>
+              {pathname === "/profile" && (
+                <motion.div
+                  layoutId="current"
+                  className="w-full h-full absolute top-0 left-0 bg-black/5 shadow-md -z-10 rounded-md"
+                  transition={{
+                    type: "spring",
+                  }}
+                />
+              )}
             </div>
-          </div>
-        </Link>
-        {/* <Link href="/stats">
+          </Link>
+          {/* <Link href="/stats">
           <div
             className={cn(
               "flex flex-col text-gray-500 rounded-md p-2 items-center cursor-pointer transition-all",
@@ -145,6 +151,7 @@ export function BottomBar() {
             <div className="text-xs">Статистика</div>
           </div>
         </Link> */}
+        </AnimatePresence>
       </div>
     </>
   );

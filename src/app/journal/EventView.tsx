@@ -6,6 +6,7 @@ import Link from "next/link";
 import { dateToString } from "@/lib/utils";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AnimatePresence, motion } from "framer-motion";
 
 export function EventView({
   event,
@@ -24,20 +25,17 @@ export function EventView({
       await fetch(`/api/journal/events/${event.id}`, {
         method: "DELETE",
       }),
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: ['events']
-        });
-        queryClient.invalidateQueries({
-          queryKey: ['books']
-        });
-      }
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["events"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["books"],
+      });
+    },
   });
   return (
-    <div
-      key={event.id}
-      className="rounded-xl border border-zinc-200 p-2 cursor-default flex flex-wrap items-center gap-1"
-    >
+    <div className="rounded-xl border border-zinc-200 p-2 cursor-default flex flex-wrap items-center gap-1">
       {event.pagesRead === event.book.pages ? (
         <>
           <BookOpenCheck className="w-4 h-4 text-green-500" />
