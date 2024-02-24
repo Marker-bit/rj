@@ -1,10 +1,9 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { BookDashed, BookMinus, ChevronRight, Loader } from "lucide-react";
+import { BookMinus, ChevronRight, Loader } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { validateRequest } from "@/lib/validate-request";
 import { Stats } from "./Stats";
 import { BookView } from "./BookView";
 
@@ -16,7 +15,7 @@ export default function Home() {
 
   const userQuery = useQuery({
     queryKey: ["user"],
-    queryFn: () => fetch("/api/profile").then((res) => res.json())
+    queryFn: () => fetch("/api/profile").then((res) => res.json()),
   });
   // if (booksQuery?.data) {
   //   const compareBooks = (a: Book, b: Book) => {
@@ -91,7 +90,11 @@ export default function Home() {
           ) : (
             <div className="p-2 rounded-md border border-zinc-200 flex gap-2 items-center">
               <Image
-                src={userQuery.data?.avatarUrl ? userQuery.data?.avatarUrl : "/no-avatar.png"}
+                src={
+                  userQuery.data?.avatarUrl
+                    ? userQuery.data?.avatarUrl
+                    : "/no-avatar.png"
+                }
                 alt="avatar"
                 width={100}
                 height={100}
@@ -99,8 +102,7 @@ export default function Home() {
               />
               <div className="flex flex-col">
                 <div className="text-3xl font-semibold">
-                  {userQuery.data?.firstName}{" "}
-                  {userQuery.data?.lastName}
+                  {userQuery.data?.firstName} {userQuery.data?.lastName}
                 </div>
                 <div className="text-sm text-black/70">
                   @{userQuery.data?.username}

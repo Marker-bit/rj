@@ -10,9 +10,11 @@ import {
   Edit,
   Info,
   Loader,
+  Plus,
   Save,
   Trash,
   Undo,
+  X,
 } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
@@ -47,6 +49,7 @@ import { isSameDay } from "date-fns";
 import { UploadButton } from "@/components/uploadthing";
 import { EditBookModal } from "@/components/dialogs/edit-book-modal";
 import { BookInfoModal } from "@/components/dialogs/book-info-modal";
+import { BookCollectionsModal } from "@/components/dialogs/book-collections-modal";
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -63,6 +66,7 @@ export function BookView({ book }: { book: Book }) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [actionsDrawerOpen, setActionsDrawerOpen] = useState(false);
   const [descriptionDrawerOpen, setDescriptionDrawerOpen] = useState(false);
+  const [collectionsOpen, setCollectionsOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
 
   const undoEventMutation = useMutation({
@@ -168,13 +172,43 @@ export function BookView({ book }: { book: Book }) {
         setEditOpen={setEditOpen}
         setDeleteDialogOpen={setDeleteDialogOpen}
         setDateOpen={setDateOpen}
+        setCollectionsOpen={setCollectionsOpen}
         doneMutation={doneMutation}
+      />
+      <BookCollectionsModal
+        open={collectionsOpen}
+        setOpen={setCollectionsOpen}
+        book={book}
       />
       <DateReadModal
         isOpen={dateOpen}
         setIsOpen={setDateOpen}
         readDateMutation={readDateMutation}
       />
+      <DrawerDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogHeader>
+          <DialogTitle>Вы уверены?</DialogTitle>
+          <DialogDescription>
+            Вы удалите книгу &quot;{book.title}&quot; без возможности возврата.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="gap-2 flex max-sm:flex-col md:ml-auto md:w-fit mt-2">
+          <Button onClick={() => setDeleteDialogOpen(false)} variant="outline">
+            Отмена
+          </Button>
+
+          <Button
+            variant="destructive"
+            onClick={() => deleteMutation.mutate()}
+            disabled={deleteMutation.isPending}
+          >
+            {deleteMutation.isPending && (
+              <Loader className="h-4 w-4 mr-2 animate-spin" />
+            )}
+            Удалить
+          </Button>
+        </div>
+      </DrawerDialog>
       <EditBookModal open={editOpen} setOpen={setEditOpen} book={book} />
       {book.coverUrl && (
         <Image
@@ -253,7 +287,22 @@ export function BookView({ book }: { book: Book }) {
             </>
           )}
         </div>
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex gap-1 flex-wrap">
+          {book.collections.map((collection) => (
+            <Badge key={collection.id} variant="outline">
+              {collection.name}
+            </Badge>
+          ))}
+          <Button
+            variant="outline"
+            size="icon"
+            className="w-fit h-fit p-1 rounded-full"
+            onClick={() => setCollectionsOpen(true)}
+          >
+            <Plus className="w-4 h-4" />
+          </Button>
+        </div>
+        <div className="flex gap-2 flex-wrap mt-1">
           <Button
             className="gap-2"
             variant="outline"
@@ -305,37 +354,6 @@ export function BookView({ book }: { book: Book }) {
             >
               <Trash className="w-4 h-4" />
             </Button>
-            <DrawerDialog
-              open={deleteDialogOpen}
-              onOpenChange={setDeleteDialogOpen}
-            >
-              <DialogHeader>
-                <DialogTitle>Вы уверены?</DialogTitle>
-                <DialogDescription>
-                  Вы удалите книгу &quot;{book.title}&quot; без возможности
-                  возврата.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="gap-2 flex max-sm:flex-col md:ml-auto md:w-fit mt-2">
-                <Button
-                  onClick={() => setDeleteDialogOpen(false)}
-                  variant="outline"
-                >
-                  Отмена
-                </Button>
-
-                <Button
-                  variant="destructive"
-                  onClick={() => deleteMutation.mutate()}
-                  disabled={deleteMutation.isPending}
-                >
-                  {deleteMutation.isPending && (
-                    <Loader className="h-4 w-4 mr-2 animate-spin" />
-                  )}
-                  Удалить
-                </Button>
-              </div>
-            </DrawerDialog>
           </div>
         </div>
         {book.description && (

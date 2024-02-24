@@ -5,6 +5,7 @@ import {
   BookOpenTextIcon,
   Edit,
   Loader,
+  Pencil,
   Trash,
 } from "lucide-react";
 import Image from "next/image";
@@ -21,6 +22,7 @@ export function BookInfoModal({
   setDeleteDialogOpen,
   setDateOpen,
   doneMutation,
+  setCollectionsOpen,
 }: {
   open: boolean;
   setOpen: (b: boolean) => void;
@@ -29,6 +31,7 @@ export function BookInfoModal({
   setEditOpen: (b: boolean) => void;
   setDeleteDialogOpen: (b: boolean) => void;
   setDateOpen: (b: boolean) => void;
+  setCollectionsOpen: (b: boolean) => void;
   doneMutation: {
     mutate: () => void;
     isPending: boolean;
@@ -97,6 +100,17 @@ export function BookInfoModal({
               )}
             </div>
           ))}
+        </div>
+        <h3 className="text-xl">Коллекции</h3>
+        <div className="flex flex-col gap-2">
+          {book.collections.map((collection) => (
+            <div className="flex flex-col gap-2" key={collection.id}>
+              <h4 className="text-lg">{collection.name}</h4>
+            </div>
+          ))}
+          <Button variant="outline" onClick={() => setCollectionsOpen(true)}>
+            <Pencil className="mr-2 w-4 h-4" /> Редактировать коллекции
+          </Button>
         </div>
         <Button
           className="gap-2"
