@@ -44,9 +44,8 @@ import { Toaster, toast } from "react-hot-toast";
 import { useMediaQuery } from "usehooks-ts";
 import { Badge } from "@/components/ui/badge";
 import { DateReadModal } from "@/components/dialogs/date-read-modal";
-import { dateToString } from "@/lib/utils";
+import { dateToString, declOfNum } from "@/lib/utils";
 import { isSameDay } from "date-fns";
-import { UploadButton } from "@/components/uploadthing";
 import { EditBookModal } from "@/components/dialogs/edit-book-modal";
 import { BookInfoModal } from "@/components/dialogs/book-info-modal";
 import { BookCollectionsModal } from "@/components/dialogs/book-collections-modal";
@@ -251,7 +250,9 @@ export function BookView({ book }: { book: Book }) {
                 )}
               </Button>
               <Badge variant="secondary">
-                <BookOpen className="w-4 h-4 mr-2" /> {book.pages} страниц всего
+                <BookOpen className="w-4 h-4 mr-2" /> {book.pages}{" "}
+                {declOfNum(book.pages, ["страница", "страницы", "страниц"])}{" "}
+                всего
               </Badge>
               <Badge variant="outline">
                 <CalendarDays className="w-4 h-4 mr-2" />
@@ -265,7 +266,13 @@ export function BookView({ book }: { book: Book }) {
               </Badge>
               <Badge variant="secondary">
                 <BookOpen className="w-4 h-4 mr-2" /> {lastEvent.pagesRead}{" "}
-                страниц из {book.pages}
+                {declOfNum(lastEvent.pagesRead, [
+                  "страница",
+                  "страницы",
+                  "страниц",
+                ])}{" "}
+                из {book.pages}{" "}
+                {declOfNum(book.pages, ["страницы", "страниц", "страниц"])}
               </Badge>
               <Badge variant="outline">
                 <CalendarDays className="w-4 h-4 mr-2" />

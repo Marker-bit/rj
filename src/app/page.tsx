@@ -17,19 +17,7 @@ export default function Home() {
     queryKey: ["user"],
     queryFn: () => fetch("/api/profile").then((res) => res.json()),
   });
-  // if (booksQuery?.data) {
-  //   const compareBooks = (a: Book, b: Book) => {
-  //     const aPages = a.readEvents[a.readEvents.length - 1]?.pagesRead;
-  //     const bPages = b.readEvents[b.readEvents.length - 1]?.pagesRead;
-  //     if (!aPages && !bPages) return 0;
-  //     if (!aPages) return -1;
-  //     if (!bPages) return 1;
-  //     if (aPages > bPages) return 1;
-  //     if (aPages == bPages) return 0;
-  //     if (aPages < bPages) return -1;
-  //   }
-  //   booksData = booksQuery.data.sort(compareBooks);
-  // }
+
   return (
     <div>
       <div className="flex p-1 min-h-10 items-center bg-zinc-100 border-b border-zinc-200 relative">
@@ -73,7 +61,6 @@ export default function Home() {
               <ChevronRight className="w-12 h-12" strokeWidth={3} />
             </h2>
           </Link>
-          {/* <div>???</div> */}
           <Stats />
         </div>
         <div className="flex flex-col gap-3 border-b border-zinc-300 p-3 cursor-default">

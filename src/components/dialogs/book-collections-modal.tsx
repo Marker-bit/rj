@@ -7,7 +7,7 @@ import { Loader } from "lucide-react";
 import { Checkbox } from "../ui/checkbox";
 import { useState } from "react";
 import { Button } from "../ui/button";
-import { declOfNum } from "@/lib/utils";
+import { cn, declOfNum } from "@/lib/utils";
 
 export function BookCollectionsModal({
   open,
@@ -58,7 +58,11 @@ export function BookCollectionsModal({
             collectionsQuery.data.map(
               (collection: { id: string; name: string; books: Book[] }) => (
                 <div
-                  className="flex gap-2 rounded-xl p-2 border border-zinc-100 hover:bg-zinc-100 cursor-pointer items-center"
+                  className={cn(
+                    "flex gap-2 rounded-xl p-2 hover:bg-zinc-100 cursor-pointer items-center transition-colors",
+                    selectedCollections.includes(collection.id) &&
+                      "bg-zinc-200 hover:bg-zinc-300"
+                  )}
                   key={collection.id}
                   onClick={() =>
                     setSelectedCollections(
