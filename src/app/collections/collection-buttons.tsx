@@ -18,7 +18,7 @@ export function CollectionButtons({
       <DeleteCollectionModal
         collection={collection}
         open={deleteDialogOpen}
-        setOpen={() => setDeleteDialogOpen(false)}
+        setOpen={setDeleteDialogOpen}
       />
       <div className="flex items-center gap-2">
         <Link href={`/collections/${collection.id}`}>

@@ -45,7 +45,7 @@ export function DeleteCollectionModal({
           действие невозможно отменить.
         </DialogDescription>
       </DialogHeader>
-      <div className="flex max-sm:flex-col gap-2 md:ml-auto w-fit">
+      <div className="flex max-sm:flex-col gap-2 md:ml-auto md:w-fit">
         <Button variant="outline" onClick={() => setOpen(false)}>
           Отмена
         </Button>

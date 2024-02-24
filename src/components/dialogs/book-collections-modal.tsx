@@ -7,6 +7,7 @@ import { Loader } from "lucide-react";
 import { Checkbox } from "../ui/checkbox";
 import { useState } from "react";
 import { Button } from "../ui/button";
+import { declOfNum } from "@/lib/utils";
 
 export function BookCollectionsModal({
   open,
@@ -82,7 +83,12 @@ export function BookCollectionsModal({
                   <div className="flex flex-col">
                     <h1 className="text-xl font-bold">{collection.name}</h1>
                     <div className="text-xs text-black/50">
-                      {collection.books.length} книг
+                      {collection.books.length}{" "}
+                      {declOfNum(collection.books.length, [
+                        "книга",
+                        "книги",
+                        "книг",
+                      ])}
                     </div>
                   </div>
                 </div>
