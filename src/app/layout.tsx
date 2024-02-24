@@ -4,6 +4,8 @@ import "./globals.css";
 import { BottomBar } from "./BottomBar";
 import { Provider } from "./QueryClientProvider";
 import Script from "next/script";
+import { Suspense } from "react";
+import YandexMetrika from "@/components/YandexMetrika";
 
 const font = Inter({ subsets: ["latin"] });
 
@@ -18,7 +20,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const production = process.env.NODE_ENV === "production";
-  const yandexMetricaId = process.env.YAMETRICA_ID;
+  const yandexMetricaId = process.env.NEXT_PUBLIC_YAMETRICA_ID;
   return (
     <html lang="en">
       <body className={font.className + "  overflow-x-hidden"}>
@@ -41,6 +43,11 @@ export default async function RootLayout({
           webvisor:true
     });`}
             </Script>
+          )}
+          {production && (
+            <Suspense fallback={<></>}>
+              <YandexMetrika />
+            </Suspense>
           )}
         </Provider>
       </body>
