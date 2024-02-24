@@ -5,7 +5,7 @@ const nextConfig = {
     return config;
   },
   images: {
-    domains: ['vercel-storage.com', 'utfs.io'],
+    domains: ["vercel-storage.com", "utfs.io", "img3.labirint.ru"],
   },
 };
 

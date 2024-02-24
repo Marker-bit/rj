@@ -1,11 +1,18 @@
 "use client";
 
-import { BookMinus, ChevronLeft, Loader, Plus, Trash } from "lucide-react";
+import {
+  BookMinus,
+  ChevronLeft,
+  Loader,
+  Plus,
+  Search,
+  Trash,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { z } from "zod";
+import { string, z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -43,6 +50,15 @@ function BookForm({ onSuccess }: { onSuccess?: () => void }) {
   const form = useForm<z.infer<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
   });
+  const [search, setSearch] = useState("");
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchResults, setSearchResults] = useState<
+    | {
+        title: string;
+        authors: string;
+        imageUrl: string | null;
+      }[]
+  >();
 
   const bookMutation = useMutation({
     mutationFn: (values: z.infer<typeof bookSchema>) =>
@@ -68,118 +84,184 @@ function BookForm({ onSuccess }: { onSuccess?: () => void }) {
   function onSubmit(values: z.infer<typeof bookSchema>) {
     bookMutation.mutate(values);
   }
+
+  function searchClick() {
+    setSearchLoading(true);
+    fetch(`/api/labirintSearch?q=${encodeURIComponent(search)}`)
+      .then((res) => res.json())
+      .then((res) => {
+        setSearchLoading(false);
+        setSearchResults(res);
+      });
+  }
+
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
-        <FormField
-          control={form.control}
-          name="coverUrl"
-          render={({ field }) => (
-            <FormItem>
-              {field.value ? (
-                <div className="relative w-fit">
-                  <Image
-                    src={field.value}
-                    width={500}
-                    height={500}
-                    className="h-52 w-auto rounded-md"
-                    alt="cover"
-                  />
-                  <div className="flex flex-col gap-2 absolute top-2 right-0 translate-x-[50%]">
-                    <Button
-                      size="icon"
-                      className="w-fit h-fit p-1"
-                      variant="outline"
-                      onClick={() => field.onChange("")}
-                      type="button"
-                    >
-                      <Trash className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </div>
+    <>
+      <div className="flex flex-col gap-2 mb-2">
+        <form
+          onSubmit={(evt) => {
+            evt.preventDefault();
+            searchClick();
+          }}
+        >
+          <div className="flex gap-2">
+            <Input
+              className="w-full"
+              value={search}
+              onChange={(evt) => setSearch(evt.target.value)}
+              placeholder="Поиск"
+            />
+            <Button size="icon" disabled={search.length === 0} type="submit">
+              {searchLoading ? (
+                <Loader className="w-4 h-4 animate-spin" />
               ) : (
-                <div className="flex items-center gap-2">
-                  <UploadButton
-                    endpoint="bookCover"
-                    content={{
-                      button: "Обложка",
-                      allowedContent: "Картинка (до 8МБ)",
-                    }}
-                    onClientUploadComplete={(res) => {
-                      field.onChange(res[0].url);
-                    }}
-                    onUploadError={(error: Error) => {
-                      alert(`ERROR! ${error.message}`);
-                    }}
-                  />
-                </div>
+                <Search className="w-4 h-4" />
               )}
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Название</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="author"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Автор</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="pages"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Кол-во страниц</FormLabel>
-              <FormControl>
-                <Input {...field} type="number" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Описание</FormLabel>
-              <FormControl>
-                <Textarea {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit" disabled={bookMutation.isPending}>
-          {bookMutation.isPending ? (
-            <Loader className="w-4 h-4 animate-spin mr-2" />
-          ) : (
-            <Plus className="w-4 h-4 mr-2" />
-          )}
-          Создать
-        </Button>
-      </form>
-    </Form>
+            </Button>
+          </div>
+        </form>
+        {searchResults &&
+          searchResults.map((book) => (
+            <button
+              key={book.title}
+              className="rounded-xl p-3 border border-black/10 flex gap-2"
+              onClick={() => {
+                form.reset({
+                  title: book.title,
+                  author: book.authors,
+                  coverUrl: book.imageUrl ?? undefined,
+                });
+                setSearchResults(undefined);
+              }}
+            >
+              {book.imageUrl && (
+                <Image
+                  src={book.imageUrl}
+                  width={500}
+                  height={500}
+                  className="w-[20vw] md:w-[15vw] lg:w-[10vw] h-auto rounded-md"
+                  alt="cover"
+                />
+              )}
+              <div className="flex flex-col">
+                <div className="text-xl">{book.title}</div>
+                <div className="text-xs text-black/70">{book.authors}</div>
+              </div>
+            </button>
+          ))}
+      </div>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+          <FormField
+            control={form.control}
+            name="coverUrl"
+            render={({ field }) => (
+              <FormItem>
+                {field.value ? (
+                  <div className="relative w-fit">
+                    <Image
+                      src={field.value}
+                      width={500}
+                      height={500}
+                      className="h-52 w-auto rounded-md"
+                      alt="cover"
+                    />
+                    <div className="flex flex-col gap-2 absolute top-2 right-0 translate-x-[50%]">
+                      <Button
+                        size="icon"
+                        className="w-fit h-fit p-1"
+                        variant="outline"
+                        onClick={() => field.onChange("")}
+                        type="button"
+                      >
+                        <Trash className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <UploadButton
+                      endpoint="bookCover"
+                      content={{
+                        button: "Обложка",
+                        allowedContent: "Картинка (до 8МБ)",
+                      }}
+                      onClientUploadComplete={(res) => {
+                        field.onChange(res[0].url);
+                      }}
+                      onUploadError={(error: Error) => {
+                        alert(`ERROR! ${error.message}`);
+                      }}
+                    />
+                  </div>
+                )}
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Название</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="author"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Автор</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="pages"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Кол-во страниц</FormLabel>
+                <FormControl>
+                  <Input {...field} type="number" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Описание</FormLabel>
+                <FormControl>
+                  <Textarea {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button type="submit" disabled={bookMutation.isPending}>
+            {bookMutation.isPending ? (
+              <Loader className="w-4 h-4 animate-spin mr-2" />
+            ) : (
+              <Plus className="w-4 h-4 mr-2" />
+            )}
+            Создать
+          </Button>
+        </form>
+      </Form>
+    </>
   );
 }
 
@@ -232,9 +314,7 @@ export default function BooksPage() {
       if (book.readEvents.length === 0) {
         return true;
       }
-      return !(
-        book.pages === book.readEvents[0].pagesRead
-      );
+      return !(book.pages === book.readEvents[0].pagesRead);
     });
   }
 
