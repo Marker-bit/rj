@@ -18,6 +18,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const production = process.env.NODE_ENV === "production";
+  const yandexMetricaId = process.env.YAMETRICA_ID;
   return (
     <html lang="en">
       <body className={font.className + "  overflow-x-hidden"}>
@@ -32,7 +33,7 @@ export default async function RootLayout({
     k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
     (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
  
-    ym(XXXXXXXX, "init", {
+    ym(${yandexMetricaId}, "init", {
           defer: true,
           clickmap:true,
           trackLinks:true,
