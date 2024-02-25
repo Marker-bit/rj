@@ -3,6 +3,7 @@ import { Lucia } from "lucia";
 import { PrismaAdapter } from "@lucia-auth/adapter-prisma";
 
 import { db } from "./db";
+import { SharePeople } from "@prisma/client";
 
 const adapter = new PrismaAdapter(db.session, db.user);
 
@@ -39,6 +40,6 @@ interface DatabaseUserAttributes {
   lastName: string;
   active: boolean;
   avatarUrl: string;
-  shareFollowers: string;
-  shareSubscriptions: string;
+  shareFollowers: SharePeople;
+  shareSubscriptions: SharePeople;
 }
