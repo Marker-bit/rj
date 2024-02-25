@@ -78,9 +78,9 @@ export function FriendView({
           </button>
         )}
       </div>
-      <button className="ml-auto">
+      {/* <button className="ml-auto">
         <ChevronRight className="w-7 h-7 text-black/50 group-hover:text-black transition-colors" />
-      </button>
+      </button> */}
     </div>
   );
 }
