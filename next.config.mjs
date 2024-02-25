@@ -5,7 +5,24 @@ const nextConfig = {
     return config;
   },
   images: {
-    domains: ["vercel-storage.com", "utfs.io", "img3.labirint.ru"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**.vercel-storage.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "utfs.io",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "*.labirint.ru",
+        pathname: "/**",
+      }
+    ],
   },
 };
 

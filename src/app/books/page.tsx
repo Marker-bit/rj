@@ -120,35 +120,39 @@ function BookForm({ onSuccess }: { onSuccess?: () => void }) {
             </Button>
           </div>
         </form>
-        {searchResults &&
-          searchResults.map((book) => (
-            <button
-              key={book.title}
-              className="rounded-xl p-3 border border-black/10 flex gap-2"
-              onClick={() => {
-                form.reset({
-                  title: book.title,
-                  author: book.authors,
-                  coverUrl: book.imageUrl ?? undefined,
-                });
-                setSearchResults(undefined);
-              }}
-            >
-              {book.imageUrl && (
-                <Image
-                  src={book.imageUrl}
-                  width={500}
-                  height={500}
-                  className="w-[20vw] md:w-[15vw] lg:w-[10vw] h-auto rounded-md"
-                  alt="cover"
-                />
-              )}
-              <div className="flex flex-col">
-                <div className="text-xl">{book.title}</div>
-                <div className="text-xs text-black/70">{book.authors}</div>
-              </div>
-            </button>
-          ))}
+        <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-2">
+          {searchResults &&
+            searchResults.slice(0, 5).map((book) => (
+              <button
+                key={book.title}
+                className="rounded-xl p-3 border border-black/10 flex gap-2"
+                onClick={() => {
+                  form.reset({
+                    title: book.title,
+                    author: book.authors,
+                    coverUrl: book.imageUrl ?? undefined,
+                  });
+                  setSearchResults(undefined);
+                }}
+              >
+                {book.imageUrl && (
+                  <Image
+                    src={book.imageUrl}
+                    width={500}
+                    height={500}
+                    className="w-[20vw] md:w-[15vw] lg:w-[10vw] h-auto rounded-md"
+                    alt="cover"
+                  />
+                )}
+                <div className="flex flex-col">
+                  <div className="text-xl">{book.title}</div>
+                  <div className="text-xs text-black/70 w-fit">
+                    {book.authors}
+                  </div>
+                </div>
+              </button>
+            ))}
+        </div>
       </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
