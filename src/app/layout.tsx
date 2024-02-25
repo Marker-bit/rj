@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -27,6 +28,7 @@ export default async function RootLayout({
         <Provider>
           <div className="min-h-screen">{children}</div>
           <BottomBar />
+          <Analytics />
           {production && (
             <Script id="metrika-counter" strategy="afterInteractive">
               {`(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
