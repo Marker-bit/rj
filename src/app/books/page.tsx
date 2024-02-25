@@ -98,7 +98,7 @@ function BookForm({ onSuccess }: { onSuccess?: () => void }) {
   return (
     <>
       <div className="flex flex-col gap-2 mb-2">
-        <form
+        {/* <form
           onSubmit={(evt) => {
             evt.preventDefault();
             searchClick();
@@ -119,7 +119,7 @@ function BookForm({ onSuccess }: { onSuccess?: () => void }) {
               )}
             </Button>
           </div>
-        </form>
+        </form> */}
         <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-2">
           {searchResults &&
             searchResults.slice(0, 5).map((book) => (
