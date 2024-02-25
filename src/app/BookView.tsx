@@ -58,7 +58,7 @@ const bookSchema = z.object({
   coverUrl: z.string().optional(),
 });
 
-export function BookView({ book }: { book: Book }) {
+export function BookView({ book }: { book: any }) {
   const queryClient = useQueryClient();
   const [editOpen, setEditOpen] = useState(false);
   const [dateOpen, setDateOpen] = useState(false);
@@ -296,7 +296,7 @@ export function BookView({ book }: { book: Book }) {
           )}
         </div>
         <div className="flex gap-1 flex-wrap">
-          {book.collections.map((collection) => (
+          {book.collections.map((collection: any) => (
             <Badge key={collection.id} variant="outline">
               {collection.name}
             </Badge>

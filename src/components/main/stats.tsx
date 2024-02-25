@@ -1,6 +1,6 @@
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { Stats as StatsData } from "@/app/Stats";
+import { Stats as StatsData } from "@/components/stats";
 
 export function Stats() {
   return (

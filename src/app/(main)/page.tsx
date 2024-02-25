@@ -3,7 +3,6 @@ import { Profile } from "@/components/main/profile";
 import { Stats } from "@/components/main/stats";
 
 export default function Home() {
-
   return (
     <div>
       <div className="flex p-1 min-h-10 items-center bg-zinc-100 border-b border-zinc-200 relative">
