@@ -1,6 +1,6 @@
 "use client";
 
-import { DrawerDialog } from "@/app/Drawer";
+import { DrawerDialog } from "@/components/drawer";
 import { Book, Collection } from "@prisma/client";
 import { DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Button } from "../ui/button";

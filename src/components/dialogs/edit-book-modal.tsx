@@ -1,4 +1,4 @@
-import { DrawerDialog } from "@/app/Drawer";
+import { DrawerDialog } from "@/components/drawer";
 import { DialogHeader, DialogTitle } from "../ui/dialog";
 import { Edit, Loader, Trash } from "lucide-react";
 import {

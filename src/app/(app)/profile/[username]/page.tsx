@@ -7,7 +7,7 @@ import Image from "next/image";
 import { useParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { FriendView } from "@/app/FriendView";
+import { FriendView } from "@/components/friend-view";
 
 export default function Page() {
   const [currentTab, setCurrentTab] = useState(0);

@@ -1,31 +1,26 @@
 "use client";
 
+import { DrawerDialog } from "@/components/drawer";
 import { Button } from "@/components/ui/button";
-import { useQuery } from "@tanstack/react-query";
-import {
-  BookMinus,
-  BookOpen,
-  BookOpenCheck,
-  Check,
-  ChevronLeft,
-  Loader,
-  Undo,
-} from "lucide-react";
-import Link from "next/link";
-import { DrawerDialog } from "../Drawer";
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Calendar } from "@/components/ui/calendar";
+import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ReadEvent } from "@prisma/client";
+import { useQuery } from "@tanstack/react-query";
 import {
   addDays,
   format,
   isAfter,
   isBefore,
   isEqual,
-  isSameDay,
 } from "date-fns";
-import { useState } from "react";
 import { ru } from "date-fns/locale";
-import { ReadEvent } from "@prisma/client";
+import {
+  BookMinus,
+  ChevronLeft,
+  Loader,
+} from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
 import { DateRange } from "react-day-picker";
 import { EventView } from "./EventView";
 
