@@ -58,7 +58,10 @@ const formSchema = z.object({
   firstName: z.string().min(1, "Требуется имя").max(50),
   lastName: z.string().min(1, "Требуется фамилия").max(50),
   avatarUrl: z.string().optional(),
-  shareSubscriptions: z.enum(["ALL", "SUBS", "NONE"]).default("NONE").optional(),
+  shareSubscriptions: z
+    .enum(["ALL", "SUBS", "NONE"])
+    .default("NONE")
+    .optional(),
   shareFollowers: z.enum(["ALL", "SUBS", "NONE"]).default("NONE").optional(),
 });
 
@@ -76,8 +79,6 @@ export default function SettingsPage() {
       firstName: "",
       lastName: "",
       avatarUrl: "",
-      shareFollowers: "NONE",
-      shareSubscriptions: "NONE",
     },
   });
 
@@ -300,6 +301,7 @@ export default function SettingsPage() {
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
+                      value={field.value}
                     >
                       <FormControl>
                         <SelectTrigger>
@@ -320,13 +322,14 @@ export default function SettingsPage() {
               />
               <FormField
                 control={form.control}
-                name="shareFollowers"
+                name="shareSubscriptions"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Кто видит ваши подписки?</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
+                      value={field.value}
                     >
                       <FormControl>
                         <SelectTrigger>
