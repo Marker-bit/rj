@@ -22,17 +22,25 @@ datasource db {
 //   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 // }
 
+enum SharePeople {
+  NONE
+  ALL
+  SUBS
+}
+
 model User {
-  id             String       @id @default(cuid())
-  username       String       @unique
-  firstName      String?
-  lastName       String?
-  active         Boolean      @default(false)
-  hashedPassword String
-  avatarUrl      String       @default("")
-  sessions       Session[]
-  books          Book[]
-  collections    Collection[]
+  id                 String       @id @default(cuid())
+  username           String       @unique
+  firstName          String?
+  lastName           String?
+  active             Boolean      @default(false)
+  hashedPassword     String
+  avatarUrl          String       @default("")
+  sessions           Session[]
+  books              Book[]
+  collections        Collection[]
+  shareFollowers     SharePeople  @default(NONE)
+  shareSubscriptions SharePeople  @default(NONE)
 
   follower  Follow[] @relation("FollowerToUser")
   following Follow[] @relation("FollowingToUser")

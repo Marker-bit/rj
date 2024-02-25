@@ -65,8 +65,6 @@ export async function POST(request: NextRequest) {
     sessionCookie.attributes
   );
   return NextResponse.json({
-    // ...createdUser,
-    // hashedPassword: null,
     status: "created",
   });
 }

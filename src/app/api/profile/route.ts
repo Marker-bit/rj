@@ -15,5 +15,4 @@ export async function GET(req: NextRequest) {
     },
   });
   return NextResponse.json(userData);
-  // return NextResponse.json({ name: "John Doe" });
 }

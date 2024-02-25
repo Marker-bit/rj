@@ -19,6 +19,7 @@ import { z } from "zod";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -34,6 +35,13 @@ import { generateClientDropzoneAccept } from "uploadthing/client";
 import { CropImage } from "@/components/crop-image";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const formSchema = z.object({
   username: z
@@ -50,9 +58,12 @@ const formSchema = z.object({
   firstName: z.string().min(1, "Требуется имя").max(50),
   lastName: z.string().min(1, "Требуется фамилия").max(50),
   avatarUrl: z.string().optional(),
+  shareSubscriptions: z.enum(["ALL", "SUBS", "NONE"]).default("NONE").optional(),
+  shareFollowers: z.enum(["ALL", "SUBS", "NONE"]).default("NONE").optional(),
 });
 
 export default function SettingsPage() {
+  const [isMounted, setIsMounted] = useState(false);
   const [logOutLoading, setLogOutLoading] = useState(false);
   const [usernameFound, setUsernameFound] = useState<boolean | null>(null);
   const [cropOpen, setCropOpen] = useState(false);
@@ -65,6 +76,8 @@ export default function SettingsPage() {
       firstName: "",
       lastName: "",
       avatarUrl: "",
+      shareFollowers: "NONE",
+      shareSubscriptions: "NONE",
     },
   });
 
@@ -76,6 +89,10 @@ export default function SettingsPage() {
       });
     },
   });
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     userMutation.mutate(values);
@@ -129,6 +146,8 @@ export default function SettingsPage() {
     });
   }, [form]);
 
+  if (!isMounted) return null;
+
   return (
     <div>
       <Form {...form}>
@@ -174,12 +193,14 @@ export default function SettingsPage() {
                               alt="avatar"
                             />
                             <input {...getInputProps()} />
-                              <div className={cn(
+                            <div
+                              className={cn(
                                 "absolute top-0 left-0 pointer-events-none w-full h-full bg-white/80 flex items-center justify-center opacity-0 transition-opacity",
                                 uploadProgress !== null && "opacity-100"
-                              )}>
-                                <Loader className="w-4 h-4 animate-spin" />
-                              </div>
+                              )}
+                            >
+                              <Loader className="w-4 h-4 animate-spin" />
+                            </div>
                           </div>
                         ) : (
                           <div
@@ -264,6 +285,60 @@ export default function SettingsPage() {
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="shareFollowers"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Кто видит ваших подписчиков?</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="ALL">Все</SelectItem>
+                        <SelectItem value="SUBS">
+                          Только мои подписки
+                        </SelectItem>
+                        <SelectItem value="NONE">Только я</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="shareFollowers"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Кто видит ваши подписки?</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="ALL">Все</SelectItem>
+                        <SelectItem value="SUBS">
+                          Только мои подписки
+                        </SelectItem>
+                        <SelectItem value="NONE">Только я</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
