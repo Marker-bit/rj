@@ -142,6 +142,8 @@ export default function SettingsPage() {
         firstName: user.firstName,
         lastName: user.lastName,
         avatarUrl: user.avatarUrl ?? "",
+        shareFollowers: user.shareFollowers,
+        shareSubscriptions: user.shareSubscriptions
       });
     });
   }, [form]);
