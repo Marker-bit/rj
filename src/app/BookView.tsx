@@ -272,7 +272,8 @@ export function BookView({ book }: { book: Book }) {
                   "страниц",
                 ])}{" "}
                 из {book.pages}{" "}
-                {declOfNum(book.pages, ["страницы", "страниц", "страниц"])}
+                {declOfNum(book.pages, ["страницы", "страниц", "страниц"])} (
+                {((lastEvent.pagesRead / book.pages) * 100).toFixed(1)}%)
               </Badge>
               <Badge variant="outline">
                 <CalendarDays className="w-4 h-4 mr-2" />
