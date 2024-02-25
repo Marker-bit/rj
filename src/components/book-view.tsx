@@ -4,6 +4,7 @@ import { BookCollectionsModal } from "@/components/dialogs/book-collections-moda
 import { BookInfoModal } from "@/components/dialogs/book-info-modal";
 import { DateReadModal } from "@/components/dialogs/date-read-modal";
 import { EditBookModal } from "@/components/dialogs/edit-book-modal";
+import { DrawerDialog } from "@/components/drawer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,16 +32,6 @@ import Image from "next/image";
 import { useState } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { useMediaQuery } from "usehooks-ts";
-import { z } from "zod";
-import { DrawerDialog } from "@/components/drawer";
-
-const bookSchema = z.object({
-  title: z.string().min(1),
-  author: z.string().min(1),
-  pages: z.coerce.number().min(1),
-  description: z.string().optional(),
-  coverUrl: z.string().optional(),
-});
 
 export function BookView({ book }: { book: any }) {
   const queryClient = useQueryClient();

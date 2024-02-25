@@ -66,7 +66,7 @@ export default function JournalPage() {
   return (
     <div>
       <div className="flex p-1 items-center bg-zinc-100 border-b border-zinc-200 min-h-10">
-        <Link href="/">
+        <Link href="/home">
           <button className="p-1 hover:text-blue-600 rounded-md flex items-center gap-1 text-blue-500 active:scale-95 transition-all">
             <ChevronLeft className="w-6 h-6" />
             <div className="font-semibold">Главная</div>
