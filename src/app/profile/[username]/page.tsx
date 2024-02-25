@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader, UserPlus, UserX } from "lucide-react";
 import Image from "next/image";
@@ -63,10 +64,11 @@ export default function Page() {
         </div>
         <div className="text-sm text-black/70">@{username}</div>
         {userData.following ? (
-          <button
-            className="flex gap-2 items-center w-fit bg-gray-100 rounded-xl py-1 px-3 active:opacity-50 transition-all select-none disabled:opacity-40 border border-zinc-200 mx-auto"
+          <Button
+            className="gap-2 w-fit"
             onClick={() => followMutation.mutate()}
             disabled={followMutation.isPending}
+            variant="outline"
           >
             {followMutation.isPending ? (
               <Loader className="w-4 h-4 animate-spin" />
@@ -74,10 +76,10 @@ export default function Page() {
               <UserX className="w-4 h-4" />
             )}
             Удалить из друзей
-          </button>
+          </Button>
         ) : (
-          <button
-            className="flex gap-2 items-center w-fit bg-blue-500 rounded-xl text-white py-1 px-3 active:opacity-50 transition-all select-none disabled:opacity-40"
+          <Button
+            className="gap-2 w-fit"
             onClick={() => followMutation.mutate()}
             disabled={followMutation.isPending}
           >
@@ -87,7 +89,7 @@ export default function Page() {
               <UserPlus className="w-4 h-4" />
             )}
             Добавить в друзья
-          </button>
+          </Button>
         )}
         {/* <button className="flex gap-2 items-center w-fit bg-blue-500 rounded-xl text-white py-1 px-3 active:opacity-50 transition-all select-none disabled:opacity-40">
           <UserPlus className="w-4 h-4 mr-2" />

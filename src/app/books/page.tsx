@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { string, z } from "zod";
 import { useForm } from "react-hook-form";
@@ -306,10 +306,34 @@ export default function BooksPage() {
   const [readBooks, setReadBooks] = useState(false);
   const [notStarted, setNotStarted] = useState(false);
 
+  useEffect(() => {
+    const localStorageReadBooks = localStorage.getItem("readBooks");
+    const localStorageNotStarted = localStorage.getItem("notStarted");
+    if (localStorageReadBooks) {
+      setReadBooks(JSON.parse(localStorageReadBooks));
+    }
+    if (localStorageNotStarted) {
+      setNotStarted(JSON.parse(localStorageNotStarted));
+    }
+  }, []);
+
   const booksQuery = useQuery({
     queryKey: ["books"],
     queryFn: () => fetch("/api/books").then((res) => res.json()),
   });
+
+  function changeReadBooks() {
+    setReadBooks((readBooks) => {
+      localStorage.setItem("readBooks", JSON.stringify(!readBooks));
+      return !readBooks;
+    });
+  }
+  function changeNotStarted() {
+    setNotStarted((notStarted) => {
+      localStorage.setItem("notStarted", JSON.stringify(!notStarted));
+      return !notStarted;
+    });
+  }
 
   let books = booksQuery.data || [];
 
@@ -345,24 +369,24 @@ export default function BooksPage() {
       <div className="p-3 flex flex-col gap-2">
         <div
           className="items-center flex space-x-2 cursor-pointer p-2 rounded-md border border-zinc-200 mb-2 hover:bg-zinc-100 transition-all select-none"
-          onClick={() => setReadBooks(!readBooks)}
+          onClick={changeReadBooks}
         >
           <Switch id="readBooks" checked={readBooks} />
           <div
             className="text-sm font-medium leading-none peer-disabled:opacity-70 cursor-pointer select-none"
-            onClick={() => setReadBooks(!readBooks)}
+            onClick={changeReadBooks}
           >
             Скрывать прочитанные книги
           </div>
         </div>
         <div
           className="items-center flex space-x-2 cursor-pointer p-2 rounded-md border border-zinc-200 mb-2 hover:bg-zinc-100 transition-all select-none"
-          onClick={() => setNotStarted(!notStarted)}
+          onClick={changeNotStarted}
         >
           <Switch id="notStarted" checked={notStarted} />
           <div
             className="text-sm font-medium leading-none peer-disabled:opacity-70 cursor-pointer select-none"
-            onClick={() => setNotStarted(!notStarted)}
+            onClick={changeNotStarted}
           >
             Скрывать не начатые книги
           </div>
