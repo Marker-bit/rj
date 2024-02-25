@@ -1,8 +1,9 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ChevronRight, Loader, UserPlus, UserX } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Loader, UserPlus, UserX } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -17,13 +18,20 @@ export function FriendView({
     id: string;
     avatarUrl: string;
   };
-  following: boolean;
+  following?: boolean;
 }) {
   const queryClient = useQueryClient();
+  const userQuery = useQuery({
+    queryKey: ["user", friend.username],
+    queryFn: async () => {
+      const res = await fetch(`/api/profile/${friend.username}`);
+      return await res.json();
+    },
+  });
   const followMutation = useMutation({
     mutationFn: () => {
       return fetch(`/api/profile/${friend.username}/follow`, {
-        method: following ? "DELETE" : "POST",
+        method: (following || userQuery.data?.following) ? "DELETE" : "POST",
       });
     },
     onSuccess: () => {
@@ -53,9 +61,44 @@ export function FriendView({
             {friend.firstName} {friend.lastName}
           </div>
           <div className="text-sm text-black/70">@{friend.username}</div>
-          {following ? (
+          {following === true ? (
             <Button
-              className="gap-2"
+              className="gap-2 w-fit"
+              onClick={(evt) => {
+                followMutation.mutate();
+                evt.preventDefault();
+              }}
+              disabled={followMutation.isPending}
+              variant="outline"
+            >
+              {followMutation.isPending ? (
+                <Loader className="w-4 h-4 animate-spin" />
+              ) : (
+                <UserX className="w-4 h-4" />
+              )}
+              Отменить подписку
+            </Button>
+          ) : following === false ? (
+            <Button
+              className="gap-2 w-fit"
+              onClick={(evt) => {
+                followMutation.mutate();
+                evt.preventDefault();
+              }}
+              disabled={followMutation.isPending}
+            >
+              {followMutation.isPending ? (
+                <Loader className="w-4 h-4 animate-spin" />
+              ) : (
+                <UserPlus className="w-4 h-4" />
+              )}
+              Подписаться
+            </Button>
+          ) : userQuery.isPending ? (
+            <Skeleton className="w-48 h-10 rounded-md" />
+          ) : userQuery.data?.following ? (
+            <Button
+              className="gap-2 w-fit"
               onClick={(evt) => {
                 followMutation.mutate();
                 evt.preventDefault();
@@ -72,7 +115,7 @@ export function FriendView({
             </Button>
           ) : (
             <Button
-              className="gap-2"
+              className="gap-2 w-fit"
               onClick={(evt) => {
                 followMutation.mutate();
                 evt.preventDefault();
