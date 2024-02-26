@@ -1,4 +1,4 @@
-import { BookView } from "@/components/book-view";
+import { BookView } from "@/components/book/book-view";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
 import { BookMinus, ChevronRight } from "lucide-react";

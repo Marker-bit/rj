@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Switch } from "@/components/ui/switch";
-import { BookView } from "@/components/book-view";
+import { BookView } from "@/components/book/book-view";
 import { Textarea } from "@/components/ui/textarea";
 import { UploadButton } from "@/components/uploadthing";
 import { useMediaQuery } from "usehooks-ts";
