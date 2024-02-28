@@ -13,7 +13,11 @@ export async function Books() {
     },
     take: 3,
     include: {
-      readEvents: true,
+      readEvents: {
+        orderBy: {
+          readAt: "desc"
+        }
+      },
       collections: true,
     },
   });
