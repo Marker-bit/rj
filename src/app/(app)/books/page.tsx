@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Switch } from "@/components/ui/switch";
-import { BookView } from "../BookView";
+import { BookView } from "@/components/book/book-view";
 import { Textarea } from "@/components/ui/textarea";
 import { UploadButton } from "@/components/uploadthing";
 import { useMediaQuery } from "usehooks-ts";
@@ -355,7 +355,7 @@ export default function BooksPage() {
   return (
     <div>
       <div className="flex p-1 items-center bg-zinc-100 border-b border-zinc-200 min-h-10">
-        <Link href="/">
+        <Link href="/home">
           <button className="p-1 hover:text-blue-600 rounded-md flex items-center gap-1 text-blue-500 active:scale-95 transition-all">
             <ChevronLeft className="w-6 h-6" />
             <div className="font-semibold">Главная</div>

@@ -1,64 +1,39 @@
 "use client";
 
+import { BookCollectionsModal } from "@/components/dialogs/book-collections-modal";
+import { BookInfoModal } from "@/components/dialogs/book-info-modal";
+import { DateReadModal } from "@/components/dialogs/date-read-modal";
+import { EditBookModal } from "@/components/dialogs/edit-book-modal";
+import { DrawerDialog } from "@/components/drawer";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { dateToString, declOfNum } from "@/lib/utils";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { isSameDay } from "date-fns";
 import {
   BookIcon,
   BookOpen,
   BookOpenCheck,
   BookOpenTextIcon,
   CalendarDays,
-  ChevronDown,
   Edit,
   Info,
   Loader,
   Plus,
-  Save,
   Trash,
-  Undo,
-  X,
+  Undo
 } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
-import AutoResizeInput from "./AutoResize";
-import { Input } from "@/components/ui/input";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { DrawerDialog } from "./Drawer";
 import { Toaster, toast } from "react-hot-toast";
 import { useMediaQuery } from "usehooks-ts";
-import { Badge } from "@/components/ui/badge";
-import { DateReadModal } from "@/components/dialogs/date-read-modal";
-import { dateToString, declOfNum } from "@/lib/utils";
-import { isSameDay } from "date-fns";
-import { EditBookModal } from "@/components/dialogs/edit-book-modal";
-import { BookInfoModal } from "@/components/dialogs/book-info-modal";
-import { BookCollectionsModal } from "@/components/dialogs/book-collections-modal";
 
-const bookSchema = z.object({
-  title: z.string().min(1),
-  author: z.string().min(1),
-  pages: z.coerce.number().min(1),
-  description: z.string().optional(),
-  coverUrl: z.string().optional(),
-});
-
-export function BookView({ book }: { book: Book }) {
+export function BookView({ book }: { book: any }) {
   const queryClient = useQueryClient();
   const [editOpen, setEditOpen] = useState(false);
   const [dateOpen, setDateOpen] = useState(false);
@@ -296,7 +271,7 @@ export function BookView({ book }: { book: Book }) {
           )}
         </div>
         <div className="flex gap-1 flex-wrap">
-          {book.collections.map((collection) => (
+          {book.collections.map((collection: any) => (
             <Badge key={collection.id} variant="outline">
               {collection.name}
             </Badge>

@@ -1,31 +1,26 @@
 "use client";
 
+import { DrawerDialog } from "@/components/drawer";
 import { Button } from "@/components/ui/button";
-import { useQuery } from "@tanstack/react-query";
-import {
-  BookMinus,
-  BookOpen,
-  BookOpenCheck,
-  Check,
-  ChevronLeft,
-  Loader,
-  Undo,
-} from "lucide-react";
-import Link from "next/link";
-import { DrawerDialog } from "../Drawer";
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Calendar } from "@/components/ui/calendar";
+import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ReadEvent } from "@prisma/client";
+import { useQuery } from "@tanstack/react-query";
 import {
   addDays,
   format,
   isAfter,
   isBefore,
   isEqual,
-  isSameDay,
 } from "date-fns";
-import { useState } from "react";
 import { ru } from "date-fns/locale";
-import { ReadEvent } from "@prisma/client";
+import {
+  BookMinus,
+  ChevronLeft,
+  Loader,
+} from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
 import { DateRange } from "react-day-picker";
 import { EventView } from "./EventView";
 
@@ -71,7 +66,7 @@ export default function JournalPage() {
   return (
     <div>
       <div className="flex p-1 items-center bg-zinc-100 border-b border-zinc-200 min-h-10">
-        <Link href="/">
+        <Link href="/home">
           <button className="p-1 hover:text-blue-600 rounded-md flex items-center gap-1 text-blue-500 active:scale-95 transition-all">
             <ChevronLeft className="w-6 h-6" />
             <div className="font-semibold">Главная</div>

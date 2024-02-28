@@ -24,16 +24,16 @@ export function BottomBar() {
     <>
       <div className="sticky bottom-0 left-0 w-fit bg-gray-200 grid grid-cols-5 items-center justify-center content-center p-2 min-h-[10vh] mx-auto rounded-t-xl">
         <AnimatePresence>
-          <Link href="/" className="w-fit">
+          <Link href="/home" className="w-fit">
             <div
               className={cn(
                 "flex flex-col text-gray-500 rounded-md p-2 items-center cursor-pointer transition-all relative",
-                pathname === "/" && "text-black"
+                pathname === "/home" && "text-black"
               )}
             >
               <HomeIcon className="w-6 h-6 m-2" />
               <div className="text-xs">Главная</div>
-              {pathname === "/" && (
+              {pathname === "/home" && (
                 <motion.div
                   layoutId="current"
                   className="w-full h-full absolute top-0 left-0 bg-black/5 shadow-md -z-10 rounded-md"

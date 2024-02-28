@@ -1,4 +1,4 @@
-import { DrawerDialog } from "@/app/Drawer";
+import { DrawerDialog } from "@/components/drawer";
 import {
   BookOpen,
   BookOpenCheck,
@@ -40,7 +40,7 @@ export function BookInfoModal({
   const lastEvent = book.readEvents[0];
 
   return (
-    <DrawerDialog open={open} onOpenChange={setOpen}>
+    <DrawerDialog open={open} onOpenChange={setOpen} className="min-w-[50vw]">
       <div className="flex gap-2 flex-col mt-2">
         <div className="flex">
           {book.coverUrl && (
