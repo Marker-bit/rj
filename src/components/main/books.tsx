@@ -1,26 +1,13 @@
-import { BookView } from "@/components/book/book-view";
-import { db } from "@/lib/db";
+import { fetchBooks } from "@/lib/books";
 import { validateRequest } from "@/lib/server-validate-request";
 import { BookMinus, ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { BookView } from "@/components/book/book-view";
 
 export async function Books() {
   const { user } = await validateRequest();
   if (!user) return null;
-  const books = await db.book.findMany({
-    where: {
-      userId: user.id,
-    },
-    take: 3,
-    include: {
-      readEvents: {
-        orderBy: {
-          readAt: "desc"
-        }
-      },
-      collections: true,
-    },
-  });
+  const books = (await fetchBooks(user.id)).slice(0, 3);
   return (
     <div className="flex flex-col gap-3 border-b border-zinc-300 p-3 cursor-default">
       <Link href="/books">

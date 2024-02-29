@@ -26,9 +26,10 @@ import {
   Loader,
   Plus,
   Trash,
-  Undo
+  Undo,
 } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { useMediaQuery } from "usehooks-ts";
@@ -42,6 +43,7 @@ export function BookView({ book }: { book: any }) {
   const [descriptionDrawerOpen, setDescriptionDrawerOpen] = useState(false);
   const [collectionsOpen, setCollectionsOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
+  const router = useRouter();
 
   const undoEventMutation = useMutation({
     mutationFn: () =>
@@ -56,6 +58,7 @@ export function BookView({ book }: { book: any }) {
         queryKey: ["events"],
       });
       toast.success("Сохранено!");
+      router.refresh();
     },
   });
 
@@ -77,6 +80,7 @@ export function BookView({ book }: { book: any }) {
       });
       toast.success("Сохранено!");
       setActionsDrawerOpen(false);
+      router.refresh();
     },
   });
 
@@ -99,6 +103,7 @@ export function BookView({ book }: { book: any }) {
       setDateOpen(false);
       toast.success("Сохранено!");
       setActionsDrawerOpen(false);
+      router.refresh();
     },
   });
 
@@ -117,6 +122,7 @@ export function BookView({ book }: { book: any }) {
       setDeleteDialogOpen(false);
       setActionsDrawerOpen(false);
       toast.success("Сохранено!");
+      router.refresh();
     },
   });
 

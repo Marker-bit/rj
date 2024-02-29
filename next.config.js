@@ -1,3 +1,5 @@
+const withMDX = require("@next/mdx")();
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   webpack: (config) => {
@@ -21,9 +23,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "*.labirint.ru",
         pathname: "/**",
-      }
+      },
     ],
   },
+  pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
 };
 
-export default nextConfig;
+module.exports = withMDX(nextConfig);
