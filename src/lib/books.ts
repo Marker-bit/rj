@@ -15,11 +15,13 @@ export async function fetchBooks(userId: string) {
     },
   });
   const compareBooks = (a: any, b: any) => {
-    const aPages = a.readEvents[a.readEvents.length - 1]?.pagesRead;
-    const bPages = b.readEvents[b.readEvents.length - 1]?.pagesRead;
+    let aPages = a.readEvents[a.readEvents.length - 1]?.pagesRead;
+    let bPages = b.readEvents[b.readEvents.length - 1]?.pagesRead;
     if (!aPages && !bPages) return 0;
     if (!aPages) return 1;
     if (!bPages) return -1;
+    aPages = aPages / a.pages;
+    bPages = bPages / b.pages;
     if (aPages > bPages) return -1;
     if (aPages == bPages) return 0;
     if (aPages < bPages) return 1;
