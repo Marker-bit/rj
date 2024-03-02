@@ -26,7 +26,7 @@ export function AddBook({
     },
     onSuccess: () => {
       router.refresh();
-    }
+    },
   });
   return (
     <div className="p-2 border border-zinc-100 rounded-xl flex items-center">

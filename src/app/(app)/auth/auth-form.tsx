@@ -56,7 +56,7 @@ export function AuthForm() {
             } else if (res.status === "invalid-password") {
               alert("Неправильный пароль");
             }
-          }
+          },
         );
     },
   });

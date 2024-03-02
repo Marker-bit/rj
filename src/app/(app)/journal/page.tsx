@@ -6,19 +6,9 @@ import { Calendar } from "@/components/ui/calendar";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ReadEvent } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
-import {
-  addDays,
-  format,
-  isAfter,
-  isBefore,
-  isEqual,
-} from "date-fns";
+import { addDays, format, isAfter, isBefore, isEqual } from "date-fns";
 import { ru } from "date-fns/locale";
-import {
-  BookMinus,
-  ChevronLeft,
-  Loader,
-} from "lucide-react";
+import { BookMinus, ChevronLeft, Loader } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
@@ -124,7 +114,7 @@ export default function JournalPage() {
             readAt: string | Date;
           }) => (
             <EventView event={event} key={event.id} />
-          )
+          ),
         )}
       </div>
     </div>

@@ -69,7 +69,7 @@ export default async function ProfilePage() {
       </div>
       <Suspense
         fallback={
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-2 mt-2">
             <Skeleton className="w-full h-14" />
             <Skeleton className="w-full h-14" />
             <Skeleton className="w-full h-14" />

@@ -53,11 +53,11 @@ function BookForm({ onSuccess }: { onSuccess?: () => void }) {
   const [search, setSearch] = useState("");
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchResults, setSearchResults] = useState<
-    | {
-        title: string;
-        authors: string;
-        imageUrl: string | null;
-      }[]
+    {
+      title: string;
+      authors: string;
+      imageUrl: string | null;
+    }[]
   >();
 
   const bookMutation = useMutation({

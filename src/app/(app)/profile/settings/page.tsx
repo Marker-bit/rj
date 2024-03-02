@@ -200,7 +200,7 @@ export default function SettingsPage() {
                             <div
                               className={cn(
                                 "absolute top-0 left-0 pointer-events-none w-full h-full bg-white/80 flex items-center justify-center opacity-0 transition-opacity",
-                                uploadProgress !== null && "opacity-100"
+                                uploadProgress !== null && "opacity-100",
                               )}
                             >
                               <Loader className="w-4 h-4 animate-spin" />
@@ -247,7 +247,7 @@ export default function SettingsPage() {
                           onChange={(e) => {
                             field.onChange(e);
                             fetch(
-                              `/api/auth/username?username=${e.target.value}`
+                              `/api/auth/username?username=${e.target.value}`,
                             )
                               .then((res) => res.json())
                               .then((data) => {

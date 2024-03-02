@@ -1,10 +1,7 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
-import {
-  ChevronLeft,
-  Search
-} from "lucide-react";
+import { ChevronLeft, Search } from "lucide-react";
 import Link from "next/link";
 
 export default function BooksPage() {
@@ -21,9 +18,11 @@ export default function BooksPage() {
           Поиск
         </div>
       </div>
-      <form onSubmit={(evt) => {
-        evt.preventDefault();
-      }}>
+      <form
+        onSubmit={(evt) => {
+          evt.preventDefault();
+        }}
+      >
         <div className="flex gap-2 m-2 p-2 border border-zinc-100 rounded-xl">
           <Input className="w-full" />
           <button
