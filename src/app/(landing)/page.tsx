@@ -29,6 +29,7 @@ export default async function LandingPage({
               height={100}
               alt="logo"
               className="size-14"
+              loading="eager"
             />
           </div>
           <h1 className="text-5xl md:text-7xl font-black text-center">
