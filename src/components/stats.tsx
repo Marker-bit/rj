@@ -41,7 +41,7 @@ export async function Stats() {
       book: true,
     },
     orderBy: {
-      readAt: "asc",
+      readAt: "desc",
     },
   });
 
