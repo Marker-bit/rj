@@ -14,12 +14,22 @@ export default async function LandingPage({
 
   return (
     <div className="flex items-center flex-col">
-      <div className="h-screen p-2 w-full">
+      <div
+        className="h-screen p-2 w-full overflow-hidden"
+        style={{
+          background:
+            "repeating-linear-gradient(to right, hsl(var(--border)), transparent 1px, transparent 10px), repeating-linear-gradient(to bottom, hsl(var(--border)), transparent 1px, transparent 10px)",
+        }}
+      >
         <div
-          className="p-2 rounded-xl border-zinc-100 w-full h-full flex flex-col gap-2 items-center justify-center"
+          className="p-2 rounded-xl border-zinc-100 w-full h-full flex flex-col gap-2 items-center justify-center overflow-hidden"
           style={{
-            background:
-              "repeating-linear-gradient(to right, hsl(var(--border)), transparent 1px, transparent 10px), repeating-linear-gradient(to bottom, hsl(var(--border)), transparent 1px, transparent 10px)",
+            backgroundImage: [
+              "radial-gradient(ellipse at top, transparent 60%, hsl(var(--primary) / 0.2))",
+              "linear-gradient(to bottom, transparent 30%, hsl(var(--primary) / 0.2))",
+              "linear-gradient(to bottom, hsl(var(--background)) 40%, transparent)",
+              "repeating-linear-gradient(45deg, transparent,transparent 60px, hsl(var(--primary)) 61px, transparent 62px)",
+            ].join(", "),
           }}
         >
           <div className="p-2 bg-gradient-to-b from-zinc-200 to-zinc-300 rounded-xl">
@@ -47,6 +57,13 @@ export default async function LandingPage({
               <Button>Начать</Button>
             </Link>
           )}
+          <div
+            className="mb-[-150px] mt-16 size-[300px] rounded-full bg-background md:mb-[-250px] md:size-[500px]"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle at 80% 0%, transparent 40%, hsl(var(--primary)))",
+            }}
+          />
         </div>
       </div>
     </div>
