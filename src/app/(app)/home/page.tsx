@@ -6,18 +6,18 @@ import { Suspense } from "react";
 
 export default function Home() {
   return (
-    <div>
+    <div className="mb-[15vh]">
       <div className="flex p-1 min-h-10 items-center bg-zinc-100 border-b border-zinc-200 relative">
         <div className="font-semibold mx-auto">Главная</div>
       </div>
       <div className="flex flex-col">
         <Suspense
           fallback={
-            <div className="flex flex-col">
-              <Skeleton className="w-56 h-12 m-2" />
-              <Skeleton className="w-full m-2 h-44" />
-              <Skeleton className="w-full m-2 h-44" />
-              <Skeleton className="w-full m-2 h-44" />
+            <div className="flex flex-col m-2 gap-2">
+              <Skeleton className="w-56 h-12" />
+              <Skeleton className="w-full h-44" />
+              <Skeleton className="w-full h-44" />
+              <Skeleton className="w-full h-44" />
             </div>
           }
         >
@@ -25,9 +25,9 @@ export default function Home() {
         </Suspense>
         <Suspense
           fallback={
-            <div className="flex flex-col">
-              <Skeleton className="w-80 h-12 m-2" />
-              <div className="grid grid-cols-2 m-2 gap-2">
+            <div className="flex flex-col gap-2 m-2">
+              <Skeleton className="w-80 h-12" />
+              <div className="grid grid-cols-2 gap-2">
                 <Skeleton className="w-full h-14" />
                 <Skeleton className="w-full h-14" />
                 <Skeleton className="w-full h-14" />
@@ -40,9 +40,9 @@ export default function Home() {
         </Suspense>
         <Suspense
           fallback={
-            <div className="flex flex-col">
-              <Skeleton className="w-80 h-12 m-2" />
-              <Skeleton className="w-full m-2 h-44" />
+            <div className="flex flex-col gap-2 m-2">
+              <Skeleton className="w-80 h-12" />
+              <Skeleton className="w-full h-44" />
             </div>
           }
         >

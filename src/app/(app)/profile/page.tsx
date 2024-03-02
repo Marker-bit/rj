@@ -59,7 +59,7 @@ export default function ProfilePage() {
   const url = `${window.location.origin}/profile/${userData?.username}`;
 
   return (
-    <div>
+    <div className="mb-[15vh]">
       <div className="flex p-1 items-center bg-zinc-100 border-b border-zinc-200 min-h-10">
         <Link href="/home">
           <button className="p-1 hover:text-blue-600 rounded-md flex items-center gap-1 text-blue-500 active:scale-95 transition-all">

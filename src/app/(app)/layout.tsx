@@ -47,7 +47,7 @@ export default async function RootLayout({
     <html lang="en">
       <body className={font.className + "  overflow-x-hidden"}>
         <Provider>
-          <div className="min-h-screen">{children}</div>
+          <div>{children}</div>
           <BottomBar />
           <Analytics />
           <SpeedInsights />
