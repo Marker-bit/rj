@@ -14,6 +14,7 @@ import {
   endOfISOWeek,
   max,
   startOfISOWeek,
+  subDays,
 } from "date-fns";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
@@ -134,8 +135,9 @@ export async function Stats() {
           event.pagesRead - beforeEventPages;
       }
     }
-    const day = new Date();
-    day.setTime(day.getTime() - 86400000);
+    let day = new Date();
+    day = subDays(day, 1);
+    // day.setTime(day.getTime() - 86400000);
     while (true) {
       if (
         events.find(
@@ -143,7 +145,7 @@ export async function Stats() {
         )
       ) {
         streak++;
-        day.setTime(day.getTime() - 86400000);
+        day = subDays(day, 1);
       } else {
         break;
       }
