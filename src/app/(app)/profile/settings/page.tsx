@@ -42,6 +42,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 
 const formSchema = z.object({
   username: z
@@ -144,7 +145,7 @@ export default function SettingsPage() {
         lastName: user.lastName,
         avatarUrl: user.avatarUrl ?? "",
         shareFollowers: user.shareFollowers,
-        shareSubscriptions: user.shareSubscriptions
+        shareSubscriptions: user.shareSubscriptions,
       });
     });
   }, [form]);
@@ -350,25 +351,28 @@ export default function SettingsPage() {
               />
             </div>
           </div>
-          <button
-            className="flex gap-2 items-center w-fit bg-gray-100 rounded-xl py-1 px-3 active:opacity-50 transition-all select-none disabled:opacity-40 border border-zinc-200 mx-auto"
-            onClick={() => {
-              setLogOutLoading(true);
-              fetch("/api/auth/", {
-                method: "DELETE",
-              }).then(() => {
-                setLogOutLoading(false);
-                window.location.href = "/";
-              });
-            }}
-          >
-            {logOutLoading ? (
-              <Loader className="w-6 h-6 animate-spin" />
-            ) : (
-              <LogOut className="w-6 h-6" />
-            )}
-            Выйти из аккаунта
-          </button>
+          <div className="flex justify-center">
+            <Button
+              className="items-center gap-2"
+              onClick={() => {
+                setLogOutLoading(true);
+                fetch("/api/auth/", {
+                  method: "DELETE",
+                }).then(() => {
+                  setLogOutLoading(false);
+                  window.location.href = "/";
+                });
+              }}
+              disabled={logOutLoading}
+            >
+              {logOutLoading ? (
+                <Loader className="size-4 animate-spin" />
+              ) : (
+                <LogOut className="size-4" />
+              )}
+              Выйти из аккаунта
+            </Button>
+          </div>
         </form>
       </Form>
     </div>

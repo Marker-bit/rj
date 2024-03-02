@@ -15,6 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { X, Check, Loader } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -37,6 +38,7 @@ export function AuthForm() {
       password: "",
     },
   });
+  const router = useRouter();
 
   const userMutation = useMutation({
     mutationFn: (values: z.infer<typeof formSchema>) => {
@@ -48,9 +50,9 @@ export function AuthForm() {
         .then(
           (res: { status: "authorized" | "created" | "invalid-password" }) => {
             if (res.status === "authorized") {
-              window.location.href = "/";
+              router.push("/home");
             } else if (res.status === "created") {
-              // router.push("/auth/activate-account");
+              router.push("/auth/activate-account");
             } else if (res.status === "invalid-password") {
               alert("Неправильный пароль");
             }
@@ -73,7 +75,7 @@ export function AuthForm() {
             <FormItem>
               <FormLabel>Имя пользователя</FormLabel>
               <FormControl>
-                <div className="flex gap-1 items-center">
+                <div className="flex flex-col gap-1">
                   <Input
                     placeholder="ivan.ivanov"
                     {...field}
@@ -87,9 +89,15 @@ export function AuthForm() {
                     }}
                   />
 
-                  {usernameFound === true && <X className="text-red-500" />}
+                  {usernameFound === true && (
+                    <div className="text-xs">
+                      Пользователь с таким именем существует
+                    </div>
+                  )}
                   {usernameFound === false && (
-                    <Check className="text-green-500" />
+                    <div className="text-xs">
+                      Пользователя с таким именем не существует
+                    </div>
                   )}
                 </div>
               </FormControl>
@@ -121,8 +129,19 @@ export function AuthForm() {
         </Button>
         <p className="text-xs">
           При авторизации, вы соглашаетесь с{" "}
-          <Link href="/privacy-policy" className="text-blue-500 underline underline-offset-2">политикой конфиденциальности</Link> и с{" "}
-          <Link href="/terms-of-service" className="text-blue-500 underline underline-offset-2">условиями использования</Link>
+          <Link
+            href="/privacy-policy"
+            className="text-blue-500 underline underline-offset-2"
+          >
+            политикой конфиденциальности
+          </Link>{" "}
+          и с{" "}
+          <Link
+            href="/terms-of-service"
+            className="text-blue-500 underline underline-offset-2"
+          >
+            условиями использования
+          </Link>
         </p>
       </form>
     </Form>
