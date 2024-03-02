@@ -50,7 +50,7 @@ export function AuthForm() {
         .then(
           (res: { status: "authorized" | "created" | "invalid-password" }) => {
             if (res.status === "authorized") {
-              router.push("/home");
+              router.refresh();
             } else if (res.status === "created") {
               router.push("/auth/activate-account");
             } else if (res.status === "invalid-password") {
