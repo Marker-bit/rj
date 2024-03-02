@@ -54,15 +54,6 @@ export async function Stats() {
   date.setHours(0, 0, 0, 0);
   const [startOfWeek, _] = startAndEndOfWeek();
 
-  // let booksStats: { [key: string]: { [key: string]: number } } = {
-  //   "0": {},
-  //   "1": {},
-  //   "2": {},
-  //   "3": {},
-  //   "4": {},
-  //   "5": {},
-  //   "6": {},
-  // };
   let booksStats: { [key: string]: { [key: string]: number } } = {};
   let booksStatsNum: { [key: string]: number } = {};
   let readWeek: { [key: string]: number } = {};
@@ -253,17 +244,14 @@ export async function Stats() {
           </div>
         </Link>
       </div>
-      <div className="flex gap-2 shadow-md w-fit mx-auto my-2 p-2 rounded-md bg-black/5">
+      <div className="bg-gradient-to-b from-zinc-100 to-zinc-200 rounded-full p-1 px-3 mx-auto w-fit cursor-default">
         Эта неделя
       </div>
       <div className="mt-3 h-[20vh]">
         <Chart data={currentWeekData} />
       </div>
-      <div className="flex gap-2 shadow-md w-fit mx-auto my-2 p-2 rounded-md bg-black/5">
-        <div className="bg-black/10 p-2 rounded-md cursor-pointer shadow-md">
-          Дни недели
-        </div>
-        <div className="p-2 rounded-md cursor-pointer">Книги</div>
+      <div className="bg-gradient-to-b from-zinc-100 to-zinc-200 rounded-full p-1 px-3 mx-auto w-fit cursor-default">
+        По дням недели
       </div>
       <div className="mt-3 h-[20vh]">
         <Chart data={data} />
