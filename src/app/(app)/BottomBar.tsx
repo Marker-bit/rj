@@ -22,7 +22,7 @@ export function BottomBar() {
   const pathname = usePathname();
   return (
     <>
-      <div className="sticky bottom-0 left-0 w-fit bg-gray-200 grid grid-cols-5 items-center justify-center content-center p-2 min-h-[10vh] mx-auto rounded-t-xl">
+      <div className="sticky bottom-2 left-0 w-fit bg-white/70 backdrop-blur-lg grid grid-cols-5 items-center justify-center content-center p-2 min-h-[10vh] mx-auto rounded-xl border border-zinc-200">
         <AnimatePresence>
           <Link href="/home" className="w-fit">
             <div
