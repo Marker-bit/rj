@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
-  if (!(cookies().get("auth_session")) && pathname !== "/auth" && pathname !== "/") {
+  if (!(cookies().get("auth_session")) && pathname !== "/auth" && pathname !== "/" && pathname !== "/favicon.png") {
     return NextResponse.redirect(new URL("/auth", request.url));
   }
   return NextResponse.next();
