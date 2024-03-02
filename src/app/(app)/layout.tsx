@@ -8,6 +8,7 @@ import { Provider } from "./QueryClientProvider";
 import Script from "next/script";
 import { Suspense } from "react";
 import YandexMetrika from "@/components/YandexMetrika";
+import { DayPickerProvider } from "react-day-picker";
 
 const font = Inter({ subsets: ["latin"] });
 

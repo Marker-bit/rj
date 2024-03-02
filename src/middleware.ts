@@ -4,7 +4,20 @@ import { cookies } from "next/headers";
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
-  if (!(cookies().get("auth_session")) && pathname !== "/auth" && pathname !== "/" && pathname !== "/favicon.png") {
+  const notProtectedRoutes = [
+    "/",
+    "/auth",
+    "/favicon.png",
+    "/privacy-policy",
+    "/terms-of-service",
+  ];
+  if (
+    !cookies().get("auth_session") &&
+    pathname !== "/auth" &&
+    pathname !== "/" &&
+    pathname !== "/favicon.png" &&
+    !notProtectedRoutes.includes(pathname)
+  ) {
     return NextResponse.redirect(new URL("/auth", request.url));
   }
   return NextResponse.next();
