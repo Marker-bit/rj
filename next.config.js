@@ -1,4 +1,9 @@
 const withMDX = require("@next/mdx")();
+const withPWA = require("next-pwa")({
+  dest: "public",
+  register: true,
+  skipWaiting: true,
+});
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -29,4 +34,4 @@ const nextConfig = {
   pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
 };
 
-module.exports = withMDX(nextConfig);
+module.exports = withPWA(withMDX(nextConfig));
