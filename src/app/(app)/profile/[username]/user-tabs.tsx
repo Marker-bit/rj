@@ -39,6 +39,7 @@ export function UserTabs({
     (user.shareFollowers === SharePeople.SUBS &&
       user.shareFollowers === SharePeople.SUBS &&
       user.following.find((f) => f.secondId === currentUser?.id));
+  console.log(user);
   return (
     <>
       <div className="flex p-1 w-full gap-2">
@@ -78,14 +79,14 @@ export function UserTabs({
       {shareSubscriptions && currentTab === 0 ? (
         <div className="flex flex-col">
           <div className="text-3xl font-semibold">Подписки</div>
-          {user.following?.map(({ second: friend }: { second: any }) => (
+          {user.follower?.map(({ second: friend }: { second: any }) => (
             <FriendView key={friend.id} friend={friend} />
           ))}
         </div>
       ) : shareFollowers && currentTab === 1 ? (
         <div className="flex flex-col">
           <div className="text-3xl font-semibold">Подписчики</div>
-          {user.follower?.map(({ first: friend }: { first: any }) => (
+          {user.following.map(({ first: friend }: { first: any }) => (
             <FriendView key={friend.id} friend={friend} />
           ))}
         </div>

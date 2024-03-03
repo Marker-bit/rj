@@ -6,6 +6,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader, UserPlus, UserX } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export function FriendView({
   friend,
@@ -21,6 +22,7 @@ export function FriendView({
   following?: boolean;
 }) {
   const queryClient = useQueryClient();
+  const router = useRouter();
   const userQuery = useQuery({
     queryKey: ["user", friend.username],
     queryFn: async () => {
@@ -31,7 +33,7 @@ export function FriendView({
   const followMutation = useMutation({
     mutationFn: () => {
       return fetch(`/api/profile/${friend.username}/follow`, {
-        method: (following || userQuery.data?.following) ? "DELETE" : "POST",
+        method: following || userQuery.data?.following ? "DELETE" : "POST",
       });
     },
     onSuccess: () => {
@@ -44,6 +46,7 @@ export function FriendView({
       queryClient.invalidateQueries({
         queryKey: ["followers"],
       });
+      router.refresh();
     },
   });
   return (
