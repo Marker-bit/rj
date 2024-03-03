@@ -10,6 +10,8 @@ export async function middleware(request: NextRequest) {
     "/favicon.png",
     "/privacy-policy",
     "/terms-of-service",
+    "/manifest.json",
+    "/icon.png",
   ];
   if (
     !cookies().get("auth_session") &&
