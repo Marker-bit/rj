@@ -3,6 +3,7 @@
 import {
   BarChartBig,
   Book,
+  BookCopyIcon,
   BookIcon,
   CircleUser,
   CircleUserIcon,
@@ -29,10 +30,15 @@ export function BottomBar() {
       label: "Книги",
       icon: BookIcon,
     },
+    // {
+    //   href: "search",
+    //   label: "Поиск",
+    //   icon: SearchIcon,
+    // },
     {
-      href: "search",
-      label: "Поиск",
-      icon: SearchIcon,
+      href: "collections",
+      label: "Коллекции",
+      icon: BookCopyIcon,
     },
     {
       href: "journal",
@@ -49,13 +55,13 @@ export function BottomBar() {
   return (
     <>
       <div className="fixed bottom-2 left-0 w-full flex items-center justify-center pointer-events-none">
-        <div className="w-fit bg-white/70 backdrop-blur-lg grid grid-cols-5 items-center justify-center content-center p-2 min-h-[10vh] rounded-xl border border-zinc-200 pointer-events-auto overflow-hidden">
+        <div className="w-fit bg-white/70 backdrop-blur-lg flex gap-2 items-center justify-center content-center p-2 min-h-[10vh] rounded-xl border border-zinc-200 pointer-events-auto overflow-hidden">
           {urls.map((url) => (
             <Link href={`/${url.href}`} className="w-fit" key={url.href}>
               <div
                 className={cn(
                   "flex flex-col text-gray-500 rounded-md p-2 items-center cursor-pointer transition-all relative",
-                  pathname === `/${url.href}` && "text-black",
+                  pathname === `/${url.href}` && "text-black"
                 )}
               >
                 {React.createElement(url.icon, {

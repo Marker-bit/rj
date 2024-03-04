@@ -227,7 +227,7 @@ export async function Stats() {
           <div className="p-2 border border-zinc-300 rounded-md flex gap-1 items-center">
             <Users2 className="w-6 h-6" />
             <div className="flex flex-col">
-              <div className="font-bold">{profile.following.length}</div>
+              <div className="font-bold">{profile.follower.length}</div>
               <div className="text-black/50 lowercase text-xs -mt-1 font-semibold">
                 подписок
               </div>
@@ -238,7 +238,7 @@ export async function Stats() {
           <div className="p-2 border border-zinc-300 rounded-md flex gap-1 items-center">
             <UsersIcon className="w-6 h-6" />
             <div className="flex flex-col">
-              <div className="font-bold">{profile.follower.length}</div>
+              <div className="font-bold">{profile.following.length}</div>
               <div className="text-black/50 lowercase text-xs -mt-1 font-semibold">
                 подписчиков
               </div>
