@@ -1,3 +1,10 @@
+const withMDX = require("@next/mdx")();
+const withPWA = require("next-pwa")({
+  dest: "public",
+  register: true,
+  skipWaiting: true,
+});
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   webpack: (config) => {
@@ -21,9 +28,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "*.labirint.ru",
         pathname: "/**",
-      }
+      },
     ],
   },
+  pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
 };
 
-export default nextConfig;
+module.exports = withPWA(withMDX(nextConfig));

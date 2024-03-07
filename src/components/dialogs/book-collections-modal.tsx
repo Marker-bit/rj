@@ -8,6 +8,7 @@ import { Checkbox } from "../ui/checkbox";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { cn, declOfNum } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 export function BookCollectionsModal({
   open,
@@ -18,6 +19,7 @@ export function BookCollectionsModal({
   setOpen: (v: boolean) => void;
   book: Book;
 }) {
+  const router = useRouter();
   const collectionsQuery = useQuery({
     queryKey: ["collections"],
     queryFn: () => fetch(`/api/collections`).then((res) => res.json()),
@@ -40,6 +42,7 @@ export function BookCollectionsModal({
       queryClient.invalidateQueries({
         queryKey: ["collections"],
       });
+      router.refresh();
     },
   });
   return (

@@ -4,12 +4,27 @@ import { cookies } from "next/headers";
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
-  if (!(cookies().get("auth_session")) && pathname !== "/auth") {
+  const notProtectedRoutes = [
+    "/",
+    "/auth",
+    "/favicon.png",
+    "/privacy-policy",
+    "/terms-of-service",
+    "/manifest.json",
+    "/icon.png",
+  ];
+  if (
+    !cookies().get("auth_session") &&
+    pathname !== "/auth" &&
+    pathname !== "/" &&
+    pathname !== "/favicon.png" &&
+    !notProtectedRoutes.includes(pathname)
+  ) {
     return NextResponse.redirect(new URL("/auth", request.url));
   }
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|auth).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|auth|og.png).*)"],
 };

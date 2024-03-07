@@ -61,7 +61,7 @@ export default function FriendsPage() {
               };
             }) => (
               <FriendView key={friend.id} friend={friend} following={true} />
-            )
+            ),
           )}
         </div>
       </div>

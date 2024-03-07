@@ -14,6 +14,7 @@ import {
   endOfISOWeek,
   max,
   startOfISOWeek,
+  subDays,
 } from "date-fns";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
@@ -54,15 +55,6 @@ export async function Stats() {
   date.setHours(0, 0, 0, 0);
   const [startOfWeek, _] = startAndEndOfWeek();
 
-  // let booksStats: { [key: string]: { [key: string]: number } } = {
-  //   "0": {},
-  //   "1": {},
-  //   "2": {},
-  //   "3": {},
-  //   "4": {},
-  //   "5": {},
-  //   "6": {},
-  // };
   let booksStats: { [key: string]: { [key: string]: number } } = {};
   let booksStatsNum: { [key: string]: number } = {};
   let readWeek: { [key: string]: number } = {};
@@ -143,8 +135,9 @@ export async function Stats() {
           event.pagesRead - beforeEventPages;
       }
     }
-    const day = new Date();
-    day.setTime(day.getTime() - 86400000);
+    let day = new Date();
+    day = subDays(day, 1);
+    // day.setTime(day.getTime() - 86400000);
     while (true) {
       if (
         events.find(
@@ -152,7 +145,7 @@ export async function Stats() {
         )
       ) {
         streak++;
-        day.setTime(day.getTime() - 86400000);
+        day = subDays(day, 1);
       } else {
         break;
       }
@@ -234,7 +227,7 @@ export async function Stats() {
           <div className="p-2 border border-zinc-300 rounded-md flex gap-1 items-center">
             <Users2 className="w-6 h-6" />
             <div className="flex flex-col">
-              <div className="font-bold">{profile.following.length}</div>
+              <div className="font-bold">{profile.follower.length}</div>
               <div className="text-black/50 lowercase text-xs -mt-1 font-semibold">
                 подписок
               </div>
@@ -245,7 +238,7 @@ export async function Stats() {
           <div className="p-2 border border-zinc-300 rounded-md flex gap-1 items-center">
             <UsersIcon className="w-6 h-6" />
             <div className="flex flex-col">
-              <div className="font-bold">{profile.follower.length}</div>
+              <div className="font-bold">{profile.following.length}</div>
               <div className="text-black/50 lowercase text-xs -mt-1 font-semibold">
                 подписчиков
               </div>
@@ -253,17 +246,14 @@ export async function Stats() {
           </div>
         </Link>
       </div>
-      <div className="flex gap-2 shadow-md w-fit mx-auto my-2 p-2 rounded-md bg-black/5">
+      <div className="bg-gradient-to-b from-zinc-100 to-zinc-200 rounded-full p-1 px-3 mx-auto w-fit cursor-default">
         Эта неделя
       </div>
       <div className="mt-3 h-[20vh]">
         <Chart data={currentWeekData} />
       </div>
-      <div className="flex gap-2 shadow-md w-fit mx-auto my-2 p-2 rounded-md bg-black/5">
-        <div className="bg-black/10 p-2 rounded-md cursor-pointer shadow-md">
-          Дни недели
-        </div>
-        <div className="p-2 rounded-md cursor-pointer">Книги</div>
+      <div className="bg-gradient-to-b from-zinc-100 to-zinc-200 rounded-full p-1 px-3 mx-auto w-fit cursor-default">
+        По дням недели
       </div>
       <div className="mt-3 h-[20vh]">
         <Chart data={data} />

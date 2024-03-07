@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
 import FollowButton from "./follow-button";
 import { UserTabs } from "./user-tabs";
+import { redirect } from "next/navigation";
 
 export default async function Page({
   params,
@@ -15,7 +16,6 @@ export default async function Page({
     where: {
       username: {
         equals: username,
-        not: currentUser?.username ?? "",
       },
     },
     include: {
@@ -33,6 +33,7 @@ export default async function Page({
       },
     },
   });
+  if (currentUser?.id === user.id) return redirect("/profile");
   return (
     <div className="m-3">
       <div className="p-4 rounded-md border border-zinc-200 flex gap-2 items-center">

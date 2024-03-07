@@ -76,17 +76,14 @@ export function Stats() {
         currentWeek[event.bookId] = {}; // date.getDay().toString()
       }
       const currentBook = events.filter(
-        (evt: any) => evt.bookId === event.bookId
+        (evt: any) => evt.bookId === event.bookId,
       );
       const beforeEventIndex = currentBook.indexOf(event) - 1;
       const beforeEvent = currentBook[beforeEventIndex];
       if (beforeEvent) {
         let beforeEventDate = new Date(beforeEvent.readAt);
         if (differenceInDays(date, beforeEventDate) >= 1) {
-          beforeEventDate = max([
-            addHours(date, -5),
-            beforeEventDate,
-          ]);
+          beforeEventDate = max([addHours(date, -5), beforeEventDate]);
         }
         console.log(beforeEventDate, date);
         const minuteDifference = differenceInMinutes(date, beforeEventDate);
@@ -104,7 +101,7 @@ export function Stats() {
           (currentWeek[event.bookId][date.getDay().toString()] ?? 0)
         ) {
           const currentBook = events.filter(
-            (evt: any) => evt.bookId === event.bookId
+            (evt: any) => evt.bookId === event.bookId,
           );
           const beforeEventIndex = currentBook.indexOf(event) - 1;
           const beforeEventPages =
@@ -132,7 +129,7 @@ export function Stats() {
         (booksStats[event.bookId][date.getDay().toString()] ?? 0)
       ) {
         const currentBook = events.filter(
-          (evt: any) => evt.bookId === event.bookId
+          (evt: any) => evt.bookId === event.bookId,
         );
         const beforeEventIndex = currentBook.indexOf(event) - 1;
         const beforeEventPages = currentBook[beforeEventIndex]?.pagesRead ?? 0;
@@ -148,7 +145,7 @@ export function Stats() {
     while (true) {
       if (
         events.find(
-          (e: any) => new Date(e.readAt).toDateString() === day.toDateString()
+          (e: any) => new Date(e.readAt).toDateString() === day.toDateString(),
         )
       ) {
         streak++;
@@ -160,7 +157,7 @@ export function Stats() {
     if (
       events.find(
         (e: any) =>
-          new Date(e.readAt).toDateString() === new Date().toDateString()
+          new Date(e.readAt).toDateString() === new Date().toDateString(),
       )
     ) {
       streak++;
@@ -184,7 +181,7 @@ export function Stats() {
       currentWeekNum[day] += num;
     }
   }
-  
+
   for (const n of Object.values(currentWeekNum)) {
     readWeekSum += n;
   }

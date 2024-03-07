@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -15,9 +15,10 @@ export async function Profile() {
   return (
     <div className="flex flex-col gap-3 border-b border-zinc-300 p-3 cursor-default">
       <Link href="/profile">
-        <h2 className="text-5xl font-black uppercase flex gap-1 items-center cursor-pointer hover:text-black/70 active:scale-90 transition-transform w-fit flex-wrap">
+        <h2 className="text-3xl font-black flex gap-1 items-center cursor-pointer hover:text-black/70 w-fit flex-wrap">
+          <User className="w-8 h-8 mr-1" />
           Профиль
-          <ChevronRight className="w-12 h-12" strokeWidth={3} />
+          <ChevronRight className="w-8 h-8" />
         </h2>
       </Link>
       <div className="p-2 rounded-md border border-zinc-200 flex gap-2 items-center">
