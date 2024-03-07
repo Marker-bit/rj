@@ -91,12 +91,15 @@ export function UserTabs({
           ))}
         </div>
       ) : (
-        <div className="p-2 rounded-xl border border-zinc-100 flex items-center gap-2">
-          <UserX className="size-8" />
-          <div className="flex flex-col">
-            <div>Пользователь скрыл подписки и подписчиков</div>
+        shareSubscriptions === false &&
+        shareFollowers === false && (
+          <div className="p-2 rounded-xl border border-zinc-100 flex items-center gap-2">
+            <UserX className="size-8" />
+            <div className="flex flex-col">
+              <div>Пользователь скрыл подписки и подписчиков</div>
+            </div>
           </div>
-        </div>
+        )
       )}
     </>
   );
