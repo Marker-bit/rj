@@ -45,7 +45,6 @@ export async function Stats() {
       readAt: "desc",
     },
   });
-  events = events.toReversed();
 
   const startAndEndOfWeek = () => {
     const monday = startOfISOWeek(new Date());
@@ -66,6 +65,7 @@ export async function Stats() {
   let readSpeed = [];
 
   if (events) {
+    events = events.toReversed();
     for (const event of events) {
       const date = new Date(event.readAt);
       if (!currentWeek[event.bookId]) {
