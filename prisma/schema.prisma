@@ -43,8 +43,9 @@ model User {
   shareSubscriptions SharePeople  @default(NONE)
   shareStats         SharePeople  @default(NONE)
 
-  follower  Follow[] @relation("FollowerToUser")
-  following Follow[] @relation("FollowingToUser")
+  follower  Follow[]      @relation("FollowerToUser")
+  following Follow[]      @relation("FollowingToUser")
+  memberOf  GroupMember[]
 }
 
 model Session {
@@ -94,4 +95,49 @@ model Follow {
 
   second   User   @relation("FollowingToUser", fields: [secondId], references: [id])
   secondId String
+}
+
+model Group {
+  id    String @id @default(cuid())
+  title String
+
+  members    GroupMember[]
+  groupBooks GroupBook[]
+}
+
+enum GroupMemberRole {
+  CREATOR
+  MODERATOR
+  MEMBER
+}
+
+model GroupMember {
+  id     String @id @default(cuid())
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  group   Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId String
+
+  showInFeed Boolean @default(false)
+
+  role GroupMemberRole
+
+  booksAdded GroupBook[]
+}
+
+model GroupBook {
+  id String @id @default(cuid())
+
+  group   Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId String
+
+  addedBy   GroupMember @relation(fields: [addedById], references: [id], onDelete: Cascade)
+  addedById String
+
+  title       String
+  author      String
+  pages       Int
+  description String  @default("")
+  coverUrl    String?
 }

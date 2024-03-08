@@ -32,7 +32,7 @@ export async function Stats() {
       following: true,
     },
   });
-  const events = await db.readEvent.findMany({
+  let events = await db.readEvent.findMany({
     where: {
       book: {
         userId: user.id,
@@ -42,9 +42,10 @@ export async function Stats() {
       book: true,
     },
     orderBy: {
-      readAt: "asc",
+      readAt: "desc",
     },
   });
+  events = events.toReversed();
 
   const startAndEndOfWeek = () => {
     const monday = startOfISOWeek(new Date());
@@ -83,11 +84,6 @@ export async function Stats() {
         console.log(beforeEventDate, date);
         const minuteDifference = differenceInMinutes(date, beforeEventDate);
         const pageDifference = event.pagesRead - (beforeEvent?.pagesRead ?? 0);
-        // console.log(
-        //   pageDifference,
-        //   minuteDifference,
-        //   pageDifference / minuteDifference
-        // );
         readSpeed.push(pageDifference / minuteDifference);
       }
       if (date >= startOfWeek) {
