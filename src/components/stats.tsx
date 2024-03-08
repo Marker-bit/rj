@@ -12,6 +12,7 @@ import {
   differenceInDays,
   differenceInMinutes,
   endOfISOWeek,
+  getDay,
   max,
   startOfISOWeek,
   subDays,
@@ -69,39 +70,35 @@ export async function Stats() {
     for (const event of events) {
       const date = new Date(event.readAt);
       if (!currentWeek[event.bookId]) {
-        currentWeek[event.bookId] = {}; // date.getDay().toString()
+        currentWeek[event.bookId] = {};
       }
       const currentBook = events.filter(
         (evt: any) => evt.bookId === event.bookId
       );
       const beforeEventIndex = currentBook.indexOf(event) - 1;
       const beforeEvent = currentBook[beforeEventIndex];
+      const day = getDay(date).toString();
       if (beforeEvent) {
         let beforeEventDate = new Date(beforeEvent.readAt);
         if (differenceInDays(date, beforeEventDate) >= 1) {
           beforeEventDate = max([addHours(date, -5), beforeEventDate]);
         }
-        console.log(beforeEventDate, date);
         const minuteDifference = differenceInMinutes(date, beforeEventDate);
         const pageDifference = event.pagesRead - (beforeEvent?.pagesRead ?? 0);
         readSpeed.push(pageDifference / minuteDifference);
       }
       if (date >= startOfWeek) {
-        if (
-          event.pagesRead >
-          (currentWeek[event.bookId][date.getDay().toString()] ?? 0)
-        ) {
+        if (event.pagesRead > (currentWeek[event.bookId][day] ?? 0)) {
           const currentBook = events.filter(
             (evt: any) => evt.bookId === event.bookId
           );
           const beforeEventIndex = currentBook.indexOf(event) - 1;
           const beforeEventPages =
             currentBook[beforeEventIndex]?.pagesRead ?? 0;
-          if (!currentWeek[event.bookId][date.getDay().toString()]) {
-            currentWeek[event.bookId][date.getDay().toString()] = 0;
+          if (!currentWeek[event.bookId][day]) {
+            currentWeek[event.bookId][day] = 0;
           }
-          currentWeek[event.bookId][date.getDay().toString()] +=
-            event.pagesRead - beforeEventPages;
+          currentWeek[event.bookId][day] += event.pagesRead - beforeEventPages;
         }
 
         if (!readWeek[event.bookId]) {
@@ -115,20 +112,16 @@ export async function Stats() {
       if (!booksStats[event.bookId]) {
         booksStats[event.bookId] = {}; // date.getDay().toString()
       }
-      if (
-        event.pagesRead >
-        (booksStats[event.bookId][date.getDay().toString()] ?? 0)
-      ) {
+      if (event.pagesRead > (booksStats[event.bookId][day] ?? 0)) {
         const currentBook = events.filter(
           (evt: any) => evt.bookId === event.bookId
         );
         const beforeEventIndex = currentBook.indexOf(event) - 1;
         const beforeEventPages = currentBook[beforeEventIndex]?.pagesRead ?? 0;
-        if (!booksStats[event.bookId][date.getDay().toString()]) {
-          booksStats[event.bookId][date.getDay().toString()] = 0;
+        if (!booksStats[event.bookId][day]) {
+          booksStats[event.bookId][day] = 0;
         }
-        booksStats[event.bookId][date.getDay().toString()] +=
-          event.pagesRead - beforeEventPages;
+        booksStats[event.bookId][day] += event.pagesRead - beforeEventPages;
       }
     }
     let day = new Date();
@@ -179,13 +172,13 @@ export async function Stats() {
   }
 
   const currentWeekData = [
-    { name: "Пн", value: currentWeekNum["1"] },
-    { name: "Вт", value: currentWeekNum["2"] },
-    { name: "Ср", value: currentWeekNum["3"] },
-    { name: "Чт", value: currentWeekNum["4"] },
-    { name: "Пт", value: currentWeekNum["5"] },
-    { name: "Сб", value: currentWeekNum["6"] },
-    { name: "Вс", value: currentWeekNum["0"] },
+    { name: "Пн", value: currentWeekNum["0"] },
+    { name: "Вт", value: currentWeekNum["1"] },
+    { name: "Ср", value: currentWeekNum["2"] },
+    { name: "Чт", value: currentWeekNum["3"] },
+    { name: "Пт", value: currentWeekNum["4"] },
+    { name: "Сб", value: currentWeekNum["5"] },
+    { name: "Вс", value: currentWeekNum["6"] },
   ];
 
   const data = [
