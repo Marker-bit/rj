@@ -12,13 +12,26 @@ export default async function ProfilePage() {
   const { user } = await validateRequest();
   if (!user) return null;
 
-  const userData = await db.user.findUnique({
+  const userData = await db.user.findUniqueOrThrow({
     where: {
       id: user.id,
     },
     include: {
       follower: true,
       following: true,
+    },
+  });
+  const events = await db.readEvent.findMany({
+    where: {
+      book: {
+        userId: user.id,
+      },
+    },
+    include: {
+      book: true,
+    },
+    orderBy: {
+      readAt: "asc",
     },
   });
 
@@ -77,7 +90,7 @@ export default async function ProfilePage() {
           </div>
         }
       >
-        <Stats />
+        <Stats profile={userData} events={events} />
       </Suspense>
     </div>
   );

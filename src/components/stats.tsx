@@ -1,11 +1,6 @@
-import {
-  BookOpen,
-  CalendarRange,
-  Loader,
-  Users2,
-  UsersIcon,
-} from "lucide-react";
-import { Bar, BarChart, ResponsiveContainer, XAxis } from "recharts";
+"use client";
+
+import { BookOpen, CalendarRange, Users2, UsersIcon } from "lucide-react";
 import Link from "next/link";
 import {
   addHours,
@@ -18,35 +13,59 @@ import {
   startOfISOWeek,
   subDays,
 } from "date-fns";
-import { db } from "@/lib/db";
-import { validateRequest } from "@/lib/server-validate-request";
 import { Chart } from "./chart";
+import { ReadEvent, User } from "@prisma/client";
 
-export async function Stats() {
-  const { user } = await validateRequest();
-  if (!user) return null;
-  const profile = await db.user.findUniqueOrThrow({
-    where: {
-      id: user.id,
-    },
-    include: {
-      follower: true,
-      following: true,
-    },
-  });
-  let events = await db.readEvent.findMany({
-    where: {
-      book: {
-        userId: user.id,
-      },
-    },
-    include: {
-      book: true,
-    },
-    orderBy: {
-      readAt: "desc",
-    },
-  });
+export async function Stats({
+  profile,
+  events,
+}: {
+  profile: User & {
+    follower: {
+      id: string;
+      firstId: string;
+      secondId: string;
+    }[];
+    following: {
+      id: string;
+      firstId: string;
+      secondId: string;
+    }[];
+  };
+  events: (ReadEvent & {
+    book: {
+      id: string;
+      title: string;
+      author: string;
+      pages: number;
+      description: string;
+      coverUrl: string | null;
+      userId: string;
+    };
+  })[];
+}) {
+  // const profile = await db.user.findUniqueOrThrow({
+  //   where: {
+  //     id: user.id,
+  //   },
+  //   include: {
+  //     follower: true,
+  //     following: true,
+  //   },
+  // });
+  // let events = await db.readEvent.findMany({
+  //   where: {
+  //     book: {
+  //       userId: user.id,
+  //     },
+  //   },
+  //   include: {
+  //     book: true,
+  //   },
+  //   orderBy: {
+  //     readAt: "desc",
+  //   },
+  // });
 
   const startAndEndOfWeek = () => {
     const monday = startOfISOWeek(new Date());
@@ -67,7 +86,7 @@ export async function Stats() {
   let readSpeed = [];
 
   if (events) {
-    events?.reverse();
+    // events?.reverse();
     for (const event of events) {
       const date = new Date(event.readAt);
       if (!currentWeek[event.bookId]) {
