@@ -13,6 +13,7 @@ import {
   differenceInMinutes,
   endOfISOWeek,
   getDay,
+  isSameDay,
   max,
   startOfISOWeek,
   subDays,
@@ -126,25 +127,16 @@ export async function Stats() {
     }
     let day = new Date();
     day = subDays(day, 1);
-    // day.setTime(day.getTime() - 86400000);
+
     while (true) {
-      if (
-        events.find(
-          (e: any) => new Date(e.readAt).toDateString() === day.toDateString()
-        )
-      ) {
+      if (events.find((e) => isSameDay(e.readAt, day))) {
         streak++;
         day = subDays(day, 1);
       } else {
         break;
       }
     }
-    if (
-      events.find(
-        (e: any) =>
-          new Date(e.readAt).toDateString() === new Date().toDateString()
-      )
-    ) {
+    if (events.find((e) => isSameDay(e.readAt, day))) {
       streak++;
     }
   }
@@ -172,13 +164,13 @@ export async function Stats() {
   }
 
   const currentWeekData = [
-    { name: "Пн", value: currentWeekNum["0"] },
-    { name: "Вт", value: currentWeekNum["1"] },
-    { name: "Ср", value: currentWeekNum["2"] },
-    { name: "Чт", value: currentWeekNum["3"] },
-    { name: "Пт", value: currentWeekNum["4"] },
-    { name: "Сб", value: currentWeekNum["5"] },
-    { name: "Вс", value: currentWeekNum["6"] },
+    { name: "Пн", value: currentWeekNum["1"] },
+    { name: "Вт", value: currentWeekNum["2"] },
+    { name: "Ср", value: currentWeekNum["3"] },
+    { name: "Чт", value: currentWeekNum["4"] },
+    { name: "Пт", value: currentWeekNum["5"] },
+    { name: "Сб", value: currentWeekNum["6"] },
+    { name: "Вс", value: currentWeekNum["0"] },
   ];
 
   const data = [
