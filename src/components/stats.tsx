@@ -65,9 +65,7 @@ export async function Stats() {
   let readSpeed = [];
 
   if (events) {
-    if (Array.isArray(events)) {
-      events = events.toReversed();
-    }
+    console.log(events);
     for (const event of events) {
       const date = new Date(event.readAt);
       if (!currentWeek[event.bookId]) {
