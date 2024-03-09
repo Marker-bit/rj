@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
-import { GroupMemberRole } from "@prisma/client";
+import {AddGroupButton} from "./add-group-button";
 
 export default async function Page() {
   const { user } = await validateRequest();
@@ -9,10 +9,18 @@ export default async function Page() {
       members: {
         some: {
           userId: user?.id,
-          role: GroupMemberRole.CREATOR,
         },
       },
     },
   });
-  return <div></div>;
+  return (
+    <div className="flex flex-col">
+      <div className="flex gap-2 text-3xl font-bold items-center m-2">
+        <div>Группы чтения</div>
+        <div className="ml-auto">
+          <AddGroupButton />
+        </div>
+      </div>
+    </div>
+  );
 }

@@ -67,6 +67,9 @@ model Book {
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
+
+  groupBook   GroupBook? @relation(fields: [groupBookId], references: [id])
+  groupBookId String?
 }
 
 model ReadEvent {
@@ -140,4 +143,6 @@ model GroupBook {
   pages       Int
   description String  @default("")
   coverUrl    String?
+
+  book Book[]
 }
