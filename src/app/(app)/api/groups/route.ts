@@ -17,5 +17,5 @@ export async function POST(req: NextRequest) {
       userId: user.id,
     },
   });
-  return group;
+  return NextResponse.json(group);
 }
