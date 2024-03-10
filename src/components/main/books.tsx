@@ -7,7 +7,9 @@ import { BookView } from "@/components/book/book-view";
 export async function Books() {
   const { user } = await validateRequest();
   if (!user) return null;
-  const books = (await fetchBooks(user.id)).slice(0, 3);
+  const books = (await fetchBooks(user.id))
+    .filter((book) => book.readEvents[0]?.pagesRead !== book.pages)
+    .slice(0, 3);
   return (
     <div className="flex flex-col gap-3 border-b border-zinc-300 p-3 cursor-default">
       <Link href="/books">
