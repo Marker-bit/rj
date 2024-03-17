@@ -25,6 +25,7 @@ import {
   Info,
   Loader,
   Plus,
+  Share,
   Trash,
   Undo,
 } from "lucide-react";
@@ -33,6 +34,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { useMediaQuery } from "usehooks-ts";
+import { ShareBookModal } from "../dialogs/share-book-modal";
 
 export function BookView({ book }: { book: any }) {
   const queryClient = useQueryClient();
@@ -42,6 +44,7 @@ export function BookView({ book }: { book: any }) {
   const [actionsDrawerOpen, setActionsDrawerOpen] = useState(false);
   const [descriptionDrawerOpen, setDescriptionDrawerOpen] = useState(false);
   const [collectionsOpen, setCollectionsOpen] = useState(false);
+  const [shareBookOpen, setShareBookOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const router = useRouter();
 
@@ -154,10 +157,16 @@ export function BookView({ book }: { book: any }) {
         setDateOpen={setDateOpen}
         setCollectionsOpen={setCollectionsOpen}
         doneMutation={doneMutation}
+        setShareOpen={setShareBookOpen}
       />
       <BookCollectionsModal
         open={collectionsOpen}
         setOpen={setCollectionsOpen}
+        book={book}
+      />
+      <ShareBookModal
+        open={shareBookOpen}
+        setOpen={setShareBookOpen}
         book={book}
       />
       <DateReadModal
@@ -326,6 +335,14 @@ export function BookView({ book }: { book: any }) {
               </>
             </>
           )}
+          <Button
+            className="gap-2"
+            variant="outline"
+            onClick={() => setShareBookOpen(true)}
+          >
+            <Share className="w-4 h-4" />
+            <div className="max-sm:hidden">Поделиться</div>
+          </Button>
           <div className="flex gap-2 m-2 group-hover:opacity-100 opacity-0 absolute top-0 right-0 transition-all scale-0 group-hover:scale-100">
             <Button
               size="icon"

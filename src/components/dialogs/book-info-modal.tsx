@@ -6,6 +6,7 @@ import {
   Edit,
   Loader,
   Pencil,
+  Share,
   Trash,
 } from "lucide-react";
 import Image from "next/image";
@@ -21,6 +22,7 @@ export function BookInfoModal({
   setEditOpen,
   setDeleteDialogOpen,
   setDateOpen,
+  setShareOpen,
   doneMutation,
   setCollectionsOpen,
 }: {
@@ -36,6 +38,7 @@ export function BookInfoModal({
     mutate: () => void;
     isPending: boolean;
   };
+  setShareOpen: (b: boolean) => void;
 }) {
   const lastEvent = book.readEvents[0];
 
@@ -123,6 +126,14 @@ export function BookInfoModal({
             <Pencil className="mr-2 w-4 h-4" /> Редактировать коллекции
           </Button>
         </div>
+        <Button
+          className="gap-2"
+          variant="outline"
+          onClick={() => setShareOpen(true)}
+        >
+          <Share className="w-4 h-4" />
+          Поделиться
+        </Button>
         <Button
           className="gap-2"
           variant="outline"
