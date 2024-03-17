@@ -28,6 +28,9 @@ export const metadata: Metadata = {
   },
   creator: "Mark Pentus",
   keywords: ["rj", "reading journal", "reading", "journal"],
+  other: {
+    ["yandex-verification"]: process.env.YANDEX_VERIFICATION || "",
+  },
 };
 
 export default async function RootLayout({
