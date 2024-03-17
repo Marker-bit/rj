@@ -3,7 +3,7 @@
 import { DrawerDialog } from "@/components/drawer";
 import { DialogHeader, DialogTitle } from "../ui/dialog";
 import { CopyCheck, CopyIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
@@ -17,7 +17,10 @@ export function ShareBookModal({
   book: Book;
 }) {
   const [copyLink, setCopyLink] = useState(false);
-  const link = `${window.location.origin}/books/${book.id}`;
+  const [link, setLink] = useState("");
+  useEffect(() => {
+    setLink(`${window.location.origin}/books/${book.id}`);
+  }, [book.id]);
   return (
     <DrawerDialog
       open={open}
