@@ -15,8 +15,8 @@ export async function fetchBooks(userId: string) {
     },
   });
   const compareBooks = (a: any, b: any) => {
-    let aPages = a.readEvents[a.readEvents.length - 1]?.pagesRead;
-    let bPages = b.readEvents[b.readEvents.length - 1]?.pagesRead;
+    let aPages = a.readEvents[0]?.pagesRead;
+    let bPages = b.readEvents[0]?.pagesRead;
     if (!aPages && !bPages) return 0;
     if (!aPages) return 1;
     if (!bPages) return -1;
