@@ -6,13 +6,21 @@ import { DialogContent } from "@/components/ui/dialog";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { CreateGroupForm } from "./create-group-form";
+import { useRouter } from "next/navigation";
 
 export function AddGroupButton() {
   const [open, setOpen] = useState(false);
+  const router = useRouter();
+
+  function onDone() {
+    setOpen(false);
+    router.refresh();
+  }
+
   return (
     <>
       <DrawerDialog open={open} onOpenChange={setOpen} className="min-w-[50vw]">
-        <CreateGroupForm />
+        <CreateGroupForm onDone={onDone} />
       </DrawerDialog>
       <Button
         variant="ghost"

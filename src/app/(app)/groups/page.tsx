@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
-import {AddGroupButton} from "./add-group-button";
+import { AddGroupButton } from "./add-group-button";
 
 export default async function Page() {
   const { user } = await validateRequest();
@@ -21,6 +21,9 @@ export default async function Page() {
           <AddGroupButton />
         </div>
       </div>
+      {groups.map((g) => (
+        <div key={g.id}>{g.title}</div>
+      ))}
     </div>
   );
 }

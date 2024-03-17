@@ -22,7 +22,7 @@ const formSchema = z.object({
   title: z.string().min(1),
 });
 
-export function CreateGroupForm() {
+export function CreateGroupForm({ onDone }: { onDone: () => void }) {
   const [loading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -33,6 +33,14 @@ export function CreateGroupForm() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
+    setLoading(true);
+    fetch("/api/groups", {
+      method: "POST",
+      body: JSON.stringify(values),
+    }).then(() => {
+      setLoading(false);
+      onDone();
+    });
   }
   return (
     <Form {...form}>
@@ -50,30 +58,69 @@ export function CreateGroupForm() {
             </FormItem>
           )}
         />
+        {/* <Button
+            type="button"
+            // disabled={loading}
+            onClick={(evt) => {
+              setLoading(!loading);
+              evt.preventDefault();
+            }}
+            className="gap-2 overflow-hidden"
+          >
+            <AnimatePresence mode="popLayout">
+              {loading && (
+                <motion.div
+                  initial={{ y: 30 }}
+                  animate={{ y: 0 }}
+                  exit={{ y: -30 }}
+                  className="flex items-center gap-2"
+                  key="loading"
+                >
+                  <Loader className="w-4 h-4 animate-spin" />
+                  <div className="max-sm:hidden">Добавляем...</div>
+                </motion.div>
+              )}
+              {!loading && (
+                <motion.div
+                  initial={{ y: 30 }}
+                  animate={{ y: 0 }}
+                  exit={{ y: -30 }}
+                  className="flex items-center gap-2"
+                  key="add"
+                >
+                  <PlusIcon className="w-4 h-4" />
+                  <div className="max-sm:hidden">Добавить</div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </Button> */}
         <Button
           type="submit"
           // disabled={loading}
-          onClick={() => setLoading(true)}
+          // onClick={() => setLoading(true)}
           className="gap-2"
           key="create-group"
         >
-          <AnimatePresence mode="wait">
-            {loading ? (
+          <AnimatePresence mode="popLayout">
+            {loading && (
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
+                initial={{ y: 30 }}
+                animate={{ y: 0 }}
+                exit={{ y: -30 }}
                 className="flex items-center gap-2"
+                key="loading"
               >
                 <Loader className="w-4 h-4 animate-spin" />
                 <div className="max-sm:hidden">Добавляем...</div>
               </motion.div>
-            ) : (
+            )}
+            {!loading && (
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
+                initial={{ y: 30 }}
+                animate={{ y: 0 }}
+                exit={{ y: -30 }}
                 className="flex items-center gap-2"
+                key="add"
               >
                 <PlusIcon className="w-4 h-4" />
                 <div className="max-sm:hidden">Добавить</div>
