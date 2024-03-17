@@ -7,10 +7,12 @@ import { useState } from "react";
 import { FriendView } from "@/components/friend-view";
 import { UserX } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+import { Stats } from "@/components/stats";
 
 export function UserTabs({
   user,
   currentUser,
+  events
 }: {
   user: DbUser & {
     following: {
@@ -27,6 +29,23 @@ export function UserTabs({
     }[];
   };
   currentUser: User | null;
+  events: ({
+    book: {
+      id: string;
+      title: string;
+      author: string;
+      pages: number;
+      description: string;
+      coverUrl: string | null;
+      userId: string;
+      groupBookId: string | null;
+    };
+  } & {
+    id: string;
+    readAt: Date;
+    pagesRead: number;
+    bookId: string;
+  })[];
 }) {
   const [currentTab, setCurrentTab] = useState(0);
 
@@ -39,7 +58,37 @@ export function UserTabs({
     (user.shareFollowers === SharePeople.SUBS &&
       user.shareFollowers === SharePeople.SUBS &&
       user.following.find((f) => f.secondId === currentUser?.id));
+  const shareStats =
+    user.shareStats === SharePeople.ALL ||
+    (user.shareStats === SharePeople.SUBS &&
+      user.following.find((f) => f.secondId === currentUser?.id));
   console.log(user);
+  return (
+    <div className="flex flex-col">
+      {shareSubscriptions && (
+        <div className="flex flex-col">
+          <div className="text-3xl font-semibold">Подписки</div>
+          {user.follower?.map(({ second: friend }: { second: any }) => (
+            <FriendView key={friend.id} friend={friend} />
+          ))}
+        </div>
+      )}
+      {shareFollowers && (
+        <div className="flex flex-col">
+          <div className="text-3xl font-semibold">Подписчики</div>
+          {user.following.map(({ first: friend }: { first: any }) => (
+            <FriendView key={friend.id} friend={friend} />
+          ))}
+        </div>
+      )}
+      {shareStats && (
+        <div className="flex flex-col">
+          <div className="text-3xl font-semibold">Статистика</div>
+          <Stats profile={user as any} events={events} />
+        </div>
+      )}
+    </div>
+  );
   return (
     <>
       <div className="flex p-1 w-full gap-2">

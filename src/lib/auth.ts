@@ -23,6 +23,7 @@ export const lucia = new Lucia(adapter, {
       avatarUrl: attributes.avatarUrl,
       shareSubscriptions: attributes.shareSubscriptions,
       shareFollowers: attributes.shareFollowers,
+      shareStats: attributes.shareStats,
     };
   },
 });
@@ -42,4 +43,5 @@ interface DatabaseUserAttributes {
   avatarUrl: string;
   shareFollowers: SharePeople;
   shareSubscriptions: SharePeople;
+  shareStats: SharePeople;
 }

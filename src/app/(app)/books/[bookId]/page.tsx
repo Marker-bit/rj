@@ -47,7 +47,14 @@ export default async function Page({ params }: { params: { bookId: string } }) {
             </Badge>
           )}
 
-          <Link href={`/profile/${book.user.username}`} className="w-fit">
+          <Link
+            href={
+              book.userId === user?.id
+                ? "/profile"
+                : `/profile/${book.user.username}`
+            }
+            className="w-fit"
+          >
             <div className="rounded-xl border border-zinc-100 p-2 flex gap-2 w-fit pr-5">
               <Image
                 src={user?.avatarUrl || "/no-avatar.png"}

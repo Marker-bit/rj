@@ -64,6 +64,7 @@ const formSchema = z.object({
     .default("NONE")
     .optional(),
   shareFollowers: z.enum(["ALL", "SUBS", "NONE"]).default("NONE").optional(),
+  shareStats: z.enum(["ALL", "SUBS", "NONE"]).default("NONE").optional(),
 });
 
 export default function SettingsPage() {
@@ -146,6 +147,7 @@ export default function SettingsPage() {
         avatarUrl: user.avatarUrl ?? "",
         shareFollowers: user.shareFollowers,
         shareSubscriptions: user.shareSubscriptions,
+        shareStats: user.shareStats,
       });
     });
   }, [form]);
@@ -200,7 +202,7 @@ export default function SettingsPage() {
                             <div
                               className={cn(
                                 "absolute top-0 left-0 pointer-events-none w-full h-full bg-white/80 flex items-center justify-center opacity-0 transition-opacity",
-                                uploadProgress !== null && "opacity-100",
+                                uploadProgress !== null && "opacity-100"
                               )}
                             >
                               <Loader className="w-4 h-4 animate-spin" />
@@ -247,7 +249,7 @@ export default function SettingsPage() {
                           onChange={(e) => {
                             field.onChange(e);
                             fetch(
-                              `/api/auth/username?username=${e.target.value}`,
+                              `/api/auth/username?username=${e.target.value}`
                             )
                               .then((res) => res.json())
                               .then((data) => {
@@ -327,6 +329,34 @@ export default function SettingsPage() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Кто видит ваши подписки?</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      value={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="ALL">Все</SelectItem>
+                        <SelectItem value="SUBS">
+                          Только мои подписки
+                        </SelectItem>
+                        <SelectItem value="NONE">Только я</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="shareStats"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Кто видит вашу статистику?</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
