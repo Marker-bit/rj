@@ -4,6 +4,28 @@ import { validateRequest } from "@/lib/server-validate-request";
 import FollowButton from "./follow-button";
 import { UserTabs } from "./user-tabs";
 import { redirect } from "next/navigation";
+import { Metadata, ResolvingMetadata } from "next";
+
+type Props = {
+  params: { username: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+};
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const username = params.username;
+
+  // optionally access and extend (rather than replace) parent metadata
+  const previousImages = (await parent).openGraph?.images || [];
+
+  return {
+    openGraph: {
+      images: [`/profile/${username}/og`, ...previousImages],
+    },
+  };
+}
 
 export default async function Page({
   params,
@@ -45,7 +67,7 @@ export default async function Page({
     orderBy: {
       readAt: "asc",
     },
-  })
+  });
   if (currentUser?.id === user.id) return redirect("/profile");
   return (
     <div className="m-3">
