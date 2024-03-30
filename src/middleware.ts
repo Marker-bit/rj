@@ -12,7 +12,8 @@ export async function middleware(request: NextRequest) {
     "/terms-of-service",
     "/manifest.json",
     "/icon.png",
-    "/yandex_82f007f1c17a7d7a.html"
+    "/yandex_82f007f1c17a7d7a.html",
+    "/sitemap.xml",
   ];
   if (
     !cookies().get("auth_session") &&
