@@ -10,7 +10,7 @@ export function Chart({ data }: { data: any[] }) {
           dataKey="value"
           style={
             {
-              fill: "black",
+              fill: "hsl(var(--primary))",
               opacity: 0.9,
             } as React.CSSProperties
           }

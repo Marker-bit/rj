@@ -7,6 +7,7 @@ import { db } from "@/lib/db";
 import { CopyUrl } from "./CopyUrl";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 
 export default async function ProfilePage() {
   const { user } = await validateRequest();
@@ -37,32 +38,27 @@ export default async function ProfilePage() {
 
   return (
     <div className="mb-[15vh]">
-      <div className="flex p-1 items-center bg-zinc-100 border-b border-zinc-200 min-h-10">
-        <Link href="/home">
-          <button className="p-1 hover:text-blue-600 rounded-md flex items-center gap-1 text-blue-500 active:scale-95 transition-all">
-            <ChevronLeft className="w-6 h-6" />
-            <div className="font-semibold">Главная</div>
-          </button>
-        </Link>
-        <div className="font-semibold absolute left-[50%] translate-x-[-50%]">
-          Профиль
+      <div className="text-5xl font-black m-2 flex gap-2 items-center">
+        <Button variant="ghost" size="icon" asChild>
+          <Link href="/">
+            <ChevronLeft className="w-8 h-8" />
+          </Link>
+        </Button>
+        Профиль
+        <div className="ml-auto">
+          <Button variant="ghost" size="icon" asChild>
+            <Link href="/friends">
+              <Users2 className="w-8 h-8" />
+            </Link>
+          </Button>
+          <Button variant="ghost" size="icon" asChild>
+            <Link href="/profile/settings">
+              <Edit className="w-8 h-8" />
+            </Link>
+          </Button>
         </div>
-        <Link href="/friends" className="ml-auto">
-          <button className="p-1 hover:text-blue-600 rounded-md flex items-center gap-1 text-blue-500 active:scale-95 transition-all">
-            <div className="font-semibold">
-              <Users2 className="w-6 h-6" />
-            </div>
-          </button>
-        </Link>
-        <Link href="/profile/settings">
-          <button className="p-1 hover:text-blue-600 rounded-md flex items-center gap-1 text-blue-500 active:scale-95 transition-all">
-            <div className="font-semibold">
-              <Edit className="w-6 h-6" />
-            </div>
-          </button>
-        </Link>
       </div>
-      <div className="m-3 p-4 rounded-md border border-zinc-200 flex gap-2 items-center">
+      <div className="m-3 p-4 rounded-md border border-zinc-200 dark:border-zinc-800 flex gap-2 items-center">
         <Image
           src={userData?.avatarUrl ? userData?.avatarUrl : "/no-avatar.png"}
           alt="avatar"
@@ -74,7 +70,9 @@ export default async function ProfilePage() {
           <div className="text-3xl font-semibold">
             {userData?.firstName} {userData?.lastName}
           </div>
-          <div className="text-sm text-black/70">@{userData?.username}</div>
+          <div className="text-sm text-muted-foreground/70">
+            @{userData?.username}
+          </div>
         </div>
       </div>
       <div className="flex items-center justify-center">

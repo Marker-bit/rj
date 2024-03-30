@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, Loader, UserX, Users2 } from "lucide-react";
 import Link from "next/link";
 import { FriendView } from "@/components/friend-view";
+import { Button } from "@/components/ui/button";
 
 export default function FriendsPage() {
   const friendsQuery = useQuery({
@@ -19,22 +20,13 @@ export default function FriendsPage() {
   }
   return (
     <div>
-      <div className="flex p-1 items-center bg-zinc-100 border-b border-zinc-200 min-h-10">
-        <Link href="/home">
-          <button className="p-1 hover:text-blue-600 rounded-md flex items-center gap-1 text-blue-500 active:scale-95 transition-all">
-            <ChevronLeft className="w-6 h-6" />
-            <div className="font-semibold">Главная</div>
-          </button>
+      <div className="text-5xl font-black m-2 flex gap-2 items-center">
+        <Link href="/">
+          <Button variant="ghost" size="icon">
+            <ChevronLeft className="w-8 h-8" />
+          </Button>
         </Link>
-        <div className="font-semibold absolute left-[50%] translate-x-[-50%]">
-          Подписки
-        </div>
-        <Link href="/followers" className="ml-auto">
-          <button className="p-1 hover:text-blue-600 rounded-md flex items-center gap-1 text-blue-500 active:scale-95 transition-all">
-            <div className="font-semibold">Подписчики</div>
-            <Users2 className="w-6 h-6" />
-          </button>
-        </Link>
+        Подписки
       </div>
       <div className="p-3">
         <div className="flex flex-col gap-2">
@@ -61,7 +53,7 @@ export default function FriendsPage() {
               };
             }) => (
               <FriendView key={friend.id} friend={friend} following={true} />
-            ),
+            )
           )}
         </div>
       </div>

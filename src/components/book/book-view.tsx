@@ -133,7 +133,7 @@ export function BookView({ book }: { book: any }) {
 
   return (
     <div
-      className="border border-zinc-200 p-2 rounded-md hover:shadow transition-shadow flex gap-2 group relative"
+      className="border border-zinc-200 dark:border-zinc-800 p-2 rounded-md hover:shadow transition-shadow flex gap-2 group relative"
       id={`book-${book.id}`}
     >
       <DrawerDialog

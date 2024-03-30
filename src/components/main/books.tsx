@@ -11,9 +11,9 @@ export async function Books() {
     .filter((book) => book.readEvents[0]?.pagesRead !== book.pages)
     .slice(0, 3);
   return (
-    <div className="flex flex-col gap-3 border-b border-zinc-300 p-3 cursor-default">
+    <div className="flex flex-col gap-3 border-b border-zinc-300 dark:border-zinc-700 p-3 cursor-default">
       <Link href="/books">
-        <h2 className="text-3xl font-black flex gap-1 items-center cursor-pointer hover:text-black/70 w-fit flex-wrap">
+        <h2 className="text-3xl font-black flex gap-1 items-center cursor-pointer hover:text-black/70 dark:hover:text-white/70 w-fit flex-wrap">
           <Book className="w-8 h-8 mr-1" />
           Книги
           <ChevronRight className="w-8 h-8" />
@@ -25,7 +25,7 @@ export async function Books() {
         ))}
       </div>
       {books.length === 0 && (
-        <div className="p-2 flex gap-2 items-center rounded-xl border border-zinc-200 text-xl">
+        <div className="p-2 flex gap-2 items-center rounded-xl border border-zinc-200 dark:border-zinc-800 text-xl">
           <BookMinus className="w-10 h-10" />
           <div className="flex flex-col">
             <div>Нет книг</div>

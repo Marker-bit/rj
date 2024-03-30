@@ -5,6 +5,7 @@ import { Plus } from "lucide-react";
 import Image from "next/image";
 import { AddBook } from "./add-book";
 import { RemoveBook } from "./remove-book";
+import { declOfNum } from "@/lib/utils";
 
 export default async function Page({
   params,
@@ -38,9 +39,12 @@ export default async function Page({
 
   return (
     <div>
-      <div className="flex flex-col border-b border-zinc-300 p-2 bg-zinc-100">
+      <div className="flex flex-col border-b border-slate-300 dark:border-slate-700 p-2 bg-slate-100 dark:bg-slate-900">
         <h1 className="text-5xl font-bold">{collection.name}</h1>
-        <div className="text-black/50">{collection.books.length} книг</div>
+        <div className="text-muted-foreground/50">
+          {collection.books.length}{" "}
+          {declOfNum(collection.books.length, ["книга", "книги", "книг"])}
+        </div>
       </div>
       {collection.books.length !== 0 && (
         <div className="m-2 flex flex-col">

@@ -15,6 +15,7 @@ import {
 } from "date-fns";
 import { Chart } from "./chart";
 import { ReadEvent, User } from "@prisma/client";
+import { declOfNum } from "@/lib/utils";
 
 export async function Stats({
   profile,
@@ -205,54 +206,67 @@ export async function Stats({
   return (
     <>
       <div id="stats" className="grid grid-cols-2 grid-rows-2 gap-2 p-2">
-        <div className="p-2 border border-zinc-300 rounded-md flex gap-1 items-center">
+        <div className="p-2 border border-zinc-200 dark:border-zinc-800 rounded-md flex gap-1 items-center">
           <CalendarRange className="w-6 h-6" />
           <div className="flex flex-col">
             <div className="font-bold">{streak}</div>
-            <div className="text-black/50 lowercase text-xs -mt-1 font-semibold">
-              дней подряд
+            <div className="text-muted-foreground/70 lowercase text-xs -mt-1">
+              {declOfNum(streak, ["день", "дня", "дней"])} подряд
             </div>
           </div>
         </div>
-        <div className="p-2 border border-zinc-300 rounded-md flex gap-1 items-center">
+        <div className="p-2 border border-zinc-200 dark:border-zinc-800 rounded-md flex gap-1 items-center">
           <BookOpen className="w-6 h-6" />
           <div className="flex flex-col">
             <div className="font-bold">{readWeekSum}</div>
-            <div className="text-black/50 lowercase text-xs -mt-1 font-semibold">
-              страниц прочитано за последнюю неделю
+            <div className="text-muted-foreground/70 lowercase text-xs -mt-1">
+              {declOfNum(readWeekSum, [
+                "страница прочитана",
+                "страницы прочитаны",
+                "страниц прочитано",
+              ])}{" "}
+              за последнюю неделю
             </div>
           </div>
         </div>
         <Link href="/friends">
-          <div className="p-2 border border-zinc-300 rounded-md flex gap-1 items-center">
+          <div className="p-2 border border-zinc-200 dark:border-zinc-800 rounded-md flex gap-1 items-center">
             <Users2 className="w-6 h-6" />
             <div className="flex flex-col">
               <div className="font-bold">{profile.follower.length}</div>
-              <div className="text-black/50 lowercase text-xs -mt-1 font-semibold">
-                подписок
+              <div className="text-muted-foreground/70 lowercase text-xs -mt-1">
+                {declOfNum(profile.follower.length, [
+                  "подписка",
+                  "подписки",
+                  "подписок",
+                ])}
               </div>
             </div>
           </div>
         </Link>
         <Link href="/followers">
-          <div className="p-2 border border-zinc-300 rounded-md flex gap-1 items-center">
+          <div className="p-2 border border-zinc-200 dark:border-zinc-800 rounded-md flex gap-1 items-center">
             <UsersIcon className="w-6 h-6" />
             <div className="flex flex-col">
               <div className="font-bold">{profile.following.length}</div>
-              <div className="text-black/50 lowercase text-xs -mt-1 font-semibold">
-                подписчиков
+              <div className="text-muted-foreground/70 lowercase text-xs -mt-1">
+                {declOfNum(profile.following.length, [
+                  "подписчик",
+                  "подписчика",
+                  "подписчиков",
+                ])}
               </div>
             </div>
           </div>
         </Link>
       </div>
-      <div className="bg-gradient-to-b from-zinc-100 to-zinc-200 rounded-full p-1 px-3 mx-auto w-fit cursor-default">
+      <div className="bg-gradient-to-b from-zinc-100 to-zinc-200 dark:from-zinc-900 dark:to-zinc-800 rounded-full p-1 px-3 mx-auto w-fit cursor-default">
         Эта неделя
       </div>
       <div className="mt-3 h-[20vh]">
         <Chart data={currentWeekData} />
       </div>
-      <div className="bg-gradient-to-b from-zinc-100 to-zinc-200 rounded-full p-1 px-3 mx-auto w-fit cursor-default">
+      <div className="bg-gradient-to-b from-zinc-100 to-zinc-200 dark:from-zinc-900 dark:to-zinc-800 rounded-full p-1 px-3 mx-auto w-fit cursor-default">
         По дням недели
       </div>
       <div className="mt-3 h-[20vh]">

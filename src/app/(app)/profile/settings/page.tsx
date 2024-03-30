@@ -158,23 +158,22 @@ export default function SettingsPage() {
     <div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="flex p-1 items-center bg-zinc-100 border-b border-zinc-200 min-h-10">
-            <Link href="/profile">
-              <button className="p-1 hover:text-blue-600 rounded-md flex items-center gap-1 text-blue-500 active:scale-95 transition-all">
-                <ChevronLeft className="w-6 h-6" />
-                <div className="font-semibold">Профиль</div>
-              </button>
-            </Link>
-            <div className="font-semibold absolute left-[50%] translate-x-[-50%]">
-              Настройки
+          <div className="text-5xl font-black m-2 flex gap-2 items-center">
+            <Button variant="ghost" size="icon" asChild>
+              <Link href="/profile">
+                <ChevronLeft className="w-8 h-8" />
+              </Link>
+            </Button>
+            Настройки
+            <div className="ml-auto">
+              <Button variant="ghost" size="icon" type="submit">
+                {userMutation.isPending ? (
+                  <Loader className="w-6 h-6 animate-spin" />
+                ) : (
+                  <Check className="w-6 h-6" />
+                )}
+              </Button>
             </div>
-            <button className="p-1 hover:text-blue-600 rounded-md flex items-center gap-1 text-blue-500 active:scale-95 transition-all ml-auto">
-              {userMutation.isPending ? (
-                <Loader className="w-6 h-6 animate-spin" />
-              ) : (
-                <Check className="w-6 h-6" />
-              )}
-            </button>
           </div>
           <div className="m-3 p-4 rounded-md border border-zinc-200">
             <div className="space-y-2">

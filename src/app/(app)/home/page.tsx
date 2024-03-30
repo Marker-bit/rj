@@ -1,13 +1,19 @@
 import { Books } from "@/components/main/books";
 import { Profile } from "@/components/main/profile";
 import { Stats } from "@/components/main/stats";
+import { ModeToggle } from "@/components/mode-toggle";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Suspense } from "react";
 
 export default function Home() {
   return (
     <div className="mb-[15vh]">
-      <div className="text-5xl font-black m-2">Главная</div>
+      <div className="text-5xl font-black m-2 flex items-center">
+        Главная
+        <div className="ml-auto">
+          <ModeToggle />
+        </div>
+      </div>
       <div className="flex flex-col">
         <Suspense
           fallback={

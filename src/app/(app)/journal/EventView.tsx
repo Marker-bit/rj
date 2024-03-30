@@ -35,10 +35,10 @@ export function EventView({
     },
   });
   return (
-    <div className="rounded-xl border border-zinc-200 p-2 cursor-default flex flex-wrap items-center gap-1">
+    <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 p-2 cursor-default flex flex-wrap items-center gap-1">
       {event.pagesRead === event.book.pages ? (
         <>
-          <BookOpenCheck className="w-4 h-4 text-green-500" />
+          <BookOpenCheck className="w-4 h-4 mr-1 text-green-500" />
           <Link href={`/books#book-${event.bookId}`} className="font-semibold">
             Книга &quot;{event.book.title}&quot; автора {event.book.author}
           </Link>

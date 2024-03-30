@@ -51,7 +51,7 @@ export function FriendView({
   });
   return (
     <Link href={`/profile/${friend.username}`}>
-      <div className="p-4 rounded-md border border-zinc-200 flex gap-2 items-center cursor-pointer group transition-colors">
+      <div className="p-4 rounded-md border border-zinc-200 dark:border-zinc-800 flex gap-2 items-center cursor-pointer group transition-colors">
         <Image
           src={friend.avatarUrl ? friend.avatarUrl : "/no-avatar.png"}
           alt="avatar"
@@ -63,7 +63,7 @@ export function FriendView({
           <div className="text-xl font-semibold">
             {friend.firstName} {friend.lastName}
           </div>
-          <div className="text-sm text-black/70">@{friend.username}</div>
+          <div className="text-sm text-muted-foreground/70">@{friend.username}</div>
           {following === true ? (
             <Button
               className="gap-2 w-fit"

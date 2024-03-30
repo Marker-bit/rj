@@ -34,7 +34,7 @@ export default function FollowButton({ username }: { username: string }) {
   });
 
   return following === undefined ? (
-    <Skeleton className="w-12 h-8" />
+    <Skeleton className="w-48 h-10 rounded-md" />
   ) : following ? (
     <Button
       className="gap-2 w-fit"

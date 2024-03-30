@@ -196,6 +196,9 @@ function BookForm({ onSuccess }: { onSuccess?: () => void }) {
                       onUploadError={(error: Error) => {
                         alert(`ERROR! ${error.message}`);
                       }}
+                      appearance={{
+                        allowedContent: "text-black/70 dark:text-white/70",
+                      }}
                     />
                   </div>
                 )}
@@ -276,7 +279,7 @@ function MobileForm() {
   if (isMobile) {
     return (
       <>
-        <div className="flex items-center justify-center m-2">
+        <div className="flex items-center m-2">
           <Button onClick={() => setOpen(true)}>
             <Plus className="mr-2 h-4 w-4" /> Добавить книгу
           </Button>
@@ -296,7 +299,7 @@ function MobileForm() {
   }
 
   return (
-    <div className="p-3 bg-zinc-100 border-b border-zinc-300">
+    <div className="p-3 bg-slate-100 dark:bg-slate-900 border-b border-slate-300 dark:border-slate-700">
       <BookForm />
     </div>
   );
@@ -365,7 +368,7 @@ export default function BooksPage() {
       <MobileForm />
       <div className="p-3 flex flex-col gap-2">
         <div
-          className="items-center flex space-x-2 cursor-pointer p-2 rounded-md border border-zinc-200 mb-2 hover:bg-zinc-100 transition-all select-none"
+          className="items-center flex space-x-2 cursor-pointer p-2 rounded-md border border-slate-200 dark:border-slate-800 mb-2 hover:bg-slate-100 dark:hover:bg-slate-900 transition-all select-none"
           onClick={changeReadBooks}
         >
           <Switch id="readBooks" checked={readBooks} />
@@ -377,7 +380,7 @@ export default function BooksPage() {
           </div>
         </div>
         <div
-          className="items-center flex space-x-2 cursor-pointer p-2 rounded-md border border-zinc-200 mb-2 hover:bg-zinc-100 transition-all select-none"
+          className="items-center flex space-x-2 cursor-pointer p-2 rounded-md border border-slate-200 dark:border-slate-800 mb-2 hover:bg-slate-100 dark:hover:bg-slate-900 transition-all select-none"
           onClick={changeNotStarted}
         >
           <Switch id="notStarted" checked={notStarted} />
@@ -389,7 +392,7 @@ export default function BooksPage() {
           </div>
         </div>
         {booksQuery?.data?.length === 0 && (
-          <div className="p-2 flex gap-2 items-center rounded-xl border border-zinc-200 text-xl">
+          <div className="p-2 flex gap-2 items-center rounded-xl border border-slate-200 dark:border-slate-800 text-xl">
             <BookMinus className="w-10 h-10" />
             <div className="flex flex-col">
               <div>Нет книг</div>
@@ -397,7 +400,7 @@ export default function BooksPage() {
           </div>
         )}
         {booksQuery.isPending && (
-          <div className="p-2 flex gap-2 items-center justify-center rounded-xl bg-zinc-100 py-5">
+          <div className="p-2 flex gap-2 items-center justify-center rounded-xl bg-zinc-100 dark:bg-slate-900 py-5">
             <Loader className="w-6 h-6 animate-spin" />
           </div>
         )}

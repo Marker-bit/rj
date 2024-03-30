@@ -56,15 +56,15 @@ export function BookCollectionsModal({
             <Loader className="w-6 h-6 animate-spin" />
           </div>
         )}
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-2">
           {collectionsQuery.data &&
             collectionsQuery.data.map(
               (collection: { id: string; name: string; books: Book[] }) => (
                 <div
                   className={cn(
-                    "flex gap-2 rounded-xl p-2 hover:bg-zinc-100 cursor-pointer items-center transition-colors",
+                    "flex gap-2 rounded-xl p-2 hover:bg-slate-100 dark:hover:bg-slate-900 cursor-pointer items-center transition-colors",
                     selectedCollections.includes(collection.id) &&
-                      "bg-zinc-200 hover:bg-zinc-300"
+                      "bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700"
                   )}
                   key={collection.id}
                   onClick={() =>
@@ -89,7 +89,7 @@ export function BookCollectionsModal({
                   />
                   <div className="flex flex-col">
                     <h1 className="text-xl font-bold">{collection.name}</h1>
-                    <div className="text-xs text-black/50">
+                    <div className="text-xs text-muted-foreground/70">
                       {collection.books.length}{" "}
                       {declOfNum(collection.books.length, [
                         "книга",

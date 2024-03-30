@@ -17,6 +17,7 @@ import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { twMerge as cn } from "tailwind-merge";
 import React from "react";
+import { ModeToggle } from "@/components/mode-toggle";
 
 export function BottomBar() {
   const urls = [
@@ -65,7 +66,7 @@ export function BottomBar() {
             <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
               {urls.map((url) => (
                 <Link
-                  href={url.href}
+                  href={`/${url.href}`}
                   className={
                     pathname === `/${url.href}`
                       ? "flex items-center gap-3 rounded-lg bg-muted px-3 py-2 text-primary transition-all hover:text-primary"
@@ -81,16 +82,19 @@ export function BottomBar() {
               ))}
             </nav>
           </div>
+          <div className="mt-auto p-4">
+            <ModeToggle />
+          </div>
         </div>
       </div>
       <div className="fixed bottom-2 left-0 w-full flex items-center justify-center pointer-events-none z-50 md:hidden">
-        <div className="w-fit bg-white/70 backdrop-blur-lg flex gap-2 items-center justify-center content-center p-2 min-h-[10vh] rounded-xl border border-zinc-200 pointer-events-auto overflow-hidden">
+        <div className="w-fit bg-zinc-100/70 dark:bg-zinc-900/70 backdrop-blur-lg flex gap-2 items-center justify-center content-center p-2 min-h-[10vh] rounded-xl border border-zinc-200 dark:border-zinc-800 pointer-events-auto overflow-hidden">
           {urls.map((url) => (
             <Link href={`/${url.href}`} className="w-fit" key={url.href}>
               <div
                 className={cn(
                   "flex flex-col text-gray-500 rounded-md p-2 items-center cursor-pointer transition-all relative",
-                  pathname === `/${url.href}` && "text-black"
+                  pathname === `/${url.href}` && "text-black dark:text-white"
                 )}
               >
                 {React.createElement(url.icon, {
@@ -101,7 +105,7 @@ export function BottomBar() {
                   {pathname === `/${url.href}` && (
                     <motion.div
                       layoutId="current"
-                      className="w-full h-full absolute top-0 left-0 bg-black/5 shadow-md -z-10 rounded-md"
+                      className="w-full h-full absolute top-0 left-0 bg-black/5 dark:bg-white/5 shadow-md -z-10 rounded-md"
                       transition={{
                         type: "tween",
                       }}

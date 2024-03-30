@@ -70,15 +70,16 @@ export function CreateCollection() {
         <Plus className="w-4 h-4" />
         Создать коллекцию
       </Button>
-      <DrawerDialog open={open} onOpenChange={handleClose}>
+      <DrawerDialog
+        open={open}
+        onOpenChange={handleClose}
+        className="min-w-[40vw]"
+      >
         <DialogHeader>
           <DialogTitle>Создать коллекцию</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="md:min-w-[40vw]"
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
               control={form.control}
               name="name"

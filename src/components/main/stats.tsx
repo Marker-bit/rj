@@ -30,9 +30,9 @@ export async function Stats() {
     },
   });
   return (
-    <div className="flex flex-col gap-3 border-b border-zinc-300 p-3 cursor-default">
+    <div className="flex flex-col gap-3 border-b border-zinc-300 dark:border-zinc-700 p-3 cursor-default">
       <Link href="/profile#stats">
-        <h2 className="text-3xl font-black flex gap-1 items-center cursor-pointer hover:text-black/70 w-fit flex-wrap">
+        <h2 className="text-3xl font-black flex gap-1 items-center cursor-pointer hover:text-black/70 dark:hover:text-white/70 w-fit flex-wrap">
           <BarChartBig className="w-8 h-8 mr-1" />
           Статистика
           <ChevronRight className="w-8 h-8" />

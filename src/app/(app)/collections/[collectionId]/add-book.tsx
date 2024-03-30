@@ -29,7 +29,7 @@ export function AddBook({
     },
   });
   return (
-    <div className="p-2 border border-zinc-100 rounded-xl flex items-center">
+    <div className="p-2 border border-slate-100 dark:border-slate-900 rounded-xl flex items-center">
       {book.coverUrl && (
         <Image
           src={book.coverUrl}
@@ -41,12 +41,12 @@ export function AddBook({
       )}
       <div className="flex flex-col ml-2 mb-auto">
         <div className="text-xl">{book.title}</div>
-        <div className="text-black/70 text-sm">{book.author}</div>
+        <div className="text-muted-foreground/70 text-sm">{book.author}</div>
       </div>
       <Button
         variant="ghost"
         size="icon"
-        className="w-fit h-fit p-1 ml-auto text-black/50 hover:text-black"
+        className="w-fit h-fit p-1 ml-auto text-muted-foreground/50 hover:text-black dark:hover:text-white"
         onClick={() => addMutation.mutate()}
         disabled={addMutation.isPending}
       >

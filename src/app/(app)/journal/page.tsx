@@ -55,16 +55,13 @@ export default function JournalPage() {
   });
   return (
     <div>
-      <div className="flex p-1 items-center bg-zinc-100 border-b border-zinc-200 min-h-10">
-        <Link href="/home">
-          <button className="p-1 hover:text-blue-600 rounded-md flex items-center gap-1 text-blue-500 active:scale-95 transition-all">
-            <ChevronLeft className="w-6 h-6" />
-            <div className="font-semibold">Главная</div>
-          </button>
+      <div className="text-5xl font-black m-2 flex gap-2 items-center">
+        <Link href="/">
+          <Button variant="ghost" size="icon">
+            <ChevronLeft className="w-8 h-8" />
+          </Button>
         </Link>
-        <div className="font-semibold absolute left-[50%] translate-x-[-50%]">
-          Журнал
-        </div>
+        Журнал
       </div>
       <div className="p-3 flex flex-col gap-2">
         <DrawerDialog open={filterOpen} onOpenChange={setFilterOpen}>
@@ -93,13 +90,13 @@ export default function JournalPage() {
           {!dates && "выключен"}
         </Button>
         {eventsQuery.data?.length === 0 && events.length === 0 ? (
-          <div className="rounded-xl border border-zinc-200 p-2 flex gap-2 items-center">
+          <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 p-2 flex gap-2 items-center">
             <BookMinus className="w-10 h-10" />
             Журнал пуст
           </div>
         ) : (
           events.length === 0 && (
-            <div className="rounded-xl border border-zinc-200 p-2 flex gap-2 items-center">
+            <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 p-2 flex gap-2 items-center">
               <BookMinus className="w-10 h-10" />
               Фильтры ничего не выбрали
             </div>
@@ -114,7 +111,7 @@ export default function JournalPage() {
             readAt: string | Date;
           }) => (
             <EventView event={event} key={event.id} />
-          ),
+          )
         )}
       </div>
     </div>

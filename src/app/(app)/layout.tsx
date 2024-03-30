@@ -4,13 +4,12 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@/app/globals.css";
 import { BottomBar } from "./BottomBar";
-import { Provider } from "./QueryClientProvider";
 import Script from "next/script";
 import { Suspense } from "react";
 import YandexMetrika from "@/components/YandexMetrika";
-import { DayPickerProvider } from "react-day-picker";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { QueryProvider } from "@/components/providers/query-client-provider";
+import { ThemeProvider } from "@/components/providers/theme-provider";
+import { BreakpointIndicator } from "@/components/breakpoint-indicator";
 
 const font = Inter({ subsets: ["latin"] });
 
@@ -56,13 +55,21 @@ export default async function RootLayout({
         <meta name="theme-color" content="#fff" />
       </head>
       <body className={font.className + "  overflow-x-hidden"}>
-        <Provider>
-          <div className="grid w-full h-[100dvh] md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr] relative">
-            <BottomBar />
-            <div className="w-full h-[100dvh] overflow-auto">{children}</div>
-          </div>
+        <QueryProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <div className="grid w-full h-[100dvh] md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr] relative">
+              <BottomBar />
+              <div className="w-full overflow-auto">{children}</div>
+            </div>
+          </ThemeProvider>
           <Analytics />
           <SpeedInsights />
+          {/* {!production && <BreakpointIndicator />} */}
           {production && (
             <Script id="metrika-counter" strategy="afterInteractive">
               {`(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
@@ -85,7 +92,7 @@ export default async function RootLayout({
               <YandexMetrika />
             </Suspense>
           )}
-        </Provider>
+        </QueryProvider>
       </body>
     </html>
   );
