@@ -7,9 +7,7 @@ import { Suspense } from "react";
 export default function Home() {
   return (
     <div className="mb-[15vh]">
-      <div className="flex p-1 min-h-10 items-center bg-zinc-100 border-b border-zinc-200 relative">
-        <div className="font-semibold mx-auto">Главная</div>
-      </div>
+      <div className="text-5xl font-black m-2">Главная</div>
       <div className="flex flex-col">
         <Suspense
           fallback={

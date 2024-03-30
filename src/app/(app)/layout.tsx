@@ -9,6 +9,8 @@ import Script from "next/script";
 import { Suspense } from "react";
 import YandexMetrika from "@/components/YandexMetrika";
 import { DayPickerProvider } from "react-day-picker";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 const font = Inter({ subsets: ["latin"] });
 
@@ -55,8 +57,10 @@ export default async function RootLayout({
       </head>
       <body className={font.className + "  overflow-x-hidden"}>
         <Provider>
-          <div>{children}</div>
-          <BottomBar />
+          <div className="grid w-full min-h-screen md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr] relative">
+            <BottomBar />
+            <div className="w-full max-h-screen overflow-auto">{children}</div>
+          </div>
           <Analytics />
           <SpeedInsights />
           {production && (

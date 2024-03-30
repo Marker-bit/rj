@@ -54,7 +54,36 @@ export function BottomBar() {
   const pathname = usePathname();
   return (
     <>
-      <div className="fixed bottom-2 left-0 w-full flex items-center justify-center pointer-events-none">
+      <div className="hidden border-r bg-muted/40 md:block">
+        <div className="flex h-screen flex-col gap-2">
+          <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
+            <Link href="/" className="flex items-center gap-2 font-semibold">
+              <span>Читательский дневник</span>
+            </Link>
+          </div>
+          <div className="flex-1">
+            <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
+              {urls.map((url) => (
+                <Link
+                  href={url.href}
+                  className={
+                    pathname === `/${url.href}`
+                      ? "flex items-center gap-3 rounded-lg bg-muted px-3 py-2 text-primary transition-all hover:text-primary"
+                      : "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                  }
+                  key={url.label}
+                >
+                  {React.createElement(url.icon, {
+                    className: "w-4 h-4",
+                  })}
+                  {url.label}
+                </Link>
+              ))}
+            </nav>
+          </div>
+        </div>
+      </div>
+      <div className="sticky bottom-2 left-0 w-full flex items-center justify-center pointer-events-none z-50 md:hidden">
         <div className="w-fit bg-white/70 backdrop-blur-lg flex gap-2 items-center justify-center content-center p-2 min-h-[10vh] rounded-xl border border-zinc-200 pointer-events-auto overflow-hidden">
           {urls.map((url) => (
             <Link href={`/${url.href}`} className="w-fit" key={url.href}>
