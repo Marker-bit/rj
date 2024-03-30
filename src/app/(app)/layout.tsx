@@ -57,9 +57,9 @@ export default async function RootLayout({
       </head>
       <body className={font.className + "  overflow-x-hidden"}>
         <Provider>
-          <div className="grid w-full min-h-screen md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr] relative">
+          <div className="grid w-full h-[100dvh] md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr] relative">
             <BottomBar />
-            <div className="w-full max-h-screen overflow-auto">{children}</div>
+            <div className="w-full h-[100dvh] overflow-auto">{children}</div>
           </div>
           <Analytics />
           <SpeedInsights />
