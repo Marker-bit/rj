@@ -83,7 +83,7 @@ export function BottomBar() {
           </div>
         </div>
       </div>
-      <div className="sticky bottom-2 left-0 w-full flex items-center justify-center pointer-events-none z-50 md:hidden">
+      <div className="fixed bottom-2 left-0 w-full flex items-center justify-center pointer-events-none z-50 md:hidden">
         <div className="w-fit bg-white/70 backdrop-blur-lg flex gap-2 items-center justify-center content-center p-2 min-h-[10vh] rounded-xl border border-zinc-200 pointer-events-auto overflow-hidden">
           {urls.map((url) => (
             <Link href={`/${url.href}`} className="w-fit" key={url.href}>
