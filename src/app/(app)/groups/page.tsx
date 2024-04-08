@@ -1,6 +1,8 @@
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
 import { AddGroupButton } from "./add-group-button";
+import { declOfNum } from "@/lib/utils";
+import Link from "next/link";
 
 export default async function Page() {
   const { user } = await validateRequest();
@@ -12,6 +14,10 @@ export default async function Page() {
         },
       },
     },
+    include: {
+      members: true,
+      groupBooks: true,
+    },
   });
   return (
     <div className="flex flex-col">
@@ -21,9 +27,33 @@ export default async function Page() {
           <AddGroupButton />
         </div>
       </div>
-      {groups.map((g) => (
-        <div key={g.id}>{g.title}</div>
-      ))}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 m-2">
+        {groups.map((g) => (
+          <Link href={`/groups/${g.id}`} key={g.id}>
+            <div
+              key={g.id}
+              className="rounded-xl p-2 border border-zinc-100 dark:border-zinc-900 flex flex-col gap-1"
+            >
+              <div>{g.title}</div>
+              <div className="flex gap-1 text-muted-foreground/70 text-sm">
+                <div>
+                  {g.groupBooks.length}{" "}
+                  {declOfNum(g.groupBooks.length, ["книга", "книги", "книг"])}
+                </div>
+                •
+                <div>
+                  {g.members.length}{" "}
+                  {declOfNum(g.members.length, [
+                    "участник",
+                    "участника",
+                    "участников",
+                  ])}
+                </div>
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }
