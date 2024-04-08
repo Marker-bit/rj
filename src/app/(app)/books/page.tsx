@@ -285,7 +285,7 @@ function MobileForm() {
           </Button>
         </div>
         <Drawer open={open} onOpenChange={setOpen}>
-          <DrawerContent className="bg-white flex flex-col fixed bottom-0 left-0 right-0 max-h-[96%] rounded-t-[10px]">
+          <DrawerContent>
             <DrawerHeader>
               <DrawerTitle>Добавить книгу</DrawerTitle>
             </DrawerHeader>
