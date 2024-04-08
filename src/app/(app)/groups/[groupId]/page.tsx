@@ -9,6 +9,8 @@ import { Book, Crown, Plus, Shield, User, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { AddMemberButton } from "./add-member-button";
+import { AddBookButton } from "./add-book-button";
+import { MoreActions } from "./more-actions";
 
 export default async function Page({
   params,
@@ -30,6 +32,10 @@ export default async function Page({
   if (!group) {
     return null;
   }
+
+  const isMember = group.members.some(
+    (m) => m.userId === user?.id && m.role === GroupMemberRole.MEMBER
+  );
 
   return (
     <div className="p-2">
@@ -58,18 +64,12 @@ export default async function Page({
           <div className="flex items-center text-sm gap-1 text-black/70 dark:text-white/70">
             <Book className="w-4 h-4" />
             <div>Книги</div>
-            <Button
-              size="icon"
-              variant="ghost"
-              className="ml-auto p-1 h-fit w-fit"
-            >
-              <Plus className="w-4 h-4" />
-            </Button>
+            <AddBookButton groupId={group.id} />
           </div>
           {group.groupBooks.map((book) => (
             <div
               key={book.id}
-              className="flex gap-2 items-center p-2 rounded-xl hover:bg-muted transition-all"
+              className="flex gap-2 items-center p-2 rounded-xl hover:bg-muted/10 transition-all"
             >
               {book.coverUrl && (
                 <Image
@@ -81,9 +81,17 @@ export default async function Page({
                 />
               )}
               <div className="flex flex-col gap-1">
-                <div className="text-3xl font-bold">{book.title}</div>
-                <div className="text-zinc-500 -mt-1">{book.author}</div>
-                <div className="text-zinc-500 -mt-1">{book.pages} стр.</div>
+                <div className="text-xl font-bold">{book.title}</div>
+                <div className="text-zinc-500 -mt-1 text-sm">{book.author}</div>
+                <div className="text-zinc-500 -mt-1 text-sm">
+                  {book.pages} стр.
+                </div>
+                <div className="text-zinc-500 -mt-1 text-sm">
+                  {book.description}
+                </div>
+              </div>
+              <div className="ml-auto">
+                <MoreActions />
               </div>
             </div>
           ))}
@@ -106,15 +114,13 @@ export default async function Page({
               key={member.id}
               className="flex gap-2 items-center p-2 rounded-xl hover:bg-muted transition-all"
             >
-              {member.user.avatarUrl && (
-                <Image
-                  src={member.user.avatarUrl}
-                  alt="user"
-                  width={500}
-                  height={500}
-                  className="rounded-md h-8 w-auto"
-                />
-              )}
+              <Image
+                src={member.user.avatarUrl || "/no-avatar.png"}
+                alt="user"
+                width={500}
+                height={500}
+                className="rounded-md h-8 w-auto"
+              />
               <div className="flex flex-col">
                 <div className="font-bold">
                   {member.user.firstName} {member.user.lastName}

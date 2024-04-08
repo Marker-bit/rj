@@ -18,6 +18,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useDebounceCallback } from "usehooks-ts";
 import { z } from "zod";
 
 const formSchema = z.object({
@@ -56,7 +57,7 @@ export function AuthForm() {
             } else if (res.status === "invalid-password") {
               alert("Неправильный пароль");
             }
-          },
+          }
         );
     },
   });
@@ -64,6 +65,15 @@ export function AuthForm() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     userMutation.mutate(values);
   }
+  const fetchUsername = useDebounceCallback(
+    (username: string) =>
+      fetch(`/api/auth/username?username=${username}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setUsernameFound(data.found);
+        }),
+    200
+  );
 
   return (
     <Form {...form}>
@@ -81,11 +91,7 @@ export function AuthForm() {
                     {...field}
                     onChange={(e) => {
                       field.onChange(e);
-                      fetch(`/api/auth/username?username=${e.target.value}`)
-                        .then((res) => res.json())
-                        .then((data) => {
-                          setUsernameFound(data.found);
-                        });
+                      fetchUsername(e.target.value);
                     }}
                   />
 

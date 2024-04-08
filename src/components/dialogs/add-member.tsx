@@ -57,7 +57,7 @@ export default function AddMember({
                   }}
                 >
                   <Image
-                    src={friend.avatarUrl}
+                    src={friend.avatarUrl || "/no-avatar.png"}
                     alt="avatar"
                     width={40}
                     height={40}
