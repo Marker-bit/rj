@@ -14,6 +14,7 @@ import { BreakpointIndicator } from "@/components/breakpoint-indicator";
 const font = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://rj-ten.vercel.app/"),
   title: "Читательский дневник",
   description: "Читательский дневник",
   twitter: {

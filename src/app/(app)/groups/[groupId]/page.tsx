@@ -1,16 +1,13 @@
-import AddMember from "@/components/dialogs/add-member";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
 import { declOfNum } from "@/lib/utils";
 import { GroupMemberRole } from "@prisma/client";
-import { Book, Crown, Plus, Shield, User, Users } from "lucide-react";
+import { Book, Crown, Shield, User, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { AddMemberButton } from "./add-member-button";
 import { AddBookButton } from "./add-book-button";
-import { MoreActions } from "./more-actions";
+import { AddMemberButton } from "./add-member-button";
+import { GroupBookView } from "./book-view";
 
 export default async function Page({
   params,
@@ -32,6 +29,14 @@ export default async function Page({
   if (!group) {
     return null;
   }
+  const myBooksFromGroup = await db.book.findMany({
+    where: {
+      userId: user?.id,
+      groupBook: {
+        groupId: group.id,
+      },
+    },
+  });
 
   const isMember = group.members.some(
     (m) => m.userId === user?.id && m.role === GroupMemberRole.MEMBER
@@ -67,33 +72,7 @@ export default async function Page({
             <AddBookButton groupId={group.id} />
           </div>
           {group.groupBooks.map((book) => (
-            <div
-              key={book.id}
-              className="flex gap-2 items-center p-2 rounded-xl hover:bg-muted/10 transition-all"
-            >
-              {book.coverUrl && (
-                <Image
-                  src={book.coverUrl}
-                  alt="book"
-                  width={500}
-                  height={500}
-                  className="rounded-md h-40 w-auto"
-                />
-              )}
-              <div className="flex flex-col gap-1">
-                <div className="text-xl font-bold">{book.title}</div>
-                <div className="text-zinc-500 -mt-1 text-sm">{book.author}</div>
-                <div className="text-zinc-500 -mt-1 text-sm">
-                  {book.pages} стр.
-                </div>
-                <div className="text-zinc-500 -mt-1 text-sm">
-                  {book.description}
-                </div>
-              </div>
-              <div className="ml-auto">
-                <MoreActions />
-              </div>
-            </div>
+            <GroupBookView groupBook={book} key={book.id} ownedBooks={myBooksFromGroup} isMember={isMember} />
           ))}
         </div>
         <div className="p-2 rounded-xl border border-muted">
