@@ -18,7 +18,11 @@ export default async function Page({
   const group = await db.group.findUnique({
     where: { id: params.groupId },
     include: {
-      groupBooks: true,
+      groupBooks: {
+        include: {
+          group: true
+        }
+      },
       members: {
         include: {
           user: true,

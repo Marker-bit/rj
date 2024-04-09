@@ -1,8 +1,8 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { GroupBook } from "@prisma/client";
-import { Loader, Plus } from "lucide-react";
+import { Group, GroupBook } from "@prisma/client";
+import { Loader, Minus, Plus } from "lucide-react";
 import Image from "next/image";
 import { MoreActions } from "./more-actions";
 import { useState } from "react";
@@ -13,7 +13,9 @@ export function GroupBookView({
   ownedBooks,
   isMember,
 }: {
-  groupBook: GroupBook;
+  groupBook: GroupBook & {
+    group: Group
+  };
   ownedBooks: any[];
   isMember: boolean;
 }) {
@@ -44,14 +46,14 @@ export function GroupBookView({
         </div>
       </div>
       <div className="ml-auto flex gap-1">
-        {ownedBooks.every((b) => b.groupBookId !== groupBook.id) && (
+        {ownedBooks.every((b) => b.groupBookId !== groupBook.id) ? (
           <Button
             size="icon"
             variant="ghost"
             className="p-1 h-fit w-fit"
             onClick={() => {
               setLoading(true);
-              fetch(`/api/groups/${groupBook.groupId}/books/${groupBook.id}`, {
+              fetch(`/api/groups/${groupBook.groupId}/books/${groupBook.id}/own`, {
                 method: "POST",
               }).then(() => {
                 setLoading(false);
@@ -65,8 +67,29 @@ export function GroupBookView({
               <Plus className="w-4 h-4" />
             )}
           </Button>
+        ) : (
+          <Button
+            size="icon"
+            variant="ghost"
+            className="p-1 h-fit w-fit"
+            onClick={() => {
+              setLoading(true);
+              fetch(`/api/groups/${groupBook.groupId}/books/${groupBook.id}/own`, {
+                method: "DELETE",
+              }).then(() => {
+                setLoading(false);
+                router.refresh();
+              });
+            }}
+          >
+            {loading ? (
+              <Loader className="w-4 h-4 animate-spin" />
+            ) : (
+              <Minus className="w-4 h-4" />
+            )}
+          </Button>
         )}
-        <MoreActions />
+        <MoreActions book={groupBook} />
       </div>
     </div>
   );
