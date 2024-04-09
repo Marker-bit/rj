@@ -2,12 +2,20 @@ import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
 import { declOfNum } from "@/lib/utils";
 import { GroupMemberRole } from "@prisma/client";
-import { Book, Crown, Shield, User, Users } from "lucide-react";
+import {
+  BarChartHorizontalBig,
+  Book,
+  Crown,
+  Shield,
+  User,
+  Users,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { AddBookButton } from "./add-book-button";
 import { AddMemberButton } from "./add-member-button";
 import { GroupBookView } from "./book-view";
+import { Progress } from "@/components/ui/progress";
 
 export default async function Page({
   params,
@@ -20,12 +28,21 @@ export default async function Page({
     include: {
       groupBooks: {
         include: {
-          group: true
-        }
+          group: true,
+          book: true
+        },
       },
       members: {
         include: {
-          user: true,
+          user: {
+            include: {
+              books: {
+                include: {
+                  groupBook: true,
+                },
+              },
+            },
+          },
         },
       },
     },
@@ -45,6 +62,13 @@ export default async function Page({
   const isMember = group.members.some(
     (m) => m.userId === user?.id && m.role === GroupMemberRole.MEMBER
   );
+
+  const activeMembers = group.members.filter(
+    (m) =>
+      m.user.books.filter((b) => b.groupBook?.groupId === group.id).length > 0
+  );
+
+  const activeBooks = group.groupBooks.filter((b) => b.book.length === group.members.length);
 
   return (
     <div className="p-2">
@@ -76,7 +100,12 @@ export default async function Page({
             <AddBookButton groupId={group.id} />
           </div>
           {group.groupBooks.map((book) => (
-            <GroupBookView groupBook={book} key={book.id} ownedBooks={myBooksFromGroup} isMember={isMember} />
+            <GroupBookView
+              groupBook={book}
+              key={book.id}
+              ownedBooks={myBooksFromGroup}
+              isMember={isMember}
+            />
           ))}
         </div>
         <div className="p-2 rounded-xl border border-muted">
@@ -123,6 +152,50 @@ export default async function Page({
               </div>
             </Link>
           ))}
+        </div>
+        <div className="p-2 rounded-xl border border-muted">
+          <div className="flex items-center text-sm gap-1 text-black/70 dark:text-white/70">
+            <BarChartHorizontalBig className="w-4 h-4" />
+            <div>Статистика</div>
+          </div>
+          <div className="flex flex-col gap-2 p-2">
+            <div className="flex justify-between">
+              <div className="flex flex-col">
+                <div className="text-xl">Активных пользователей</div>
+                <div className="text-muted-foreground/70 text-sm">
+                  Участников, добавивших себе книги
+                </div>
+              </div>
+              <div className="flex flex-col items-end">
+                <div className="text-xl font-bold">
+                  {(activeMembers.length / group.members.length) * 100}%
+                </div>
+                <div className="text-muted-foreground/70 text-sm">
+                  {activeMembers.length}
+                </div>
+              </div>
+            </div>
+            <Progress value={(activeMembers.length / group.members.length) * 100} />
+          </div>
+          <div className="flex flex-col gap-2 p-2">
+            <div className="flex justify-between">
+              <div className="flex flex-col">
+                <div className="text-xl">Активных книг</div>
+                <div className="text-muted-foreground/70 text-sm">
+                  Книги, которые сохранили все участники
+                </div>
+              </div>
+              <div className="flex flex-col items-end">
+                <div className="text-xl font-bold">
+                  {(activeBooks.length / group.groupBooks.length) * 100}%
+                </div>
+                <div className="text-muted-foreground/70 text-sm">
+                  {activeBooks.length}
+                </div>
+              </div>
+            </div>
+            <Progress value={(activeBooks.length / group.groupBooks.length) * 100} />
+          </div>
         </div>
       </div>
     </div>
