@@ -24,7 +24,7 @@ export function GroupBookView({
   return (
     <div
       key={groupBook.id}
-      className="flex gap-2 items-center p-2 rounded-xl hover:bg-muted/10 transition-all"
+      className="flex gap-2 p-2 items-center rounded-xl hover:bg-muted/10 transition-all"
     >
       {groupBook.coverUrl && (
         <Image
@@ -32,7 +32,7 @@ export function GroupBookView({
           alt="book"
           width={500}
           height={500}
-          className="rounded-md h-40 w-auto"
+          className="rounded-md h-32 w-auto"
         />
       )}
       <div className="flex flex-col gap-1">

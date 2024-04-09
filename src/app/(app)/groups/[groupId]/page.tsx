@@ -3,6 +3,7 @@ import { validateRequest } from "@/lib/server-validate-request";
 import { declOfNum } from "@/lib/utils";
 import { GroupMemberRole } from "@prisma/client";
 import {
+  BarChart2,
   BarChartHorizontalBig,
   Book,
   Crown,
@@ -29,7 +30,13 @@ export default async function Page({
       groupBooks: {
         include: {
           group: true,
-          book: true,
+          book: {
+            include: {
+              readEvents: {
+                orderBy: { readAt: "desc" },
+              },
+            },
+          },
         },
       },
       members: {
@@ -87,8 +94,20 @@ export default async function Page({
     },
   ];
 
+  const allBooks = group.groupBooks.map((b) => b.book).flat();
+
+  let rating: { [key: string]: number } = {};
+
+  group.members.forEach(
+    (m) =>
+      (rating[m.user.id] = allBooks
+        .filter((b) => b.userId === m.user.id)
+        .map((book) => book.readEvents[0]?.pagesRead || 0)
+        .reduce((a, b) => a + b, 0))
+  );
+
   return (
-    <div className="p-2">
+    <div className="p-2 max-sm:mb-20">
       <div className="flex flex-col">
         <div className="text-3xl font-bold">
           <div>{group.title}</div>
@@ -110,7 +129,7 @@ export default async function Page({
         </div>
       </div>
       <div className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-2">
-        <div className="p-2 rounded-xl border border-muted">
+        <div className="p-4 rounded-xl border border-muted">
           <div className="flex items-center text-sm gap-1 text-black/70 dark:text-white/70">
             <Book className="w-4 h-4" />
             <div>Книги</div>
@@ -125,7 +144,7 @@ export default async function Page({
             />
           ))}
         </div>
-        <div className="p-2 rounded-xl border border-muted">
+        <div className="p-4 rounded-xl border border-muted">
           <div className="flex items-center text-sm gap-1 text-black/70 dark:text-white/70">
             <Users className="w-4 h-4" />
             <div>Участники</div>
@@ -141,7 +160,7 @@ export default async function Page({
             <Link
               href={`/profile/${member.user.username}`}
               key={member.id}
-              className="flex gap-2 items-center p-2 rounded-xl hover:bg-muted transition-all"
+              className="flex gap-2 items-center mt-2 p-2 rounded-xl hover:bg-muted transition-all"
             >
               <Image
                 src={member.user.avatarUrl || "/no-avatar.png"}
@@ -170,13 +189,13 @@ export default async function Page({
             </Link>
           ))}
         </div>
-        <div className="p-2 rounded-xl border border-muted">
+        <div className="p-4 rounded-xl border border-muted">
           <div className="flex items-center text-sm gap-1 text-black/70 dark:text-white/70">
             <BarChartHorizontalBig className="w-4 h-4" />
             <div>Статистика</div>
           </div>
           {stats.map((stat) => (
-            <div className="flex flex-col gap-2 p-2" key={stat.title}>
+            <div className="flex flex-col gap-2 mt-2" key={stat.title}>
               <div className="flex justify-between">
                 <div className="flex flex-col">
                   <div className="text-xl">{stat.title}</div>
@@ -186,7 +205,7 @@ export default async function Page({
                 </div>
                 <div className="flex flex-col items-end">
                   <div className="text-xl font-bold">
-                    {(stat.value / stat.max) * 100}%
+                    {((stat.value / stat.max) * 100).toFixed(1)}%
                   </div>
                   <div className="text-muted-foreground/70 text-sm">
                     {stat.value}/{stat.max}
@@ -196,6 +215,35 @@ export default async function Page({
               <Progress value={(stat.value / stat.max) * 100} />
             </div>
           ))}
+        </div>
+        <div className="p-4 rounded-xl border border-muted">
+          <div className="flex items-center text-sm gap-1 text-black/70 dark:text-white/70">
+            <BarChart2 className="w-4 h-4" />
+            <div>Рейтинг</div>
+          </div>
+          <div className="flex flex-col mt-2">
+            {Object.entries(rating).map(([userId, pagesRead], i) => (
+              <Link
+                key={userId}
+                href={`/profile/${
+                  group.members.find((m) => m.userId === userId)?.user.username
+                }`}
+              >
+                <div
+                  className="flex items-center p-2 hover:bg-black/10 dark:hover:bg-white/10 rounded-md transition-all gap-2"
+                >
+                  <div className="rounded-full flex w-6 h-6 items-center justify-center border border-black/50 dark:border-white/50">
+                    {i+1}
+                  </div>
+                  {
+                    group.members.find((m) => m.userId === userId)?.user
+                      .username
+                  }
+                  <div className="font-bold ml-auto">{pagesRead}</div>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </div>

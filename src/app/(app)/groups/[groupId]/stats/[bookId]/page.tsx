@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
 import { BarChartHorizontalBig } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default async function Page({
   params,
@@ -28,7 +29,14 @@ export default async function Page({
     where: { id: params.bookId, groupId: params.groupId },
     include: {
       group: true,
-      book: true,
+      book: {
+        include: {
+          user: true,
+          readEvents: {
+            orderBy: { readAt: "desc" },
+          },
+        },
+      },
     },
   });
   if (!book) {
@@ -58,15 +66,11 @@ export default async function Page({
         )}
         <div className="flex flex-col">
           <div className="text-xl font-bold">{book.title}</div>
-          <div className="text-muted-foreground/90 text-sm">
-            {book.author}
-          </div>
+          <div className="text-muted-foreground/90 text-sm">{book.author}</div>
           <div className="text-muted-foreground/90 text-sm">
             {book.pages} стр.
           </div>
-          <p className="text-muted-foreground/90 text-sm">
-            {book.description}
-          </p>
+          <p className="text-muted-foreground/90 text-sm">{book.description}</p>
         </div>
       </div>
 
@@ -75,7 +79,50 @@ export default async function Page({
           <BarChartHorizontalBig className="w-4 h-4" />
           Статистика
         </div>
-        {stats.map((stat) => (
+        <div className="flex flex-col gap-2 mt-2">
+          <div className="flex justify-between">
+            <div className="flex flex-col">
+              <div className="text-xl">Читающих участников</div>
+              <div className="text-muted-foreground/70 text-sm">
+                Участников, добавивших себе эту книгу
+              </div>
+            </div>
+            <div className="flex flex-col items-end">
+              <div className="text-xl font-bold">
+                {((book.book.length / group.members.length) * 100).toFixed(1)}%
+              </div>
+              <div className="text-muted-foreground/70 text-sm">
+                {book.book.length}/{group.members.length}
+              </div>
+            </div>
+          </div>
+          <Progress value={(book.book.length / group.members.length) * 100} />
+        </div>
+        {book.book.map(({ user, readEvents }) => (
+          <Link
+            href={`/profile/${user.username}`}
+            key={user.id}
+            className="flex gap-2 items-center mt-2 p-2 rounded-xl hover:bg-muted transition-all"
+          >
+            <Image
+              src={user.avatarUrl || "/no-avatar.png"}
+              alt="user"
+              width={500}
+              height={500}
+              className="rounded-md h-8 w-auto"
+            />
+            <div className="flex flex-col">
+              <div className="font-bold">
+                {user.firstName} {user.lastName}
+              </div>
+              <div className="text-muted-foreground/70 text-sm">
+                @{user.username}
+              </div>
+            </div>
+            <div className="ml-auto font-bold">{readEvents[0]?.pagesRead || 0}</div>
+          </Link>
+        ))}
+        {/* {stats.map((stat) => (
           <div className="flex flex-col gap-2 mt-2" key={stat.title}>
             <div className="flex justify-between">
               <div className="flex flex-col">
@@ -86,7 +133,7 @@ export default async function Page({
               </div>
               <div className="flex flex-col items-end">
                 <div className="text-xl font-bold">
-                  {(stat.value / stat.max) * 100}%
+                  {((stat.value / stat.max) * 100).toFixed(1)}%
                 </div>
                 <div className="text-muted-foreground/70 text-sm">
                   {stat.value}/{stat.max}
@@ -95,7 +142,7 @@ export default async function Page({
             </div>
             <Progress value={(stat.value / stat.max) * 100} />
           </div>
-        ))}
+        ))} */}
       </div>
     </div>
   );
