@@ -1,6 +1,15 @@
 "use client";
 
-import { Bar, BarChart, ResponsiveContainer, XAxis } from "recharts";
+import {
+  Bar,
+  BarChart,
+  ResponsiveContainer,
+  XAxis,
+  LineChart,
+  Line,
+  YAxis,
+  Tooltip,
+} from "recharts";
 
 export function Chart({ data }: { data: any[] }) {
   return (
@@ -17,6 +26,7 @@ export function Chart({ data }: { data: any[] }) {
           label
         />
         <XAxis dataKey="name" />
+        <YAxis dataKey="value" />
       </BarChart>
     </ResponsiveContainer>
   );
