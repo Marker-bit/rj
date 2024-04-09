@@ -11,6 +11,7 @@ import {
   Search,
   SearchIcon,
   Settings,
+  Users,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -47,6 +48,11 @@ export function BottomBar() {
       icon: BarChartBig,
     },
     {
+      href: "groups",
+      label: "Группы",
+      icon: Users,
+    },
+    {
       href: "profile",
       label: "Профиль",
       icon: CircleUserIcon,
@@ -56,8 +62,8 @@ export function BottomBar() {
   return (
     <>
       <div className="hidden border-r bg-muted/40 md:block">
-        <div className="flex h-screen flex-col gap-2">
-          <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
+        <div className="flex h-screen flex-col gap-2 overflow-auto">
+          <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6 mt-2">
             <Link href="/" className="flex items-center gap-2 font-semibold">
               <span>Читательский дневник</span>
             </Link>
@@ -82,13 +88,13 @@ export function BottomBar() {
               ))}
             </nav>
           </div>
-          <div className="mt-auto p-4">
+          <div className="mt-auto p-4 pt-0">
             <ModeToggle />
           </div>
         </div>
       </div>
       <div className="fixed bottom-2 left-0 w-full flex items-center justify-center pointer-events-none z-50 md:hidden">
-        <div className="w-fit bg-zinc-100/70 dark:bg-zinc-900/70 backdrop-blur-lg flex gap-2 items-center justify-center content-center p-2 min-h-[10vh] rounded-xl border border-zinc-200 dark:border-zinc-800 pointer-events-auto overflow-hidden">
+        <div className="w-fit bg-slate-100/70 dark:bg-slate-900/70 backdrop-blur-lg flex gap-1 items-center content-center p-2 rounded-xl border border-zinc-200 dark:border-zinc-800 pointer-events-auto overflow-auto max-w-full mx-2">
           {urls.map((url) => (
             <Link href={`/${url.href}`} className="w-fit" key={url.href}>
               <div
@@ -98,7 +104,7 @@ export function BottomBar() {
                 )}
               >
                 {React.createElement(url.icon, {
-                  className: "w-6 h-6 m-2",
+                  className: "w-[1.3em] h-[1.3em] m-2",
                 })}
                 <div className="text-xs">{url.label}</div>
                 <AnimatePresence>
