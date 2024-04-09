@@ -28,6 +28,7 @@ import {
   Share,
   Trash,
   Undo,
+  Users,
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -35,6 +36,8 @@ import { useState } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { useMediaQuery } from "usehooks-ts";
 import { ShareBookModal } from "../dialogs/share-book-modal";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import Link from "next/link";
 
 export function BookView({ book }: { book: any }) {
   const queryClient = useQueryClient();
@@ -283,6 +286,21 @@ export function BookView({ book }: { book: any }) {
                 )}
               </Button>
             </>
+          )}
+          {book.groupBookId && (
+            <Tooltip>
+              <TooltipTrigger>
+                <Link href={`/groups/${book.groupBook.group.id}`}>
+                  <Badge variant="outline">
+                    <Users className="w-4 h-4 mr-2" />{" "}
+                    {book.groupBook.group.title}
+                  </Badge>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Группа</p>
+              </TooltipContent>
+            </Tooltip>
           )}
         </div>
         <div className="flex gap-1 flex-wrap">

@@ -10,6 +10,7 @@ import YandexMetrika from "@/components/YandexMetrika";
 import { QueryProvider } from "@/components/providers/query-client-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { BreakpointIndicator } from "@/components/breakpoint-indicator";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const font = Inter({ subsets: ["latin"] });
 
@@ -63,10 +64,12 @@ export default async function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <div className="grid w-full h-[100dvh] md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr] relative">
-              <BottomBar />
-              <div className="w-full overflow-auto">{children}</div>
-            </div>
+            <TooltipProvider>
+              <div className="grid w-full h-[100dvh] md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr] relative">
+                <BottomBar />
+                <div className="w-full overflow-auto">{children}</div>
+              </div>
+            </TooltipProvider>
           </ThemeProvider>
           <Analytics />
           <SpeedInsights />

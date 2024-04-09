@@ -12,6 +12,11 @@ export async function fetchBooks(userId: string) {
         },
       },
       collections: true,
+      groupBook: {
+        include: {
+          group: true,
+        }
+      }
     },
   });
   const compareBooks = (a: any, b: any) => {
