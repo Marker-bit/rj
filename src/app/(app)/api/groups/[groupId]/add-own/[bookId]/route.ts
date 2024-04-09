@@ -27,7 +27,7 @@ export async function POST(req: Request, { params }: { params: { groupId: string
     },
   });
 
-  await db.groupBook.create({
+  const groupBook = await db.groupBook.create({
     data: {
       title: book.title,
       pages: book.pages,
@@ -36,6 +36,16 @@ export async function POST(req: Request, { params }: { params: { groupId: string
       description: book.description,
       groupId: params.groupId,
       addedById: groupMember.id,
+    },
+  });
+
+  await db.book.update({
+    where: {
+      id: params.bookId,
+      userId: user.id,
+    },
+    data: {
+      groupBookId: groupBook.id,
     },
   });
 
