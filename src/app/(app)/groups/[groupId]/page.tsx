@@ -29,7 +29,7 @@ export default async function Page({
       groupBooks: {
         include: {
           group: true,
-          book: true
+          book: true,
         },
       },
       members: {
@@ -68,7 +68,24 @@ export default async function Page({
       m.user.books.filter((b) => b.groupBook?.groupId === group.id).length > 0
   );
 
-  const activeBooks = group.groupBooks.filter((b) => b.book.length === group.members.length);
+  const activeBooks = group.groupBooks.filter(
+    (b) => b.book.length === group.members.length
+  );
+
+  const stats = [
+    {
+      title: "Активных пользователей",
+      description: "Участников, добавивших себе книги",
+      value: activeMembers.length,
+      max: group.members.length,
+    },
+    {
+      title: "Активных книг",
+      description: "Книг, которые сохранили все участники",
+      value: activeBooks.length,
+      max: group.groupBooks.length,
+    },
+  ];
 
   return (
     <div className="p-2">
@@ -158,44 +175,27 @@ export default async function Page({
             <BarChartHorizontalBig className="w-4 h-4" />
             <div>Статистика</div>
           </div>
-          <div className="flex flex-col gap-2 p-2">
-            <div className="flex justify-between">
-              <div className="flex flex-col">
-                <div className="text-xl">Активных пользователей</div>
-                <div className="text-muted-foreground/70 text-sm">
-                  Участников, добавивших себе книги
+          {stats.map((stat) => (
+            <div className="flex flex-col gap-2 p-2" key={stat.title}>
+              <div className="flex justify-between">
+                <div className="flex flex-col">
+                  <div className="text-xl">{stat.title}</div>
+                  <div className="text-muted-foreground/70 text-sm">
+                    {stat.description}
+                  </div>
+                </div>
+                <div className="flex flex-col items-end">
+                  <div className="text-xl font-bold">
+                    {(stat.value / stat.max) * 100}%
+                  </div>
+                  <div className="text-muted-foreground/70 text-sm">
+                    {stat.value}/{stat.max}
+                  </div>
                 </div>
               </div>
-              <div className="flex flex-col items-end">
-                <div className="text-xl font-bold">
-                  {(activeMembers.length / group.members.length) * 100}%
-                </div>
-                <div className="text-muted-foreground/70 text-sm">
-                  {activeMembers.length}
-                </div>
-              </div>
+              <Progress value={(stat.value / stat.max) * 100} />
             </div>
-            <Progress value={(activeMembers.length / group.members.length) * 100} />
-          </div>
-          <div className="flex flex-col gap-2 p-2">
-            <div className="flex justify-between">
-              <div className="flex flex-col">
-                <div className="text-xl">Активных книг</div>
-                <div className="text-muted-foreground/70 text-sm">
-                  Книги, которые сохранили все участники
-                </div>
-              </div>
-              <div className="flex flex-col items-end">
-                <div className="text-xl font-bold">
-                  {(activeBooks.length / group.groupBooks.length) * 100}%
-                </div>
-                <div className="text-muted-foreground/70 text-sm">
-                  {activeBooks.length}
-                </div>
-              </div>
-            </div>
-            <Progress value={(activeBooks.length / group.groupBooks.length) * 100} />
-          </div>
+          ))}
         </div>
       </div>
     </div>

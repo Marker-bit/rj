@@ -10,7 +10,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Group, GroupBook } from "@prisma/client";
-import { BarChartHorizontalBig, Edit, MoreHorizontal, Trash } from "lucide-react";
+import {
+  BarChartHorizontalBig,
+  Edit,
+  MoreHorizontal,
+  Trash,
+} from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 
 export function MoreActions({ book }: { book: GroupBook & { group: Group } }) {
@@ -24,10 +30,12 @@ export function MoreActions({ book }: { book: GroupBook & { group: Group } }) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem>
-            <BarChartHorizontalBig className="w-4 h-4 mr-2" />
-            Статистика
-          </DropdownMenuItem>
+          <Link href={`/groups/${book.group.id}/stats/${book.id}`}>
+            <DropdownMenuItem>
+              <BarChartHorizontalBig className="w-4 h-4 mr-2" />
+              Статистика
+            </DropdownMenuItem>
+          </Link>
           <DropdownMenuItem>
             <Edit className="w-4 h-4 mr-2" />
             Редактировать
