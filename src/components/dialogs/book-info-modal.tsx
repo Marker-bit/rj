@@ -13,6 +13,7 @@ import Image from "next/image";
 import { Button } from "../ui/button";
 import { dateToString, declOfNum } from "@/lib/utils";
 import { Badge } from "../ui/badge";
+import { Collection, ReadEvent } from "@prisma/client";
 
 export function BookInfoModal({
   open,
@@ -28,7 +29,7 @@ export function BookInfoModal({
 }: {
   open: boolean;
   setOpen: (b: boolean) => void;
-  book: Book;
+  book: any;
   setDescriptionDrawerOpen: (b: boolean) => void;
   setEditOpen: (b: boolean) => void;
   setDeleteDialogOpen: (b: boolean) => void;
@@ -71,7 +72,7 @@ export function BookInfoModal({
             </div>
             {book.description && (
               <pre
-                className="relative text-black/70 overflow-hidden font-sans block mt-2 cursor-pointer text-wrap"
+                className="relative text-black/70 dark:text-white/70 overflow-hidden font-sans block mt-2 cursor-pointer text-wrap"
                 onClick={() => setDescriptionDrawerOpen(true)}
               >
                 {book.description.split("\n").slice(0, 5).join("\n")}
@@ -81,7 +82,7 @@ export function BookInfoModal({
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          {book.readEvents.map((event) => (
+          {book.readEvents.map((event: ReadEvent) => (
             <div className="flex items-center gap-2" key={event.id}>
               {event.pagesRead === book.pages ? (
                 <>
@@ -117,7 +118,7 @@ export function BookInfoModal({
         </div>
         <h3 className="text-xl">Коллекции</h3>
         <div className="flex flex-col gap-2">
-          {book.collections.map((collection) => (
+          {book.collections.map((collection: Collection) => (
             <div className="flex flex-col gap-2" key={collection.id}>
               <h4 className="text-lg">{collection.name}</h4>
             </div>
@@ -138,6 +139,7 @@ export function BookInfoModal({
           className="gap-2"
           variant="outline"
           onClick={() => setEditOpen(true)}
+          disabled={book.groupBookId}
         >
           <Edit className="w-4 h-4" />
           Редактировать

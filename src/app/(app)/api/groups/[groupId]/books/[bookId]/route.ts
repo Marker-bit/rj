@@ -3,6 +3,43 @@ import { validateRequest } from "@/lib/server-validate-request";
 import { GroupMemberRole } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: { groupId: string; bookId: string } }
+) {
+  const { user } = await validateRequest();
+
+  if (!user) {
+    return new NextResponse("Unauthorized", {
+      status: 401,
+    });
+  }
+
+  const data = await req.json();
+
+  await db.groupBook.update({
+    where: {
+      groupId: params.groupId,
+      id: params.bookId,
+      group: {
+        members: {
+          some: {
+            userId: user.id,
+            role: {
+              in: [GroupMemberRole.CREATOR, GroupMemberRole.MODERATOR],
+            },
+          },
+        },
+      }
+    },
+    data: {
+      ...data,
+    }
+  });
+
+  return NextResponse.json({ success: true }, { status: 200 });
+}
+
 export async function DELETE(
   req: NextRequest,
   { params }: { params: { groupId: string; bookId: string } }

@@ -1,6 +1,7 @@
 "use client";
 
 import { DeleteGroupBookModal } from "@/components/dialogs/delete-group-book-modal";
+import { EditGroupBookModal } from "@/components/dialogs/edit-group-book-modal";
 import { DrawerDialog } from "@/components/drawer";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,6 +21,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 export function MoreActions({ book }: { book: GroupBook & { group: Group } }) {
+  const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   return (
     <>
@@ -36,7 +38,7 @@ export function MoreActions({ book }: { book: GroupBook & { group: Group } }) {
               Статистика
             </DropdownMenuItem>
           </Link>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setEditOpen(true)}>
             <Edit className="w-4 h-4 mr-2" />
             Редактировать
           </DropdownMenuItem>
@@ -51,6 +53,7 @@ export function MoreActions({ book }: { book: GroupBook & { group: Group } }) {
         setOpen={setDeleteOpen}
         book={book}
       />
+      <EditGroupBookModal open={editOpen} setOpen={setEditOpen} book={book} />
     </>
   );
 }
