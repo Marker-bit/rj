@@ -1,26 +1,34 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Group, GroupBook } from "@prisma/client";
-import { Loader, Minus, Plus } from "lucide-react";
+import { Book, Group, GroupBook } from "@prisma/client";
+import { BookOpen, Loader, Minus, Plus } from "lucide-react";
 import Image from "next/image";
 import { MoreActions } from "./more-actions";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { declOfNum } from "@/lib/utils";
+import Link from "next/link";
 
 export function GroupBookView({
   groupBook,
   ownedBooks,
   isMember,
+  userId,
 }: {
   groupBook: GroupBook & {
-    group: Group
+    group: Group;
+    book: Book[];
   };
   ownedBooks: any[];
   isMember: boolean;
+  userId: string;
 }) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  const book = groupBook.book.find((b) => b.userId === userId);
+
   return (
     <div
       key={groupBook.id}
@@ -42,10 +50,26 @@ export function GroupBookView({
           {groupBook.pages} стр.
         </div>
         <div className="text-zinc-500 -mt-1 text-sm">
+          {groupBook.book.length === 0 ? "Нет" : groupBook.book.length}{" "}
+          {declOfNum(groupBook.book.length, [
+            "читатель",
+            "читателя",
+            "читателей",
+          ])}
+        </div>
+        <div className="text-zinc-500 -mt-1 text-sm">
           {groupBook.description}
         </div>
       </div>
       <div className="ml-auto flex gap-1">
+        {book && (
+          <Link href={`/books#book-${book.id}`}>
+            <Button size="icon" variant="ghost" className="p-1 h-fit w-fit">
+              <BookOpen className="w-4 h-4" />
+            </Button>
+          </Link>
+        )}
+
         {ownedBooks.every((b) => b.groupBookId !== groupBook.id) ? (
           <Button
             size="icon"
@@ -53,9 +77,12 @@ export function GroupBookView({
             className="p-1 h-fit w-fit"
             onClick={() => {
               setLoading(true);
-              fetch(`/api/groups/${groupBook.groupId}/books/${groupBook.id}/own`, {
-                method: "POST",
-              }).then(() => {
+              fetch(
+                `/api/groups/${groupBook.groupId}/books/${groupBook.id}/own`,
+                {
+                  method: "POST",
+                }
+              ).then(() => {
                 setLoading(false);
                 router.refresh();
               });
@@ -74,9 +101,12 @@ export function GroupBookView({
             className="p-1 h-fit w-fit"
             onClick={() => {
               setLoading(true);
-              fetch(`/api/groups/${groupBook.groupId}/books/${groupBook.id}/own`, {
-                method: "DELETE",
-              }).then(() => {
+              fetch(
+                `/api/groups/${groupBook.groupId}/books/${groupBook.id}/own`,
+                {
+                  method: "DELETE",
+                }
+              ).then(() => {
                 setLoading(false);
                 router.refresh();
               });

@@ -12,8 +12,10 @@ import { useEffect, useState } from "react";
 export default function BooksPage() {
   const [readBooks, setReadBooks] = useState(false);
   const [notStarted, setNotStarted] = useState(false);
+  const [bookId, setBookId] = useState<string>();
 
   useEffect(() => {
+    setBookId(window.location.hash.slice(6));
     const localStorageReadBooks = localStorage.getItem("readBooks");
     const localStorageNotStarted = localStorage.getItem("notStarted");
     if (localStorageReadBooks) {
@@ -57,6 +59,11 @@ export default function BooksPage() {
     books = books.filter((book: Book) => {
       return book.readEvents.length !== 0;
     });
+  }
+
+  function showAll() {
+    setBookId("");
+    window.location.hash = "";
   }
 
   return (
@@ -108,9 +115,18 @@ export default function BooksPage() {
             <Loader className="w-6 h-6 animate-spin" />
           </div>
         )}
-        {books.map((book: Book) => (
-          <BookView book={book} key={book.id} />
-        ))}
+        {bookId && (
+          <Button variant="outline" className="items-center gap-2" onClick={showAll}>
+            <ChevronLeft className="w-4 h-4" />
+            Показать все
+          </Button>
+        )}
+        {books.map(
+          (book: Book) =>
+            (!bookId || bookId === book.id) && (
+              <BookView book={book} key={book.id} />
+            )
+        )}
       </div>
     </div>
   );

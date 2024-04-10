@@ -24,6 +24,9 @@ export default async function Page({
   params: { groupId: string };
 }) {
   const { user } = await validateRequest();
+  if (!user) {
+    return null;
+  }
   const group = await db.group.findUnique({
     where: { id: params.groupId },
     include: {
@@ -141,6 +144,7 @@ export default async function Page({
               key={book.id}
               ownedBooks={myBooksFromGroup}
               isMember={isMember}
+              userId={user.id}
             />
           ))}
         </div>
