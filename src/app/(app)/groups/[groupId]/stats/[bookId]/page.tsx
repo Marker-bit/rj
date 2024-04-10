@@ -76,9 +76,9 @@ export default async function Page({
           ?.pagesRead || 0)
   );
 
-  const ratingKeys = Object.keys(rating)?.toSorted(
-    (a, b) => rating[b] - rating[a]
-  ) || Object.keys(rating);
+  const ratingKeys = new Array(...Object.keys(rating));
+
+  ratingKeys.sort((a, b) => rating[b] - rating[a]);
 
   return (
     <div className="p-8 flex flex-col">
