@@ -109,6 +109,10 @@ export default async function Page({
         .reduce((a, b) => a + b, 0))
   );
 
+  const ratingKeys = Object.keys(rating).toSorted(
+    (a, b) => rating[b] - rating[a]
+  );
+
   return (
     <div className="p-2 max-sm:mb-20">
       <div className="flex flex-col">
@@ -226,24 +230,22 @@ export default async function Page({
             <div>Рейтинг</div>
           </div>
           <div className="flex flex-col mt-2">
-            {Object.entries(rating).map(([userId, pagesRead], i) => (
+            {ratingKeys.map((userId, i) => (
               <Link
                 key={userId}
                 href={`/profile/${
                   group.members.find((m) => m.userId === userId)?.user.username
                 }`}
               >
-                <div
-                  className="flex items-center p-2 hover:bg-black/10 dark:hover:bg-white/10 rounded-md transition-all gap-2"
-                >
+                <div className="flex items-center p-2 hover:bg-black/10 dark:hover:bg-white/10 rounded-md transition-all gap-2">
                   <div className="rounded-full flex w-6 h-6 items-center justify-center border border-black/50 dark:border-white/50">
-                    {i+1}
+                    {i + 1}
                   </div>
                   {
                     group.members.find((m) => m.userId === userId)?.user
                       .username
                   }
-                  <div className="font-bold ml-auto">{pagesRead}</div>
+                  <div className="font-bold ml-auto">{rating[userId]}</div>
                 </div>
               </Link>
             ))}

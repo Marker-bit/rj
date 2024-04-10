@@ -76,6 +76,10 @@ export default async function Page({
           ?.pagesRead || 0)
   );
 
+  const ratingKeys = Object.keys(rating).toSorted(
+    (a, b) => rating[b] - rating[a]
+  );
+
   return (
     <div className="p-8 flex flex-col">
       <div className="flex gap-2">
@@ -123,7 +127,7 @@ export default async function Page({
           <Progress value={(book.book.length / group.members.length) * 100} />
         </div>
         <div className="flex flex-col mt-2">
-          {Object.entries(rating).map(([userId, pagesRead], i) => (
+          {ratingKeys.map((userId, i) => (
             <Link
               key={userId}
               href={`/profile/${
@@ -135,7 +139,7 @@ export default async function Page({
                   {i + 1}
                 </div>
                 {group.members.find((m) => m.userId === userId)?.user.username}
-                <div className="font-bold ml-auto">{pagesRead}</div>
+                <div className="font-bold ml-auto">{rating[userId]}</div>
               </div>
             </Link>
           ))}
