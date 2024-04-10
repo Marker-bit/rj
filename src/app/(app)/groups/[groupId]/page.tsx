@@ -109,9 +109,9 @@ export default async function Page({
         .reduce((a, b) => a + b, 0))
   );
 
-  const users = new Array(...Object.keys(rating));
+  const ratingKeys = new Array(...Object.keys(rating));
 
-  const ratingKeys = users.toSorted((a, b) => rating[b] - rating[a]);
+  ratingKeys.sort((a, b) => rating[b] - rating[a]);
 
   return (
     <div className="p-2 max-sm:mb-20">
