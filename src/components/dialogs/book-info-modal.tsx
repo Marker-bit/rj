@@ -88,7 +88,7 @@ export function BookInfoModal({
                   <BookOpenCheck className="text-green-500 w-4 h-4" />
                   <div className="flex flex-col">
                     <div>Книга прочитана!</div>
-                    <div className="text-xs text-black/50">
+                    <div className="text-xs text-black/50 dark:text-white/50">
                       {dateToString(new Date(event.readAt))}
                     </div>
                   </div>
@@ -106,7 +106,7 @@ export function BookInfoModal({
                       ])}{" "}
                       прочитано
                     </div>
-                    <div className="text-xs text-black/50">
+                    <div className="text-xs text-black/50 dark:text-white/50">
                       {dateToString(new Date(event.readAt))}
                     </div>
                   </div>

@@ -1,7 +1,7 @@
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
 import { CreateCollection } from "./create-collection";
-import { Collection } from "./collection";
+import { CollectionView } from "./collection";
 
 export default async function Page() {
   const { user } = await validateRequest();
@@ -18,7 +18,7 @@ export default async function Page() {
     <div className="flex flex-col gap-2">
       <CreateCollection />
       {collections.map((collection) => (
-        <Collection key={collection.id} collection={collection} />
+        <CollectionView key={collection.id} collection={collection} />
       ))}
     </div>
   );
