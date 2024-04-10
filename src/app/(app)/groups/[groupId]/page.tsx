@@ -233,8 +233,8 @@ export default async function Page({
             {ratingKeys.map((userId, i) => (
               <Link
                 key={userId}
-                href={`/profile/${
-                  group.members.find((m) => m.userId === userId)?.user.username
+                href={`/groups/${group.id}/members/${
+                  group.members.find((m) => m.userId === userId)?.id
                 }`}
               >
                 <div className="flex items-center p-2 hover:bg-black/10 dark:hover:bg-white/10 rounded-md transition-all gap-2">
@@ -245,7 +245,22 @@ export default async function Page({
                     group.members.find((m) => m.userId === userId)?.user
                       .username
                   }
-                  <div className="font-bold ml-auto">{rating[userId]}</div>
+
+                  <div className="flex flex-col ml-auto items-end">
+                    <div className="font-bold">{rating[userId]}</div>
+                    <div className="text-muted-foreground text-sm">
+                      {
+                        group.groupBooks.filter((groupBook) =>
+                          groupBook.book.find(
+                            (book) =>
+                              book.userId === userId &&
+                              book.readEvents[0].pagesRead === book.pages
+                          )
+                        ).length
+                      }{" "}
+                      / {group.groupBooks.length}
+                    </div>
+                  </div>
                 </div>
               </Link>
             ))}

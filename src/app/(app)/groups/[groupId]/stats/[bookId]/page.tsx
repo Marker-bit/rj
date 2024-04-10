@@ -1,7 +1,13 @@
+import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
-import { BarChart2, BarChartHorizontalBig } from "lucide-react";
+import {
+  BarChart2,
+  BarChartHorizontalBig,
+  Check,
+  ChevronLeft,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -82,6 +88,12 @@ export default async function Page({
 
   return (
     <div className="p-8 flex flex-col">
+      <Link href={`/groups/${book.groupId}`} className="mb-2">
+        <Button className="w-fit items-center gap-2">
+          <ChevronLeft className="w-4 h-4" />
+          Назад
+        </Button>
+      </Link>
       <div className="flex gap-2">
         {book.coverUrl && (
           <Image
@@ -130,8 +142,8 @@ export default async function Page({
           {ratingKeys.map((userId, i) => (
             <Link
               key={userId}
-              href={`/profile/${
-                group.members.find((m) => m.userId === userId)?.user.username
+              href={`/groups/${group.id}/members/${
+                group.members.find((m) => m.userId === userId)?.id
               }`}
             >
               <div className="flex items-center p-2 hover:bg-black/10 dark:hover:bg-white/10 rounded-md transition-all gap-2">
@@ -139,7 +151,13 @@ export default async function Page({
                   {i + 1}
                 </div>
                 {group.members.find((m) => m.userId === userId)?.user.username}
-                <div className="font-bold ml-auto">{rating[userId]}</div>
+                <div className="font-bold ml-auto">
+                  {rating[userId] === book.pages ? (
+                    <Check className="text-green-500 w-4 h-4" />
+                  ) : (
+                    rating[userId]
+                  )}
+                </div>
               </div>
             </Link>
           ))}
