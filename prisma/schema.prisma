@@ -65,6 +65,8 @@ model Book {
   description String       @default("")
   coverUrl    String?
 
+  hiddenUntil DateTime?
+
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
