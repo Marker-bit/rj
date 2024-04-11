@@ -167,12 +167,17 @@ export function RegisterForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={userMutation.isPending}>
-          {userMutation.isPending && (
-            <Loader className="w-4 h-4 animate-spin mr-2" />
-          )}
-          Зарегистрироваться
-        </Button>
+        <div className="flex gap-2 items-center flex-wrap">
+          <Button type="submit" disabled={userMutation.isPending}>
+            {userMutation.isPending && (
+              <Loader className="w-4 h-4 animate-spin mr-2" />
+            )}
+            Зарегистрироваться
+          </Button>
+          <Link href="/auth/login">
+            <Button variant="ghost">Есть аккаунт? Войти</Button>
+          </Link>
+        </div>
         <p className="text-xs">
           При регистрации, вы соглашаетесь с{" "}
           <Link

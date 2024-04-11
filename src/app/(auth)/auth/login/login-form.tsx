@@ -21,18 +21,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 const formSchema = z.object({
-  username: z
-    .string()
-    .regex(
-      /^[a-zA-Z0-9_.-]{3,15}$/,
-      "Имя пользователя должно быть буквенно-цифровой строкой, которая может включать в себя _, . и -, длиной от 3 до 16 символов."
-    ),
-  password: z
-    .string()
-    .regex(
-      /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&.*-]).{8,}$/,
-      "Пароль должен содержать минимум 8 символов, по крайней мере, одну заглавную английскую букву, одну строчную английскую букву, одну цифру и один специальный символ"
-    ),
+  username: z.string(),
+  password: z.string(),
 });
 
 export function LoginForm() {
@@ -106,12 +96,17 @@ export function LoginForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={userMutation.isPending}>
-          {userMutation.isPending && (
-            <Loader className="w-4 h-4 animate-spin mr-2" />
-          )}
-          Авторизоваться
-        </Button>
+        <div className="flex gap-2 items-center flex-wrap">
+          <Button type="submit" disabled={userMutation.isPending}>
+            {userMutation.isPending && (
+              <Loader className="w-4 h-4 animate-spin mr-2" />
+            )}
+            Авторизоваться
+          </Button>
+          <Link href="/auth/register">
+            <Button variant="ghost">Нет аккаунта? Зарегистрироваться</Button>
+          </Link>
+        </div>
         <p className="text-xs">
           При авторизации, вы соглашаетесь с{" "}
           <Link
