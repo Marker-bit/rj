@@ -138,6 +138,45 @@ export default async function Page({
           </div>
           <Progress value={(book.book.length / group.members.length) * 100} />
         </div>
+        <div className="flex flex-col gap-2 mt-2">
+          <div className="flex justify-between">
+            <div className="flex flex-col">
+              <div className="text-xl">Прочитавших участников</div>
+              <div className="text-muted-foreground/70 text-sm">
+                Участников, полностью прочитавших эту книгу
+              </div>
+            </div>
+            <div className="flex flex-col items-end">
+              <div className="text-xl font-bold">
+                {(
+                  (book.book.filter(
+                    (book) => book.readEvents[0]?.pagesRead === book.pages
+                  ).length /
+                    group.members.length) *
+                  100
+                ).toFixed(1)}
+                %
+              </div>
+              <div className="text-muted-foreground/70 text-sm">
+                {
+                  book.book.filter(
+                    (book) => book.readEvents[0]?.pagesRead === book.pages
+                  ).length
+                }
+                /{group.members.length}
+              </div>
+            </div>
+          </div>
+          <Progress
+            value={
+              (book.book.filter(
+                (book) => book.readEvents[0]?.pagesRead === book.pages
+              ).length /
+                group.members.length) *
+              100
+            }
+          />
+        </div>
         <div className="flex flex-col mt-2">
           {ratingKeys.map((userId, i) => (
             <Link
