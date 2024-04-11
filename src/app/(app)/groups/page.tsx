@@ -3,6 +3,7 @@ import { validateRequest } from "@/lib/server-validate-request";
 import { AddGroupButton } from "./add-group-button";
 import { declOfNum } from "@/lib/utils";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default async function Page() {
   const { user } = await validateRequest();
@@ -19,6 +20,11 @@ export default async function Page() {
       groupBooks: true,
     },
   });
+
+  if (groups.length === 1) {
+    return redirect(`/groups/${groups[0].id}`);
+  }
+
   return (
     <div className="flex flex-col">
       <div className="flex gap-2 text-3xl font-bold items-center m-2">
