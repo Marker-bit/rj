@@ -20,16 +20,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { UploadButton } from "@/components/uploadthing";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  Loader,
-  Plus,
-  Trash
-} from "lucide-react";
+import { Loader, Plus, Trash } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMediaQuery } from "usehooks-ts";
 import { z } from "zod";
+import { DrawerDialog } from "../drawer";
+import { DialogHeader, DialogTitle } from "../ui/dialog";
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -267,34 +265,32 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
 }
 
 export function MobileForm() {
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  // const isMobile = useMediaQuery("(max-width: 768px)");
   const [open, setOpen] = useState(false);
 
-  if (isMobile) {
-    return (
-      <>
-        <div className="flex items-center m-2">
-          <Button onClick={() => setOpen(true)}>
-            <Plus className="mr-2 h-4 w-4" /> Добавить книгу
-          </Button>
-        </div>
-        <Drawer open={open} onOpenChange={setOpen}>
-          <DrawerContent>
-            <DrawerHeader>
-              <DrawerTitle>Добавить книгу</DrawerTitle>
-            </DrawerHeader>
-            <div className="p-4">
-              <BookForm onSuccess={() => setOpen(false)} />
-            </div>
-          </DrawerContent>
-        </Drawer>
-      </>
-    );
-  }
-
+  // if (isMobile) {
   return (
-    <div className="p-3 bg-slate-100 dark:bg-slate-900 border-b border-slate-300 dark:border-slate-700">
-      <BookForm />
-    </div>
+    <>
+      <div className="flex items-center m-2">
+        <Button onClick={() => setOpen(true)}>
+          <Plus className="mr-2 h-4 w-4" /> Добавить книгу
+        </Button>
+      </div>
+      <DrawerDialog open={open} onOpenChange={setOpen} className="min-w-[50vw]">
+        <DialogHeader>
+          <DialogTitle>Добавить книгу</DialogTitle>
+        </DialogHeader>
+        <div className="p-4">
+          <BookForm onSuccess={() => setOpen(false)} />
+        </div>
+      </DrawerDialog>
+    </>
   );
+  // }
+
+  // return (
+  //   <div className="p-3 bg-slate-100 dark:bg-slate-900 border-b border-slate-300 dark:border-slate-700">
+  //     <BookForm />
+  //   </div>
+  // );
 }
