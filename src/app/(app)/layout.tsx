@@ -1,5 +1,6 @@
 import "@/app/globals.css";
 import { BottomBar } from "./BottomBar";
+import React from "react";
 
 export default async function Layout({
   children,

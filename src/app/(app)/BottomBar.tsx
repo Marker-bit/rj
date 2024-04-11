@@ -2,15 +2,10 @@
 
 import {
   BarChartBig,
-  Book,
   BookCopyIcon,
   BookIcon,
-  CircleUser,
   CircleUserIcon,
   HomeIcon,
-  Search,
-  SearchIcon,
-  Settings,
   Users,
 } from "lucide-react";
 import Link from "next/link";
