@@ -3,6 +3,10 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@/app/globals.css";
+import { QueryProvider } from "@/components/providers/query-client-provider";
+import { ThemeProvider } from "@/components/providers/theme-provider";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/toaster";
 
 const font = Inter({ subsets: ["latin"] });
 
@@ -42,9 +46,21 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={font.className + "  overflow-x-hidden"}>
-        {children}
-        <Analytics />
-        <SpeedInsights />
+        <QueryProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <TooltipProvider>
+              {children}
+              <Analytics />
+              <SpeedInsights />
+              <Toaster />
+            </TooltipProvider>
+          </ThemeProvider>
+        </QueryProvider>
       </body>
     </html>
   );

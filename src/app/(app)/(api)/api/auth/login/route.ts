@@ -9,7 +9,6 @@ export async function POST(request: NextRequest) {
   const data = await request.json();
   const username = data.username;
   const password = data.password;
-  const hashedPassword = await new Argon2id().hash(password);
 
   const user = await db.user.findFirst({
     where: {
@@ -21,6 +20,7 @@ export async function POST(request: NextRequest) {
       user.hashedPassword,
       password
     );
+
     if (validPassword) {
       const session = await lucia.createSession(user.id, {});
       const sessionCookie = lucia.createSessionCookie(session.id);
@@ -29,13 +29,12 @@ export async function POST(request: NextRequest) {
         sessionCookie.value,
         sessionCookie.attributes
       );
-      return NextResponse.json({
-        status: "authorized",
-      });
+      
+      return NextResponse.json(null, { status: 200 });
     } else {
       return NextResponse.json(
         {
-          status: "invalid-password",
+          error: "Неправильный логин или пароль",
         },
         {
           status: 400,
@@ -44,23 +43,14 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  const createdUser = await db.user.create({
-    data: {
-      username: username,
-      hashedPassword,
+  return NextResponse.json(
+    {
+      error: "Неправильный логин или пароль",
     },
-  });
-
-  const session = await lucia.createSession(createdUser.id, {});
-  const sessionCookie = lucia.createSessionCookie(session.id);
-  cookies().set(
-    sessionCookie.name,
-    sessionCookie.value,
-    sessionCookie.attributes
+    {
+      status: 400,
+    }
   );
-  return NextResponse.json({
-    status: "created",
-  });
 }
 
 export async function PATCH(request: NextRequest) {

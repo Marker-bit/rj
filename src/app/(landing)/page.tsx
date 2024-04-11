@@ -32,7 +32,7 @@ export default async function LandingPage({
             ].join(", "),
           }}
         >
-          <div className="p-2 bg-gradient-to-b from-zinc-200 to-zinc-300 rounded-xl">
+          <div className="p-2 bg-gradient-to-b from-zinc-200 to-zinc-300 dark:from-zinc-800 dark:to-zinc-700 rounded-xl">
             <Image
               src="/favicon.png"
               width={100}
