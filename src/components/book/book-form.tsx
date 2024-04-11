@@ -22,12 +22,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader, Plus, Trash } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMediaQuery } from "usehooks-ts";
 import { z } from "zod";
 import { DrawerDialog } from "../drawer";
 import { DialogHeader, DialogTitle } from "../ui/dialog";
+import { useToast } from "../ui/use-toast";
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -42,6 +43,7 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
   const form = useForm<z.infer<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
   });
+  const toast = useToast();
   const [search, setSearch] = useState("");
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchResults, setSearchResults] = useState<
@@ -51,6 +53,7 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
       imageUrl: string | null;
     }[]
   >();
+  const [fileUploading, setFileUploading] = useState(false);
 
   const bookMutation = useMutation({
     mutationFn: (values: z.infer<typeof bookSchema>) =>
@@ -184,9 +187,16 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
                       }}
                       onClientUploadComplete={(res) => {
                         field.onChange(res[0].url);
+                        setFileUploading(false);
                       }}
                       onUploadError={(error: Error) => {
-                        alert(`ERROR! ${error.message}`);
+                        toast.toast({
+                          title: "Ошибка при загрузке обложки",
+                          description: error.message,
+                        });
+                      }}
+                      onUploadBegin={(fileName) => {
+                        setFileUploading(true);
                       }}
                       appearance={{
                         allowedContent: "text-black/70 dark:text-white/70",
@@ -250,7 +260,10 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
               </FormItem>
             )}
           />
-          <Button type="submit" disabled={bookMutation.isPending}>
+          <Button
+            type="submit"
+            disabled={bookMutation.isPending || fileUploading}
+          >
             {bookMutation.isPending ? (
               <Loader className="w-4 h-4 animate-spin mr-2" />
             ) : (
