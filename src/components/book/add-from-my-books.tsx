@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import { Loader, Plus, Search } from "lucide-react";
-import { Input } from "../ui/input";
 
 export function AddFromMyBooks({
   groupId,

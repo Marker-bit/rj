@@ -254,7 +254,7 @@ export default async function Page({
                           groupBook.book.find(
                             (book) =>
                               book.userId === userId &&
-                              book.readEvents[0].pagesRead === book.pages
+                              book.readEvents[0]?.pagesRead === book.pages
                           )
                         ).length
                       }{" "}
