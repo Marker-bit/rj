@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
 
+export const dynamic = "force-dynamic";
+
 export default async function FriendsPage() {
   const { user } = await validateRequest();
   if (!user) {

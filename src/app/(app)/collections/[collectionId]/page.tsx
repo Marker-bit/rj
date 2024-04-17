@@ -1,11 +1,10 @@
-import { Button } from "@/components/ui/button";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
-import { Plus } from "lucide-react";
-import Image from "next/image";
 import { AddBook } from "./add-book";
 import { RemoveBook } from "./remove-book";
 import { declOfNum } from "@/lib/utils";
+
+export const dynamic = "force-dynamic";
 
 export default async function Page({
   params,

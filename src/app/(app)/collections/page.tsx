@@ -3,6 +3,8 @@ import { validateRequest } from "@/lib/server-validate-request";
 import { CreateCollection } from "./create-collection";
 import { CollectionView } from "./collection";
 
+export const dynamic = "force-dynamic";
+
 export default async function Page() {
   const { user } = await validateRequest();
   const collections = await db.collection.findMany({

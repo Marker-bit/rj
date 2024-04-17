@@ -19,6 +19,8 @@ import { AddMemberButton } from "./add-member-button";
 import { GroupBookView } from "./book-view";
 import { Progress } from "@/components/ui/progress";
 
+export const dynamic = "force-dynamic";
+
 export default async function Page({
   params,
 }: {
