@@ -22,7 +22,11 @@ export default async function FriendsPage() {
         },
       },
     },
+    include: {
+      follower: true,
+    },
   });
+  console.log(friends);
   return (
     <div>
       <div className="text-5xl font-black m-2 flex gap-2 items-center">
@@ -33,9 +37,7 @@ export default async function FriendsPage() {
         </Link>
         Подписчики
         <Link href="/friends" className="ml-auto">
-          <Button variant="ghost">
-            Подписки
-          </Button>
+          <Button variant="ghost">Подписки</Button>
         </Link>
       </div>
       <div className="p-3">
@@ -51,7 +53,11 @@ export default async function FriendsPage() {
           )}
 
           {friends.map((friend) => (
-            <FriendView key={friend.id} friend={friend} following={true} />
+            <FriendView
+              key={friend.id}
+              friend={friend}
+              following={friend.follower.some((f) => f.firstId === user.id)}
+            />
           ))}
         </div>
       </div>
