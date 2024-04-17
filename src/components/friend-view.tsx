@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Loader, UserPlus, UserX } from "lucide-react";
+import { BadgeCheck, Loader, UserPlus, UserX } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -18,6 +18,7 @@ export function FriendView({
     username: string;
     id: string;
     avatarUrl: string;
+    verified: boolean;
   };
   following?: boolean;
 }) {
@@ -60,8 +61,11 @@ export function FriendView({
           className="rounded-full w-16 h-16"
         />
         <div className="flex flex-col">
-          <div className="text-xl font-semibold">
+          <div className="text-xl font-semibold flex items-center gap-2">
             {friend.firstName} {friend.lastName}
+            {friend.verified && (
+              <BadgeCheck className="w-6 h-6 text-yellow-500" />
+            )}
           </div>
           <div className="text-sm text-muted-foreground/70">@{friend.username}</div>
           {following === true ? (

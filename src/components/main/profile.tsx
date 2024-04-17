@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
-import { ChevronRight, User } from "lucide-react";
+import { BadgeCheck, ChevronRight, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -30,8 +30,11 @@ export async function Profile() {
           className="rounded-full w-20 h-20"
         />
         <div className="flex flex-col">
-          <div className="text-3xl font-semibold">
+          <div className="text-3xl font-semibold flex gap-2 items-center">
             {profile.firstName} {profile.lastName}
+            {profile.verified && (
+              <BadgeCheck className="w-6 h-6 text-yellow-500" />
+            )}
           </div>
           <div className="text-sm text-muted-foreground/70">@{profile.username}</div>
         </div>

@@ -3,6 +3,7 @@ import { validateRequest } from "@/lib/server-validate-request";
 import { declOfNum } from "@/lib/utils";
 import { GroupMemberRole } from "@prisma/client";
 import {
+  BadgeCheck,
   BarChart2,
   BarChartHorizontalBig,
   Book,
@@ -241,10 +242,16 @@ export default async function Page({
                   <div className="rounded-full flex w-6 h-6 items-center justify-center border border-black/50 dark:border-white/50">
                     {i + 1}
                   </div>
-                  {
-                    group.members.find((m) => m.userId === userId)?.user
-                      .username
-                  }
+                  <div className="flex gap-2">
+                    {
+                      group.members.find((m) => m.userId === userId)?.user
+                        .username
+                    }
+
+                    {group.members.find((m) => m.userId === userId)?.user.verified && (
+                      <BadgeCheck className="w-6 h-6 text-yellow-500" />
+                    )}
+                  </div>
 
                   <div className="flex flex-col ml-auto items-end">
                     <div className="font-bold">{rating[userId]}</div>

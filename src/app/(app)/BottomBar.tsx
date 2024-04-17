@@ -74,6 +74,7 @@ export function BottomBar() {
                       : "flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
                   }
                   key={url.label}
+                  prefetch={true}
                 >
                   {React.createElement(url.icon, {
                     className: "w-4 h-4",

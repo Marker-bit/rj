@@ -46,6 +46,8 @@ model User {
   follower  Follow[]      @relation("FollowerToUser")
   following Follow[]      @relation("FollowingToUser")
   memberOf  GroupMember[]
+
+  verified Boolean @default(false)
 }
 
 model Session {

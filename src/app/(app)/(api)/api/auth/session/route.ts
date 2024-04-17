@@ -1,8 +1,6 @@
 import { cookies } from "next/headers";
 import { lucia } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
-import { cache } from "react";
-import { Session, User } from "lucia";
 
 export async function GET(req: NextRequest) {
   const sessionId = cookies().get(lucia.sessionCookieName)?.value ?? null;

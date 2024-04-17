@@ -50,6 +50,7 @@ export default function FriendsPage() {
                 username: string;
                 id: string;
                 avatarUrl: string;
+                verified: boolean;
               };
             }) => (
               <FriendView key={friend.id} friend={friend} following={true} />
