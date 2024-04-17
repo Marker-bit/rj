@@ -23,7 +23,7 @@ export default async function FriendsPage() {
       },
     },
     include: {
-      follower: true,
+      following: true,
     },
   });
   console.log(friends);
@@ -56,7 +56,7 @@ export default async function FriendsPage() {
             <FriendView
               key={friend.id}
               friend={friend}
-              following={friend.follower.some((f) => f.firstId === user.id)}
+              following={friend.following.some((f) => f.firstId === user.id)}
             />
           ))}
         </div>
