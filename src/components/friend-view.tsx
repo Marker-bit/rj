@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { User } from "@prisma/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { BadgeCheck, Loader, UserPlus, UserX } from "lucide-react";
 import Image from "next/image";
@@ -12,14 +13,7 @@ export function FriendView({
   friend,
   following,
 }: {
-  friend: {
-    firstName: string;
-    lastName: string;
-    username: string;
-    id: string;
-    avatarUrl: string;
-    verified: boolean;
-  };
+  friend: User;
   following?: boolean;
 }) {
   const queryClient = useQueryClient();

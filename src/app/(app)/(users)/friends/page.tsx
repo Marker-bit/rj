@@ -1,23 +1,26 @@
-"use client";
-
-import { useQuery } from "@tanstack/react-query";
-import { ChevronLeft, Loader, UserX, Users2 } from "lucide-react";
+import { ChevronLeft, UserX } from "lucide-react";
 import Link from "next/link";
 import { FriendView } from "@/components/friend-view";
 import { Button } from "@/components/ui/button";
+import { db } from "@/lib/db";
+import { validateRequest } from "@/lib/server-validate-request";
 
-export default function FriendsPage() {
-  const friendsQuery = useQuery({
-    queryKey: ["friends"],
-    queryFn: () => fetch("/api/profile/following").then((res) => res.json()),
-  });
-  if (friendsQuery.isPending) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader className="w-6 h-6 animate-spin" />
-      </div>
-    );
+export default async function FriendsPage() {
+  const { user } = await validateRequest();
+  if (!user) {
+    return new Response(null, {
+      status: 401,
+    });
   }
+  const friends = await db.user.findMany({
+    where: {
+      following: {
+        some: {
+          firstId: user.id,
+        },
+      },
+    },
+  });
   return (
     <div>
       <div className="text-5xl font-black m-2 flex gap-2 items-center">
@@ -27,10 +30,15 @@ export default function FriendsPage() {
           </Button>
         </Link>
         Подписки
+        <Link href="/followers" className="ml-auto">
+          <Button variant="ghost">
+            Подписчики
+          </Button>
+        </Link>
       </div>
       <div className="p-3">
         <div className="flex flex-col gap-2">
-          {friendsQuery.data.length === 0 && (
+          {friends.length === 0 && (
             <div className="p-2 flex gap-2 items-center rounded-xl border border-zinc-200 text-xl">
               <UserX className="w-10 h-10" />
               <div className="flex flex-col">
@@ -40,22 +48,9 @@ export default function FriendsPage() {
             </div>
           )}
 
-          {friendsQuery.data.map(
-            ({
-              second: friend,
-            }: {
-              second: {
-                firstName: string;
-                lastName: string;
-                username: string;
-                id: string;
-                avatarUrl: string;
-                verified: boolean;
-              };
-            }) => (
-              <FriendView key={friend.id} friend={friend} following={true} />
-            )
-          )}
+          {friends.map((friend) => (
+            <FriendView key={friend.id} friend={friend} following={true} />
+          ))}
         </div>
       </div>
     </div>
