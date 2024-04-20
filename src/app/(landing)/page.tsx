@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { validateRequest } from "@/lib/server-validate-request";
 import Image from "next/image";
 import Link from "next/link";
-import { redirect, useSearchParams } from "next/navigation";
+import { redirect } from "next/navigation";
 
 export default async function LandingPage({
   searchParams,
