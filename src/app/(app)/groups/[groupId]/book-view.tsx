@@ -63,7 +63,7 @@ export function GroupBookView({
       </div>
       <div className="ml-auto flex gap-1">
         {book && (
-          <Link href={`/books#book-${book.id}`}>
+          <Link href={`/books?bookId=${book.id}`}>
             <Button size="icon" variant="ghost" className="p-1 h-fit w-fit">
               <BookOpen className="w-4 h-4" />
             </Button>
