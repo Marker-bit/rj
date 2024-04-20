@@ -47,7 +47,7 @@ export function EventView({
       ) : (
         <>
           <BookOpen className="w-4 h-4 mr-1" />
-          {event.pagesRead} страниц прочитано{" "}
+          До {event.pagesRead} страницы прочитано{" "}
           {dateToString(new Date(event.readAt))}
           <Link href={`/books#book-${event.bookId}`} className="font-semibold">
             в книге &quot;{event.book.title}&quot; автора {event.book.author}
