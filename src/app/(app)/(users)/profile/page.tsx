@@ -41,19 +41,19 @@ export default async function ProfilePage() {
       <div className="text-5xl font-black m-2 flex gap-2 items-center">
         <Button variant="ghost" size="icon" asChild>
           <Link href="/">
-            <ChevronLeft className="w-8 h-8" />
+            <ChevronLeft className="w-6 h-6" />
           </Link>
         </Button>
         Профиль
         <div className="ml-auto">
           <Button variant="ghost" size="icon" asChild>
             <Link href="/friends">
-              <Users2 className="w-8 h-8" />
+              <Users2 className="w-6 h-6" />
             </Link>
           </Button>
           <Button variant="ghost" size="icon" asChild>
             <Link href="/profile/settings">
-              <Edit className="w-8 h-8" />
+              <Edit className="w-6 h-6" />
             </Link>
           </Button>
         </div>
