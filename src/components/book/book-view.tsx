@@ -33,11 +33,11 @@ import {
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Toaster, toast } from "react-hot-toast";
 import { useMediaQuery } from "usehooks-ts";
 import { ShareBookModal } from "../dialogs/share-book-modal";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import Link from "next/link";
+import { useToast } from "../ui/use-toast";
 
 export function BookView({ book }: { book: any }) {
   const queryClient = useQueryClient();
@@ -50,6 +50,7 @@ export function BookView({ book }: { book: any }) {
   const [shareBookOpen, setShareBookOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const router = useRouter();
+  const { toast } = useToast();
 
   const undoEventMutation = useMutation({
     mutationFn: () =>
@@ -63,7 +64,7 @@ export function BookView({ book }: { book: any }) {
       queryClient.invalidateQueries({
         queryKey: ["events"],
       });
-      toast.success("Сохранено!");
+      toast({ title: "Событие отменено" });
       router.refresh();
     },
   });
@@ -84,7 +85,7 @@ export function BookView({ book }: { book: any }) {
       queryClient.invalidateQueries({
         queryKey: ["events"],
       });
-      toast.success("Сохранено!");
+      toast({ title: "Книга отмечена как прочитанная" });
       setActionsDrawerOpen(false);
       router.refresh();
     },
@@ -107,7 +108,7 @@ export function BookView({ book }: { book: any }) {
         queryKey: ["events"],
       });
       setDateOpen(false);
-      toast.success("Сохранено!");
+      toast({ title: "Событие сохранено" });
       setActionsDrawerOpen(false);
       router.refresh();
     },
@@ -127,7 +128,7 @@ export function BookView({ book }: { book: any }) {
       });
       setDeleteDialogOpen(false);
       setActionsDrawerOpen(false);
-      toast.success("Сохранено!");
+      toast({ title: "Книга удалена", variant: "destructive" });
       router.refresh();
     },
   });
@@ -402,7 +403,6 @@ export function BookView({ book }: { book: any }) {
           </pre>
         )}
       </div>
-      <Toaster />
     </div>
   );
 }

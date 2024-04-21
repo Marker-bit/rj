@@ -1,9 +1,10 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Loader } from "@/components/ui/loader";
 import { Book, Collection } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
-import { Loader, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
@@ -51,7 +52,7 @@ export function AddBook({
         disabled={addMutation.isPending}
       >
         {addMutation.isPending ? (
-          <Loader className="w-6 h-6 animate-spin" />
+          <Loader className="w-6 h-6" />
         ) : (
           <Plus className="w-6 h-6" />
         )}

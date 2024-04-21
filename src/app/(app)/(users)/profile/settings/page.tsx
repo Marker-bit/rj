@@ -4,37 +4,27 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Check,
   ChevronLeft,
-  Edit,
-  Loader,
   LogOut,
   Plus,
-  Save,
-  X,
+  X
 } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { CropImage } from "@/components/crop-image";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
+  FormMessage
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { validateRequest } from "@/lib/validate-request";
-import { User } from "lucia";
-import { useMutation } from "@tanstack/react-query";
-import { uploadFiles, useUploadThing } from "@/components/uploadthing";
-import { useDropzone } from "@uploadthing/react";
-import { generateClientDropzoneAccept } from "uploadthing/client";
-import { CropImage } from "@/components/crop-image";
-import Image from "next/image";
-import { cn } from "@/lib/utils";
+import { Loader } from "@/components/ui/loader";
 import {
   Select,
   SelectContent,
@@ -42,7 +32,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
+import { useUploadThing } from "@/components/uploadthing";
+import { cn } from "@/lib/utils";
+import { validateRequest } from "@/lib/validate-request";
+import { useMutation } from "@tanstack/react-query";
+import { useDropzone } from "@uploadthing/react";
+import { User } from "lucia";
+import Image from "next/image";
+import { generateClientDropzoneAccept } from "uploadthing/client";
 
 const formSchema = z.object({
   username: z
@@ -168,7 +165,7 @@ export default function SettingsPage() {
             <div className="ml-auto">
               <Button variant="ghost" size="icon" type="submit">
                 {userMutation.isPending ? (
-                  <Loader className="w-6 h-6 animate-spin" />
+                  <Loader className="w-6 h-6" />
                 ) : (
                   <Check className="w-6 h-6" />
                 )}
@@ -204,7 +201,7 @@ export default function SettingsPage() {
                                 uploadProgress !== null && "opacity-100"
                               )}
                             >
-                              <Loader className="w-4 h-4 animate-spin" />
+                              <Loader className="w-4 h-4" />
                             </div>
                           </div>
                         ) : (
@@ -395,7 +392,7 @@ export default function SettingsPage() {
               disabled={logOutLoading}
             >
               {logOutLoading ? (
-                <Loader className="size-4 animate-spin" />
+                <Loader className="w-4 h-4" />
               ) : (
                 <LogOut className="size-4" />
               )}

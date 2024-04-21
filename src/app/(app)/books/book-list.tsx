@@ -2,11 +2,8 @@
 
 import { MobileForm } from "@/components/book/book-form";
 import { BookView } from "@/components/book/book-view";
-import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { useQuery } from "@tanstack/react-query";
-import { BookMinus, ChevronLeft, Loader } from "lucide-react";
-import Link from "next/link";
+import { BookMinus } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export function BookList({ books }: { books: any[] }) {

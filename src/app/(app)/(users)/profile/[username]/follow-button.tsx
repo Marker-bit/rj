@@ -1,9 +1,10 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Loader } from "@/components/ui/loader";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Loader, UserPlus, UserX } from "lucide-react";
+import { UserPlus, UserX } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function FollowButton({ username }: { username: string }) {
@@ -43,7 +44,7 @@ export default function FollowButton({ username }: { username: string }) {
       variant="outline"
     >
       {followMutation.isPending ? (
-        <Loader className="w-4 h-4 animate-spin" />
+        <Loader className="w-4 h-4" />
       ) : (
         <UserX className="w-4 h-4" />
       )}
@@ -56,7 +57,7 @@ export default function FollowButton({ username }: { username: string }) {
       disabled={followMutation.isPending}
     >
       {followMutation.isPending ? (
-        <Loader className="w-4 h-4 animate-spin" />
+        <Loader className="w-4 h-4" />
       ) : (
         <UserPlus className="w-4 h-4" />
       )}

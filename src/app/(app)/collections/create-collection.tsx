@@ -17,9 +17,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Loader, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { Loader } from "@/components/ui/loader";
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Поле обязательно для заполнения" }),
@@ -99,7 +100,7 @@ export function CreateCollection() {
               disabled={collectionMutation.isPending}
             >
               {collectionMutation.isPending ? (
-                <Loader className="w-4 h-4 animate-spin" />
+                <Loader className="w-4 h-4" />
               ) : (
                 <Plus className="w-4 h-4" />
               )}

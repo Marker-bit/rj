@@ -2,12 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-} from "@/components/ui/drawer";
-import {
   Form,
   FormControl,
   FormField,
@@ -20,14 +14,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { UploadButton } from "@/components/uploadthing";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Loader, Plus, Trash } from "lucide-react";
+import { Plus, Trash } from "lucide-react";
 import Image from "next/image";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useMediaQuery } from "usehooks-ts";
 import { z } from "zod";
 import { DrawerDialog } from "../drawer";
 import { DialogHeader, DialogTitle } from "../ui/dialog";
+import { Loader } from "../ui/loader";
+import { useRouter } from "next/navigation";
 import { useToast } from "../ui/use-toast";
 
 const bookSchema = z.object({
@@ -43,7 +38,7 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
   const form = useForm<z.infer<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
   });
-  const toast = useToast();
+  const {toast} = useToast();
   const [search, setSearch] = useState("");
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchResults, setSearchResults] = useState<
@@ -190,7 +185,7 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
                         setFileUploading(false);
                       }}
                       onUploadError={(error: Error) => {
-                        toast.toast({
+                        toast({
                           title: "Ошибка при загрузке обложки",
                           description: error.message,
                         });
@@ -265,7 +260,7 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
             disabled={bookMutation.isPending || fileUploading}
           >
             {bookMutation.isPending ? (
-              <Loader className="w-4 h-4 animate-spin mr-2" />
+              <Loader invert className="w-4 h-4 mr-2" />
             ) : (
               <Plus className="w-4 h-4 mr-2" />
             )}
@@ -278,10 +273,9 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
 }
 
 export function MobileForm() {
-  // const isMobile = useMediaQuery("(max-width: 768px)");
   const [open, setOpen] = useState(false);
+  const router = useRouter();
 
-  // if (isMobile) {
   return (
     <>
       <div className="flex items-center m-2">
@@ -294,16 +288,14 @@ export function MobileForm() {
           <DialogTitle>Добавить книгу</DialogTitle>
         </DialogHeader>
         <div className="p-4">
-          <BookForm onSuccess={() => setOpen(false)} />
+          <BookForm
+            onSuccess={() => {
+              setOpen(false);
+              router.refresh();
+            }}
+          />
         </div>
       </DrawerDialog>
     </>
   );
-  // }
-
-  // return (
-  //   <div className="p-3 bg-slate-100 dark:bg-slate-900 border-b border-slate-300 dark:border-slate-700">
-  //     <BookForm />
-  //   </div>
-  // );
 }

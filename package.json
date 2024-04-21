@@ -56,7 +56,6 @@
     "react-day-picker": "^8.10.0",
     "react-dom": "^18",
     "react-hook-form": "^7.50.1",
-    "react-hot-toast": "^2.4.1",
     "react-image-crop": "^11.0.5",
     "react-spinners": "^0.13.8",
     "recharts": "^2.11.0",
