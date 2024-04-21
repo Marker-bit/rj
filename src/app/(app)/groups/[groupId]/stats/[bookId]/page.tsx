@@ -116,7 +116,7 @@ export default async function Page({
         </div>
       </div>
 
-      <div className="w-full min-h-[20vh] bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl p-4 mt-2">
+      <div className="w-full min-h-[20vh] bg-neutral-100 dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded-xl p-4 mt-2">
         <div className="flex gap-2 items-center text-muted-foreground/90">
           <BarChartHorizontalBig className="w-4 h-4" />
           Статистика

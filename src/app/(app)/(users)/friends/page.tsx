@@ -32,11 +32,11 @@ export default async function FriendsPage() {
           </Button>
         </Link>
         Подписки
-        <Link href="/followers" className="ml-auto">
-          <Button variant="ghost">
+        <Button variant="ghost" asChild>
+          <Link href="/followers" className="ml-auto">
             Подписчики
-          </Button>
-        </Link>
+          </Link>
+        </Button>
       </div>
       <div className="p-3">
         <div className="flex flex-col gap-2">

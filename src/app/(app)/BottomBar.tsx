@@ -90,7 +90,7 @@ export function BottomBar() {
         </div>
       </div>
       <div className="fixed bottom-2 left-0 w-full flex items-center justify-center pointer-events-none z-50 md:hidden">
-        <div className="w-fit bg-slate-100/70 dark:bg-slate-900/70 backdrop-blur-lg flex gap-1 items-center content-center p-2 rounded-xl border border-zinc-200 dark:border-zinc-800 pointer-events-auto overflow-auto max-w-full mx-2">
+        <div className="w-fit bg-neutral-100/70 dark:bg-neutral-900/70 backdrop-blur-lg flex gap-1 items-center content-center p-2 rounded-xl border border-zinc-200 dark:border-zinc-800 pointer-events-auto overflow-auto max-w-full mx-2">
           {urls.map((url) => (
             <Link href={`/${url.href}`} className="w-fit" key={url.href}>
               <div

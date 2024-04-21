@@ -41,7 +41,7 @@ export default function AddMember({
               group.members.every((m: any) => m.userId !== friend.id) && (
                 <button
                   key={friend.id}
-                  className="flex gap-2 items-center p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-900"
+                  className="flex gap-2 items-center p-2 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-900"
                   onClick={() => {
                     setLoading(friend.id);
                     fetch(`/api/groups/${group.id}/member`, {

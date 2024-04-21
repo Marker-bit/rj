@@ -26,7 +26,7 @@ export default async function FriendsPage() {
       following: true,
     },
   });
-  console.log(friends);
+
   return (
     <div>
       <div className="text-5xl font-black m-2 flex gap-2 items-center">
@@ -36,9 +36,11 @@ export default async function FriendsPage() {
           </Button>
         </Link>
         Подписчики
-        <Link href="/friends" className="ml-auto">
-          <Button variant="ghost">Подписки</Button>
-        </Link>
+        <Button variant="ghost" asChild>
+          <Link href="/friends" className="ml-auto">
+            Подписки
+          </Link>
+        </Button>
       </div>
       <div className="p-3">
         <div className="flex flex-col gap-2">

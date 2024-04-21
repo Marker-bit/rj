@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { User } from "@prisma/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { BadgeCheck, Loader, UserPlus, UserX } from "lucide-react";
+import { BadgeCheck, UserPlus, UserX } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Loader } from "./ui/loader";
 
 export function FriendView({
   friend,
@@ -44,6 +45,8 @@ export function FriendView({
       router.refresh();
     },
   });
+
+  const followingRes = following || userQuery.data?.following;
   return (
     <Link href={`/profile/${friend.username}`}>
       <div className="p-4 rounded-md border border-zinc-200 dark:border-zinc-800 flex gap-2 items-center cursor-pointer group transition-colors">
@@ -61,74 +64,40 @@ export function FriendView({
               <BadgeCheck className="w-6 h-6 text-yellow-500" />
             )}
           </div>
-          <div className="text-sm text-muted-foreground/70">@{friend.username}</div>
-          {following === true ? (
-            <Button
-              className="gap-2 w-fit"
-              onClick={(evt) => {
-                followMutation.mutate();
-                evt.preventDefault();
-              }}
-              disabled={followMutation.isPending}
-              variant="outline"
-            >
-              {followMutation.isPending ? (
-                <Loader className="w-4 h-4 animate-spin" />
-              ) : (
-                <UserX className="w-4 h-4" />
-              )}
-              Отменить подписку
-            </Button>
-          ) : following === false ? (
-            <Button
-              className="gap-2 w-fit"
-              onClick={(evt) => {
-                followMutation.mutate();
-                evt.preventDefault();
-              }}
-              disabled={followMutation.isPending}
-            >
-              {followMutation.isPending ? (
-                <Loader className="w-4 h-4 animate-spin" />
-              ) : (
-                <UserPlus className="w-4 h-4" />
-              )}
-              Подписаться
-            </Button>
-          ) : userQuery.isPending ? (
+          <div className="text-sm text-muted-foreground/70">
+            @{friend.username}
+          </div>
+          {userQuery.isPending ? (
             <Skeleton className="w-48 h-10 rounded-md" />
-          ) : userQuery.data?.following ? (
-            <Button
-              className="gap-2 w-fit"
-              onClick={(evt) => {
-                followMutation.mutate();
-                evt.preventDefault();
-              }}
-              disabled={followMutation.isPending}
-              variant="outline"
-            >
-              {followMutation.isPending ? (
-                <Loader className="w-4 h-4 animate-spin" />
-              ) : (
-                <UserX className="w-4 h-4" />
-              )}
-              Отменить подписку
-            </Button>
           ) : (
             <Button
-              className="gap-2 w-fit"
+              className="gap-2 w-fit mt-2"
               onClick={(evt) => {
                 followMutation.mutate();
                 evt.preventDefault();
               }}
               disabled={followMutation.isPending}
+              variant={followingRes === true ? "outline" : "default"}
             >
-              {followMutation.isPending ? (
-                <Loader className="w-4 h-4 animate-spin" />
+              {followingRes === false ? (
+                <>
+                  {followMutation.isPending ? (
+                    <Loader invert={!followingRes} className="w-4 h-4" />
+                  ) : (
+                    <UserPlus className="w-4 h-4" />
+                  )}
+                  Подписаться
+                </>
               ) : (
-                <UserPlus className="w-4 h-4" />
+                <>
+                  {followMutation.isPending ? (
+                    <Loader invert={!followingRes} className="w-4 h-4" />
+                  ) : (
+                    <UserX className="w-4 h-4" />
+                  )}
+                  Отменить подписку
+                </>
               )}
-              Подписаться
             </Button>
           )}
         </div>

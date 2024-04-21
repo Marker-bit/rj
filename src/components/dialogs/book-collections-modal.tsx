@@ -62,9 +62,9 @@ export function BookCollectionsModal({
               (collection: { id: string; name: string; books: Book[] }) => (
                 <div
                   className={cn(
-                    "flex gap-2 rounded-xl p-2 hover:bg-slate-100 dark:hover:bg-slate-900 cursor-pointer items-center transition-colors",
+                    "flex gap-2 rounded-xl p-2 hover:bg-neutral-100 dark:hover:bg-neutral-900 cursor-pointer items-center transition-colors",
                     selectedCollections.includes(collection.id) &&
-                      "bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700"
+                      "bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700"
                   )}
                   key={collection.id}
                   onClick={() =>

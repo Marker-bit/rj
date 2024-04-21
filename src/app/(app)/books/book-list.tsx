@@ -54,7 +54,7 @@ export function BookList({ books }: { books: any[] }) {
       <MobileForm />
       <div className="p-3 flex flex-col gap-2">
         <div
-          className="items-center flex space-x-2 cursor-pointer p-2 rounded-md border border-slate-200 dark:border-slate-800 mb-2 hover:bg-slate-100 dark:hover:bg-slate-900 transition-all select-none"
+          className="items-center flex space-x-2 cursor-pointer p-2 rounded-md border border-neutral-200 dark:border-neutral-800 mb-2 hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-all select-none"
           onClick={changeReadBooks}
         >
           <Switch id="readBooks" checked={readBooks} />
@@ -66,7 +66,7 @@ export function BookList({ books }: { books: any[] }) {
           </div>
         </div>
         <div
-          className="items-center flex space-x-2 cursor-pointer p-2 rounded-md border border-slate-200 dark:border-slate-800 mb-2 hover:bg-slate-100 dark:hover:bg-slate-900 transition-all select-none"
+          className="items-center flex space-x-2 cursor-pointer p-2 rounded-md border border-neutral-200 dark:border-neutral-800 mb-2 hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-all select-none"
           onClick={changeNotStarted}
         >
           <Switch id="notStarted" checked={notStarted} />
@@ -78,7 +78,7 @@ export function BookList({ books }: { books: any[] }) {
           </div>
         </div>
         {books.length === 0 && (
-          <div className="p-2 flex gap-2 items-center rounded-xl border border-slate-200 dark:border-slate-800 text-xl">
+          <div className="p-2 flex gap-2 items-center rounded-xl border border-neutral-200 dark:border-neutral-800 text-xl">
             <BookMinus className="w-10 h-10" />
             <div className="flex flex-col">
               <div>Нет книг</div>

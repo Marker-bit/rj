@@ -30,7 +30,7 @@ export function AddBook({
     },
   });
   return (
-    <div className="p-2 border border-slate-100 dark:border-slate-900 rounded-xl flex items-center">
+    <div className="p-2 border border-neutral-100 dark:border-neutral-900 rounded-xl flex items-center">
       {book.coverUrl && (
         <Image
           src={book.coverUrl}
