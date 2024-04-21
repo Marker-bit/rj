@@ -23,7 +23,6 @@ import {
   CalendarDays,
   Edit,
   Info,
-  Loader,
   Plus,
   Share,
   Trash,
@@ -38,6 +37,7 @@ import { ShareBookModal } from "../dialogs/share-book-modal";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import Link from "next/link";
 import { toast } from "sonner";
+import { Loader } from "../ui/loader";
 
 export function BookView({ book }: { book: any }) {
   const queryClient = useQueryClient();
@@ -207,7 +207,7 @@ export function BookView({ book }: { book: any }) {
             disabled={deleteMutation.isPending}
           >
             {deleteMutation.isPending && (
-              <Loader className="h-4 w-4 mr-2 animate-spin" />
+              <Loader className="h-4 w-4 mr-2" />
             )}
             Удалить
           </Button>
@@ -249,7 +249,7 @@ export function BookView({ book }: { book: any }) {
                 className="w-fit h-fit p-1"
               >
                 {undoEventMutation.isPending ? (
-                  <Loader className="w-4 h-4 animate-spin" />
+                  <Loader className="w-4 h-4" />
                 ) : (
                   <Undo className="w-4 h-4" />
                 )}
@@ -292,7 +292,7 @@ export function BookView({ book }: { book: any }) {
                 className="w-fit h-fit p-1"
               >
                 {undoEventMutation.isPending ? (
-                  <Loader className="w-4 h-4 animate-spin" />
+                  <Loader className="w-4 h-4" />
                 ) : (
                   <Undo className="w-4 h-4" />
                 )}
@@ -348,7 +348,7 @@ export function BookView({ book }: { book: any }) {
                   disabled={doneMutation.isPending}
                 >
                   {doneMutation.isPending ? (
-                    <Loader className="w-4 h-4 animate-spin" />
+                    <Loader className="w-4 h-4" />
                   ) : (
                     <BookOpenCheck className="w-4 h-4" />
                   )}
