@@ -3,7 +3,6 @@ import { headers } from "next/headers";
 import { Button } from "@/components/ui/button";
 
 export default async function NotFound() {
-  const headersList = headers();
   return (
     <div className="flex flex-col gap-2 text-center items-center justify-center">
       <div className="text-[20vw] max-sm:text-[40vw] font-bold leading-none">

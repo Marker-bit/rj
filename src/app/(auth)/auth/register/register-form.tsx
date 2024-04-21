@@ -11,16 +11,16 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { Loader } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDebounceCallback } from "usehooks-ts";
 import { z } from "zod";
+import { Loader } from "@/components/ui/loader";
 
 const formSchema = z.object({
   username: z
@@ -35,8 +35,12 @@ const formSchema = z.object({
       /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&.*-]).{8,}$/,
       "Пароль должен содержать минимум 8 символов, по крайней мере, одну заглавную английскую букву, одну строчную английскую букву, одну цифру и один специальный символ"
     ),
-  firstName: z.string().min(1),
-  lastName: z.string().min(1),
+  firstName: z.string({
+    required_error: "Имя обязательно",
+  }).min(3, "Имя должно содержать минимум 3 символа"),
+  lastName: z.string({
+    required_error: "Фамилия обязательна",
+  }).min(3, "Фамилия должна содержать минимум 3 символа"),
 });
 
 export function RegisterForm() {
@@ -49,7 +53,6 @@ export function RegisterForm() {
     },
   });
   const router = useRouter();
-  const { toast } = useToast();
 
   const userMutation = useMutation({
     mutationFn: (values: z.infer<typeof formSchema>) => {
@@ -62,8 +65,7 @@ export function RegisterForm() {
         } else {
           const data = await res.json();
           if (data.error) {
-            toast({
-              title: "Возникла проблема при регистрации",
+            toast.error("Возникла проблема при регистрации", {
               description: data.error,
             });
             return;
@@ -170,7 +172,7 @@ export function RegisterForm() {
         <div className="flex gap-2 items-center flex-wrap">
           <Button type="submit" disabled={userMutation.isPending}>
             {userMutation.isPending && (
-              <Loader className="w-4 h-4 animate-spin mr-2" />
+              <Loader invert className="w-4 h-4 mr-2" />
             )}
             Зарегистрироваться
           </Button>

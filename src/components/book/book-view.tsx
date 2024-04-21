@@ -37,7 +37,7 @@ import { useMediaQuery } from "usehooks-ts";
 import { ShareBookModal } from "../dialogs/share-book-modal";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import Link from "next/link";
-import { useToast } from "../ui/use-toast";
+import { toast } from "sonner";
 
 export function BookView({ book }: { book: any }) {
   const queryClient = useQueryClient();
@@ -50,7 +50,6 @@ export function BookView({ book }: { book: any }) {
   const [shareBookOpen, setShareBookOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const router = useRouter();
-  const { toast } = useToast();
 
   const undoEventMutation = useMutation({
     mutationFn: () =>
@@ -64,7 +63,7 @@ export function BookView({ book }: { book: any }) {
       queryClient.invalidateQueries({
         queryKey: ["events"],
       });
-      toast({ title: "Событие отменено" });
+      toast.success("Событие отменено");
       router.refresh();
     },
   });
@@ -85,7 +84,7 @@ export function BookView({ book }: { book: any }) {
       queryClient.invalidateQueries({
         queryKey: ["events"],
       });
-      toast({ title: "Книга отмечена как прочитанная" });
+      toast.success("Книга отмечена как прочитанная");
       setActionsDrawerOpen(false);
       router.refresh();
     },
@@ -108,7 +107,7 @@ export function BookView({ book }: { book: any }) {
         queryKey: ["events"],
       });
       setDateOpen(false);
-      toast({ title: "Событие сохранено" });
+      toast.success("Событие сохранено");
       setActionsDrawerOpen(false);
       router.refresh();
     },
@@ -128,7 +127,7 @@ export function BookView({ book }: { book: any }) {
       });
       setDeleteDialogOpen(false);
       setActionsDrawerOpen(false);
-      toast({ title: "Книга удалена", variant: "destructive" });
+      toast.success("Книга удалена");
       router.refresh();
     },
   });

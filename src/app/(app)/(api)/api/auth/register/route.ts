@@ -3,6 +3,12 @@ import { db } from "@/lib/db";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { Argon2id } from "oslo/password";
+import {
+  USERNAME_REGEX,
+  USERNAME_MESSAGE,
+  PASSWORD_REGEX,
+  PASSWORD_MESSAGE,
+} from "@/lib/api-validate";
 
 export async function POST(request: NextRequest) {
   const data = await request.json();
@@ -19,6 +25,38 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         error: "Пользователь с таким именем уже существует",
+      },
+      { status: 400 }
+    );
+  }
+
+  if (USERNAME_REGEX.test(username) === false) {
+    return NextResponse.json(
+      {
+        error: USERNAME_MESSAGE,
+      },
+      { status: 400 }
+    );
+  }
+
+  if (PASSWORD_REGEX.test(password) === false) {
+    return NextResponse.json(
+      {
+        error: PASSWORD_MESSAGE,
+      },
+      { status: 400 }
+    );
+  }
+
+  if (
+    !data.firstName ||
+    !data.lastName ||
+    data.firstName.length < 3 ||
+    data.lastName.length < 3
+  ) {
+    return NextResponse.json(
+      {
+        error: "Укажите имя и фамилию (мин. 3 символа)",
       },
       { status: 400 }
     );

@@ -23,7 +23,7 @@ import { DrawerDialog } from "../drawer";
 import { DialogHeader, DialogTitle } from "../ui/dialog";
 import { Loader } from "../ui/loader";
 import { useRouter } from "next/navigation";
-import { useToast } from "../ui/use-toast";
+import { toast } from "sonner";
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -38,7 +38,6 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
   const form = useForm<z.infer<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
   });
-  const {toast} = useToast();
   const [search, setSearch] = useState("");
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchResults, setSearchResults] = useState<
@@ -185,8 +184,7 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
                         setFileUploading(false);
                       }}
                       onUploadError={(error: Error) => {
-                        toast({
-                          title: "Ошибка при загрузке обложки",
+                        toast.error("Ошибка при загрузке обложки", {
                           description: error.message,
                         });
                       }}

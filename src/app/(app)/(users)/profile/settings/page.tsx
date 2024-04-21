@@ -392,7 +392,7 @@ export default function SettingsPage() {
               disabled={logOutLoading}
             >
               {logOutLoading ? (
-                <Loader className="w-4 h-4" />
+                <Loader invert className="w-4 h-4" />
               ) : (
                 <LogOut className="size-4" />
               )}

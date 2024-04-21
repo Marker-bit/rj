@@ -11,14 +11,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { Loader } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { Loader } from "@/components/ui/loader";
 
 const formSchema = z.object({
   username: z.string(),
@@ -34,7 +34,6 @@ export function LoginForm() {
     },
   });
   const router = useRouter();
-  const { toast } = useToast();
 
   const userMutation = useMutation({
     mutationFn: (values: z.infer<typeof formSchema>) => {
@@ -47,8 +46,7 @@ export function LoginForm() {
         } else {
           const data = await res.json();
           if (data.error) {
-            toast({
-              title: "Возникла проблема при входе",
+            toast.error("Возникла проблема при входе", {
               description: data.error,
             });
             return;
@@ -99,7 +97,7 @@ export function LoginForm() {
         <div className="flex gap-2 items-center flex-wrap">
           <Button type="submit" disabled={userMutation.isPending}>
             {userMutation.isPending && (
-              <Loader className="w-4 h-4 animate-spin mr-2" />
+              <Loader invert className="w-4 h-4 mr-2" />
             )}
             Авторизоваться
           </Button>

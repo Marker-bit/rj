@@ -7,6 +7,7 @@ import { QueryProvider } from "@/components/providers/query-client-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
 
 const font = Inter({ subsets: ["latin"] });
 
@@ -58,6 +59,7 @@ export default async function RootLayout({
               <Analytics />
               <SpeedInsights />
               <Toaster />
+              <Sonner />
             </TooltipProvider>
           </ThemeProvider>
         </QueryProvider>
