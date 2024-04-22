@@ -9,6 +9,7 @@ import { useRef, useState } from "react";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Loader, Save } from "lucide-react";
 import { addDays } from "date-fns";
+import { toast } from "sonner";
 
 export function DateReadModal({
   isOpen,
@@ -53,6 +54,22 @@ export function DateReadModal({
         <form
           onSubmit={(evt) => {
             evt.preventDefault();
+            if (!date) {
+              toast.error("Выберите дату");
+              return;
+            }
+            if (!changePages) {
+              toast.error("Укажите количество страниц");
+              return;
+            }
+            if (parseInt(changePages) < 1) {
+              toast.error("Количество страниц должно быть больше 0");
+              return;
+            }
+            if (isNaN(parseInt(changePages))) {
+              toast.error("Количество страниц должно быть числом");
+              return;
+            }
             readDateMutation.mutate({ date, pages: parseInt(changePages) });
           }}
         >

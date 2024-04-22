@@ -67,7 +67,7 @@ export function FriendView({
           <div className="text-sm text-muted-foreground/70">
             @{friend.username}
           </div>
-          {userQuery.isPending ? (
+          {followingRes === undefined && userQuery.isPending ? (
             <Skeleton className="w-48 h-10 rounded-md" />
           ) : (
             <Button

@@ -84,7 +84,12 @@ export default async function Page({
             {user.firstName} {user.lastName}
           </div>
           <div className="text-sm text-muted-foreground/70">@{username}</div>
-          <FollowButton username={user.username} />
+          <FollowButton
+            following={
+              !!user.following.find((f) => f.firstId === currentUser?.id)
+            }
+            username={user.username}
+          />
         </div>
       </div>
       <UserTabs user={user} currentUser={currentUser} events={events} />

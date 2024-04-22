@@ -5,15 +5,23 @@ import { Loader } from "@/components/ui/loader";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { UserPlus, UserX } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function FollowButton({ username }: { username: string }) {
-  const [following, setFollowing] = useState<boolean>();
+export default function FollowButton({
+  username,
+  following,
+}: {
+  username: string;
+  following: boolean;
+}) {
+  const router = useRouter();
 
   useEffect(() => {
     fetch(`/api/profile/${username}`)
       .then((res) => res.json())
-      .then((res) => setFollowing(res.following));
+      .then((res) => router.refresh());
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username]);
 
   const queryClient = useQueryClient();
