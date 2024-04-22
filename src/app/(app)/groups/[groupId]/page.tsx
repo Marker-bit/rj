@@ -181,8 +181,11 @@ export default async function Page({
                 className="rounded-md h-8 w-auto"
               />
               <div className="flex flex-col">
-                <div className="font-bold">
+                <div className="font-bold flex gap-2 items-center">
                   {member.user.firstName} {member.user.lastName}
+                  {member.user.verified && (
+                    <BadgeCheck className="w-4 h-4 text-yellow-500" />
+                  )}
                 </div>
                 <div className="text-muted-foreground/70 text-sm">
                   @{member.user.username}

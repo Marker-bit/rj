@@ -6,6 +6,7 @@ import { CopyCheck, CopyIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { AnimatePresence, motion } from "framer-motion";
 
 export function ShareBookModal({
   open,
@@ -31,7 +32,7 @@ export function ShareBookModal({
         <DialogTitle>Поделиться</DialogTitle>
       </DialogHeader>
       <div className="mt-2">
-        <div className="flex max-sm:flex-col gap-2 w-full">
+        <div className="flex gap-2 w-full">
           <Input readOnly value={link} className="sm:w-full md:w-[80%]" />
           <Button
             onClick={() => {
@@ -41,19 +42,32 @@ export function ShareBookModal({
                 setCopyLink(false);
               }, 2000);
             }}
-            variant={copyLink ? "outline" : "default"}
           >
-            {copyLink ? (
-              <div className="text-green-500 flex items-center gap-2">
-                <CopyCheck className="w-4 h-4" />
-                <div className="max-sm:hidden">Скопировано</div>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <CopyIcon className="w-4 h-4" />
-                <div className="max-sm:hidden">Скопировать</div>
-              </div>
-            )}
+            <AnimatePresence mode="wait" initial={false}>
+              {copyLink ? (
+                <motion.div
+                  className="text-green-400 flex items-center gap-2"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  key="copied"
+                >
+                  <CopyCheck className="w-4 h-4" />
+                  <div className="max-sm:hidden">Скопировано</div>
+                </motion.div>
+              ) : (
+                <motion.div
+                  className="flex items-center gap-2"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  key="copy"
+                >
+                  <CopyIcon className="w-4 h-4" />
+                  <div className="max-sm:hidden">Скопировать</div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </Button>
         </div>
       </div>
