@@ -1,9 +1,10 @@
+import { USERNAME_MESSAGE, USERNAME_REGEX } from "@/lib/api-validate";
 import { lucia } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { validateRequest } from "@/lib/server-validate-request";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { Argon2id } from "oslo/password";
-import { validateRequest } from "@/lib/server-validate-request";
 
 export async function POST(request: NextRequest) {
   const data = await request.json();
@@ -71,13 +72,55 @@ export async function PATCH(request: NextRequest) {
     });
   }
 
-  const data = await request.json();
+  const d = await request.json();
+
+  if (d.firstName !== null && d.length < 3) {
+    return NextResponse.json({
+      error: "Длина имени должна быть не менее 3-х символов",
+    });
+  }
+
+  if (d !== null && d.length < 3) {
+    return NextResponse.json({
+      error: "Длина фамилии должна быть не менее 3-х символов",
+    });
+  }
+
+  if (USERNAME_REGEX.test(d.username) === false) {
+    return NextResponse.json(
+      {
+        error: USERNAME_MESSAGE,
+      },
+      { status: 400 }
+    );
+  }
+
+  const existingUser = await db.user.findFirst({
+    where: {
+      username: d.username,
+    },
+  });
+
+  if (existingUser && existingUser.id !== user.id) {
+    return NextResponse.json(
+      {
+        error: "Пользователь с таким именем уже существует",
+      },
+      { status: 400 }
+    );
+  }
   const updatedUser = await db.user.update({
     where: {
       id: user.id,
     },
     data: {
-      ...data,
+      firstName: d.firstName,
+      lastName: d.lastName,
+      username: d.username,
+      shareFollowers: d.shareFollowers,
+      shareSubscriptions: d.shareSubscriptions,
+      shareStats: d.shareStats,
+      avatarUrl: d.avatarUrl,
       active: true,
     },
   });

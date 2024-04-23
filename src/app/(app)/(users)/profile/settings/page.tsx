@@ -40,19 +40,13 @@ import { useDropzone } from "@uploadthing/react";
 import { User } from "lucia";
 import Image from "next/image";
 import { generateClientDropzoneAccept } from "uploadthing/client";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   username: z
     .string()
     .min(2)
-    .max(50)
-    .refine(async (val) => {
-      const { user } = await validateRequest();
-      if (val === user.username) return true;
-      const res = await fetch(`/api/auth/username?username=${val}`);
-      const data = await res.json();
-      return !data.found;
-    }, ""),
+    .max(50),
   firstName: z.string().min(1, "Требуется имя").max(50),
   lastName: z.string().min(1, "Требуется фамилия").max(50),
   avatarUrl: z.string().optional(),
@@ -86,6 +80,12 @@ export default function SettingsPage() {
       return fetch("/api/auth", {
         method: "PATCH",
         body: JSON.stringify(values),
+      }).then((res) => res.json()).then((res) => {
+        if (res.error) {
+          toast.error("Возникла проблема при обновлении профиля", {
+            description: res.error
+          });
+        }
       });
     },
   });
@@ -104,7 +104,7 @@ export default function SettingsPage() {
       setFiles(acceptedFiles);
       setCropOpen(true);
     } else {
-      alert("Принимается только 1 файл!");
+      toast.error("Принимается только 1 файл!");
     }
   }, []);
 
@@ -197,11 +197,14 @@ export default function SettingsPage() {
                             <input {...getInputProps()} />
                             <div
                               className={cn(
-                                "absolute top-0 left-0 pointer-events-none w-full h-full bg-white/80 flex items-center justify-center opacity-0 transition-opacity",
+                                "absolute top-0 left-0 pointer-events-none w-full h-full bg-white/80 flex flex-col items-center justify-center opacity-0 transition-opacity",
                                 uploadProgress !== null && "opacity-100"
                               )}
                             >
                               <Loader className="w-4 h-4" />
+                              {uploadProgress !== null && (
+                                <div>{uploadProgress}%</div>
+                              )}
                             </div>
                           </div>
                         ) : (
@@ -212,9 +215,6 @@ export default function SettingsPage() {
                             <Plus className="w-4 h-4 text-zinc-500" />
                             <input {...getInputProps()} />
                           </div>
-                        )}
-                        {uploadProgress !== null && (
-                          <div>{uploadProgress}%</div>
                         )}
                         {files.length > 0 && (
                           <CropImage
