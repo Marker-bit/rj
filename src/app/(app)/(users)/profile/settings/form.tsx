@@ -147,7 +147,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
     <div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="m-3 p-4 rounded-md border border-zinc-200">
+          <div className="m-3 p-4 rounded-md border">
             <div className="space-y-2">
               <FormField
                 control={form.control}
@@ -184,7 +184,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
                           </div>
                         ) : (
                           <div
-                            className="w-20 h-20 border border-zinc-200 rounded-full flex items-center justify-center cursor-pointer"
+                            className="w-20 h-20 border rounded-full flex items-center justify-center cursor-pointer"
                             {...getRootProps()}
                           >
                             <Plus className="w-4 h-4 text-zinc-500" />

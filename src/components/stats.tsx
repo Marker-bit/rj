@@ -206,7 +206,7 @@ export async function Stats({
   return (
     <>
       <div id="stats" className="grid grid-cols-2 grid-rows-2 gap-2 p-2">
-        <div className="p-2 border border-zinc-200 dark:border-zinc-800 rounded-md flex gap-1 items-center">
+        <div className="p-2 border rounded-md flex gap-1 items-center">
           <CalendarRange className="w-6 h-6" />
           <div className="flex flex-col">
             <div className="font-bold">{streak}</div>
@@ -215,7 +215,7 @@ export async function Stats({
             </div>
           </div>
         </div>
-        <div className="p-2 border border-zinc-200 dark:border-zinc-800 rounded-md flex gap-1 items-center">
+        <div className="p-2 border rounded-md flex gap-1 items-center">
           <BookOpen className="w-6 h-6" />
           <div className="flex flex-col">
             <div className="font-bold">{readWeekSum}</div>
@@ -230,7 +230,7 @@ export async function Stats({
           </div>
         </div>
         <Link href="/friends">
-          <div className="p-2 border border-zinc-200 dark:border-zinc-800 rounded-md flex gap-1 items-center">
+          <div className="p-2 border hover:bg-muted rounded-md flex gap-1 items-center transition-colors">
             <Users2 className="w-6 h-6" />
             <div className="flex flex-col">
               <div className="font-bold">{profile.follower.length}</div>
@@ -245,7 +245,7 @@ export async function Stats({
           </div>
         </Link>
         <Link href="/followers">
-          <div className="p-2 border border-zinc-200 dark:border-zinc-800 rounded-md flex gap-1 items-center">
+          <div className="p-2 border hover:bg-muted rounded-md flex gap-1 items-center transition-colors">
             <UsersIcon className="w-6 h-6" />
             <div className="flex flex-col">
               <div className="font-bold">{profile.following.length}</div>

@@ -71,7 +71,7 @@ export default async function Page({
   if (currentUser?.id === user.id) return redirect("/profile");
   return (
     <div className="m-3">
-      <div className="p-4 rounded-md border border-zinc-200 dark:border-zinc-800 flex gap-2 items-center">
+      <div className="p-4 rounded-md border flex gap-2 items-center">
         <Image
           src={user?.avatarUrl ? user?.avatarUrl : "/no-avatar.png"}
           alt="avatar"

@@ -8,7 +8,7 @@ export default async function SettingsPage() {
   const { user } = await validateRequest();
   if (!user) return null;
   return (
-    <div>
+    <div className="mb-20">
       <div className="text-5xl font-black m-2 flex gap-2 items-center">
         <Button variant="ghost" size="icon" asChild>
           <Link href="/profile">

@@ -35,7 +35,7 @@ export function EventView({
     },
   });
   return (
-    <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 p-2 cursor-default flex flex-wrap items-center gap-1">
+    <div className="rounded-xl border p-2 cursor-default flex flex-wrap items-center gap-1">
       {event.pagesRead === event.book.pages ? (
         <>
           <BookOpenCheck className="w-4 h-4 mr-1 text-green-500" />

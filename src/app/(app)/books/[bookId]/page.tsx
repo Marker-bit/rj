@@ -17,7 +17,7 @@ export default async function Page({ params }: { params: { bookId: string } }) {
   return (
     <div className="p-2">
       <div
-        className="border border-zinc-200 p-2 rounded-md flex gap-2 group relative"
+        className="border p-2 rounded-md flex gap-2 group relative"
         id={`book-${book.id}`}
       >
         {book.coverUrl && (
@@ -55,7 +55,7 @@ export default async function Page({ params }: { params: { bookId: string } }) {
             }
             className="w-fit"
           >
-            <div className="rounded-xl border border-zinc-100 p-2 flex gap-2 w-fit pr-5">
+            <div className="rounded-xl border p-2 flex gap-2 w-fit pr-5">
               <Image
                 src={user?.avatarUrl || "/no-avatar.png"}
                 alt="user"

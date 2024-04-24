@@ -49,7 +49,7 @@ export function FriendView({
   const followingRes = following || userQuery.data?.following;
   return (
     <Link href={`/profile/${friend.username}`}>
-      <div className="p-4 rounded-md border border-zinc-200 dark:border-zinc-800 flex gap-2 items-center cursor-pointer group transition-colors">
+      <div className="p-4 rounded-md border flex gap-2 items-center cursor-pointer group transition-colors">
         <Image
           src={friend.avatarUrl ? friend.avatarUrl : "/no-avatar.png"}
           alt="avatar"

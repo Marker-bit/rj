@@ -23,7 +23,7 @@ export async function StreakInfo() {
 
   const streak = getStreak(events);
 
-  if (streak % 50 !== 0 && user.id !== "clsqfrmec000013rgpmmb8eok") {
+  if ((streak % 50 !== 0 && user.id !== "clsqfrmec000013rgpmmb8eok") || streak === 0) {
     return <></>;
   }
 

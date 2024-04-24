@@ -7,7 +7,7 @@ import { useState } from "react";
 export function Copy({ text }: { text: string }) {
   const [copy, setCopy] = useState(false);
   return (
-    <div className="p-2 border border-zinc-200 dark:border-zinc-800 rounded-xl flex gap-2 items-center">
+    <div className="p-2 border rounded-xl flex gap-2 items-center">
       {text}
       <div
         className="hover:bg-black/10 dark:hover:bg-white/10 flex items-center justify-center p-2 rounded-xl cursor-pointer relative"

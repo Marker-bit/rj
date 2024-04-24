@@ -114,7 +114,7 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
             searchResults.slice(0, 5).map((book) => (
               <button
                 key={book.title}
-                className="rounded-xl p-3 border border-black/10 flex gap-2"
+                className="rounded-xl p-3 border flex gap-2"
                 onClick={() => {
                   form.reset({
                     title: book.title,

@@ -38,7 +38,7 @@ export function AddFromMyBooks({
           <Loader className="w-8 h-8 animate-spin" />
         </div>
       )}
-      <div className="flex items-center gap-2 p-2 rounded-xl border border-zinc-100 dark:border-zinc-900">
+      <div className="flex items-center gap-2 p-2 rounded-xl border">
         <Search className="w-4 h-4 text-muted-foreground/80" />
         <input
           className="bg-transparent w-full outline-none"

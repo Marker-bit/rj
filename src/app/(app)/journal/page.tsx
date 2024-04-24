@@ -90,13 +90,13 @@ export default function JournalPage() {
           {!dates && "выключен"}
         </Button>
         {eventsQuery.data?.length === 0 && events.length === 0 ? (
-          <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 p-2 flex gap-2 items-center">
+          <div className="rounded-xl border p-2 flex gap-2 items-center">
             <BookMinus className="w-10 h-10" />
             Журнал пуст
           </div>
         ) : (
           events.length === 0 && (
-            <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 p-2 flex gap-2 items-center">
+            <div className="rounded-xl border p-2 flex gap-2 items-center">
               <BookMinus className="w-10 h-10" />
               Фильтры ничего не выбрали
             </div>

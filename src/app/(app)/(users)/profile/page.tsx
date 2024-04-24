@@ -47,18 +47,13 @@ export default async function ProfilePage() {
         Профиль
         <div className="ml-auto">
           <Button variant="ghost" size="icon" asChild>
-            <Link href="/friends">
-              <Users2 className="w-6 h-6" />
-            </Link>
-          </Button>
-          <Button variant="ghost" size="icon" asChild>
             <Link href="/profile/settings">
               <Edit className="w-6 h-6" />
             </Link>
           </Button>
         </div>
       </div>
-      <div className="m-3 p-4 rounded-md border border-zinc-200 dark:border-zinc-800 flex gap-2 items-center">
+      <div className="m-3 p-4 rounded-md border flex gap-2 items-center">
         <Image
           src={userData?.avatarUrl ? userData?.avatarUrl : "/no-avatar.png"}
           alt="avatar"

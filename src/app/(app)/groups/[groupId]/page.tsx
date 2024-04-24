@@ -139,7 +139,7 @@ export default async function Page({
         </div>
       </div>
       <div className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-2">
-        <div className="p-4 rounded-xl border border-muted">
+        <div className="p-4 rounded-xl border">
           <div className="flex items-center text-sm gap-1 text-black/70 dark:text-white/70">
             <Book className="w-4 h-4" />
             <div>Книги</div>
@@ -155,7 +155,7 @@ export default async function Page({
             />
           ))}
         </div>
-        <div className="p-4 rounded-xl border border-muted">
+        <div className="p-4 rounded-xl border">
           <div className="flex items-center text-sm gap-1 text-black/70 dark:text-white/70">
             <Users className="w-4 h-4" />
             <div>Участники</div>
@@ -203,7 +203,7 @@ export default async function Page({
             </Link>
           ))}
         </div>
-        <div className="p-4 rounded-xl border border-muted">
+        <div className="p-4 rounded-xl border">
           <div className="flex items-center text-sm gap-1 text-black/70 dark:text-white/70">
             <BarChartHorizontalBig className="w-4 h-4" />
             <div>Статистика</div>
@@ -230,7 +230,7 @@ export default async function Page({
             </div>
           ))}
         </div>
-        <div className="p-4 rounded-xl border border-muted">
+        <div className="p-4 rounded-xl border">
           <div className="flex items-center text-sm gap-1 text-black/70 dark:text-white/70">
             <BarChart2 className="w-4 h-4" />
             <div>Рейтинг</div>
@@ -244,7 +244,7 @@ export default async function Page({
                 }`}
               >
                 <div className="flex items-center p-2 hover:bg-black/10 dark:hover:bg-white/10 rounded-md transition-all gap-2">
-                  <div className="rounded-full flex w-6 h-6 items-center justify-center border border-black/50 dark:border-white/50">
+                  <div className="rounded-full flex w-6 h-6 items-center justify-center border">
                     {i + 1}
                   </div>
                   <div className="flex gap-2">

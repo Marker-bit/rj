@@ -10,7 +10,7 @@ export async function CollectionView({
   };
 }) {
   return (
-    <div className="flex flex-col border-b border-zinc-300 dark:border-zinc-700 rounded-b-xl p-3">
+    <div className="flex flex-col border-b rounded-b-xl p-3">
       <h1 className="text-xl font-bold">{collection.name}</h1>
       <div className="text-xs text-black/50 dark:text-white/50">
         {collection.books.length}{" "}

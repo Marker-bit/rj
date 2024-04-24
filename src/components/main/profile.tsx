@@ -13,7 +13,7 @@ export async function Profile() {
     },
   });
   return (
-    <div className="flex flex-col gap-3 border-b border-zinc-300 dark:border-zinc-700 p-3 cursor-default">
+    <div className="flex flex-col gap-3 border-b p-3 cursor-default">
       <Link href="/profile">
         <h2 className="text-3xl font-black flex gap-1 items-center cursor-pointer hover:text-black/70 dark:hover:text-white/70 w-fit flex-wrap">
           <User className="w-8 h-8 mr-1" />
@@ -21,7 +21,7 @@ export async function Profile() {
           <ChevronRight className="w-8 h-8" />
         </h2>
       </Link>
-      <div className="p-2 rounded-md border border-zinc-200 dark:border-zinc-800 flex gap-2 items-center">
+      <div className="p-2 rounded-md border flex gap-2 items-center">
         <Image
           src={profile.avatarUrl ? profile.avatarUrl : "/no-avatar.png"}
           alt="avatar"

@@ -40,7 +40,7 @@ export default async function Page() {
           <Link href={`/groups/${g.id}`} key={g.id}>
             <div
               key={g.id}
-              className="rounded-xl p-2 border border-zinc-100 dark:border-zinc-900 flex flex-col gap-1"
+              className="rounded-xl p-2 border flex flex-col gap-1"
             >
               <div>{g.title}</div>
               <div className="flex gap-1 text-muted-foreground/70 text-sm">

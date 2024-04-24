@@ -45,7 +45,7 @@ export default async function FriendsPage() {
       <div className="p-3">
         <div className="flex flex-col gap-2">
           {friends.length === 0 && (
-            <div className="p-2 flex gap-2 items-center rounded-xl border border-zinc-200 text-xl">
+            <div className="p-2 flex gap-2 items-center rounded-xl border text-xl">
               <UserX className="w-10 h-10" />
               <div className="flex flex-col">
                 <div>У вас нет подписчиков</div>

@@ -22,7 +22,7 @@ export default async function LandingPage({
         }}
       >
         <div
-          className="p-2 rounded-xl border-zinc-100 w-full h-full flex flex-col gap-2 items-center justify-center overflow-hidden"
+          className="p-2 rounded-xl w-full h-full flex flex-col gap-2 items-center justify-center overflow-hidden"
           style={{
             backgroundImage: [
               "radial-gradient(ellipse at top, transparent 60%, hsl(var(--primary) / 0.2))",
