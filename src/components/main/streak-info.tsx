@@ -34,6 +34,9 @@ export async function StreakInfo() {
         <div className="text-2xl font-bold">Ваша активность</div>
         <div className="text-lg">Сколько дней вы читаете подряд</div>
       </div>
+      <div className="hidden max-sm:block">
+        <div className="text-2xl font-bold">Чтение подряд</div>
+      </div>
       <div className="ml-auto mt-auto translate-x-8 translate-y-8">
         <PartyPopper className="w-32 h-32 text-orange-200 -scale-x-100" />
       </div>
