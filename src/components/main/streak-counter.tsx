@@ -4,6 +4,7 @@ import { getStreak } from "@/lib/stats";
 import { ReadEvent } from "@prisma/client";
 import { User } from "lucia";
 import { PartyPopper } from "lucide-react";
+import { declOfNum } from "@/lib/utils";
 
 export async function StreakCounter({
   events,
@@ -29,7 +30,10 @@ export async function StreakCounter({
         <div className="text-lg">Сколько дней вы читаете подряд</div>
       </div>
       <div className="hidden max-sm:block">
-        <div className="text-2xl font-bold">Чтение подряд</div>
+        <div className="text-2xl font-bold">
+          {declOfNum(streak, ["день", "дня", "дней"])} 
+          подряд
+        </div>
       </div>
       <div className="ml-auto mt-auto translate-x-8 translate-y-8">
         <PartyPopper className="w-32 h-32 text-orange-200 -scale-x-100" />
