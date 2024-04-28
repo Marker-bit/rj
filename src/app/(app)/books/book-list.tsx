@@ -3,6 +3,7 @@
 import { MobileForm } from "@/components/book/book-form";
 import { BookView } from "@/components/book/book-view";
 import { Switch } from "@/components/ui/switch";
+import { Book } from "@/lib/api-types";
 import { BookMinus } from "lucide-react";
 import { useEffect, useState } from "react";
 

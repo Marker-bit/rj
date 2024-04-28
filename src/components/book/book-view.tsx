@@ -23,6 +23,7 @@ import {
   CalendarDays,
   Edit,
   Info,
+  Link2,
   Plus,
   Share,
   Trash,
@@ -206,9 +207,7 @@ export function BookView({ book }: { book: any }) {
             onClick={() => deleteMutation.mutate()}
             disabled={deleteMutation.isPending}
           >
-            {deleteMutation.isPending && (
-              <Loader className="h-4 w-4 mr-2" />
-            )}
+            {deleteMutation.isPending && <Loader className="h-4 w-4 mr-2" />}
             Удалить
           </Button>
         </div>
@@ -313,6 +312,13 @@ export function BookView({ book }: { book: any }) {
                 <p>Группа</p>
               </TooltipContent>
             </Tooltip>
+          )}
+
+          {book.links.length && (
+            <Badge variant="outline">
+              <Link2 className="w-4 h-4 mr-2" /> {book.links.length}{" "}
+              {declOfNum(book.links.length, ["ссылка", "ссылки", "ссылок"])}
+            </Badge>
           )}
         </div>
         <div className="flex gap-1 flex-wrap">

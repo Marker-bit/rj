@@ -16,7 +16,12 @@ export async function fetchBooks(userId: string) {
         include: {
           group: true,
         }
-      }
+      },
+      links: {
+        include: {
+          book: true,
+        }
+      },
     },
   });
   const compareBooks = (a: any, b: any) => {

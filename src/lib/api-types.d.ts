@@ -1,16 +1,4 @@
-type Book = {
-  id: string;
-  title: string;
-  author: string;
-  pages: number;
-  userId: string;
-  collections: any[];
-  readEvents: {
-    bookId: string;
-    id: string;
-    pagesRead: number;
-    readAt: string;
-  }[];
-  description?: string;
-  coverUrl?: string;
-};
+import { fetchBooks } from "./books";
+
+type FirstResult<T> = T extends [infer first, ...infer Rest] ? first : never;
+type Book = Awaited<ReturnType<typeof fetchBooks>>[0];

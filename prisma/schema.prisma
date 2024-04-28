@@ -66,6 +66,7 @@ model Book {
   collections Collection[]
   description String       @default("")
   coverUrl    String?
+  links       BookLink[]
 
   hiddenUntil DateTime?
 
@@ -74,6 +75,12 @@ model Book {
 
   groupBook   GroupBook? @relation(fields: [groupBookId], references: [id])
   groupBookId String?
+}
+
+model BookLink {
+  id     String @id @default(cuid())
+  book   Book   @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  bookId String
 }
 
 model ReadEvent {
