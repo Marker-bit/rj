@@ -5,10 +5,10 @@ import { declOfNum } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 
-export default async function Page({ params }: { params: { bookId: string } }) {
+export default async function Page({ params }: { params: { linkId: string } }) {
   const { user } = await validateRequest();
-  const book = await db.book.findUnique({
-    where: { id: params.bookId },
+  const book = await db.book.findFirst({
+    where: { links: {some: {id: params.linkId}} },
     include: { readEvents: { orderBy: { readAt: "desc" } }, user: true },
   });
   if (!book) {
@@ -57,7 +57,7 @@ export default async function Page({ params }: { params: { bookId: string } }) {
           >
             <div className="rounded-xl border p-2 flex gap-2 w-fit pr-5">
               <Image
-                src={user?.avatarUrl || "/no-avatar.png"}
+                src={book.user?.avatarUrl || "/no-avatar.png"}
                 alt="user"
                 width={500}
                 height={500}
