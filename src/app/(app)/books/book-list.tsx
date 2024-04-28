@@ -59,8 +59,9 @@ export function BookList({ books }: { books: Book[] }) {
     });
   }
 
-  function search() {
+  function search(evt: any) {
     setSearchResults(fuse.search(searchText).map((result) => result.item));
+    evt.preventDefault();
   }
 
   return (
