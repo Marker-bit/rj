@@ -39,11 +39,13 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import Link from "next/link";
 import { toast } from "sonner";
 import { Loader } from "../ui/loader";
+import { DateDoneModal } from "../dialogs/date-done-modal";
 
 export function BookView({ book }: { book: any }) {
   const queryClient = useQueryClient();
   const [editOpen, setEditOpen] = useState(false);
   const [dateOpen, setDateOpen] = useState(false);
+  const [doneOpen, setDoneOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [actionsDrawerOpen, setActionsDrawerOpen] = useState(false);
   const [descriptionDrawerOpen, setDescriptionDrawerOpen] = useState(false);
@@ -70,8 +72,8 @@ export function BookView({ book }: { book: any }) {
   });
 
   const doneMutation = useMutation({
-    mutationFn: () => {
-      return fetch(`/api/books/${book.id}/read/`, {
+    mutationFn: async () => {
+      await fetch(`/api/books/${book.id}/read/`, {
         method: "POST",
         body: JSON.stringify({
           pages: book.pages,
@@ -86,6 +88,7 @@ export function BookView({ book }: { book: any }) {
         queryKey: ["events"],
       });
       toast.success("Книга отмечена как прочитанная");
+      setDoneOpen(false);
       setActionsDrawerOpen(false);
       router.refresh();
     },
@@ -189,6 +192,11 @@ export function BookView({ book }: { book: any }) {
         isOpen={dateOpen}
         setIsOpen={setDateOpen}
         readDateMutation={readDateMutation}
+      />
+      <DateDoneModal
+        isOpen={doneOpen}
+        setIsOpen={setDoneOpen}
+        readDoneMutation={doneMutation}
       />
       <DrawerDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <DialogHeader>
@@ -350,14 +358,10 @@ export function BookView({ book }: { book: any }) {
                 <Button
                   className="gap-2"
                   variant="outline"
-                  onClick={() => doneMutation.mutate()}
-                  disabled={doneMutation.isPending}
+                  onClick={() => setDoneOpen(true)}
+                  // disabled={doneMutation.isPending}
                 >
-                  {doneMutation.isPending ? (
-                    <Loader className="w-4 h-4" />
-                  ) : (
-                    <BookOpenCheck className="w-4 h-4" />
-                  )}
+                  <BookOpenCheck className="w-4 h-4" />
                   <div className="max-sm:hidden">Прочитана</div>
                 </Button>
                 <Button
