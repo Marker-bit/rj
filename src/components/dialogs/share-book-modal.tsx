@@ -59,13 +59,13 @@ export function ShareBookModal({
             <div className="flex gap-2 w-full" key={link.id}>
               <Input
                 readOnly
-                value={`${window.location.origin}/sharedbook/${link.id}`}
+                value={`${typeof window !== "undefined" && window.location.origin}/sharedbook/${link.id}`}
                 className="sm:w-full md:w-[80%]"
               />
               <Button
                 onClick={() => {
                   navigator.clipboard.writeText(
-                    `${window.location.origin}/sharedbook/${link.id}`
+                    `${typeof window !== "undefined" && window.location.origin}/sharedbook/${link.id}`
                   );
                   setCopyLink(link.id);
                   setTimeout(() => {

@@ -2,14 +2,23 @@
 
 import { MobileForm } from "@/components/book/book-form";
 import { BookView } from "@/components/book/book-view";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Book } from "@/lib/api-types";
-import { BookMinus } from "lucide-react";
+import { BookMinus, Search } from "lucide-react";
 import { useEffect, useState } from "react";
+import Fuse from "fuse.js";
 
-export function BookList({ books }: { books: any[] }) {
+export function BookList({ books }: { books: Book[] }) {
   const [readBooks, setReadBooks] = useState(false);
   const [notStarted, setNotStarted] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [searchResults, setSearchResults] = useState<Book[]>();
+
+  const fuse = new Fuse(books, {
+    keys: ["title", "author"],
+  });
 
   useEffect(() => {
     const localStorageReadBooks = localStorage.getItem("readBooks");
@@ -50,6 +59,10 @@ export function BookList({ books }: { books: any[] }) {
     });
   }
 
+  function search() {
+    setSearchResults(fuse.search(searchText).map((result) => result.item));
+  }
+
   return (
     <div>
       <MobileForm />
@@ -86,7 +99,29 @@ export function BookList({ books }: { books: any[] }) {
             </div>
           </div>
         )}
-        {books.map((book: Book) => (
+        <form className="flex gap-2" onSubmit={search}>
+          <Input
+            placeholder="Поиск"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
+          <Button size="icon" type="submit">
+            <Search className="w-4 h-4" />
+          </Button>
+        </form>
+        {searchResults && (
+          <Button
+            variant="outline"
+            onClick={() => {
+              setSearchResults(undefined);
+              setSearchText("");
+            }}
+            className="md:w-fit"
+          >
+            Сбросить поиск
+          </Button>
+        )}
+        {(searchResults || books).map((book: Book) => (
           <BookView book={book} key={book.id} />
         ))}
       </div>
