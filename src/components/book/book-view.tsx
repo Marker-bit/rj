@@ -314,8 +314,8 @@ export function BookView({ book }: { book: any }) {
             </Tooltip>
           )}
 
-          {book.links.length && (
-            <Badge variant="outline">
+          {book.links.length !== 0 && (
+            <Badge variant="outline" onClick={() => setShareBookOpen(true)}>
               <Link2 className="w-4 h-4 mr-2" /> {book.links.length}{" "}
               {declOfNum(book.links.length, ["ссылка", "ссылки", "ссылок"])}
             </Badge>
