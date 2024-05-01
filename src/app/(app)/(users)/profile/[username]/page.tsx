@@ -1,15 +1,15 @@
-import Image from "next/image";
-import { db } from "@/lib/db";
-import { validateRequest } from "@/lib/server-validate-request";
-import FollowButton from "./follow-button";
-import { UserTabs } from "./user-tabs";
-import { redirect } from "next/navigation";
-import { Metadata, ResolvingMetadata } from "next";
+import Image from "next/image"
+import { db } from "@/lib/db"
+import { validateRequest } from "@/lib/server-validate-request"
+import FollowButton from "./follow-button"
+import { UserTabs } from "./user-tabs"
+import { redirect } from "next/navigation"
+import { Metadata, ResolvingMetadata } from "next"
 
 type Props = {
-  params: { username: string };
-  searchParams: { [key: string]: string | string[] | undefined };
-};
+  params: { username: string }
+  searchParams: { [key: string]: string | string[] | undefined }
+}
 
 // export async function generateMetadata(
 //   { params }: Props,
@@ -30,10 +30,10 @@ type Props = {
 export default async function Page({
   params,
 }: {
-  params: { username: string };
+  params: { username: string }
 }) {
-  const username = params.username;
-  const { user: currentUser } = await validateRequest();
+  const username = params.username
+  const { user: currentUser } = await validateRequest()
   const user = await db.user.findFirstOrThrow({
     where: {
       username: {
@@ -54,7 +54,7 @@ export default async function Page({
         },
       },
     },
-  });
+  })
   const events = await db.readEvent.findMany({
     where: {
       book: {
@@ -67,8 +67,8 @@ export default async function Page({
     orderBy: {
       readAt: "asc",
     },
-  });
-  if (currentUser?.id === user.id) return redirect("/profile");
+  })
+  if (currentUser?.id === user.id) return redirect("/profile")
   return (
     <div className="m-3">
       <div className="p-4 rounded-md border flex gap-2 items-center">
@@ -94,5 +94,5 @@ export default async function Page({
       </div>
       <UserTabs user={user} currentUser={currentUser} events={events} />
     </div>
-  );
+  )
 }

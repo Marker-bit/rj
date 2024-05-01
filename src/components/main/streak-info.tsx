@@ -1,12 +1,12 @@
-import { db } from "@/lib/db";
-import { validateRequest } from "@/lib/server-validate-request";
-import { getStreak } from "@/lib/stats";
-import { PartyPopper } from "lucide-react";
-import { StreakCounter } from "./streak-counter";
+import { db } from "@/lib/db"
+import { validateRequest } from "@/lib/server-validate-request"
+import { getStreak } from "@/lib/stats"
+import { PartyPopper } from "lucide-react"
+import { StreakCounter } from "./streak-counter"
 
 export async function StreakInfo() {
-  const { user } = await validateRequest();
-  if (!user) return null;
+  const { user } = await validateRequest()
+  if (!user) return null
 
   const events = await db.readEvent.findMany({
     where: {
@@ -20,9 +20,7 @@ export async function StreakInfo() {
     orderBy: {
       readAt: "desc",
     },
-  });
+  })
 
-  return (
-    <StreakCounter events={events} user={user} />
-  );
+  return <StreakCounter events={events} user={user} />
 }

@@ -1,52 +1,52 @@
-"use client";
+"use client"
 
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { User } from "@prisma/client";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { BadgeCheck, UserPlus, UserX } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Loader } from "./ui/loader";
+import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
+import { User } from "@prisma/client"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { BadgeCheck, UserPlus, UserX } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { Loader } from "./ui/loader"
 
 export function FriendView({
   friend,
   following,
 }: {
-  friend: User;
-  following?: boolean;
+  friend: User
+  following?: boolean
 }) {
-  const queryClient = useQueryClient();
-  const router = useRouter();
+  const queryClient = useQueryClient()
+  const router = useRouter()
   const userQuery = useQuery({
     queryKey: ["user", friend.username],
     queryFn: async () => {
-      const res = await fetch(`/api/profile/${friend.username}`);
-      return await res.json();
+      const res = await fetch(`/api/profile/${friend.username}`)
+      return await res.json()
     },
-  });
+  })
   const followMutation = useMutation({
     mutationFn: () => {
       return fetch(`/api/profile/${friend.username}/follow`, {
         method: following || userQuery.data?.following ? "DELETE" : "POST",
-      });
+      })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["user", friend.username],
-      });
+      })
       queryClient.invalidateQueries({
         queryKey: ["friends"],
-      });
+      })
       queryClient.invalidateQueries({
         queryKey: ["followers"],
-      });
-      router.refresh();
+      })
+      router.refresh()
     },
-  });
+  })
 
-  const followingRes = following || userQuery.data?.following;
+  const followingRes = following || userQuery.data?.following
   return (
     <Link href={`/profile/${friend.username}`}>
       <div className="group flex cursor-pointer items-center gap-2 rounded-md border p-4 transition-colors">
@@ -73,8 +73,8 @@ export function FriendView({
             <Button
               className="mt-2 w-fit gap-2"
               onClick={(evt) => {
-                followMutation.mutate();
-                evt.preventDefault();
+                followMutation.mutate()
+                evt.preventDefault()
               }}
               disabled={followMutation.isPending}
               variant={followingRes === true ? "outline" : "default"}
@@ -106,5 +106,5 @@ export function FriendView({
       </button> */}
       </div>
     </Link>
-  );
+  )
 }

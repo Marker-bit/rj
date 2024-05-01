@@ -1,18 +1,18 @@
-import { Badge } from "@/components/ui/badge";
-import { db } from "@/lib/db";
-import { validateRequest } from "@/lib/server-validate-request";
-import { declOfNum } from "@/lib/utils";
-import Image from "next/image";
-import Link from "next/link";
+import { Badge } from "@/components/ui/badge"
+import { db } from "@/lib/db"
+import { validateRequest } from "@/lib/server-validate-request"
+import { declOfNum } from "@/lib/utils"
+import Image from "next/image"
+import Link from "next/link"
 
 export default async function Page({ params }: { params: { linkId: string } }) {
-  const { user } = await validateRequest();
+  const { user } = await validateRequest()
   const book = await db.book.findFirst({
-    where: { links: {some: {id: params.linkId}} },
+    where: { links: { some: { id: params.linkId } } },
     include: { readEvents: { orderBy: { readAt: "desc" } }, user: true },
-  });
+  })
   if (!book) {
-    return null;
+    return null
   }
   return (
     <div className="p-2">
@@ -80,5 +80,5 @@ export default async function Page({ params }: { params: { linkId: string } }) {
         </div>
       </div>
     </div>
-  );
+  )
 }

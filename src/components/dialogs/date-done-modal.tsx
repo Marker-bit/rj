@@ -1,37 +1,37 @@
-"use client";
+"use client"
 
-import { ru } from "date-fns/locale";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Calendar } from "@/components/ui/calendar";
-import { DrawerDialog } from "@/components/drawer";
-import { useRef, useState } from "react";
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Save } from "lucide-react";
-import { addDays } from "date-fns";
-import { toast } from "sonner";
-import { Loader } from "../ui/loader";
+import { ru } from "date-fns/locale"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Calendar } from "@/components/ui/calendar"
+import { DrawerDialog } from "@/components/drawer"
+import { useRef, useState } from "react"
+import { DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Save } from "lucide-react"
+import { addDays } from "date-fns"
+import { toast } from "sonner"
+import { Loader } from "../ui/loader"
 
 export function DateDoneModal({
   isOpen,
   setIsOpen,
   readDoneMutation,
 }: {
-  isOpen: boolean;
-  setIsOpen: (open: boolean) => void;
-  readDoneMutation: any;
+  isOpen: boolean
+  setIsOpen: (open: boolean) => void
+  readDoneMutation: any
 }) {
-  const tomorrow = addDays(new Date(), 1);
-  const [date, setDate] = useState<Date | undefined>(new Date());
+  const tomorrow = addDays(new Date(), 1)
+  const [date, setDate] = useState<Date | undefined>(new Date())
 
   const handleClose = (b: boolean) => {
     if (b) {
-      setIsOpen(true);
-      return;
+      setIsOpen(true)
+      return
     }
-    setDate(new Date());
-    setIsOpen(false);
-  };
+    setDate(new Date())
+    setIsOpen(false)
+  }
 
   return (
     <DrawerDialog open={isOpen} onOpenChange={handleClose}>
@@ -51,10 +51,10 @@ export function DateDoneModal({
         <Button
           onClick={() => {
             if (!date) {
-              toast.error("Вы не выбрали дату");
-              return;
+              toast.error("Вы не выбрали дату")
+              return
             }
-            readDoneMutation.mutate({ readAt: date });
+            readDoneMutation.mutate({ readAt: date })
           }}
           className="w-fit max-sm:w-full"
         >
@@ -67,5 +67,5 @@ export function DateDoneModal({
         </Button>
       </div>
     </DrawerDialog>
-  );
+  )
 }

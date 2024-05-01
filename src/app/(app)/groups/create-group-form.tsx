@@ -1,6 +1,6 @@
-"use client";
+"use client"
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -9,38 +9,38 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { AnimatePresence, motion } from "framer-motion";
-import { Loader, PlusIcon } from "lucide-react";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { AnimatePresence, motion } from "framer-motion"
+import { Loader, PlusIcon } from "lucide-react"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
 
 const formSchema = z.object({
   title: z.string().min(1),
-});
+})
 
 export function CreateGroupForm({ onDone }: { onDone: () => void }) {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
     },
-  });
+  })
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    setLoading(true);
+    console.log(values)
+    setLoading(true)
     fetch("/api/groups", {
       method: "POST",
       body: JSON.stringify(values),
     }).then(() => {
-      setLoading(false);
-      onDone();
-    });
+      setLoading(false)
+      onDone()
+    })
   }
   return (
     <Form {...form}>
@@ -130,5 +130,5 @@ export function CreateGroupForm({ onDone }: { onDone: () => void }) {
         </Button>
       </form>
     </Form>
-  );
+  )
 }

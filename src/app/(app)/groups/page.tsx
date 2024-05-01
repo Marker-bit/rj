@@ -1,14 +1,14 @@
-import { db } from "@/lib/db";
-import { validateRequest } from "@/lib/server-validate-request";
-import { AddGroupButton } from "./add-group-button";
-import { declOfNum } from "@/lib/utils";
-import Link from "next/link";
-import { redirect } from "next/navigation";
+import { db } from "@/lib/db"
+import { validateRequest } from "@/lib/server-validate-request"
+import { AddGroupButton } from "./add-group-button"
+import { declOfNum } from "@/lib/utils"
+import Link from "next/link"
+import { redirect } from "next/navigation"
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic"
 
 export default async function Page() {
-  const { user } = await validateRequest();
+  const { user } = await validateRequest()
   const groups = await db.group.findMany({
     where: {
       members: {
@@ -21,10 +21,10 @@ export default async function Page() {
       members: true,
       groupBooks: true,
     },
-  });
+  })
 
   if (groups.length === 1) {
-    return redirect(`/groups/${groups[0].id}`);
+    return redirect(`/groups/${groups[0].id}`)
   }
 
   return (
@@ -63,5 +63,5 @@ export default async function Page() {
         ))}
       </div>
     </div>
-  );
+  )
 }

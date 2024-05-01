@@ -1,31 +1,31 @@
-"use client";
+"use client"
 
-import { Group } from "@prisma/client";
-import { DrawerDialog } from "../drawer";
-import { DialogHeader, DialogTitle } from "../ui/dialog";
-import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import Image from "next/image";
-import { Loader } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { Group } from "@prisma/client"
+import { DrawerDialog } from "../drawer"
+import { DialogHeader, DialogTitle } from "../ui/dialog"
+import { useEffect, useState } from "react"
+import { useQuery } from "@tanstack/react-query"
+import Image from "next/image"
+import { Loader } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 export default function AddMember({
   open,
   setOpen,
   group,
 }: {
-  open: boolean;
-  setOpen: (b: boolean) => void;
+  open: boolean
+  setOpen: (b: boolean) => void
   group: Group & {
-    members: any[];
-  };
+    members: any[]
+  }
 }) {
-  const router = useRouter();
-  const [loading, setLoading] = useState<string>();
+  const router = useRouter()
+  const [loading, setLoading] = useState<string>()
   const friendsQuery = useQuery({
     queryKey: ["friends"],
     queryFn: () => fetch("/api/profile/following").then((res) => res.json()),
-  });
+  })
 
   return (
     <DrawerDialog open={open} onOpenChange={setOpen} className="min-w-[50vw]">
@@ -43,17 +43,17 @@ export default function AddMember({
                   key={friend.id}
                   className="flex items-center gap-2 rounded-xl p-2 hover:bg-neutral-100 dark:hover:bg-neutral-900"
                   onClick={() => {
-                    setLoading(friend.id);
+                    setLoading(friend.id)
                     fetch(`/api/groups/${group.id}/member`, {
                       method: "POST",
                       body: JSON.stringify({ userId: friend.id }),
                     })
                       .then((res) => res.json())
                       .then(() => {
-                        setOpen(false);
-                        setLoading(undefined);
-                        router.refresh();
-                      });
+                        setOpen(false)
+                        setLoading(undefined)
+                        router.refresh()
+                      })
                   }}
                 >
                   <Image
@@ -82,5 +82,5 @@ export default function AddMember({
         </div>
       )}
     </DrawerDialog>
-  );
+  )
 }

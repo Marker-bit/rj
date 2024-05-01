@@ -1,12 +1,12 @@
-import { BarChartBig, ChevronRight } from "lucide-react";
-import Link from "next/link";
-import { Stats as StatsData } from "@/components/stats";
-import { db } from "@/lib/db";
-import { validateRequest } from "@/lib/server-validate-request";
+import { BarChartBig, ChevronRight } from "lucide-react"
+import Link from "next/link"
+import { Stats as StatsData } from "@/components/stats"
+import { db } from "@/lib/db"
+import { validateRequest } from "@/lib/server-validate-request"
 
 export async function Stats() {
-  const { user } = await validateRequest();
-  if (!user) return;
+  const { user } = await validateRequest()
+  if (!user) return
   const profile = await db.user.findUniqueOrThrow({
     where: {
       id: user.id,
@@ -15,7 +15,7 @@ export async function Stats() {
       follower: true,
       following: true,
     },
-  });
+  })
   const events = await db.readEvent.findMany({
     where: {
       book: {
@@ -28,7 +28,7 @@ export async function Stats() {
     orderBy: {
       readAt: "asc",
     },
-  });
+  })
   return (
     <div className="flex cursor-default flex-col gap-3 border-b p-3">
       <Link href="/profile#stats">
@@ -40,5 +40,5 @@ export async function Stats() {
       </Link>
       <StatsData profile={profile} events={events} />
     </div>
-  );
+  )
 }

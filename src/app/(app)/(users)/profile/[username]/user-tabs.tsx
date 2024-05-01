@@ -1,68 +1,68 @@
-"use client";
+"use client"
 
-import { SharePeople } from "@prisma/client";
-import { User } from "lucia";
-import { User as DbUser } from "@prisma/client";
-import { useState } from "react";
-import { FriendView } from "@/components/friend-view";
-import { UserX } from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion";
-import { Stats } from "@/components/stats";
+import { SharePeople } from "@prisma/client"
+import { User } from "lucia"
+import { User as DbUser } from "@prisma/client"
+import { useState } from "react"
+import { FriendView } from "@/components/friend-view"
+import { UserX } from "lucide-react"
+import { AnimatePresence, motion } from "framer-motion"
+import { Stats } from "@/components/stats"
 
 export function UserTabs({
   user,
   currentUser,
-  events
+  events,
 }: {
   user: DbUser & {
     following: {
-      first: DbUser;
-      second: DbUser;
-      firstId: string;
-      secondId: string;
-    }[];
+      first: DbUser
+      second: DbUser
+      firstId: string
+      secondId: string
+    }[]
     follower: {
-      first: DbUser;
-      second: DbUser;
-      firstId: string;
-      secondId: string;
-    }[];
-  };
-  currentUser: User | null;
+      first: DbUser
+      second: DbUser
+      firstId: string
+      secondId: string
+    }[]
+  }
+  currentUser: User | null
   events: ({
     book: {
-      id: string;
-      title: string;
-      author: string;
-      pages: number;
-      description: string;
-      coverUrl: string | null;
-      userId: string;
-      groupBookId: string | null;
-    };
+      id: string
+      title: string
+      author: string
+      pages: number
+      description: string
+      coverUrl: string | null
+      userId: string
+      groupBookId: string | null
+    }
   } & {
-    id: string;
-    readAt: Date;
-    pagesRead: number;
-    bookId: string;
-  })[];
+    id: string
+    readAt: Date
+    pagesRead: number
+    bookId: string
+  })[]
 }) {
-  const [currentTab, setCurrentTab] = useState(0);
+  const [currentTab, setCurrentTab] = useState(0)
 
   const shareSubscriptions =
     user.shareSubscriptions === SharePeople.ALL ||
     (user.shareSubscriptions === SharePeople.SUBS &&
-      user.following.find((f) => f.secondId === currentUser?.id));
+      user.following.find((f) => f.secondId === currentUser?.id))
   const shareFollowers =
     user.shareFollowers === SharePeople.ALL ||
     (user.shareFollowers === SharePeople.SUBS &&
       user.shareFollowers === SharePeople.SUBS &&
-      user.following.find((f) => f.secondId === currentUser?.id));
+      user.following.find((f) => f.secondId === currentUser?.id))
   const shareStats =
     user.shareStats === SharePeople.ALL ||
     (user.shareStats === SharePeople.SUBS &&
-      user.following.find((f) => f.secondId === currentUser?.id));
-  console.log(user);
+      user.following.find((f) => f.secondId === currentUser?.id))
+  console.log(user)
   return (
     <div className="flex flex-col">
       {shareSubscriptions && (
@@ -88,7 +88,7 @@ export function UserTabs({
         </div>
       )}
     </div>
-  );
+  )
   return (
     <>
       <div className="flex p-1 w-full gap-2">
@@ -151,5 +151,5 @@ export function UserTabs({
         )
       )}
     </>
-  );
+  )
 }

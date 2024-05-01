@@ -1,25 +1,25 @@
-"use client";
+"use client"
 
-import { getStreak } from "@/lib/stats";
-import { declOfNum } from "@/lib/utils";
-import { ReadEvent } from "@prisma/client";
-import { User } from "lucia";
-import { PartyPopper } from "lucide-react";
+import { getStreak } from "@/lib/stats"
+import { declOfNum } from "@/lib/utils"
+import { ReadEvent } from "@prisma/client"
+import { User } from "lucia"
+import { PartyPopper } from "lucide-react"
 
 export async function StreakCounter({
   events,
   user,
 }: {
-  events: ReadEvent[];
-  user: User;
+  events: ReadEvent[]
+  user: User
 }) {
-  const streak = getStreak(events);
+  const streak = getStreak(events)
 
   if (
     (streak % 50 !== 0 && user.id !== "clsqfrmec000013rgpmmb8eok") ||
     streak === 0
   ) {
-    return <></>;
+    return <></>
   }
 
   return (
@@ -31,7 +31,7 @@ export async function StreakCounter({
       </div>
       <div className="hidden max-sm:block">
         <div className="text-2xl font-bold">
-          {declOfNum(streak, ["день", "дня", "дней"])} 
+          {declOfNum(streak, ["день", "дня", "дней"])}
           подряд
         </div>
       </div>
@@ -39,5 +39,5 @@ export async function StreakCounter({
         <PartyPopper className="size-32 -scale-x-100 text-orange-200" />
       </div>
     </div>
-  );
+  )
 }

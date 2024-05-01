@@ -1,14 +1,14 @@
-"use client";
+"use client"
 
-import { Button } from "@/components/ui/button";
-import { Book, Group, GroupBook } from "@prisma/client";
-import { BookOpen, Loader, Minus, Plus } from "lucide-react";
-import Image from "next/image";
-import { MoreActions } from "./more-actions";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { declOfNum } from "@/lib/utils";
-import Link from "next/link";
+import { Button } from "@/components/ui/button"
+import { Book, Group, GroupBook } from "@prisma/client"
+import { BookOpen, Loader, Minus, Plus } from "lucide-react"
+import Image from "next/image"
+import { MoreActions } from "./more-actions"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { declOfNum } from "@/lib/utils"
+import Link from "next/link"
 
 export function GroupBookView({
   groupBook,
@@ -17,17 +17,17 @@ export function GroupBookView({
   userId,
 }: {
   groupBook: GroupBook & {
-    group: Group;
-    book: Book[];
-  };
-  ownedBooks: any[];
-  isMember: boolean;
-  userId: string;
+    group: Group
+    book: Book[]
+  }
+  ownedBooks: any[]
+  isMember: boolean
+  userId: string
 }) {
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
+  const [loading, setLoading] = useState(false)
+  const router = useRouter()
 
-  const book = groupBook.book.find((b) => b.userId === userId);
+  const book = groupBook.book.find((b) => b.userId === userId)
 
   return (
     <div
@@ -76,16 +76,16 @@ export function GroupBookView({
             variant="ghost"
             className="size-fit p-1"
             onClick={() => {
-              setLoading(true);
+              setLoading(true)
               fetch(
                 `/api/groups/${groupBook.groupId}/books/${groupBook.id}/own`,
                 {
                   method: "POST",
                 }
               ).then(() => {
-                setLoading(false);
-                router.refresh();
-              });
+                setLoading(false)
+                router.refresh()
+              })
             }}
           >
             {loading ? (
@@ -100,16 +100,16 @@ export function GroupBookView({
             variant="ghost"
             className="size-fit p-1"
             onClick={() => {
-              setLoading(true);
+              setLoading(true)
               fetch(
                 `/api/groups/${groupBook.groupId}/books/${groupBook.id}/own`,
                 {
                   method: "DELETE",
                 }
               ).then(() => {
-                setLoading(false);
-                router.refresh();
-              });
+                setLoading(false)
+                router.refresh()
+              })
             }}
           >
             {loading ? (
@@ -122,5 +122,5 @@ export function GroupBookView({
         <MoreActions book={groupBook} />
       </div>
     </div>
-  );
+  )
 }

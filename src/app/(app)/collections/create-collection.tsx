@@ -1,11 +1,11 @@
-"use client";
+"use client"
 
-import { DialogHeader } from "@/components/ui/dialog";
-import { DrawerDialog } from "@/components/drawer";
-import { DialogTitle } from "@radix-ui/react-dialog";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { DialogHeader } from "@/components/ui/dialog"
+import { DrawerDialog } from "@/components/drawer"
+import { DialogTitle } from "@radix-ui/react-dialog"
+import { z } from "zod"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
 import {
   Form,
   FormControl,
@@ -13,52 +13,52 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { Loader } from "@/components/ui/loader";
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Plus } from "lucide-react"
+import { useMutation } from "@tanstack/react-query"
+import { useRouter } from "next/navigation"
+import { Loader } from "@/components/ui/loader"
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Поле обязательно для заполнения" }),
-});
+})
 
 export function CreateCollection() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
     },
-  });
+  })
 
-  const router = useRouter();
+  const router = useRouter()
 
   const collectionMutation = useMutation({
     mutationFn: (values: z.infer<typeof formSchema>) => {
       return fetch("/api/collections", {
         method: "POST",
         body: JSON.stringify(values),
-      });
+      })
     },
     onSuccess: () => {
-      router.refresh();
-      handleClose(false);
+      router.refresh()
+      handleClose(false)
     },
-  });
+  })
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    collectionMutation.mutate(values);
+    console.log(values)
+    collectionMutation.mutate(values)
   }
 
   function handleClose(b: boolean) {
-    setOpen(b);
+    setOpen(b)
     if (!b) {
-      form.reset();
+      form.reset()
     }
   }
 
@@ -110,5 +110,5 @@ export function CreateCollection() {
         </Form>
       </DrawerDialog>
     </>
-  );
+  )
 }

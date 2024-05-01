@@ -1,21 +1,21 @@
-import { Button } from "@/components/ui/button";
-import { db } from "@/lib/db";
-import { validateRequest } from "@/lib/server-validate-request";
-import { declOfNum } from "@/lib/utils";
-import { BookOpen, Check, ChevronLeft, UserCircle } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
+import { Button } from "@/components/ui/button"
+import { db } from "@/lib/db"
+import { validateRequest } from "@/lib/server-validate-request"
+import { declOfNum } from "@/lib/utils"
+import { BookOpen, Check, ChevronLeft, UserCircle } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic"
 
 export default async function Page({
   params,
 }: {
-  params: { groupId: string; memberId: string };
+  params: { groupId: string; memberId: string }
 }) {
-  const { user } = await validateRequest();
+  const { user } = await validateRequest()
   if (!user) {
-    return null;
+    return null
   }
 
   const group = await db.group.findUnique({
@@ -38,9 +38,9 @@ export default async function Page({
         },
       },
     },
-  });
+  })
   if (!group) {
-    return null;
+    return null
   }
 
   const member = await db.groupMember.findUnique({
@@ -52,9 +52,9 @@ export default async function Page({
       user: true,
       booksAdded: true,
     },
-  });
+  })
 
-  if (!member) return null;
+  if (!member) return null
 
   const booksSaved = await db.book.findMany({
     where: {
@@ -66,13 +66,13 @@ export default async function Page({
     include: {
       readEvents: { orderBy: { readAt: "desc" } },
     },
-  });
+  })
 
   booksSaved.sort(
     (a, b) =>
       (b.readEvents[0]?.pagesRead || 0) / b.pages -
       (a.readEvents[0]?.pagesRead || 0) / a.pages
-  );
+  )
 
   return (
     <div className="p-8 flex flex-col">
@@ -169,5 +169,5 @@ export default async function Page({
         </div>
       </div>
     </div>
-  );
+  )
 }

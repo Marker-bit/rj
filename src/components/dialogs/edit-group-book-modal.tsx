@@ -1,6 +1,6 @@
-import { DrawerDialog } from "@/components/drawer";
-import { DialogHeader, DialogTitle } from "../ui/dialog";
-import { Edit, Loader, Trash } from "lucide-react";
+import { DrawerDialog } from "@/components/drawer"
+import { DialogHeader, DialogTitle } from "../ui/dialog"
+import { Edit, Loader, Trash } from "lucide-react"
 import {
   Form,
   FormControl,
@@ -8,18 +8,18 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import Image from "next/image";
-import { Button } from "../ui/button";
-import { UploadButton } from "../uploadthing";
-import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
-import { Book, Group, GroupBook } from "@prisma/client";
-import { useRouter } from "next/navigation";
+} from "../ui/form"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import Image from "next/image"
+import { Button } from "../ui/button"
+import { UploadButton } from "../uploadthing"
+import { Input } from "../ui/input"
+import { Textarea } from "../ui/textarea"
+import { Book, Group, GroupBook } from "@prisma/client"
+import { useRouter } from "next/navigation"
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -27,21 +27,21 @@ const bookSchema = z.object({
   pages: z.coerce.number().min(1),
   description: z.string().optional(),
   coverUrl: z.string().optional(),
-});
+})
 
 export function EditGroupBookModal({
   open,
   setOpen,
   book,
 }: {
-  open: boolean;
-  setOpen: (b: boolean) => void;
+  open: boolean
+  setOpen: (b: boolean) => void
   book: GroupBook & {
-    group: Group;
-  };
+    group: Group
+  }
 }) {
-  const queryClient = useQueryClient();
-  const router = useRouter();
+  const queryClient = useQueryClient()
+  const router = useRouter()
   const form = useForm<z.infer<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
     defaultValues: {
@@ -51,7 +51,7 @@ export function EditGroupBookModal({
       description: book.description ?? "",
       coverUrl: book.coverUrl ?? "",
     },
-  });
+  })
 
   const editMutation = useMutation({
     mutationFn: (values: z.infer<typeof bookSchema>) =>
@@ -62,17 +62,17 @@ export function EditGroupBookModal({
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["books"],
-      });
+      })
       queryClient.invalidateQueries({
         queryKey: ["events"],
-      });
-      router.refresh();
+      })
+      router.refresh()
     },
-  });
+  })
 
   async function onSubmit(values: z.infer<typeof bookSchema>) {
-    await editMutation.mutateAsync(values);
-    setOpen(false);
+    await editMutation.mutateAsync(values)
+    setOpen(false)
   }
 
   return (
@@ -119,10 +119,10 @@ export function EditGroupBookModal({
                         allowedContent: "Картинка (до 8МБ)",
                       }}
                       onClientUploadComplete={(res) => {
-                        field.onChange(res[0].url);
+                        field.onChange(res[0].url)
                       }}
                       onUploadError={(error: Error) => {
-                        alert(`ERROR! ${error.message}`);
+                        alert(`ERROR! ${error.message}`)
                       }}
                     />
                   </div>
@@ -198,5 +198,5 @@ export function EditGroupBookModal({
         </form>
       </Form>
     </DrawerDialog>
-  );
+  )
 }

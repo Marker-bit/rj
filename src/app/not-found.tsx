@@ -1,6 +1,6 @@
-import Link from "next/link";
-import { headers } from "next/headers";
-import { Button } from "@/components/ui/button";
+import Link from "next/link"
+import { headers } from "next/headers"
+import { Button } from "@/components/ui/button"
 
 export default async function NotFound() {
   return (
@@ -13,5 +13,5 @@ export default async function NotFound() {
         <Link href="/">Вернуться на главную</Link>
       </Button>
     </div>
-  );
+  )
 }

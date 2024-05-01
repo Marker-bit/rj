@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import {
   BarChartBig,
@@ -7,13 +7,13 @@ import {
   CircleUserIcon,
   HomeIcon,
   Users,
-} from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { AnimatePresence, motion } from "framer-motion";
-import { twMerge as cn } from "tailwind-merge";
-import React from "react";
-import { ModeToggle } from "@/components/mode-toggle";
+} from "lucide-react"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { AnimatePresence, motion } from "framer-motion"
+import { twMerge as cn } from "tailwind-merge"
+import React from "react"
+import { ModeToggle } from "@/components/mode-toggle"
 
 export function BottomBar() {
   const urls = [
@@ -52,8 +52,8 @@ export function BottomBar() {
       label: "Профиль",
       icon: CircleUserIcon,
     },
-  ];
-  const pathname = usePathname();
+  ]
+  const pathname = usePathname()
   return (
     <>
       <div className="hidden border-r bg-muted/40 md:block">
@@ -120,5 +120,5 @@ export function BottomBar() {
         </div>
       </div>
     </>
-  );
+  )
 }

@@ -1,12 +1,12 @@
-import { validateRequest } from "@/lib/server-validate-request";
-import { RegisterForm } from "./register-form";
-import { redirect } from "next/navigation";
+import { validateRequest } from "@/lib/server-validate-request"
+import { RegisterForm } from "./register-form"
+import { redirect } from "next/navigation"
 
 export default async function Page() {
-  const { user } = await validateRequest();
+  const { user } = await validateRequest()
 
   if (user) {
-    return redirect("/home");
+    return redirect("/home")
   }
 
   return (
@@ -15,5 +15,5 @@ export default async function Page() {
         <RegisterForm />
       </div>
     </div>
-  );
+  )
 }

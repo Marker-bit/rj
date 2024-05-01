@@ -1,7 +1,7 @@
-"use client";
+"use client"
 
-import { BookOpen, CalendarRange, Users2, UsersIcon } from "lucide-react";
-import Link from "next/link";
+import { BookOpen, CalendarRange, Users2, UsersIcon } from "lucide-react"
+import Link from "next/link"
 import {
   addHours,
   differenceInDays,
@@ -12,10 +12,10 @@ import {
   max,
   startOfISOWeek,
   subDays,
-} from "date-fns";
-import { Chart } from "./chart";
-import { ReadEvent, User } from "@prisma/client";
-import { declOfNum } from "@/lib/utils";
+} from "date-fns"
+import { Chart } from "./chart"
+import { ReadEvent, User } from "@prisma/client"
+import { declOfNum } from "@/lib/utils"
 
 export async function Stats({
   profile,
@@ -23,27 +23,27 @@ export async function Stats({
 }: {
   profile: User & {
     follower: {
-      id: string;
-      firstId: string;
-      secondId: string;
-    }[];
+      id: string
+      firstId: string
+      secondId: string
+    }[]
     following: {
-      id: string;
-      firstId: string;
-      secondId: string;
-    }[];
-  };
+      id: string
+      firstId: string
+      secondId: string
+    }[]
+  }
   events: (ReadEvent & {
     book: {
-      id: string;
-      title: string;
-      author: string;
-      pages: number;
-      description: string;
-      coverUrl: string | null;
-      userId: string;
-    };
-  })[];
+      id: string
+      title: string
+      author: string
+      pages: number
+      description: string
+      coverUrl: string | null
+      userId: string
+    }
+  })[]
 }) {
   // const profile = await db.user.findUniqueOrThrow({
   //   where: {
@@ -69,118 +69,117 @@ export async function Stats({
   // });
 
   const startAndEndOfWeek = () => {
-    const monday = startOfISOWeek(new Date());
-    const sunday = endOfISOWeek(new Date());
-    return [monday, sunday];
-  };
-  const date = new Date();
-  date.setHours(0, 0, 0, 0);
-  const [startOfWeek, _] = startAndEndOfWeek();
+    const monday = startOfISOWeek(new Date())
+    const sunday = endOfISOWeek(new Date())
+    return [monday, sunday]
+  }
+  const date = new Date()
+  date.setHours(0, 0, 0, 0)
+  const [startOfWeek, _] = startAndEndOfWeek()
 
-  let booksStats: { [key: string]: { [key: string]: number } } = {};
-  let booksStatsNum: { [key: string]: number } = {};
-  let readWeek: { [key: string]: number } = {};
-  let readWeekSum = 0;
-  let currentWeek: { [key: string]: { [key: string]: number } } = {};
-  let currentWeekNum: { [key: string]: number } = {};
-  let streak = 0;
-  let readSpeed = [];
+  let booksStats: { [key: string]: { [key: string]: number } } = {}
+  let booksStatsNum: { [key: string]: number } = {}
+  let readWeek: { [key: string]: number } = {}
+  let readWeekSum = 0
+  let currentWeek: { [key: string]: { [key: string]: number } } = {}
+  let currentWeekNum: { [key: string]: number } = {}
+  let streak = 0
+  let readSpeed = []
 
   if (events) {
     // events?.reverse();
     for (const event of events) {
-      const date = new Date(event.readAt);
+      const date = new Date(event.readAt)
       if (!currentWeek[event.bookId]) {
-        currentWeek[event.bookId] = {};
+        currentWeek[event.bookId] = {}
       }
       const currentBook = events.filter(
         (evt: any) => evt.bookId === event.bookId
-      );
-      const beforeEventIndex = currentBook.indexOf(event) - 1;
-      const beforeEvent = currentBook[beforeEventIndex];
-      const day = getDay(date).toString();
+      )
+      const beforeEventIndex = currentBook.indexOf(event) - 1
+      const beforeEvent = currentBook[beforeEventIndex]
+      const day = getDay(date).toString()
       if (beforeEvent) {
-        let beforeEventDate = new Date(beforeEvent.readAt);
+        let beforeEventDate = new Date(beforeEvent.readAt)
         if (differenceInDays(date, beforeEventDate) >= 1) {
-          beforeEventDate = max([addHours(date, -5), beforeEventDate]);
+          beforeEventDate = max([addHours(date, -5), beforeEventDate])
         }
-        const minuteDifference = differenceInMinutes(date, beforeEventDate);
-        const pageDifference = event.pagesRead - (beforeEvent?.pagesRead ?? 0);
-        readSpeed.push(pageDifference / minuteDifference);
+        const minuteDifference = differenceInMinutes(date, beforeEventDate)
+        const pageDifference = event.pagesRead - (beforeEvent?.pagesRead ?? 0)
+        readSpeed.push(pageDifference / minuteDifference)
       }
       if (date >= startOfWeek) {
         if (event.pagesRead > (currentWeek[event.bookId][day] ?? 0)) {
           const currentBook = events.filter(
             (evt: any) => evt.bookId === event.bookId
-          );
-          const beforeEventIndex = currentBook.indexOf(event) - 1;
-          const beforeEventPages =
-            currentBook[beforeEventIndex]?.pagesRead ?? 0;
+          )
+          const beforeEventIndex = currentBook.indexOf(event) - 1
+          const beforeEventPages = currentBook[beforeEventIndex]?.pagesRead ?? 0
           if (!currentWeek[event.bookId][day]) {
-            currentWeek[event.bookId][day] = 0;
+            currentWeek[event.bookId][day] = 0
           }
-          currentWeek[event.bookId][day] += event.pagesRead - beforeEventPages;
+          currentWeek[event.bookId][day] += event.pagesRead - beforeEventPages
         }
 
         if (!readWeek[event.bookId]) {
-          readWeek[event.bookId] = 0;
+          readWeek[event.bookId] = 0
         }
         if (event.pagesRead > readWeek[event.bookId]) {
-          readWeek[event.bookId] = event.pagesRead;
+          readWeek[event.bookId] = event.pagesRead
         }
       }
 
       if (!booksStats[event.bookId]) {
-        booksStats[event.bookId] = {}; // date.getDay().toString()
+        booksStats[event.bookId] = {} // date.getDay().toString()
       }
       if (event.pagesRead > (booksStats[event.bookId][day] ?? 0)) {
         const currentBook = events.filter(
           (evt: any) => evt.bookId === event.bookId
-        );
-        const beforeEventIndex = currentBook.indexOf(event) - 1;
-        const beforeEventPages = currentBook[beforeEventIndex]?.pagesRead ?? 0;
+        )
+        const beforeEventIndex = currentBook.indexOf(event) - 1
+        const beforeEventPages = currentBook[beforeEventIndex]?.pagesRead ?? 0
         if (!booksStats[event.bookId][day]) {
-          booksStats[event.bookId][day] = 0;
+          booksStats[event.bookId][day] = 0
         }
-        booksStats[event.bookId][day] += event.pagesRead - beforeEventPages;
+        booksStats[event.bookId][day] += event.pagesRead - beforeEventPages
       }
     }
-    let day = new Date();
-    day = subDays(day, 1);
+    let day = new Date()
+    day = subDays(day, 1)
 
     while (true) {
       if (events.find((e) => isSameDay(e.readAt, day))) {
-        streak++;
-        day = subDays(day, 1);
+        streak++
+        day = subDays(day, 1)
       } else {
-        break;
+        break
       }
     }
     if (events.find((e) => isSameDay(e.readAt, day))) {
-      streak++;
+      streak++
     }
   }
 
   for (const days of Object.values(booksStats)) {
     for (const [day, num] of Object.entries(days)) {
       if (!booksStatsNum[day]) {
-        booksStatsNum[day] = 0;
+        booksStatsNum[day] = 0
       }
-      booksStatsNum[day] += num;
+      booksStatsNum[day] += num
     }
   }
 
   for (const days of Object.values(currentWeek)) {
     for (const [day, num] of Object.entries(days)) {
       if (!currentWeekNum[day]) {
-        currentWeekNum[day] = 0;
+        currentWeekNum[day] = 0
       }
-      currentWeekNum[day] += num;
+      currentWeekNum[day] += num
     }
   }
 
   for (const n of Object.values(currentWeekNum)) {
-    readWeekSum += n;
+    readWeekSum += n
   }
 
   const currentWeekData = [
@@ -191,7 +190,7 @@ export async function Stats({
     { name: "Пт", value: currentWeekNum["5"] },
     { name: "Сб", value: currentWeekNum["6"] },
     { name: "Вс", value: currentWeekNum["0"] },
-  ];
+  ]
 
   const data = [
     { name: "Пн", value: booksStatsNum["1"] },
@@ -201,7 +200,7 @@ export async function Stats({
     { name: "Пт", value: booksStatsNum["5"] },
     { name: "Сб", value: booksStatsNum["6"] },
     { name: "Вс", value: booksStatsNum["0"] },
-  ];
+  ]
 
   return (
     <>
@@ -273,5 +272,5 @@ export async function Stats({
         <Chart data={data} />
       </div>
     </>
-  );
+  )
 }

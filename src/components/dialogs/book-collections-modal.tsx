@@ -1,34 +1,34 @@
-"use client";
+"use client"
 
-import { DrawerDialog } from "@/components/drawer";
-import { DialogHeader, DialogTitle } from "../ui/dialog";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Loader } from "lucide-react";
-import { Checkbox } from "../ui/checkbox";
-import { useState } from "react";
-import { Button } from "../ui/button";
-import { cn, declOfNum } from "@/lib/utils";
-import { useRouter } from "next/navigation";
-import type { Book } from "@/lib/api-types";
+import { DrawerDialog } from "@/components/drawer"
+import { DialogHeader, DialogTitle } from "../ui/dialog"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { Loader } from "lucide-react"
+import { Checkbox } from "../ui/checkbox"
+import { useState } from "react"
+import { Button } from "../ui/button"
+import { cn, declOfNum } from "@/lib/utils"
+import { useRouter } from "next/navigation"
+import type { Book } from "@/lib/api-types"
 
 export function BookCollectionsModal({
   open,
   setOpen,
   book,
 }: {
-  open: boolean;
-  setOpen: (v: boolean) => void;
-  book: Book;
+  open: boolean
+  setOpen: (v: boolean) => void
+  book: Book
 }) {
-  const router = useRouter();
+  const router = useRouter()
   const collectionsQuery = useQuery({
     queryKey: ["collections"],
     queryFn: () => fetch(`/api/collections`).then((res) => res.json()),
-  });
+  })
   const [selectedCollections, setSelectedCollections] = useState(
     book.collections.map((c) => c.id)
-  );
-  const queryClient = useQueryClient();
+  )
+  const queryClient = useQueryClient()
   const updateMutation = useMutation({
     mutationFn: () =>
       fetch(`/api/books/${book.id}/collections`, {
@@ -36,16 +36,16 @@ export function BookCollectionsModal({
         body: JSON.stringify(selectedCollections),
       }),
     onSuccess: () => {
-      setOpen(false);
+      setOpen(false)
       queryClient.invalidateQueries({
         queryKey: ["books"],
-      });
+      })
       queryClient.invalidateQueries({
         queryKey: ["collections"],
-      });
-      router.refresh();
+      })
+      router.refresh()
     },
-  });
+  })
   return (
     <DrawerDialog open={open} onOpenChange={setOpen} className="min-w-[50vw]">
       <DialogHeader>
@@ -115,5 +115,5 @@ export function BookCollectionsModal({
         </div>
       </div>
     </DrawerDialog>
-  );
+  )
 }

@@ -1,15 +1,15 @@
-import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/next";
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "@/app/globals.css";
-import { QueryProvider } from "@/components/providers/query-client-provider";
-import { ThemeProvider } from "@/components/providers/theme-provider";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
+import { Analytics } from "@vercel/analytics/react"
+import { SpeedInsights } from "@vercel/speed-insights/next"
+import type { Metadata } from "next"
+import { Inter } from "next/font/google"
+import "@/app/globals.css"
+import { QueryProvider } from "@/components/providers/query-client-provider"
+import { ThemeProvider } from "@/components/providers/theme-provider"
+import { TooltipProvider } from "@/components/ui/tooltip"
+import { Toaster } from "@/components/ui/toaster"
+import { Toaster as Sonner } from "@/components/ui/sonner"
 
-const font = Inter({ subsets: ["latin"] });
+const font = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://rj-ten.vercel.app/"),
@@ -37,12 +37,12 @@ export const metadata: Metadata = {
   other: {
     ["yandex-verification"]: process.env.YANDEX_VERIFICATION || "",
   },
-};
+}
 
 export default async function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html lang="en">
@@ -65,5 +65,5 @@ export default async function RootLayout({
         </QueryProvider>
       </body>
     </html>
-  );
+  )
 }

@@ -1,25 +1,25 @@
-"use client";
+"use client"
 
-import { Button } from "@/components/ui/button";
-import { BookOpen, BookOpenCheck, Loader, Undo } from "lucide-react";
-import Link from "next/link";
-import { dateToString } from "@/lib/utils";
-import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { AnimatePresence, motion } from "framer-motion";
+import { Button } from "@/components/ui/button"
+import { BookOpen, BookOpenCheck, Loader, Undo } from "lucide-react"
+import Link from "next/link"
+import { dateToString } from "@/lib/utils"
+import { useState } from "react"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { AnimatePresence, motion } from "framer-motion"
 
 export function EventView({
   event,
 }: {
   event: {
-    id: string;
-    bookId: string;
-    book: Book;
-    pagesRead: number;
-    readAt: string | Date;
-  };
+    id: string
+    bookId: string
+    book: Book
+    pagesRead: number
+    readAt: string | Date
+  }
 }) {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
   const undoMutation = useMutation({
     mutationFn: async () =>
       await fetch(`/api/journal/events/${event.id}`, {
@@ -28,12 +28,12 @@ export function EventView({
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["events"],
-      });
+      })
       queryClient.invalidateQueries({
         queryKey: ["books"],
-      });
+      })
     },
-  });
+  })
   return (
     <div className="rounded-xl border p-2 cursor-default flex flex-wrap items-center gap-1">
       {event.pagesRead === event.book.pages ? (
@@ -68,5 +68,5 @@ export function EventView({
         )}
       </Button>
     </div>
-  );
+  )
 }

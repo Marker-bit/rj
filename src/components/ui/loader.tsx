@@ -1,12 +1,12 @@
-import { cn } from "@/lib/utils";
-import styles from "./loader.module.css";
+import { cn } from "@/lib/utils"
+import styles from "./loader.module.css"
 
 export function Loader({
   className,
   invert,
 }: {
-  className: string;
-  invert?: boolean;
+  className: string
+  invert?: boolean
 }) {
   return (
     <div className={className}>
@@ -24,5 +24,5 @@ export function Loader({
           ))}
       </div>
     </div>
-  );
+  )
 }

@@ -1,39 +1,39 @@
-"use client";
+"use client"
 
-import { DrawerDialog } from "@/components/drawer";
-import { Book, Collection } from "@prisma/client";
-import { DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
-import { Button } from "../ui/button";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Loader, Router } from "lucide-react";
-import { declOfNum } from "@/lib/utils";
-import { useRouter } from "next/navigation";
+import { DrawerDialog } from "@/components/drawer"
+import { Book, Collection } from "@prisma/client"
+import { DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog"
+import { Button } from "../ui/button"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { Loader, Router } from "lucide-react"
+import { declOfNum } from "@/lib/utils"
+import { useRouter } from "next/navigation"
 
 export function DeleteCollectionModal({
   open,
   setOpen,
   collection,
 }: {
-  open: boolean;
-  setOpen: (v: boolean) => void;
-  collection: Collection & { books: Book[] };
+  open: boolean
+  setOpen: (v: boolean) => void
+  collection: Collection & { books: Book[] }
 }) {
-  const router = useRouter();
-  const queryClient = useQueryClient();
+  const router = useRouter()
+  const queryClient = useQueryClient()
   const deleteMutation = useMutation({
     mutationFn: () =>
       fetch(`/api/collections/${collection.id}`, { method: "DELETE" }),
     onSuccess: () => {
-      setOpen(false);
-      router.refresh();
+      setOpen(false)
+      router.refresh()
       queryClient.invalidateQueries({
         queryKey: ["collections"],
-      });
+      })
       queryClient.invalidateQueries({
         queryKey: ["books"],
-      });
+      })
     },
-  });
+  })
   return (
     <DrawerDialog open={open} onOpenChange={setOpen}>
       <DialogHeader>
@@ -62,5 +62,5 @@ export function DeleteCollectionModal({
         </Button>
       </div>
     </DrawerDialog>
-  );
+  )
 }

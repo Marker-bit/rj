@@ -1,7 +1,7 @@
-import { db } from "@/lib/db";
-import { validateRequest } from "@/lib/server-validate-request";
-import { declOfNum } from "@/lib/utils";
-import { GroupMemberRole } from "@prisma/client";
+import { db } from "@/lib/db"
+import { validateRequest } from "@/lib/server-validate-request"
+import { declOfNum } from "@/lib/utils"
+import { GroupMemberRole } from "@prisma/client"
 import {
   BadgeCheck,
   BarChart2,
@@ -11,24 +11,24 @@ import {
   Shield,
   User,
   Users,
-} from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { AddBookButton } from "./add-book-button";
-import { AddMemberButton } from "./add-member-button";
-import { GroupBookView } from "./book-view";
-import { Progress } from "@/components/ui/progress";
+} from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
+import { AddBookButton } from "./add-book-button"
+import { AddMemberButton } from "./add-member-button"
+import { GroupBookView } from "./book-view"
+import { Progress } from "@/components/ui/progress"
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic"
 
 export default async function Page({
   params,
 }: {
-  params: { groupId: string };
+  params: { groupId: string }
 }) {
-  const { user } = await validateRequest();
+  const { user } = await validateRequest()
   if (!user) {
-    return null;
+    return null
   }
   const group = await db.group.findUnique({
     where: { id: params.groupId },
@@ -59,9 +59,9 @@ export default async function Page({
         },
       },
     },
-  });
+  })
   if (!group) {
-    return null;
+    return null
   }
   const myBooksFromGroup = await db.book.findMany({
     where: {
@@ -70,20 +70,20 @@ export default async function Page({
         groupId: group.id,
       },
     },
-  });
+  })
 
   const isMember = group.members.some(
     (m) => m.userId === user?.id && m.role === GroupMemberRole.MEMBER
-  );
+  )
 
   const activeMembers = group.members.filter(
     (m) =>
       m.user.books.filter((b) => b.groupBook?.groupId === group.id).length > 0
-  );
+  )
 
   const activeBooks = group.groupBooks.filter(
     (b) => b.book.length === group.members.length
-  );
+  )
 
   const stats = [
     {
@@ -98,11 +98,11 @@ export default async function Page({
       value: activeBooks.length,
       max: group.groupBooks.length,
     },
-  ];
+  ]
 
-  const allBooks = group.groupBooks.map((b) => b.book).flat();
+  const allBooks = group.groupBooks.map((b) => b.book).flat()
 
-  let rating: { [key: string]: number } = {};
+  let rating: { [key: string]: number } = {}
 
   group.members.forEach(
     (m) =>
@@ -110,11 +110,11 @@ export default async function Page({
         .filter((b) => b.userId === m.user.id)
         .map((book) => book.readEvents[0]?.pagesRead || 0)
         .reduce((a, b) => a + b, 0))
-  );
+  )
 
-  const ratingKeys = new Array(...Object.keys(rating));
+  const ratingKeys = new Array(...Object.keys(rating))
 
-  ratingKeys.sort((a, b) => rating[b] - rating[a]);
+  ratingKeys.sort((a, b) => rating[b] - rating[a])
 
   return (
     <div className="p-2 max-sm:mb-20">
@@ -253,7 +253,8 @@ export default async function Page({
                         .username
                     }
 
-                    {group.members.find((m) => m.userId === userId)?.user.verified && (
+                    {group.members.find((m) => m.userId === userId)?.user
+                      .verified && (
                       <BadgeCheck className="size-6 text-yellow-500" />
                     )}
                   </div>
@@ -280,5 +281,5 @@ export default async function Page({
         </div>
       </div>
     </div>
-  );
+  )
 }

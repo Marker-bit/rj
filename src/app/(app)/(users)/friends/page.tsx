@@ -1,18 +1,18 @@
-import { ChevronLeft, UserX } from "lucide-react";
-import Link from "next/link";
-import { FriendView } from "@/components/friend-view";
-import { Button } from "@/components/ui/button";
-import { db } from "@/lib/db";
-import { validateRequest } from "@/lib/server-validate-request";
+import { ChevronLeft, UserX } from "lucide-react"
+import Link from "next/link"
+import { FriendView } from "@/components/friend-view"
+import { Button } from "@/components/ui/button"
+import { db } from "@/lib/db"
+import { validateRequest } from "@/lib/server-validate-request"
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic"
 
 export default async function FriendsPage() {
-  const { user } = await validateRequest();
+  const { user } = await validateRequest()
   if (!user) {
     return new Response(null, {
       status: 401,
-    });
+    })
   }
   const friends = await db.user.findMany({
     where: {
@@ -22,7 +22,7 @@ export default async function FriendsPage() {
         },
       },
     },
-  });
+  })
   return (
     <div>
       <div className="text-5xl font-black m-2 flex gap-2 items-center">
@@ -56,5 +56,5 @@ export default async function FriendsPage() {
         </div>
       </div>
     </div>
-  );
+  )
 }

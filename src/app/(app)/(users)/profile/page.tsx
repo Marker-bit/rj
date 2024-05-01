@@ -1,17 +1,17 @@
-import { ChevronLeft, Edit, Users2 } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { Stats } from "@/components/stats";
-import { validateRequest } from "@/lib/server-validate-request";
-import { db } from "@/lib/db";
-import { CopyUrl } from "./CopyUrl";
-import { Suspense } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
+import { ChevronLeft, Edit, Users2 } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
+import { Stats } from "@/components/stats"
+import { validateRequest } from "@/lib/server-validate-request"
+import { db } from "@/lib/db"
+import { CopyUrl } from "./CopyUrl"
+import { Suspense } from "react"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Button } from "@/components/ui/button"
 
 export default async function ProfilePage() {
-  const { user } = await validateRequest();
-  if (!user) return null;
+  const { user } = await validateRequest()
+  if (!user) return null
 
   const userData = await db.user.findUniqueOrThrow({
     where: {
@@ -21,7 +21,7 @@ export default async function ProfilePage() {
       follower: true,
       following: true,
     },
-  });
+  })
   const events = await db.readEvent.findMany({
     where: {
       book: {
@@ -34,7 +34,7 @@ export default async function ProfilePage() {
     orderBy: {
       readAt: "asc",
     },
-  });
+  })
 
   return (
     <div className="mb-[15vh]">
@@ -86,5 +86,5 @@ export default async function ProfilePage() {
         <Stats profile={userData} events={events} />
       </Suspense>
     </div>
-  );
+  )
 }

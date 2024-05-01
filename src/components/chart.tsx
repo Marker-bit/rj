@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import {
   Bar,
@@ -9,7 +9,7 @@ import {
   Line,
   YAxis,
   Tooltip,
-} from "recharts";
+} from "recharts"
 
 export function Chart({ data }: { data: any[] }) {
   return (
@@ -29,5 +29,5 @@ export function Chart({ data }: { data: any[] }) {
         <YAxis dataKey="value" />
       </BarChart>
     </ResponsiveContainer>
-  );
+  )
 }

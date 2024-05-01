@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 export function BreakpointIndicator() {
   return (
@@ -8,5 +8,5 @@ export function BreakpointIndicator() {
       <div className="lg:block xl:hidden">lg</div>
       <div className="xl:block">xl</div>
     </div>
-  );
+  )
 }

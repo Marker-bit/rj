@@ -1,4 +1,4 @@
-import { DrawerDialog } from "@/components/drawer";
+import { DrawerDialog } from "@/components/drawer"
 import {
   BookOpen,
   BookOpenCheck,
@@ -8,12 +8,12 @@ import {
   Pencil,
   Share,
   Trash,
-} from "lucide-react";
-import Image from "next/image";
-import { Button } from "../ui/button";
-import { dateToString, declOfNum } from "@/lib/utils";
-import { Badge } from "../ui/badge";
-import { Collection, ReadEvent } from "@prisma/client";
+} from "lucide-react"
+import Image from "next/image"
+import { Button } from "../ui/button"
+import { dateToString, declOfNum } from "@/lib/utils"
+import { Badge } from "../ui/badge"
+import { Collection, ReadEvent } from "@prisma/client"
 
 export function BookInfoModal({
   open,
@@ -27,21 +27,21 @@ export function BookInfoModal({
   doneMutation,
   setCollectionsOpen,
 }: {
-  open: boolean;
-  setOpen: (b: boolean) => void;
-  book: any;
-  setDescriptionDrawerOpen: (b: boolean) => void;
-  setEditOpen: (b: boolean) => void;
-  setDeleteDialogOpen: (b: boolean) => void;
-  setDateOpen: (b: boolean) => void;
-  setCollectionsOpen: (b: boolean) => void;
+  open: boolean
+  setOpen: (b: boolean) => void
+  book: any
+  setDescriptionDrawerOpen: (b: boolean) => void
+  setEditOpen: (b: boolean) => void
+  setDeleteDialogOpen: (b: boolean) => void
+  setDateOpen: (b: boolean) => void
+  setCollectionsOpen: (b: boolean) => void
   doneMutation: {
-    mutate: () => void;
-    isPending: boolean;
-  };
-  setShareOpen: (b: boolean) => void;
+    mutate: () => void
+    isPending: boolean
+  }
+  setShareOpen: (b: boolean) => void
 }) {
-  const lastEvent = book.readEvents[0];
+  const lastEvent = book.readEvents[0]
 
   return (
     <DrawerDialog open={open} onOpenChange={setOpen} className="min-w-[50vw]">
@@ -179,5 +179,5 @@ export function BookInfoModal({
         )}
       </div>
     </DrawerDialog>
-  );
+  )
 }

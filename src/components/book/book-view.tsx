@@ -1,20 +1,20 @@
-"use client";
+"use client"
 
-import { BookCollectionsModal } from "@/components/dialogs/book-collections-modal";
-import { BookInfoModal } from "@/components/dialogs/book-info-modal";
-import { DateReadModal } from "@/components/dialogs/date-read-modal";
-import { EditBookModal } from "@/components/dialogs/edit-book-modal";
-import { DrawerDialog } from "@/components/drawer";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { BookCollectionsModal } from "@/components/dialogs/book-collections-modal"
+import { BookInfoModal } from "@/components/dialogs/book-info-modal"
+import { DateReadModal } from "@/components/dialogs/date-read-modal"
+import { EditBookModal } from "@/components/dialogs/edit-book-modal"
+import { DrawerDialog } from "@/components/drawer"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { dateToString, declOfNum } from "@/lib/utils";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { isSameDay } from "date-fns";
+} from "@/components/ui/dialog"
+import { dateToString, declOfNum } from "@/lib/utils"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { isSameDay } from "date-fns"
 import {
   BookIcon,
   BookOpen,
@@ -29,33 +29,33 @@ import {
   Trash,
   Undo,
   Users,
-} from "lucide-react";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { useMediaQuery } from "usehooks-ts";
-import { ShareBookModal } from "../dialogs/share-book-modal";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
-import Link from "next/link";
-import { toast } from "sonner";
-import { Loader } from "../ui/loader";
-import { DateDoneModal } from "../dialogs/date-done-modal";
-import { Book } from "@/lib/api-types";
+} from "lucide-react"
+import Image from "next/image"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { useMediaQuery } from "usehooks-ts"
+import { ShareBookModal } from "../dialogs/share-book-modal"
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip"
+import Link from "next/link"
+import { toast } from "sonner"
+import { Loader } from "../ui/loader"
+import { DateDoneModal } from "../dialogs/date-done-modal"
+import { Book } from "@/lib/api-types"
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic"
 
 export function BookView({ book }: { book: Book }) {
-  const queryClient = useQueryClient();
-  const [editOpen, setEditOpen] = useState(false);
-  const [dateOpen, setDateOpen] = useState(false);
-  const [doneOpen, setDoneOpen] = useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [actionsDrawerOpen, setActionsDrawerOpen] = useState(false);
-  const [descriptionDrawerOpen, setDescriptionDrawerOpen] = useState(false);
-  const [collectionsOpen, setCollectionsOpen] = useState(false);
-  const [shareBookOpen, setShareBookOpen] = useState(false);
-  const isMobile = useMediaQuery("(max-width: 768px)");
-  const router = useRouter();
+  const queryClient = useQueryClient()
+  const [editOpen, setEditOpen] = useState(false)
+  const [dateOpen, setDateOpen] = useState(false)
+  const [doneOpen, setDoneOpen] = useState(false)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [actionsDrawerOpen, setActionsDrawerOpen] = useState(false)
+  const [descriptionDrawerOpen, setDescriptionDrawerOpen] = useState(false)
+  const [collectionsOpen, setCollectionsOpen] = useState(false)
+  const [shareBookOpen, setShareBookOpen] = useState(false)
+  const isMobile = useMediaQuery("(max-width: 768px)")
+  const router = useRouter()
 
   const undoEventMutation = useMutation({
     mutationFn: () =>
@@ -65,14 +65,14 @@ export function BookView({ book }: { book: Book }) {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["books"],
-      });
+      })
       queryClient.invalidateQueries({
         queryKey: ["events"],
-      });
-      toast.success("Событие отменено");
-      router.refresh();
+      })
+      toast.success("Событие отменено")
+      router.refresh()
     },
-  });
+  })
 
   const doneMutation = useMutation({
     mutationFn: async () => {
@@ -81,21 +81,21 @@ export function BookView({ book }: { book: Book }) {
         body: JSON.stringify({
           pages: book.pages,
         }),
-      });
+      })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["books"],
-      });
+      })
       queryClient.invalidateQueries({
         queryKey: ["events"],
-      });
-      toast.success("Книга отмечена как прочитанная");
-      setDoneOpen(false);
-      setActionsDrawerOpen(false);
-      router.refresh();
+      })
+      toast.success("Книга отмечена как прочитанная")
+      setDoneOpen(false)
+      setActionsDrawerOpen(false)
+      router.refresh()
     },
-  });
+  })
 
   const readDateMutation = useMutation({
     mutationFn: ({ date, pages }: { date: Date; pages: number }) =>
@@ -109,16 +109,16 @@ export function BookView({ book }: { book: Book }) {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["books"],
-      });
+      })
       queryClient.invalidateQueries({
         queryKey: ["events"],
-      });
-      setDateOpen(false);
-      toast.success("Событие сохранено");
-      setActionsDrawerOpen(false);
-      router.refresh();
+      })
+      setDateOpen(false)
+      toast.success("Событие сохранено")
+      setActionsDrawerOpen(false)
+      router.refresh()
     },
-  });
+  })
 
   const deleteMutation = useMutation({
     mutationFn: () =>
@@ -128,18 +128,18 @@ export function BookView({ book }: { book: Book }) {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["books"],
-      });
+      })
       queryClient.invalidateQueries({
         queryKey: ["events"],
-      });
-      setDeleteDialogOpen(false);
-      setActionsDrawerOpen(false);
-      toast.success("Книга удалена");
-      router.refresh();
+      })
+      setDeleteDialogOpen(false)
+      setActionsDrawerOpen(false)
+      toast.success("Книга удалена")
+      router.refresh()
     },
-  });
+  })
 
-  const lastEvent = book.readEvents[0];
+  const lastEvent = book.readEvents[0]
 
   if (book.groupBook) {
     book = {
@@ -150,7 +150,7 @@ export function BookView({ book }: { book: Book }) {
       author: book.groupBook.author,
       pages: book.groupBook.pages,
       coverUrl: book.groupBook.coverUrl,
-    };
+    }
   }
 
   return (
@@ -416,5 +416,5 @@ export function BookView({ book }: { book: Book }) {
         )}
       </div>
     </div>
-  );
+  )
 }

@@ -1,12 +1,12 @@
-import { db } from "@/lib/db";
-import { validateRequest } from "@/lib/server-validate-request";
-import { CreateCollection } from "./create-collection";
-import { CollectionView } from "./collection";
+import { db } from "@/lib/db"
+import { validateRequest } from "@/lib/server-validate-request"
+import { CreateCollection } from "./create-collection"
+import { CollectionView } from "./collection"
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic"
 
 export default async function Page() {
-  const { user } = await validateRequest();
+  const { user } = await validateRequest()
   const collections = await db.collection.findMany({
     where: {
       userId: user?.id,
@@ -14,7 +14,7 @@ export default async function Page() {
     include: {
       books: true,
     },
-  });
+  })
 
   return (
     <div className="flex flex-col gap-2">
@@ -23,5 +23,5 @@ export default async function Page() {
         <CollectionView key={collection.id} collection={collection} />
       ))}
     </div>
-  );
+  )
 }

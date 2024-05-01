@@ -1,12 +1,12 @@
-import { Button } from "@/components/ui/button";
-import { ChevronLeft } from "lucide-react";
-import Link from "next/link";
-import { SettingsForm } from "./form";
-import { validateRequest } from "@/lib/server-validate-request";
+import { Button } from "@/components/ui/button"
+import { ChevronLeft } from "lucide-react"
+import Link from "next/link"
+import { SettingsForm } from "./form"
+import { validateRequest } from "@/lib/server-validate-request"
 
 export default async function SettingsPage() {
-  const { user } = await validateRequest();
-  if (!user) return null;
+  const { user } = await validateRequest()
+  if (!user) return null
   return (
     <div className="mb-20">
       <div className="text-5xl font-black m-2 flex gap-2 items-center">
@@ -19,5 +19,5 @@ export default async function SettingsPage() {
       </div>
       <SettingsForm user={user} />
     </div>
-  );
+  )
 }

@@ -1,6 +1,6 @@
-"use client";
+"use client"
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef } from "react"
 
 import ReactCrop, {
   centerCrop,
@@ -8,14 +8,14 @@ import ReactCrop, {
   Crop,
   PixelCrop,
   convertToPixelCrop,
-} from "react-image-crop";
+} from "react-image-crop"
 
-import "react-image-crop/dist/ReactCrop.css";
-import Image from "next/image";
-import { canvasPreview } from "@/lib/utils";
-import { Dialog, DialogContent } from "./ui/dialog";
-import { Button } from "./ui/button";
-import { useDebounceEffect } from "@/lib/use-debounce-effect";
+import "react-image-crop/dist/ReactCrop.css"
+import Image from "next/image"
+import { canvasPreview } from "@/lib/utils"
+import { Dialog, DialogContent } from "./ui/dialog"
+import { Button } from "./ui/button"
+import { useDebounceEffect } from "@/lib/use-debounce-effect"
 
 // This is to demonstate how to make and center a % aspect crop
 // which is a bit trickier so we use some helper functions.
@@ -36,7 +36,7 @@ function centerAspectCrop(
     ),
     mediaWidth,
     mediaHeight
-  );
+  )
 }
 
 export function CropImage({
@@ -45,40 +45,40 @@ export function CropImage({
   file,
   onSelect,
 }: {
-  open: boolean;
-  setOpen: (v: boolean) => void;
-  file?: File;
-  onSelect: (file: File) => void;
+  open: boolean
+  setOpen: (v: boolean) => void
+  file?: File
+  onSelect: (file: File) => void
 }) {
-  const [imgSrc, setImgSrc] = useState("");
-  const previewCanvasRef = useRef<HTMLCanvasElement>(null);
-  const imgRef = useRef<HTMLImageElement>(null);
-  const hiddenAnchorRef = useRef<HTMLAnchorElement>(null);
-  const [crop, setCrop] = useState<Crop>();
-  const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
+  const [imgSrc, setImgSrc] = useState("")
+  const previewCanvasRef = useRef<HTMLCanvasElement>(null)
+  const imgRef = useRef<HTMLImageElement>(null)
+  const hiddenAnchorRef = useRef<HTMLAnchorElement>(null)
+  const [crop, setCrop] = useState<Crop>()
+  const [completedCrop, setCompletedCrop] = useState<PixelCrop>()
 
   function onImageLoad(e: React.SyntheticEvent<HTMLImageElement>) {
-    const { width, height } = e.currentTarget;
-    setCrop(centerAspectCrop(width, height, 1));
+    const { width, height } = e.currentTarget
+    setCrop(centerAspectCrop(width, height, 1))
   }
 
   async function onDownloadCropClick() {
-    const image = imgRef.current;
-    const previewCanvas = previewCanvasRef.current;
+    const image = imgRef.current
+    const previewCanvas = previewCanvasRef.current
     if (!image || !previewCanvas || !completedCrop) {
-      throw new Error("Crop canvas does not exist");
+      throw new Error("Crop canvas does not exist")
     }
 
-    const scaleX = image.naturalWidth / image.width;
-    const scaleY = image.naturalHeight / image.height;
+    const scaleX = image.naturalWidth / image.width
+    const scaleY = image.naturalHeight / image.height
 
     const offscreen = new OffscreenCanvas(
       completedCrop.width * scaleX,
       completedCrop.height * scaleY
-    );
-    const ctx = offscreen.getContext("2d");
+    )
+    const ctx = offscreen.getContext("2d")
     if (!ctx) {
-      throw new Error("No 2d context");
+      throw new Error("No 2d context")
     }
 
     ctx.drawImage(
@@ -91,17 +91,17 @@ export function CropImage({
       0,
       offscreen.width,
       offscreen.height
-    );
+    )
     // You might want { type: "image/jpeg", quality: <0 to 1> } to
     // reduce image size
     const blob = await offscreen.convertToBlob({
       type: "image/png",
-    });
+    })
     const file = new File([blob], "avatar.png", {
       type: "image/png",
-    });
-    onSelect(file);
-    setOpen(false);
+    })
+    onSelect(file)
+    setOpen(false)
   }
 
   useDebounceEffect(
@@ -112,20 +112,20 @@ export function CropImage({
         imgRef.current &&
         previewCanvasRef.current
       ) {
-        canvasPreview(imgRef.current, previewCanvasRef.current, completedCrop);
+        canvasPreview(imgRef.current, previewCanvasRef.current, completedCrop)
       }
     },
     100,
     [completedCrop]
-  );
+  )
 
-  if (!file) return;
+  if (!file) return
 
-  const reader = new FileReader();
+  const reader = new FileReader()
   reader.addEventListener("load", () =>
     setImgSrc(reader.result?.toString() || "")
-  );
-  reader.readAsDataURL(file);
+  )
+  reader.readAsDataURL(file)
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -178,5 +178,5 @@ export function CropImage({
         )}
       </DialogContent>
     </Dialog>
-  );
+  )
 }

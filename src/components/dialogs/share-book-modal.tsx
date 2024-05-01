@@ -1,49 +1,49 @@
-"use client";
+"use client"
 
-import { DrawerDialog } from "@/components/drawer";
-import { DialogHeader, DialogTitle } from "../ui/dialog";
-import { CopyCheck, CopyIcon } from "lucide-react";
-import { useEffect, useState } from "react";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { AnimatePresence, motion } from "framer-motion";
-import { Book } from "@/lib/api-types";
-import { Loader } from "../ui/loader";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+import { DrawerDialog } from "@/components/drawer"
+import { DialogHeader, DialogTitle } from "../ui/dialog"
+import { CopyCheck, CopyIcon } from "lucide-react"
+import { useEffect, useState } from "react"
+import { Button } from "../ui/button"
+import { Input } from "../ui/input"
+import { AnimatePresence, motion } from "framer-motion"
+import { Book } from "@/lib/api-types"
+import { Loader } from "../ui/loader"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
 export function ShareBookModal({
   open,
   setOpen,
   book,
 }: {
-  open: boolean;
-  setOpen: (v: boolean) => void;
-  book: Book;
+  open: boolean
+  setOpen: (v: boolean) => void
+  book: Book
 }) {
-  const [copyLink, setCopyLink] = useState<string>();
+  const [copyLink, setCopyLink] = useState<string>()
   // const [link, setLink] = useState("");
   // useEffect(() => {
   //   setLink(`${window.location.origin}/books/${book.id}`);
   // }, [book.id]);
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
+  const [loading, setLoading] = useState(false)
+  const router = useRouter()
 
   const createLink = async () => {
-    setLoading(true);
+    setLoading(true)
     const resp = await fetch(`/api/books/${book.id}/links`, {
       method: "POST",
-    });
-    const res = await resp.json();
+    })
+    const res = await resp.json()
     if (resp.ok) {
-      setLoading(false);
-      router.refresh();
+      setLoading(false)
+      router.refresh()
     } else {
       toast.error("Возникла проблема при создании ссылки", {
         description: res.error,
-      });
+      })
     }
-  };
+  }
   return (
     <DrawerDialog
       open={open}
@@ -59,18 +59,22 @@ export function ShareBookModal({
             <div className="flex w-full gap-2" key={link.id}>
               <Input
                 readOnly
-                value={`${typeof window !== "undefined" && window.location.origin}/sharedbook/${link.id}`}
+                value={`${
+                  typeof window !== "undefined" && window.location.origin
+                }/sharedbook/${link.id}`}
                 className="sm:w-full md:w-4/5"
               />
               <Button
                 onClick={() => {
                   navigator.clipboard.writeText(
-                    `${typeof window !== "undefined" && window.location.origin}/sharedbook/${link.id}`
-                  );
-                  setCopyLink(link.id);
+                    `${
+                      typeof window !== "undefined" && window.location.origin
+                    }/sharedbook/${link.id}`
+                  )
+                  setCopyLink(link.id)
                   setTimeout(() => {
-                    setCopyLink(undefined);
-                  }, 2000);
+                    setCopyLink(undefined)
+                  }, 2000)
                 }}
               >
                 <AnimatePresence mode="wait" initial={false}>
@@ -115,5 +119,5 @@ export function ShareBookModal({
         </Button>
       </div>
     </DrawerDialog>
-  );
+  )
 }

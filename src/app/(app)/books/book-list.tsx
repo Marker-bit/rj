@@ -1,67 +1,67 @@
-"use client";
+"use client"
 
-import { MobileForm } from "@/components/book/book-form";
-import { BookView } from "@/components/book/book-view";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { Book } from "@/lib/api-types";
-import { BookMinus, Search } from "lucide-react";
-import { useEffect, useState } from "react";
-import Fuse from "fuse.js";
+import { MobileForm } from "@/components/book/book-form"
+import { BookView } from "@/components/book/book-view"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Switch } from "@/components/ui/switch"
+import { Book } from "@/lib/api-types"
+import { BookMinus, Search } from "lucide-react"
+import { useEffect, useState } from "react"
+import Fuse from "fuse.js"
 
 export function BookList({ books }: { books: Book[] }) {
-  const [readBooks, setReadBooks] = useState(false);
-  const [notStarted, setNotStarted] = useState(false);
-  const [searchText, setSearchText] = useState("");
-  const [searchResults, setSearchResults] = useState<Book[]>();
+  const [readBooks, setReadBooks] = useState(false)
+  const [notStarted, setNotStarted] = useState(false)
+  const [searchText, setSearchText] = useState("")
+  const [searchResults, setSearchResults] = useState<Book[]>()
 
   const fuse = new Fuse(books, {
     keys: ["title", "author"],
-  });
+  })
 
   useEffect(() => {
-    const localStorageReadBooks = localStorage.getItem("readBooks");
-    const localStorageNotStarted = localStorage.getItem("notStarted");
+    const localStorageReadBooks = localStorage.getItem("readBooks")
+    const localStorageNotStarted = localStorage.getItem("notStarted")
     if (localStorageReadBooks) {
-      setReadBooks(JSON.parse(localStorageReadBooks));
+      setReadBooks(JSON.parse(localStorageReadBooks))
     }
     if (localStorageNotStarted) {
-      setNotStarted(JSON.parse(localStorageNotStarted));
+      setNotStarted(JSON.parse(localStorageNotStarted))
     }
-  }, []);
+  }, [])
 
   function changeReadBooks() {
     setReadBooks((readBooks) => {
-      localStorage.setItem("readBooks", JSON.stringify(!readBooks));
-      return !readBooks;
-    });
+      localStorage.setItem("readBooks", JSON.stringify(!readBooks))
+      return !readBooks
+    })
   }
   function changeNotStarted() {
     setNotStarted((notStarted) => {
-      localStorage.setItem("notStarted", JSON.stringify(!notStarted));
-      return !notStarted;
-    });
+      localStorage.setItem("notStarted", JSON.stringify(!notStarted))
+      return !notStarted
+    })
   }
 
   if (readBooks) {
     books = books.filter((book: Book) => {
       if (book.readEvents.length === 0) {
-        return true;
+        return true
       }
-      return !(book.pages === book.readEvents[0].pagesRead);
-    });
+      return !(book.pages === book.readEvents[0].pagesRead)
+    })
   }
 
   if (notStarted) {
     books = books.filter((book: Book) => {
-      return book.readEvents.length !== 0;
-    });
+      return book.readEvents.length !== 0
+    })
   }
 
   function search(evt: any) {
-    setSearchResults(fuse.search(searchText).map((result) => result.item));
-    evt.preventDefault();
+    setSearchResults(fuse.search(searchText).map((result) => result.item))
+    evt.preventDefault()
   }
 
   return (
@@ -114,8 +114,8 @@ export function BookList({ books }: { books: Book[] }) {
           <Button
             variant="outline"
             onClick={() => {
-              setSearchResults(undefined);
-              setSearchText("");
+              setSearchResults(undefined)
+              setSearchText("")
             }}
             className="md:w-fit"
           >
@@ -127,5 +127,5 @@ export function BookList({ books }: { books: Book[] }) {
         ))}
       </div>
     </div>
-  );
+  )
 }

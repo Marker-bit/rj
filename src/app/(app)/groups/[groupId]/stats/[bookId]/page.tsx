@@ -1,26 +1,26 @@
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { db } from "@/lib/db";
-import { validateRequest } from "@/lib/server-validate-request";
+import { Button } from "@/components/ui/button"
+import { Progress } from "@/components/ui/progress"
+import { db } from "@/lib/db"
+import { validateRequest } from "@/lib/server-validate-request"
 import {
   BarChart2,
   BarChartHorizontalBig,
   Check,
   ChevronLeft,
-} from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
+} from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic"
 
 export default async function Page({
   params,
 }: {
-  params: { groupId: string; bookId: string };
+  params: { groupId: string; bookId: string }
 }) {
-  const { user } = await validateRequest();
+  const { user } = await validateRequest()
   if (!user) {
-    return null;
+    return null
   }
 
   const group = await db.group.findUnique({
@@ -43,9 +43,9 @@ export default async function Page({
         },
       },
     },
-  });
+  })
   if (!group) {
-    return null;
+    return null
   }
 
   const book = await db.groupBook.findUnique({
@@ -61,9 +61,9 @@ export default async function Page({
         },
       },
     },
-  });
+  })
   if (!book) {
-    return null;
+    return null
   }
 
   const stats = [
@@ -73,20 +73,20 @@ export default async function Page({
       value: book.book.length,
       max: group.members.length,
     },
-  ];
+  ]
 
-  let rating: { [key: string]: number } = {};
+  let rating: { [key: string]: number } = {}
 
   group.members.forEach(
     (m) =>
       (rating[m.userId] =
         book.book.find((b) => b.userId === m.userId)?.readEvents[0]
           ?.pagesRead || 0)
-  );
+  )
 
-  const ratingKeys = new Array(...Object.keys(rating));
+  const ratingKeys = new Array(...Object.keys(rating))
 
-  ratingKeys.sort((a, b) => rating[b] - rating[a]);
+  ratingKeys.sort((a, b) => rating[b] - rating[a])
 
   return (
     <div className="p-8 flex flex-col">
@@ -205,5 +205,5 @@ export default async function Page({
         </div>
       </div>
     </div>
-  );
+  )
 }

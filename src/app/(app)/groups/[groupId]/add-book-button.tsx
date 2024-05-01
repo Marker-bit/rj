@@ -1,19 +1,19 @@
-"use client";
+"use client"
 
-import { AddFromMyBooks } from "@/components/book/add-from-my-books";
-import { GroupBookForm } from "@/components/book/group-book-form";
-import { Button } from "@/components/ui/button";
+import { AddFromMyBooks } from "@/components/book/add-from-my-books"
+import { GroupBookForm } from "@/components/book/group-book-form"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Book, BookCopy, BookDashed, Plus } from "lucide-react";
-import { useState } from "react";
+} from "@/components/ui/dropdown-menu"
+import { Book, BookCopy, BookDashed, Plus } from "lucide-react"
+import { useState } from "react"
 
 export function AddBookButton({ groupId }: { groupId: string }) {
-  const [modeOpen, setModeOpen] = useState<"create" | "add-own">();
+  const [modeOpen, setModeOpen] = useState<"create" | "add-own">()
 
   return (
     <>
@@ -29,11 +29,7 @@ export function AddBookButton({ groupId }: { groupId: string }) {
       />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button
-            size="icon"
-            variant="ghost"
-            className="ml-auto size-fit p-1"
-          >
+          <Button size="icon" variant="ghost" className="ml-auto size-fit p-1">
             <Plus className="size-4" />
           </Button>
         </DropdownMenuTrigger>
@@ -53,5 +49,5 @@ export function AddBookButton({ groupId }: { groupId: string }) {
         </DropdownMenuContent>
       </DropdownMenu>
     </>
-  );
+  )
 }

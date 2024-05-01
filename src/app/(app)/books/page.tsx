@@ -1,21 +1,21 @@
-import { BookView } from "@/components/book/book-view";
-import { Button } from "@/components/ui/button";
-import { fetchBooks } from "@/lib/books";
-import { validateRequest } from "@/lib/server-validate-request";
-import { ChevronLeft } from "lucide-react";
-import Link from "next/link";
-import { BookList } from "./book-list";
+import { BookView } from "@/components/book/book-view"
+import { Button } from "@/components/ui/button"
+import { fetchBooks } from "@/lib/books"
+import { validateRequest } from "@/lib/server-validate-request"
+import { ChevronLeft } from "lucide-react"
+import Link from "next/link"
+import { BookList } from "./book-list"
 
 export default async function BooksPage({
   searchParams,
 }: {
-  searchParams: { bookId: string | undefined };
+  searchParams: { bookId: string | undefined }
 }) {
-  const { user } = await validateRequest();
-  if (!user) return null;
+  const { user } = await validateRequest()
+  if (!user) return null
 
-  const books = await fetchBooks(user.id);
-  let bookId = searchParams?.bookId;
+  const books = await fetchBooks(user.id)
+  let bookId = searchParams?.bookId
 
   return (
     <div>
@@ -41,5 +41,5 @@ export default async function BooksPage({
         <BookList books={books} />
       )}
     </div>
-  );
+  )
 }

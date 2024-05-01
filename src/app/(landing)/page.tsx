@@ -1,16 +1,16 @@
-import { Button } from "@/components/ui/button";
-import { validateRequest } from "@/lib/server-validate-request";
-import Image from "next/image";
-import Link from "next/link";
-import { redirect } from "next/navigation";
+import { Button } from "@/components/ui/button"
+import { validateRequest } from "@/lib/server-validate-request"
+import Image from "next/image"
+import Link from "next/link"
+import { redirect } from "next/navigation"
 
 export default async function LandingPage({
   searchParams,
 }: {
-  searchParams?: { [key: string]: string | string[] | undefined };
+  searchParams?: { [key: string]: string | string[] | undefined }
 }) {
-  const { user } = await validateRequest();
-  if (user && searchParams?.noRedirect !== "") return redirect("/home");
+  const { user } = await validateRequest()
+  if (user && searchParams?.noRedirect !== "") return redirect("/home")
 
   return (
     <div className="flex items-center flex-col">
@@ -67,5 +67,5 @@ export default async function LandingPage({
         </div>
       </div>
     </div>
-  );
+  )
 }

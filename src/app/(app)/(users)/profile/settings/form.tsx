@@ -1,13 +1,13 @@
-"use client";
+"use client"
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, LogOut, Plus, X } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Check, LogOut, Plus, X } from "lucide-react"
+import { useCallback, useEffect, useState } from "react"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
 
-import { CropImage } from "@/components/crop-image";
-import { Button } from "@/components/ui/button";
+import { CropImage } from "@/components/crop-image"
+import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -15,25 +15,25 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Loader } from "@/components/ui/loader";
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { Loader } from "@/components/ui/loader"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useUploadThing } from "@/components/uploadthing";
-import { cn } from "@/lib/utils";
-import { useMutation } from "@tanstack/react-query";
-import { useDropzone } from "@uploadthing/react";
-import Image from "next/image";
-import { generateClientDropzoneAccept } from "uploadthing/client";
-import { toast } from "sonner";
-import { User as LuciaUser } from "lucia";
-import { SharePeople } from "@prisma/client";
+} from "@/components/ui/select"
+import { useUploadThing } from "@/components/uploadthing"
+import { cn } from "@/lib/utils"
+import { useMutation } from "@tanstack/react-query"
+import { useDropzone } from "@uploadthing/react"
+import Image from "next/image"
+import { generateClientDropzoneAccept } from "uploadthing/client"
+import { toast } from "sonner"
+import { User as LuciaUser } from "lucia"
+import { SharePeople } from "@prisma/client"
 
 const formSchema = z.object({
   username: z.string().min(2).max(50),
@@ -46,13 +46,13 @@ const formSchema = z.object({
     .optional(),
   shareFollowers: z.enum(["ALL", "SUBS", "NONE"]).default("NONE").optional(),
   shareStats: z.enum(["ALL", "SUBS", "NONE"]).default("NONE").optional(),
-});
+})
 
 export function SettingsForm({ user }: { user: LuciaUser }) {
-  const [logOutLoading, setLogOutLoading] = useState(false);
-  const [usernameFound, setUsernameFound] = useState<boolean | null>();
-  const [cropOpen, setCropOpen] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+  const [logOutLoading, setLogOutLoading] = useState(false)
+  const [usernameFound, setUsernameFound] = useState<boolean | null>()
+  const [cropOpen, setCropOpen] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -80,7 +80,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
           ? "SUBS"
           : "NONE",
     },
-  });
+  })
 
   const userMutation = useMutation({
     mutationFn: (values: z.infer<typeof formSchema>) => {
@@ -93,55 +93,55 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
           if (res.error) {
             toast.error("Возникла проблема при обновлении профиля", {
               description: res.error,
-            });
-            throw new Error(res.error);
+            })
+            throw new Error(res.error)
           }
-        });
+        })
     },
     onSuccess: () => {
-      toast.success("Профиль обновлен");
+      toast.success("Профиль обновлен")
     },
-  });
+  })
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    userMutation.mutate(values);
+    userMutation.mutate(values)
   }
 
-  const [files, setFiles] = useState<File[]>([]);
+  const [files, setFiles] = useState<File[]>([])
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles.length === 1) {
-      setFiles(acceptedFiles);
-      setCropOpen(true);
+      setFiles(acceptedFiles)
+      setCropOpen(true)
     } else {
-      toast.error("Принимается только 1 файл!");
+      toast.error("Принимается только 1 файл!")
     }
-  }, []);
+  }, [])
 
   const { startUpload, permittedFileInfo } = useUploadThing("avatar", {
     onClientUploadComplete: (res) => {
-      form.setValue("avatarUrl", res[0].url);
-      setUploadProgress(null);
+      form.setValue("avatarUrl", res[0].url)
+      setUploadProgress(null)
     },
     onUploadError: (err) => {
-      toast.error("Произошла ошибка при загрузке файла");
+      toast.error("Произошла ошибка при загрузке файла")
     },
     onUploadBegin: () => {
       // alert("upload has begun");
     },
     onUploadProgress: (p) => {
       // console.log(p);
-      setUploadProgress(p);
+      setUploadProgress(p)
     },
-  });
+  })
 
   const fileTypes = permittedFileInfo?.config
     ? Object.keys(permittedFileInfo?.config)
-    : [];
+    : []
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: fileTypes ? generateClientDropzoneAccept(fileTypes) : undefined,
-  });
+  })
 
   return (
     <div>
@@ -197,7 +197,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
                             setOpen={setCropOpen}
                             file={files[0]}
                             onSelect={(file) => {
-                              startUpload([file]);
+                              startUpload([file])
                             }}
                           />
                         )}
@@ -218,12 +218,12 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
                         <Input
                           {...field}
                           onChange={(e) => {
-                            field.onChange(e);
+                            field.onChange(e)
                             if (e.target.value === user.username) {
-                              setUsernameFound(undefined);
-                              return;
+                              setUsernameFound(undefined)
+                              return
                             }
-                            setUsernameFound(null);
+                            setUsernameFound(null)
                             fetch(
                               `/api/auth/username?username=${e.target.value}`
                             )
@@ -233,8 +233,8 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
                                   e.target.value === user.username
                                     ? false
                                     : data.found
-                                );
-                              });
+                                )
+                              })
                           }}
                         />
                         {usernameFound === true && (
@@ -382,13 +382,13 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
               variant="outline"
               className="items-center gap-2"
               onClick={() => {
-                setLogOutLoading(true);
+                setLogOutLoading(true)
                 fetch("/api/auth/", {
                   method: "DELETE",
                 }).then(() => {
-                  setLogOutLoading(false);
-                  window.location.href = "/";
-                });
+                  setLogOutLoading(false)
+                  window.location.href = "/"
+                })
               }}
               disabled={logOutLoading}
             >
@@ -403,5 +403,5 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
         </form>
       </Form>
     </div>
-  );
+  )
 }

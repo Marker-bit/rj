@@ -1,58 +1,58 @@
-"use client";
+"use client"
 
-import { DrawerDialog } from "@/components/drawer";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { ReadEvent } from "@prisma/client";
-import { useQuery } from "@tanstack/react-query";
-import { addDays, format, isAfter, isBefore, isEqual } from "date-fns";
-import { ru } from "date-fns/locale";
-import { BookMinus, ChevronLeft, Loader } from "lucide-react";
-import Link from "next/link";
-import { useState } from "react";
-import { DateRange } from "react-day-picker";
-import { EventView } from "./EventView";
+import { DrawerDialog } from "@/components/drawer"
+import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
+import { DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { ReadEvent } from "@prisma/client"
+import { useQuery } from "@tanstack/react-query"
+import { addDays, format, isAfter, isBefore, isEqual } from "date-fns"
+import { ru } from "date-fns/locale"
+import { BookMinus, ChevronLeft, Loader } from "lucide-react"
+import Link from "next/link"
+import { useState } from "react"
+import { DateRange } from "react-day-picker"
+import { EventView } from "./EventView"
 
 export default function JournalPage() {
-  const tomorrow = addDays(new Date(), 1);
-  const [dates, setDates] = useState<DateRange | undefined>();
-  const [filterOpen, setFilterOpen] = useState(false);
+  const tomorrow = addDays(new Date(), 1)
+  const [dates, setDates] = useState<DateRange | undefined>()
+  const [filterOpen, setFilterOpen] = useState(false)
   const eventsQuery = useQuery({
     queryKey: ["events"],
     queryFn: () => fetch("/api/journal").then((res) => res.json()),
-  });
+  })
   if (eventsQuery.isPending) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <Loader className="w-6 h-6 animate-spin" />
       </div>
-    );
+    )
   }
   let events: (ReadEvent & {
-    book: Book;
-  })[] = eventsQuery.data!;
+    book: Book
+  })[] = eventsQuery.data!
   function isAfterOrEqual(date: Date, dateToCompare: Date) {
-    return isAfter(date, dateToCompare) || isEqual(date, dateToCompare);
+    return isAfter(date, dateToCompare) || isEqual(date, dateToCompare)
   }
   function isBeforeOrEqual(date: Date, dateToCompare: Date) {
-    return isBefore(date, dateToCompare) || isEqual(date, dateToCompare);
+    return isBefore(date, dateToCompare) || isEqual(date, dateToCompare)
   }
   events = events.filter((event) => {
     if (dates?.from && dates?.to) {
       return (
         isAfterOrEqual(event.readAt, dates.from) &&
         isBeforeOrEqual(event.readAt, dates.to)
-      );
+      )
     }
     if (dates?.from) {
-      return isAfterOrEqual(event.readAt, dates.from);
+      return isAfterOrEqual(event.readAt, dates.from)
     }
     if (dates?.to) {
-      return isBeforeOrEqual(event.readAt, dates.to);
+      return isBeforeOrEqual(event.readAt, dates.to)
     }
-    return true;
-  });
+    return true
+  })
   return (
     <div>
       <div className="text-5xl font-black m-2 flex gap-2 items-center">
@@ -104,16 +104,16 @@ export default function JournalPage() {
         )}
         {events.map(
           (event: {
-            id: string;
-            bookId: string;
-            book: Book;
-            pagesRead: number;
-            readAt: string | Date;
+            id: string
+            bookId: string
+            book: Book
+            pagesRead: number
+            readAt: string | Date
           }) => (
             <EventView event={event} key={event.id} />
           )
         )}
       </div>
     </div>
-  );
+  )
 }

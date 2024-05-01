@@ -1,6 +1,6 @@
-"use client";
+"use client"
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -8,22 +8,22 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { UploadButton } from "@/components/uploadthing";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus, Trash } from "lucide-react";
-import Image from "next/image";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { DrawerDialog } from "../drawer";
-import { DialogHeader, DialogTitle } from "../ui/dialog";
-import { Loader } from "../ui/loader";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { UploadButton } from "@/components/uploadthing"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { Plus, Trash } from "lucide-react"
+import Image from "next/image"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { DrawerDialog } from "../drawer"
+import { DialogHeader, DialogTitle } from "../ui/dialog"
+import { Loader } from "../ui/loader"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -31,23 +31,23 @@ const bookSchema = z.object({
   pages: z.coerce.number().min(1),
   description: z.string().optional(),
   coverUrl: z.string().optional(),
-});
+})
 
 export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
   const form = useForm<z.infer<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
-  });
-  const [search, setSearch] = useState("");
-  const [searchLoading, setSearchLoading] = useState(false);
+  })
+  const [search, setSearch] = useState("")
+  const [searchLoading, setSearchLoading] = useState(false)
   const [searchResults, setSearchResults] = useState<
     {
-      title: string;
-      authors: string;
-      imageUrl: string | null;
+      title: string
+      authors: string
+      imageUrl: string | null
     }[]
-  >();
-  const [fileUploading, setFileUploading] = useState(false);
+  >()
+  const [fileUploading, setFileUploading] = useState(false)
 
   const bookMutation = useMutation({
     mutationFn: (values: z.infer<typeof bookSchema>) =>
@@ -58,30 +58,30 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["books"],
-      });
+      })
       form.reset({
         title: "",
         author: "",
         pages: NaN,
         coverUrl: "",
         description: "",
-      });
-      if (onSuccess) onSuccess();
+      })
+      if (onSuccess) onSuccess()
     },
-  });
+  })
 
   function onSubmit(values: z.infer<typeof bookSchema>) {
-    bookMutation.mutate(values);
+    bookMutation.mutate(values)
   }
 
   function searchClick() {
-    setSearchLoading(true);
+    setSearchLoading(true)
     fetch(`/api/labirintSearch?q=${encodeURIComponent(search)}`)
       .then((res) => res.json())
       .then((res) => {
-        setSearchLoading(false);
-        setSearchResults(res);
-      });
+        setSearchLoading(false)
+        setSearchResults(res)
+      })
   }
 
   return (
@@ -120,8 +120,8 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
                     title: book.title,
                     author: book.authors,
                     coverUrl: book.imageUrl ?? undefined,
-                  });
-                  setSearchResults(undefined);
+                  })
+                  setSearchResults(undefined)
                 }}
               >
                 {book.imageUrl && (
@@ -180,16 +180,16 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
                         allowedContent: "Картинка (до 8МБ)",
                       }}
                       onClientUploadComplete={(res) => {
-                        field.onChange(res[0].url);
-                        setFileUploading(false);
+                        field.onChange(res[0].url)
+                        setFileUploading(false)
                       }}
                       onUploadError={(error: Error) => {
                         toast.error("Ошибка при загрузке обложки", {
                           description: error.message,
-                        });
+                        })
                       }}
                       onUploadBegin={(fileName) => {
-                        setFileUploading(true);
+                        setFileUploading(true)
                       }}
                       appearance={{
                         allowedContent: "text-black/70 dark:text-white/70",
@@ -267,12 +267,12 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
         </form>
       </Form>
     </>
-  );
+  )
 }
 
 export function MobileForm() {
-  const [open, setOpen] = useState(false);
-  const router = useRouter();
+  const [open, setOpen] = useState(false)
+  const router = useRouter()
 
   return (
     <>
@@ -288,12 +288,12 @@ export function MobileForm() {
         <div className="p-4">
           <BookForm
             onSuccess={() => {
-              setOpen(false);
-              router.refresh();
+              setOpen(false)
+              router.refresh()
             }}
           />
         </div>
       </DrawerDialog>
     </>
-  );
+  )
 }

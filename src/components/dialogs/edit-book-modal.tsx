@@ -1,6 +1,6 @@
-import { DrawerDialog } from "@/components/drawer";
-import { DialogHeader, DialogTitle } from "../ui/dialog";
-import { Edit, Loader, Trash } from "lucide-react";
+import { DrawerDialog } from "@/components/drawer"
+import { DialogHeader, DialogTitle } from "../ui/dialog"
+import { Edit, Loader, Trash } from "lucide-react"
 import {
   Form,
   FormControl,
@@ -8,17 +8,17 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import Image from "next/image";
-import { Button } from "../ui/button";
-import { UploadButton } from "../uploadthing";
-import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
-import { Book } from "@prisma/client";
+} from "../ui/form"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import Image from "next/image"
+import { Button } from "../ui/button"
+import { UploadButton } from "../uploadthing"
+import { Input } from "../ui/input"
+import { Textarea } from "../ui/textarea"
+import { Book } from "@prisma/client"
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -26,18 +26,18 @@ const bookSchema = z.object({
   pages: z.coerce.number().min(1),
   description: z.string().optional(),
   coverUrl: z.string().optional(),
-});
+})
 
 export function EditBookModal({
   open,
   setOpen,
   book,
 }: {
-  open: boolean;
-  setOpen: (b: boolean) => void;
-  book: Book;
+  open: boolean
+  setOpen: (b: boolean) => void
+  book: Book
 }) {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
   const form = useForm<z.infer<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
     defaultValues: {
@@ -47,7 +47,7 @@ export function EditBookModal({
       description: book.description ?? "",
       coverUrl: book.coverUrl ?? "",
     },
-  });
+  })
 
   const editMutation = useMutation({
     mutationFn: (values: z.infer<typeof bookSchema>) =>
@@ -58,16 +58,16 @@ export function EditBookModal({
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["books"],
-      });
+      })
       queryClient.invalidateQueries({
         queryKey: ["events"],
-      });
+      })
     },
-  });
+  })
 
   async function onSubmit(values: z.infer<typeof bookSchema>) {
-    await editMutation.mutateAsync(values);
-    setOpen(false);
+    await editMutation.mutateAsync(values)
+    setOpen(false)
   }
 
   return (
@@ -114,10 +114,10 @@ export function EditBookModal({
                         allowedContent: "Картинка (до 8МБ)",
                       }}
                       onClientUploadComplete={(res) => {
-                        field.onChange(res[0].url);
+                        field.onChange(res[0].url)
                       }}
                       onUploadError={(error: Error) => {
-                        alert(`ERROR! ${error.message}`);
+                        alert(`ERROR! ${error.message}`)
                       }}
                     />
                   </div>
@@ -193,5 +193,5 @@ export function EditBookModal({
         </form>
       </Form>
     </DrawerDialog>
-  );
+  )
 }

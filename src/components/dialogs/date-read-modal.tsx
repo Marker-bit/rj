@@ -1,40 +1,40 @@
-"use client";
+"use client"
 
-import { ru } from "date-fns/locale";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Calendar } from "@/components/ui/calendar";
-import { DrawerDialog } from "@/components/drawer";
-import { useRef, useState } from "react";
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Loader, Save } from "lucide-react";
-import { addDays } from "date-fns";
-import { toast } from "sonner";
+import { ru } from "date-fns/locale"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Calendar } from "@/components/ui/calendar"
+import { DrawerDialog } from "@/components/drawer"
+import { useRef, useState } from "react"
+import { DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Loader, Save } from "lucide-react"
+import { addDays } from "date-fns"
+import { toast } from "sonner"
 
 export function DateReadModal({
   isOpen,
   setIsOpen,
   readDateMutation,
 }: {
-  isOpen: boolean;
-  setIsOpen: (open: boolean) => void;
-  readDateMutation: any;
+  isOpen: boolean
+  setIsOpen: (open: boolean) => void
+  readDateMutation: any
 }) {
-  const tomorrow = addDays(new Date(), 1);
-  const [date, setDate] = useState<Date | undefined>(new Date());
-  const [changePages, setChangePages] = useState<string>("");
-  const input = useRef<HTMLInputElement>(null);
+  const tomorrow = addDays(new Date(), 1)
+  const [date, setDate] = useState<Date | undefined>(new Date())
+  const [changePages, setChangePages] = useState<string>("")
+  const input = useRef<HTMLInputElement>(null)
 
   const handleClose = (b: boolean) => {
     if (b) {
-      input.current?.focus();
-      setIsOpen(true);
-      return;
+      input.current?.focus()
+      setIsOpen(true)
+      return
     }
-    setDate(new Date());
-    setChangePages("");
-    setIsOpen(false);
-  };
+    setDate(new Date())
+    setChangePages("")
+    setIsOpen(false)
+  }
 
   return (
     <DrawerDialog open={isOpen} onOpenChange={handleClose}>
@@ -53,24 +53,24 @@ export function DateReadModal({
         />
         <form
           onSubmit={(evt) => {
-            evt.preventDefault();
+            evt.preventDefault()
             if (!date) {
-              toast.error("Выберите дату");
-              return;
+              toast.error("Выберите дату")
+              return
             }
             if (!changePages) {
-              toast.error("Укажите количество страниц");
-              return;
+              toast.error("Укажите количество страниц")
+              return
             }
             if (parseInt(changePages) < 1) {
-              toast.error("Количество страниц должно быть больше 0");
-              return;
+              toast.error("Количество страниц должно быть больше 0")
+              return
             }
             if (isNaN(parseInt(changePages))) {
-              toast.error("Количество страниц должно быть числом");
-              return;
+              toast.error("Количество страниц должно быть числом")
+              return
             }
-            readDateMutation.mutate({ date, pages: parseInt(changePages) });
+            readDateMutation.mutate({ date, pages: parseInt(changePages) })
           }}
         >
           <div className="flex gap-2">
@@ -93,5 +93,5 @@ export function DateReadModal({
         </form>
       </div>
     </DrawerDialog>
-  );
+  )
 }

@@ -1,20 +1,20 @@
-"use client";
+"use client"
 
-import { DrawerDialog } from "@/components/drawer";
-import { Button } from "@/components/ui/button";
-import { DialogContent } from "@/components/ui/dialog";
-import { PlusIcon } from "lucide-react";
-import { useState } from "react";
-import { CreateGroupForm } from "./create-group-form";
-import { useRouter } from "next/navigation";
+import { DrawerDialog } from "@/components/drawer"
+import { Button } from "@/components/ui/button"
+import { DialogContent } from "@/components/ui/dialog"
+import { PlusIcon } from "lucide-react"
+import { useState } from "react"
+import { CreateGroupForm } from "./create-group-form"
+import { useRouter } from "next/navigation"
 
 export function AddGroupButton() {
-  const [open, setOpen] = useState(false);
-  const router = useRouter();
+  const [open, setOpen] = useState(false)
+  const router = useRouter()
 
   function onDone() {
-    setOpen(false);
-    router.refresh();
+    setOpen(false)
+    router.refresh()
   }
 
   return (
@@ -31,5 +31,5 @@ export function AddGroupButton() {
         <div className="max-sm:hidden">Добавить</div>
       </Button>
     </>
-  );
+  )
 }

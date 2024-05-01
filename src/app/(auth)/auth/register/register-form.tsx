@@ -1,6 +1,6 @@
-"use client";
+"use client"
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -9,18 +9,18 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { useDebounceCallback } from "usehooks-ts";
-import { z } from "zod";
-import { Loader } from "@/components/ui/loader";
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { toast } from "sonner"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation } from "@tanstack/react-query"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { useDebounceCallback } from "usehooks-ts"
+import { z } from "zod"
+import { Loader } from "@/components/ui/loader"
 
 const formSchema = z.object({
   username: z
@@ -35,24 +35,28 @@ const formSchema = z.object({
       /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&.*-]).{8,}$/,
       "Пароль должен содержать минимум 8 символов, по крайней мере, одну заглавную английскую букву, одну строчную английскую букву, одну цифру и один специальный символ"
     ),
-  firstName: z.string({
-    required_error: "Имя обязательно",
-  }).min(3, "Имя должно содержать минимум 3 символа"),
-  lastName: z.string({
-    required_error: "Фамилия обязательна",
-  }).min(3, "Фамилия должна содержать минимум 3 символа"),
-});
+  firstName: z
+    .string({
+      required_error: "Имя обязательно",
+    })
+    .min(3, "Имя должно содержать минимум 3 символа"),
+  lastName: z
+    .string({
+      required_error: "Фамилия обязательна",
+    })
+    .min(3, "Фамилия должна содержать минимум 3 символа"),
+})
 
 export function RegisterForm() {
-  const [usernameFound, setUsernameFound] = useState<boolean | null>(null);
+  const [usernameFound, setUsernameFound] = useState<boolean | null>(null)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: "",
       password: "",
     },
-  });
-  const router = useRouter();
+  })
+  const router = useRouter()
 
   const userMutation = useMutation({
     mutationFn: (values: z.infer<typeof formSchema>) => {
@@ -61,22 +65,22 @@ export function RegisterForm() {
         method: "POST",
       }).then(async (res) => {
         if (res.ok) {
-          router.push("/auth/login");
+          router.push("/auth/login")
         } else {
-          const data = await res.json();
+          const data = await res.json()
           if (data.error) {
             toast.error("Возникла проблема при регистрации", {
               description: data.error,
-            });
-            return;
+            })
+            return
           }
         }
-      });
+      })
     },
-  });
+  })
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    userMutation.mutate(values);
+    userMutation.mutate(values)
   }
 
   const fetchUsername = useDebounceCallback(
@@ -84,10 +88,10 @@ export function RegisterForm() {
       fetch(`/api/auth/username?username=${username}`)
         .then((res) => res.json())
         .then((data) => {
-          setUsernameFound(data.found);
+          setUsernameFound(data.found)
         }),
     200
-  );
+  )
 
   return (
     <Form {...form}>
@@ -132,8 +136,8 @@ export function RegisterForm() {
                     placeholder="ivan.ivanov"
                     {...field}
                     onChange={(e) => {
-                      field.onChange(e);
-                      fetchUsername(e.target.value);
+                      field.onChange(e)
+                      fetchUsername(e.target.value)
                     }}
                   />
 
@@ -198,5 +202,5 @@ export function RegisterForm() {
         </p>
       </form>
     </Form>
-  );
+  )
 }

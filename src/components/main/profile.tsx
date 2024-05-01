@@ -1,17 +1,17 @@
-import { db } from "@/lib/db";
-import { validateRequest } from "@/lib/server-validate-request";
-import { BadgeCheck, ChevronRight, User } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
+import { db } from "@/lib/db"
+import { validateRequest } from "@/lib/server-validate-request"
+import { BadgeCheck, ChevronRight, User } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
 
 export async function Profile() {
-  const { user } = await validateRequest();
-  if (!user) return null;
+  const { user } = await validateRequest()
+  if (!user) return null
   const profile = await db.user.findUniqueOrThrow({
     where: {
       id: user.id,
     },
-  });
+  })
   return (
     <div className="flex cursor-default flex-col gap-3 border-b p-3">
       <Link href="/profile">
@@ -36,9 +36,11 @@ export async function Profile() {
               <BadgeCheck className="size-6 text-yellow-500" />
             )}
           </div>
-          <div className="text-sm text-muted-foreground/70">@{profile.username}</div>
+          <div className="text-sm text-muted-foreground/70">
+            @{profile.username}
+          </div>
         </div>
       </div>
     </div>
-  );
+  )
 }

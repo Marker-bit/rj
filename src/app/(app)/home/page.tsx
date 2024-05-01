@@ -1,12 +1,12 @@
-import { Books } from "@/components/main/books";
-import { Profile } from "@/components/main/profile";
-import { Stats } from "@/components/main/stats";
-import { StreakInfo } from "@/components/main/streak-info";
-import { ModeToggle } from "@/components/mode-toggle";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Suspense } from "react";
+import { Books } from "@/components/main/books"
+import { Profile } from "@/components/main/profile"
+import { Stats } from "@/components/main/stats"
+import { StreakInfo } from "@/components/main/streak-info"
+import { ModeToggle } from "@/components/mode-toggle"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Suspense } from "react"
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic"
 
 export default function Home() {
   return (
@@ -60,5 +60,5 @@ export default function Home() {
         </Suspense>
       </div>
     </div>
-  );
+  )
 }

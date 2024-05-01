@@ -1,6 +1,6 @@
-"use client";
+"use client"
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -9,21 +9,21 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Loader } from "@/components/ui/loader";
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { toast } from "sonner"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation } from "@tanstack/react-query"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { Loader } from "@/components/ui/loader"
 
 const formSchema = z.object({
   username: z.string(),
   password: z.string(),
-});
+})
 
 export function LoginForm() {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -32,8 +32,8 @@ export function LoginForm() {
       username: "",
       password: "",
     },
-  });
-  const router = useRouter();
+  })
+  const router = useRouter()
 
   const userMutation = useMutation({
     mutationFn: (values: z.infer<typeof formSchema>) => {
@@ -42,22 +42,22 @@ export function LoginForm() {
         method: "POST",
       }).then(async (res) => {
         if (res.ok) {
-          router.refresh();
+          router.refresh()
         } else {
-          const data = await res.json();
+          const data = await res.json()
           if (data.error) {
             toast.error("Возникла проблема при входе", {
               description: data.error,
-            });
-            return;
+            })
+            return
           }
         }
-      });
+      })
     },
-  });
+  })
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    userMutation.mutate(values);
+    userMutation.mutate(values)
   }
 
   return (
@@ -123,5 +123,5 @@ export function LoginForm() {
         </p>
       </form>
     </Form>
-  );
+  )
 }
