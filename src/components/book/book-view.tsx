@@ -41,6 +41,8 @@ import { toast } from "sonner";
 import { Loader } from "../ui/loader";
 import { DateDoneModal } from "../dialogs/date-done-modal";
 
+export const dynamic = "force-dynamic";
+
 export function BookView({ book }: { book: any }) {
   const queryClient = useQueryClient();
   const [editOpen, setEditOpen] = useState(false);

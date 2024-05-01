@@ -37,6 +37,7 @@
     "@vercel/blob": "^0.22.0",
     "@vercel/og": "^0.6.2",
     "@vercel/speed-insights": "^1.0.10",
+    "blurhash": "^2.0.5",
     "chart.js": "^2.9.4",
     "cheerio": "^1.0.0-rc.12",
     "class-variance-authority": "^0.7.0",
