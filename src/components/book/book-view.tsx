@@ -40,10 +40,11 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { Loader } from "../ui/loader";
 import { DateDoneModal } from "../dialogs/date-done-modal";
+import { Book } from "@/lib/api-types";
 
 export const dynamic = "force-dynamic";
 
-export function BookView({ book }: { book: any }) {
+export function BookView({ book }: { book: Book }) {
   const queryClient = useQueryClient();
   const [editOpen, setEditOpen] = useState(false);
   const [dateOpen, setDateOpen] = useState(false);
@@ -308,7 +309,7 @@ export function BookView({ book }: { book: any }) {
               </Button>
             </>
           )}
-          {book.groupBookId && (
+          {book.groupBook && (
             <Tooltip>
               <TooltipTrigger>
                 <Link href={`/groups/${book.groupBook.group.id}`}>
@@ -391,7 +392,7 @@ export function BookView({ book }: { book: any }) {
               variant="outline"
               className="p-1 w-fit h-fit"
               onClick={() => setEditOpen(true)}
-              disabled={book.groupBookId}
+              disabled={book.groupBookId !== null}
             >
               <Edit className="w-4 h-4" />
             </Button>
