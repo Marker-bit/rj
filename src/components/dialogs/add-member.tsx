@@ -41,7 +41,7 @@ export default function AddMember({
               group.members.every((m: any) => m.userId !== friend.id) && (
                 <button
                   key={friend.id}
-                  className="flex gap-2 items-center p-2 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-900"
+                  className="flex items-center gap-2 rounded-xl p-2 hover:bg-neutral-100 dark:hover:bg-neutral-900"
                   onClick={() => {
                     setLoading(friend.id);
                     fetch(`/api/groups/${group.id}/member`, {
@@ -61,19 +61,19 @@ export default function AddMember({
                     alt="avatar"
                     width={40}
                     height={40}
-                    className="rounded-xl h-8 w-auto"
+                    className="h-8 w-auto rounded-xl"
                   />
                   <div className="flex flex-col items-start">
                     <div className="font-bold">
                       {friend.firstName} {friend.lastName}
                     </div>
-                    <div className="text-muted-foreground/70 text-sm">
+                    <div className="text-sm text-muted-foreground/70">
                       @{friend.username}
                     </div>
                   </div>
                   <div className="ml-auto">
                     {loading === friend.id && (
-                      <Loader className="w-4 h-4 animate-spin" />
+                      <Loader className="size-4 animate-spin" />
                     )}
                   </div>
                 </button>

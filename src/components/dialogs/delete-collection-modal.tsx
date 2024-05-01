@@ -45,7 +45,7 @@ export function DeleteCollectionModal({
           действие невозможно отменить.
         </DialogDescription>
       </DialogHeader>
-      <div className="flex max-sm:flex-col gap-2 md:ml-auto md:w-fit">
+      <div className="flex gap-2 max-sm:flex-col md:ml-auto md:w-fit">
         <Button variant="outline" onClick={() => setOpen(false)}>
           Отмена
         </Button>
@@ -56,7 +56,7 @@ export function DeleteCollectionModal({
           disabled={deleteMutation.isPending}
         >
           {deleteMutation.isPending && (
-            <Loader className="h-4 w-4 animate-spin" />
+            <Loader className="size-4 animate-spin" />
           )}
           Удалить
         </Button>

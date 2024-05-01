@@ -38,12 +38,12 @@ export function DateDoneModal({
       <DialogHeader className="mb-2">
         <DialogTitle>Отметить прочитанную книгу</DialogTitle>
       </DialogHeader>
-      <div className="flex gap-2 flex-col">
+      <div className="flex flex-col gap-2">
         <Calendar
           mode="single"
           selected={date}
           onSelect={setDate}
-          className="rounded-md border w-fit max-sm:w-full"
+          className="w-fit rounded-md border max-sm:w-full"
           disabled={[{ from: tomorrow, to: new Date(3000, 1) }]}
           weekStartsOn={1}
           locale={ru}
@@ -59,9 +59,9 @@ export function DateDoneModal({
           className="w-fit max-sm:w-full"
         >
           {readDoneMutation.isPending ? (
-            <Loader invert className="mr-2 h-4 w-4" />
+            <Loader invert className="mr-2 size-4" />
           ) : (
-            <Save className="mr-2 h-4 w-4" />
+            <Save className="mr-2 size-4" />
           )}
           Отметить
         </Button>

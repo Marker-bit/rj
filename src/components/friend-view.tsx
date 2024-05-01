@@ -49,29 +49,29 @@ export function FriendView({
   const followingRes = following || userQuery.data?.following;
   return (
     <Link href={`/profile/${friend.username}`}>
-      <div className="p-4 rounded-md border flex gap-2 items-center cursor-pointer group transition-colors">
+      <div className="group flex cursor-pointer items-center gap-2 rounded-md border p-4 transition-colors">
         <Image
           src={friend.avatarUrl ? friend.avatarUrl : "/no-avatar.png"}
           alt="avatar"
           width={100}
           height={100}
-          className="rounded-full w-16 h-16"
+          className="size-16 rounded-full"
         />
         <div className="flex flex-col">
-          <div className="text-xl font-semibold flex items-center gap-2">
+          <div className="flex items-center gap-2 text-xl font-semibold">
             {friend.firstName} {friend.lastName}
             {friend.verified && (
-              <BadgeCheck className="w-6 h-6 text-yellow-500" />
+              <BadgeCheck className="size-6 text-yellow-500" />
             )}
           </div>
           <div className="text-sm text-muted-foreground/70">
             @{friend.username}
           </div>
           {followingRes === undefined && userQuery.isPending ? (
-            <Skeleton className="w-48 h-10 rounded-md" />
+            <Skeleton className="h-10 w-48 rounded-md" />
           ) : (
             <Button
-              className="gap-2 w-fit mt-2"
+              className="mt-2 w-fit gap-2"
               onClick={(evt) => {
                 followMutation.mutate();
                 evt.preventDefault();
@@ -82,18 +82,18 @@ export function FriendView({
               {followingRes === false ? (
                 <>
                   {followMutation.isPending ? (
-                    <Loader invert={!followingRes} className="w-4 h-4" />
+                    <Loader invert={!followingRes} className="size-4" />
                   ) : (
-                    <UserPlus className="w-4 h-4" />
+                    <UserPlus className="size-4" />
                   )}
                   Подписаться
                 </>
               ) : (
                 <>
                   {followMutation.isPending ? (
-                    <Loader invert={!followingRes} className="w-4 h-4" />
+                    <Loader invert={!followingRes} className="size-4" />
                   ) : (
-                    <UserX className="w-4 h-4" />
+                    <UserX className="size-4" />
                   )}
                   Отменить подписку
                 </>

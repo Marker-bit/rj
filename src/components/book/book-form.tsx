@@ -86,7 +86,7 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
 
   return (
     <>
-      <div className="flex flex-col gap-2 mb-2">
+      <div className="mb-2 flex flex-col gap-2">
         {/* <form
           onSubmit={(evt) => {
             evt.preventDefault();
@@ -109,12 +109,12 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
             </Button>
           </div>
         </form> */}
-        <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-2">
+        <div className="flex gap-2 md:grid md:grid-cols-2 lg:grid-cols-4">
           {searchResults &&
             searchResults.slice(0, 5).map((book) => (
               <button
                 key={book.title}
-                className="rounded-xl p-3 border flex gap-2"
+                className="flex gap-2 rounded-xl border p-3"
                 onClick={() => {
                   form.reset({
                     title: book.title,
@@ -129,13 +129,13 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
                     src={book.imageUrl}
                     width={500}
                     height={500}
-                    className="w-[20vw] md:w-[15vw] lg:w-[10vw] h-auto rounded-md"
+                    className="h-auto w-[20vw] rounded-md md:w-[15vw] lg:w-[10vw]"
                     alt="cover"
                   />
                 )}
                 <div className="flex flex-col">
                   <div className="text-xl">{book.title}</div>
-                  <div className="text-xs text-black/70 w-fit">
+                  <div className="w-fit text-xs text-black/70">
                     {book.authors}
                   </div>
                 </div>
@@ -159,15 +159,15 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
                       className="h-52 w-auto rounded-md"
                       alt="cover"
                     />
-                    <div className="flex flex-col gap-2 absolute top-2 right-0 translate-x-[50%]">
+                    <div className="absolute right-0 top-2 flex translate-x-1/2 flex-col gap-2">
                       <Button
                         size="icon"
-                        className="w-fit h-fit p-1"
+                        className="size-fit p-1"
                         variant="outline"
                         onClick={() => field.onChange("")}
                         type="button"
                       >
-                        <Trash className="w-4 h-4" />
+                        <Trash className="size-4" />
                       </Button>
                     </div>
                   </div>
@@ -258,9 +258,9 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
             disabled={bookMutation.isPending || fileUploading}
           >
             {bookMutation.isPending ? (
-              <Loader invert className="w-4 h-4 mr-2" />
+              <Loader invert className="mr-2 size-4" />
             ) : (
-              <Plus className="w-4 h-4 mr-2" />
+              <Plus className="mr-2 size-4" />
             )}
             Создать
           </Button>
@@ -276,9 +276,9 @@ export function MobileForm() {
 
   return (
     <>
-      <div className="flex items-center m-2">
+      <div className="m-2 flex items-center">
         <Button onClick={() => setOpen(true)}>
-          <Plus className="mr-2 h-4 w-4" /> Добавить книгу
+          <Plus className="mr-2 size-4" /> Добавить книгу
         </Button>
       </div>
       <DrawerDialog open={open} onOpenChange={setOpen} className="min-w-[50vw]">

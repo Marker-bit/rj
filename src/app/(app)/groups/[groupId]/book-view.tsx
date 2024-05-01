@@ -32,7 +32,7 @@ export function GroupBookView({
   return (
     <div
       key={groupBook.id}
-      className="flex gap-2 p-2 items-center rounded-xl hover:bg-muted/10 transition-all"
+      className="flex items-center gap-2 rounded-xl p-2 transition-all hover:bg-muted/10"
     >
       {groupBook.coverUrl && (
         <Image
@@ -40,16 +40,16 @@ export function GroupBookView({
           alt="book"
           width={500}
           height={500}
-          className="rounded-md h-32 w-auto"
+          className="h-32 w-auto rounded-md"
         />
       )}
       <div className="flex flex-col gap-1">
         <div className="text-xl font-bold">{groupBook.title}</div>
-        <div className="text-zinc-500 -mt-1 text-sm">{groupBook.author}</div>
-        <div className="text-zinc-500 -mt-1 text-sm">
+        <div className="-mt-1 text-sm text-zinc-500">{groupBook.author}</div>
+        <div className="-mt-1 text-sm text-zinc-500">
           {groupBook.pages} стр.
         </div>
-        <div className="text-zinc-500 -mt-1 text-sm">
+        <div className="-mt-1 text-sm text-zinc-500">
           {groupBook.book.length === 0 ? "Нет" : groupBook.book.length}{" "}
           {declOfNum(groupBook.book.length, [
             "читатель",
@@ -57,15 +57,15 @@ export function GroupBookView({
             "читателей",
           ])}
         </div>
-        <div className="text-zinc-500 -mt-1 text-sm">
+        <div className="-mt-1 text-sm text-zinc-500">
           {groupBook.description}
         </div>
       </div>
       <div className="ml-auto flex gap-1">
         {book && (
           <Link href={`/books?bookId=${book.id}`}>
-            <Button size="icon" variant="ghost" className="p-1 h-fit w-fit">
-              <BookOpen className="w-4 h-4" />
+            <Button size="icon" variant="ghost" className="size-fit p-1">
+              <BookOpen className="size-4" />
             </Button>
           </Link>
         )}
@@ -74,7 +74,7 @@ export function GroupBookView({
           <Button
             size="icon"
             variant="ghost"
-            className="p-1 h-fit w-fit"
+            className="size-fit p-1"
             onClick={() => {
               setLoading(true);
               fetch(
@@ -89,16 +89,16 @@ export function GroupBookView({
             }}
           >
             {loading ? (
-              <Loader className="w-4 h-4 animate-spin" />
+              <Loader className="size-4 animate-spin" />
             ) : (
-              <Plus className="w-4 h-4" />
+              <Plus className="size-4" />
             )}
           </Button>
         ) : (
           <Button
             size="icon"
             variant="ghost"
-            className="p-1 h-fit w-fit"
+            className="size-fit p-1"
             onClick={() => {
               setLoading(true);
               fetch(
@@ -113,9 +113,9 @@ export function GroupBookView({
             }}
           >
             {loading ? (
-              <Loader className="w-4 h-4 animate-spin" />
+              <Loader className="size-4 animate-spin" />
             ) : (
-              <Minus className="w-4 h-4" />
+              <Minus className="size-4" />
             )}
           </Button>
         )}

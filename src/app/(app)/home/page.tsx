@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 export default function Home() {
   return (
     <div className="mb-[15vh]">
-      <div className="text-5xl font-black m-2 flex items-center">
+      <div className="m-2 flex items-center text-5xl font-black">
         Главная
         <div className="ml-auto">
           <ModeToggle />
@@ -23,11 +23,11 @@ export default function Home() {
       <div className="flex flex-col">
         <Suspense
           fallback={
-            <div className="flex flex-col m-2 gap-2">
-              <Skeleton className="w-56 h-12" />
-              <Skeleton className="w-full h-44" />
-              <Skeleton className="w-full h-44" />
-              <Skeleton className="w-full h-44" />
+            <div className="m-2 flex flex-col gap-2">
+              <Skeleton className="h-12 w-56" />
+              <Skeleton className="h-44 w-full" />
+              <Skeleton className="h-44 w-full" />
+              <Skeleton className="h-44 w-full" />
             </div>
           }
         >
@@ -35,13 +35,13 @@ export default function Home() {
         </Suspense>
         <Suspense
           fallback={
-            <div className="flex flex-col gap-2 m-2">
-              <Skeleton className="w-80 h-12" />
+            <div className="m-2 flex flex-col gap-2">
+              <Skeleton className="h-12 w-80" />
               <div className="grid grid-cols-2 gap-2">
-                <Skeleton className="w-full h-14" />
-                <Skeleton className="w-full h-14" />
-                <Skeleton className="w-full h-14" />
-                <Skeleton className="w-full h-14" />
+                <Skeleton className="h-14 w-full" />
+                <Skeleton className="h-14 w-full" />
+                <Skeleton className="h-14 w-full" />
+                <Skeleton className="h-14 w-full" />
               </div>
             </div>
           }
@@ -50,9 +50,9 @@ export default function Home() {
         </Suspense>
         <Suspense
           fallback={
-            <div className="flex flex-col gap-2 m-2">
-              <Skeleton className="w-80 h-12" />
-              <Skeleton className="w-full h-44" />
+            <div className="m-2 flex flex-col gap-2">
+              <Skeleton className="h-12 w-80" />
+              <Skeleton className="h-44 w-full" />
             </div>
           }
         >

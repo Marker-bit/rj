@@ -45,7 +45,7 @@ export function BookInfoModal({
 
   return (
     <DrawerDialog open={open} onOpenChange={setOpen} className="min-w-[50vw]">
-      <div className="flex gap-2 flex-col mt-2">
+      <div className="mt-2 flex flex-col gap-2">
         <div className="flex">
           {book.coverUrl && (
             <Image
@@ -53,11 +53,11 @@ export function BookInfoModal({
               alt="book"
               width={500}
               height={500}
-              className="rounded-md h-52 w-auto"
+              className="h-52 w-auto rounded-md"
             />
           )}
-          <div className="flex flex-col m-2 mt-0">
-            <div className="font-bold text-xl">{book.title}</div>
+          <div className="m-2 mt-0 flex flex-col">
+            <div className="text-xl font-bold">{book.title}</div>
             <div className="text-sm">{book.author}</div>
             <div className="text-sm">
               {book.pages}{" "}
@@ -72,7 +72,7 @@ export function BookInfoModal({
             </div>
             {book.description && (
               <pre
-                className="relative text-black/70 dark:text-white/70 overflow-hidden font-sans block mt-2 cursor-pointer text-wrap"
+                className="relative mt-2 block cursor-pointer overflow-hidden text-wrap font-sans text-black/70 dark:text-white/70"
                 onClick={() => setDescriptionDrawerOpen(true)}
               >
                 {book.description.split("\n").slice(0, 5).join("\n")}
@@ -86,7 +86,7 @@ export function BookInfoModal({
             <div className="flex items-center gap-2" key={event.id}>
               {event.pagesRead === book.pages ? (
                 <>
-                  <BookOpenCheck className="text-green-500 w-4 h-4" />
+                  <BookOpenCheck className="size-4 text-green-500" />
                   <div className="flex flex-col">
                     <div>Книга прочитана!</div>
                     <div className="text-xs text-black/50 dark:text-white/50">
@@ -96,7 +96,7 @@ export function BookInfoModal({
                 </>
               ) : (
                 <>
-                  <BookOpen className="w-4 h-4" />
+                  <BookOpen className="size-4" />
                   <div className="flex flex-col">
                     <div>
                       {event.pagesRead}{" "}
@@ -124,7 +124,7 @@ export function BookInfoModal({
             </div>
           ))}
           <Button variant="outline" onClick={() => setCollectionsOpen(true)}>
-            <Pencil className="mr-2 w-4 h-4" /> Редактировать коллекции
+            <Pencil className="mr-2 size-4" /> Редактировать коллекции
           </Button>
         </div>
         <Button
@@ -132,7 +132,7 @@ export function BookInfoModal({
           variant="outline"
           onClick={() => setShareOpen(true)}
         >
-          <Share className="w-4 h-4" />
+          <Share className="size-4" />
           Поделиться
         </Button>
         <Button
@@ -141,7 +141,7 @@ export function BookInfoModal({
           onClick={() => setEditOpen(true)}
           disabled={book.groupBookId}
         >
-          <Edit className="w-4 h-4" />
+          <Edit className="size-4" />
           Редактировать
         </Button>
         <Button
@@ -149,7 +149,7 @@ export function BookInfoModal({
           variant="outline"
           onClick={() => setDeleteDialogOpen(true)}
         >
-          <Trash className="w-4 h-4" />
+          <Trash className="size-4" />
           Удалить
         </Button>
         {lastEvent?.pagesRead !== book.pages && (
@@ -161,9 +161,9 @@ export function BookInfoModal({
               onClick={() => doneMutation.mutate()}
             >
               {doneMutation.isPending ? (
-                <Loader className="w-4 h-4 animate-spin" />
+                <Loader className="size-4 animate-spin" />
               ) : (
-                <BookOpenCheck className="w-4 h-4" />
+                <BookOpenCheck className="size-4" />
               )}
               Прочитана
             </Button>
@@ -172,7 +172,7 @@ export function BookInfoModal({
               variant="outline"
               onClick={() => setDateOpen(true)}
             >
-              <BookOpenTextIcon className="w-4 h-4" />
+              <BookOpenTextIcon className="size-4" />
               Отметить прочтение
             </Button>
           </>

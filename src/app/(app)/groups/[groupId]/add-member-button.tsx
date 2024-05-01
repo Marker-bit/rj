@@ -19,10 +19,10 @@ export function AddMemberButton({
         <Button
           size="icon"
           variant="ghost"
-          className="ml-auto p-1 h-fit w-fit"
+          className="ml-auto size-fit p-1"
           onClick={() => setOpen(true)}
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="size-4" />
         </Button>
       )}
       <AddMember open={open} setOpen={setOpen} group={group} />

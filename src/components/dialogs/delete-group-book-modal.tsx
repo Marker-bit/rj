@@ -39,7 +39,7 @@ export function DeleteGroupBookModal({
           действие невозможно отменить.
         </DialogDescription>
       </DialogHeader>
-      <div className="flex max-sm:flex-col gap-2 md:ml-auto md:w-fit mt-1">
+      <div className="mt-1 flex gap-2 max-sm:flex-col md:ml-auto md:w-fit">
         <Button variant="outline" onClick={() => setOpen(false)}>
           Отмена
         </Button>
@@ -50,7 +50,7 @@ export function DeleteGroupBookModal({
           disabled={loading}
         >
           {loading && (
-            <Loader className="h-4 w-4 animate-spin" />
+            <Loader className="size-4 animate-spin" />
           )}
           Удалить
         </Button>

@@ -30,31 +30,31 @@ export function AddBook({
     },
   });
   return (
-    <div className="p-2 border rounded-xl flex items-center">
+    <div className="flex items-center rounded-xl border p-2">
       {book.coverUrl && (
         <Image
           src={book.coverUrl}
           alt="book"
           width={500}
           height={500}
-          className="rounded-md h-40 w-auto"
+          className="h-40 w-auto rounded-md"
         />
       )}
-      <div className="flex flex-col ml-2 mb-auto">
+      <div className="mb-auto ml-2 flex flex-col">
         <div className="text-xl">{book.title}</div>
-        <div className="text-muted-foreground/70 text-sm">{book.author}</div>
+        <div className="text-sm text-muted-foreground/70">{book.author}</div>
       </div>
       <Button
         variant="ghost"
         size="icon"
-        className="w-fit h-fit p-1 ml-auto text-muted-foreground/50 hover:text-black dark:hover:text-white"
+        className="ml-auto size-fit p-1 text-muted-foreground/50 hover:text-black dark:hover:text-white"
         onClick={() => addMutation.mutate()}
         disabled={addMutation.isPending}
       >
         {addMutation.isPending ? (
-          <Loader className="w-6 h-6" />
+          <Loader className="size-6" />
         ) : (
-          <Plus className="w-6 h-6" />
+          <Plus className="size-6" />
         )}
       </Button>
     </div>

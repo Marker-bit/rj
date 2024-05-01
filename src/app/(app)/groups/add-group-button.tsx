@@ -24,10 +24,10 @@ export function AddGroupButton() {
       </DrawerDialog>
       <Button
         variant="ghost"
-        className="max-sm:w-fit max-sm:h-fit max-sm:p-2 gap-1"
+        className="gap-1 max-sm:size-fit max-sm:p-2"
         onClick={() => setOpen(true)}
       >
-        <PlusIcon className="w-6 h-6" />
+        <PlusIcon className="size-6" />
         <div className="max-sm:hidden">Добавить</div>
       </Button>
     </>

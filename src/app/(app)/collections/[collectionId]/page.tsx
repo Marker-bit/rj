@@ -38,7 +38,7 @@ export default async function Page({
 
   return (
     <div>
-      <div className="flex flex-col border-b p-2 bg-neutral-100 dark:bg-neutral-900">
+      <div className="flex flex-col border-b bg-neutral-100 p-2 dark:bg-neutral-900">
         <h1 className="text-5xl font-bold">{collection.name}</h1>
         <div className="text-muted-foreground/50">
           {collection.books.length}{" "}

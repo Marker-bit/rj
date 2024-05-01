@@ -95,15 +95,15 @@ export function GroupBookForm({
                       className="h-52 w-auto rounded-md"
                       alt="cover"
                     />
-                    <div className="flex flex-col gap-2 absolute top-2 right-0 translate-x-[50%]">
+                    <div className="absolute right-0 top-2 flex translate-x-1/2 flex-col gap-2">
                       <Button
                         size="icon"
-                        className="w-fit h-fit p-1"
+                        className="size-fit p-1"
                         variant="outline"
                         onClick={() => field.onChange("")}
                         type="button"
                       >
-                        <Trash className="w-4 h-4" />
+                        <Trash className="size-4" />
                       </Button>
                     </div>
                   </div>
@@ -185,9 +185,9 @@ export function GroupBookForm({
           />
           <Button type="submit" disabled={bookMutation.isPending}>
             {bookMutation.isPending ? (
-              <Loader className="w-4 h-4 animate-spin mr-2" />
+              <Loader className="mr-2 size-4 animate-spin" />
             ) : (
-              <Plus className="w-4 h-4 mr-2" />
+              <Plus className="mr-2 size-4" />
             )}
             Создать
           </Button>

@@ -56,11 +56,11 @@ export function ShareBookModal({
       <div className="mt-2">
         <div className="flex flex-col gap-2">
           {book.links.map((link) => (
-            <div className="flex gap-2 w-full" key={link.id}>
+            <div className="flex w-full gap-2" key={link.id}>
               <Input
                 readOnly
                 value={`${typeof window !== "undefined" && window.location.origin}/sharedbook/${link.id}`}
-                className="sm:w-full md:w-[80%]"
+                className="sm:w-full md:w-4/5"
               />
               <Button
                 onClick={() => {
@@ -76,13 +76,13 @@ export function ShareBookModal({
                 <AnimatePresence mode="wait" initial={false}>
                   {copyLink === link.id ? (
                     <motion.div
-                      className="text-green-400 flex items-center gap-2"
+                      className="flex items-center gap-2 text-green-400"
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.8 }}
                       key="copied"
                     >
-                      <CopyCheck className="w-4 h-4" />
+                      <CopyCheck className="size-4" />
                       <div className="max-sm:hidden">Скопировано</div>
                     </motion.div>
                   ) : (
@@ -93,7 +93,7 @@ export function ShareBookModal({
                       exit={{ opacity: 0, scale: 0.8 }}
                       key="copy"
                     >
-                      <CopyIcon className="w-4 h-4" />
+                      <CopyIcon className="size-4" />
                       <div className="max-sm:hidden">Скопировать</div>
                     </motion.div>
                   )}
@@ -106,11 +106,11 @@ export function ShareBookModal({
           <div className="mt-2 text-center">Нет доступных ссылок</div>
         )}
         <Button
-          className="w-full mt-2 gap-2 items-center"
+          className="mt-2 w-full items-center gap-2"
           disabled={loading}
           onClick={createLink}
         >
-          {loading && <Loader invert className="w-4 h-4" />}
+          {loading && <Loader invert className="size-4" />}
           Создать ссылку
         </Button>
       </div>

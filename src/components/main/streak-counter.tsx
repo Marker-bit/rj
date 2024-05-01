@@ -1,10 +1,10 @@
 "use client";
 
 import { getStreak } from "@/lib/stats";
+import { declOfNum } from "@/lib/utils";
 import { ReadEvent } from "@prisma/client";
 import { User } from "lucia";
 import { PartyPopper } from "lucide-react";
-import { declOfNum } from "@/lib/utils";
 
 export async function StreakCounter({
   events,
@@ -23,7 +23,7 @@ export async function StreakCounter({
   }
 
   return (
-    <div className="flex gap-2 bg-orange-500 text-white p-2 rounded-xl m-2 overflow-hidden">
+    <div className="m-2 flex gap-2 overflow-hidden rounded-xl bg-orange-500 p-2 text-white">
       <div className="text-9xl font-bold">{streak}</div>
       <div className="max-sm:hidden">
         <div className="text-2xl font-bold">Ваша активность</div>
@@ -36,7 +36,7 @@ export async function StreakCounter({
         </div>
       </div>
       <div className="ml-auto mt-auto translate-x-8 translate-y-8">
-        <PartyPopper className="w-32 h-32 text-orange-200 -scale-x-100" />
+        <PartyPopper className="size-32 -scale-x-100 text-orange-200" />
       </div>
     </div>
   );

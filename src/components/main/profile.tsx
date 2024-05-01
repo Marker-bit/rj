@@ -13,27 +13,27 @@ export async function Profile() {
     },
   });
   return (
-    <div className="flex flex-col gap-3 border-b p-3 cursor-default">
+    <div className="flex cursor-default flex-col gap-3 border-b p-3">
       <Link href="/profile">
-        <h2 className="text-3xl font-black flex gap-1 items-center cursor-pointer hover:text-black/70 dark:hover:text-white/70 w-fit flex-wrap">
-          <User className="w-8 h-8 mr-1" />
+        <h2 className="flex w-fit cursor-pointer flex-wrap items-center gap-1 text-3xl font-black hover:text-black/70 dark:hover:text-white/70">
+          <User className="mr-1 size-8" />
           Профиль
-          <ChevronRight className="w-8 h-8" />
+          <ChevronRight className="size-8" />
         </h2>
       </Link>
-      <div className="p-2 rounded-md border flex gap-2 items-center">
+      <div className="flex items-center gap-2 rounded-md border p-2">
         <Image
           src={profile.avatarUrl ? profile.avatarUrl : "/no-avatar.png"}
           alt="avatar"
           width={100}
           height={100}
-          className="rounded-full w-20 h-20"
+          className="size-20 rounded-full"
         />
         <div className="flex flex-col">
-          <div className="text-3xl font-semibold flex gap-2 items-center">
+          <div className="flex items-center gap-2 text-3xl font-semibold">
             {profile.firstName} {profile.lastName}
             {profile.verified && (
-              <BadgeCheck className="w-6 h-6 text-yellow-500" />
+              <BadgeCheck className="size-6 text-yellow-500" />
             )}
           </div>
           <div className="text-sm text-muted-foreground/70">@{profile.username}</div>

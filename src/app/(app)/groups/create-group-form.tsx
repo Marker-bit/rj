@@ -110,7 +110,7 @@ export function CreateGroupForm({ onDone }: { onDone: () => void }) {
                 className="flex items-center gap-2"
                 key="loading"
               >
-                <Loader className="w-4 h-4 animate-spin" />
+                <Loader className="size-4 animate-spin" />
                 <div className="max-sm:hidden">Добавляем...</div>
               </motion.div>
             )}
@@ -122,7 +122,7 @@ export function CreateGroupForm({ onDone }: { onDone: () => void }) {
                 className="flex items-center gap-2"
                 key="add"
               >
-                <PlusIcon className="w-4 h-4" />
+                <PlusIcon className="size-4" />
                 <div className="max-sm:hidden">Добавить</div>
               </motion.div>
             )}

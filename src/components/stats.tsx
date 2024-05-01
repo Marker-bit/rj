@@ -206,20 +206,20 @@ export async function Stats({
   return (
     <>
       <div id="stats" className="grid grid-cols-2 grid-rows-2 gap-2 p-2">
-        <div className="p-2 border rounded-md flex gap-1 items-center">
-          <CalendarRange className="w-6 h-6" />
+        <div className="flex items-center gap-1 rounded-md border p-2">
+          <CalendarRange className="size-6" />
           <div className="flex flex-col">
             <div className="font-bold">{streak}</div>
-            <div className="text-muted-foreground/70 lowercase text-xs -mt-1">
+            <div className="-mt-1 text-xs lowercase text-muted-foreground/70">
               {declOfNum(streak, ["день", "дня", "дней"])} подряд
             </div>
           </div>
         </div>
-        <div className="p-2 border rounded-md flex gap-1 items-center">
-          <BookOpen className="w-6 h-6" />
+        <div className="flex items-center gap-1 rounded-md border p-2">
+          <BookOpen className="size-6" />
           <div className="flex flex-col">
             <div className="font-bold">{readWeekSum}</div>
-            <div className="text-muted-foreground/70 lowercase text-xs -mt-1">
+            <div className="-mt-1 text-xs lowercase text-muted-foreground/70">
               {declOfNum(readWeekSum, [
                 "страница прочитана",
                 "страницы прочитаны",
@@ -230,11 +230,11 @@ export async function Stats({
           </div>
         </div>
         <Link href="/friends">
-          <div className="p-2 border hover:bg-muted rounded-md flex gap-1 items-center transition-colors">
-            <Users2 className="w-6 h-6" />
+          <div className="flex items-center gap-1 rounded-md border p-2 transition-colors hover:bg-muted">
+            <Users2 className="size-6" />
             <div className="flex flex-col">
               <div className="font-bold">{profile.follower.length}</div>
-              <div className="text-muted-foreground/70 lowercase text-xs -mt-1">
+              <div className="-mt-1 text-xs lowercase text-muted-foreground/70">
                 {declOfNum(profile.follower.length, [
                   "подписка",
                   "подписки",
@@ -245,11 +245,11 @@ export async function Stats({
           </div>
         </Link>
         <Link href="/followers">
-          <div className="p-2 border hover:bg-muted rounded-md flex gap-1 items-center transition-colors">
-            <UsersIcon className="w-6 h-6" />
+          <div className="flex items-center gap-1 rounded-md border p-2 transition-colors hover:bg-muted">
+            <UsersIcon className="size-6" />
             <div className="flex flex-col">
               <div className="font-bold">{profile.following.length}</div>
-              <div className="text-muted-foreground/70 lowercase text-xs -mt-1">
+              <div className="-mt-1 text-xs lowercase text-muted-foreground/70">
                 {declOfNum(profile.following.length, [
                   "подписчик",
                   "подписчика",
@@ -260,13 +260,13 @@ export async function Stats({
           </div>
         </Link>
       </div>
-      <div className="bg-gradient-to-b from-zinc-100 to-zinc-200 dark:from-zinc-900 dark:to-zinc-800 rounded-full p-1 px-3 mx-auto w-fit cursor-default">
+      <div className="mx-auto w-fit cursor-default rounded-full bg-gradient-to-b from-zinc-100 to-zinc-200 p-1 px-3 dark:from-zinc-900 dark:to-zinc-800">
         Эта неделя
       </div>
       <div className="mt-3 h-[20vh]">
         <Chart data={currentWeekData} />
       </div>
-      <div className="bg-gradient-to-b from-zinc-100 to-zinc-200 dark:from-zinc-900 dark:to-zinc-800 rounded-full p-1 px-3 mx-auto w-fit cursor-default">
+      <div className="mx-auto w-fit cursor-default rounded-full bg-gradient-to-b from-zinc-100 to-zinc-200 p-1 px-3 dark:from-zinc-900 dark:to-zinc-800">
         По дням недели
       </div>
       <div className="mt-3 h-[20vh]">

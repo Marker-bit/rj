@@ -9,6 +9,7 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { cn, declOfNum } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import type { Book } from "@/lib/api-types";
 
 export function BookCollectionsModal({
   open,
@@ -52,8 +53,8 @@ export function BookCollectionsModal({
       </DialogHeader>
       <div className="mt-2">
         {collectionsQuery.isPending && (
-          <div className="h-[20vh] flex items-center justify-center">
-            <Loader className="w-6 h-6 animate-spin" />
+          <div className="flex h-[20vh] items-center justify-center">
+            <Loader className="size-6 animate-spin" />
           </div>
         )}
         <div className="flex flex-col gap-2">
@@ -107,7 +108,7 @@ export function BookCollectionsModal({
             disabled={updateMutation.isPending}
           >
             {updateMutation.isPending && (
-              <Loader className="w-4 h-4 animate-spin" />
+              <Loader className="size-4 animate-spin" />
             )}
             Сохранить
           </Button>

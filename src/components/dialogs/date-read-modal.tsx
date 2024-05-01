@@ -41,12 +41,12 @@ export function DateReadModal({
       <DialogHeader className="mb-2">
         <DialogTitle>Отметить прочтение</DialogTitle>
       </DialogHeader>
-      <div className="flex gap-2 flex-col">
+      <div className="flex flex-col gap-2">
         <Calendar
           mode="single"
           selected={date}
           onSelect={setDate}
-          className="rounded-md border w-fit max-sm:w-full"
+          className="w-fit rounded-md border max-sm:w-full"
           disabled={[{ from: tomorrow, to: new Date(3000, 1) }]}
           weekStartsOn={1}
           locale={ru}
@@ -84,9 +84,9 @@ export function DateReadModal({
             />
             <Button type="submit" disabled={readDateMutation.isPending}>
               {readDateMutation.isPending ? (
-                <Loader className="w-4 h-4 animate-spin" />
+                <Loader className="size-4 animate-spin" />
               ) : (
-                <Save className="w-4 h-4" />
+                <Save className="size-4" />
               )}
             </Button>
           </div>

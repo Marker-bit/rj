@@ -34,14 +34,14 @@ export function AddFromMyBooks({
         <DialogTitle>Добавить книгу из своих</DialogTitle>
       </DialogHeader>
       {books === undefined && (
-        <div className="flex justify-center items-center h-[30vh]">
-          <Loader className="w-8 h-8 animate-spin" />
+        <div className="flex h-[30vh] items-center justify-center">
+          <Loader className="size-8 animate-spin" />
         </div>
       )}
-      <div className="flex items-center gap-2 p-2 rounded-xl border">
-        <Search className="w-4 h-4 text-muted-foreground/80" />
+      <div className="flex items-center gap-2 rounded-xl border p-2">
+        <Search className="size-4 text-muted-foreground/80" />
         <input
-          className="bg-transparent w-full outline-none"
+          className="w-full bg-transparent outline-none"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Поиск"
@@ -57,7 +57,7 @@ export function AddFromMyBooks({
           .map((book) => (
             <div
               key={book.id}
-              className="flex gap-2 items-center p-2 rounded-xl hover:bg-muted/10 transition-all"
+              className="flex items-center gap-2 rounded-xl p-2 transition-all hover:bg-muted/10"
             >
               {book.coverUrl && (
                 <Image
@@ -65,23 +65,23 @@ export function AddFromMyBooks({
                   alt="book"
                   width={500}
                   height={500}
-                  className="rounded-md h-20 w-auto"
+                  className="h-20 w-auto rounded-md"
                 />
               )}
               <div className="flex flex-col gap-1">
                 <div className="text-xl font-bold">{book.title}</div>
-                <div className="text-zinc-500 -mt-1 text-sm">{book.author}</div>
-                <div className="text-zinc-500 -mt-1 text-sm">
+                <div className="-mt-1 text-sm text-zinc-500">{book.author}</div>
+                <div className="-mt-1 text-sm text-zinc-500">
                   {book.pages} стр.
                 </div>
-                <div className="text-zinc-500 -mt-1 text-sm">
+                <div className="-mt-1 text-sm text-zinc-500">
                   {book.description}
                 </div>
               </div>
               <Button
                 size="icon"
                 variant="ghost"
-                className="p-1 h-fit w-fit ml-auto"
+                className="ml-auto size-fit p-1"
                 onClick={() => {
                   setBookLoadingId(book.id);
                   fetch(`/api/groups/${groupId}/add-own/${book.id}`, {
@@ -94,9 +94,9 @@ export function AddFromMyBooks({
                 }}
               >
                 {bookLoadingId === book.id ? (
-                  <Loader className="w-4 h-4 animate-spin" />
+                  <Loader className="size-4 animate-spin" />
                 ) : (
-                  <Plus className="w-4 h-4" />
+                  <Plus className="size-4" />
                 )}
               </Button>
             </div>

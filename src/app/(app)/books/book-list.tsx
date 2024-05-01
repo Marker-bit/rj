@@ -67,34 +67,34 @@ export function BookList({ books }: { books: Book[] }) {
   return (
     <div>
       <MobileForm />
-      <div className="p-3 flex flex-col gap-2">
+      <div className="flex flex-col gap-2 p-3">
         <div
-          className="items-center flex space-x-2 cursor-pointer p-2 rounded-md border mb-2 hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-all select-none"
+          className="mb-2 flex cursor-pointer select-none items-center space-x-2 rounded-md border p-2 transition-all hover:bg-neutral-100 dark:hover:bg-neutral-900"
           onClick={changeReadBooks}
         >
           <Switch id="readBooks" checked={readBooks} />
           <div
-            className="text-sm font-medium leading-none peer-disabled:opacity-70 cursor-pointer select-none"
+            className="cursor-pointer select-none text-sm font-medium leading-none peer-disabled:opacity-70"
             onClick={changeReadBooks}
           >
             Скрывать прочитанные книги
           </div>
         </div>
         <div
-          className="items-center flex space-x-2 cursor-pointer p-2 rounded-md border mb-2 hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-all select-none"
+          className="mb-2 flex cursor-pointer select-none items-center space-x-2 rounded-md border p-2 transition-all hover:bg-neutral-100 dark:hover:bg-neutral-900"
           onClick={changeNotStarted}
         >
           <Switch id="notStarted" checked={notStarted} />
           <div
-            className="text-sm font-medium leading-none peer-disabled:opacity-70 cursor-pointer select-none"
+            className="cursor-pointer select-none text-sm font-medium leading-none peer-disabled:opacity-70"
             onClick={changeNotStarted}
           >
             Скрывать не начатые книги
           </div>
         </div>
         {books.length === 0 && (
-          <div className="p-2 flex gap-2 items-center rounded-xl border text-xl">
-            <BookMinus className="w-10 h-10" />
+          <div className="flex items-center gap-2 rounded-xl border p-2 text-xl">
+            <BookMinus className="size-10" />
             <div className="flex flex-col">
               <div>Нет книг</div>
             </div>
@@ -107,7 +107,7 @@ export function BookList({ books }: { books: Book[] }) {
             onChange={(e) => setSearchText(e.target.value)}
           />
           <Button size="icon" type="submit">
-            <Search className="w-4 h-4" />
+            <Search className="size-4" />
           </Button>
         </form>
         {searchResults && (

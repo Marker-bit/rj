@@ -7,10 +7,10 @@ import { useState } from "react";
 export function Copy({ text }: { text: string }) {
   const [copy, setCopy] = useState(false);
   return (
-    <div className="p-2 border rounded-xl flex gap-2 items-center">
+    <div className="flex items-center gap-2 rounded-xl border p-2">
       {text}
       <div
-        className="hover:bg-black/10 dark:hover:bg-white/10 flex items-center justify-center p-2 rounded-xl cursor-pointer relative"
+        className="relative flex cursor-pointer items-center justify-center rounded-xl p-2 hover:bg-black/10 dark:hover:bg-white/10"
         onClick={() => {
           navigator.clipboard.writeText(text);
           if (copy) return;
@@ -20,7 +20,7 @@ export function Copy({ text }: { text: string }) {
           }, 1000);
         }}
       >
-        <CopyIcon className="opacity-0 w-4 h-4" />
+        <CopyIcon className="size-4 opacity-0" />
         <AnimatePresence>
           <motion.div
             variants={{
@@ -35,7 +35,7 @@ export function Copy({ text }: { text: string }) {
             }}
             className="absolute"
           >
-            <Check className="text-green-500 w-4 h-4" />
+            <Check className="size-4 text-green-500" />
           </motion.div>
           <motion.div
             variants={{
@@ -50,7 +50,7 @@ export function Copy({ text }: { text: string }) {
             }}
             className="absolute"
           >
-            <CopyIcon className="w-4 h-4" />
+            <CopyIcon className="size-4" />
           </motion.div>
         </AnimatePresence>
       </div>

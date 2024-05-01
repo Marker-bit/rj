@@ -18,6 +18,7 @@ import { Button } from "../ui/button";
 import { UploadButton } from "../uploadthing";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
+import { Book } from "@prisma/client";
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -72,8 +73,8 @@ export function EditBookModal({
   return (
     <DrawerDialog open={open} onOpenChange={setOpen} className="min-w-[50vw]">
       <DialogHeader className="mb-2">
-        <DialogTitle className="flex gap-2 items-center">
-          <Edit className="w-4 h-4" /> Редактировать книгу
+        <DialogTitle className="flex items-center gap-2">
+          <Edit className="size-4" /> Редактировать книгу
         </DialogTitle>
       </DialogHeader>
       <Form {...form}>
@@ -92,15 +93,15 @@ export function EditBookModal({
                       className="h-52 w-auto rounded-md"
                       alt="cover"
                     />
-                    <div className="flex flex-col gap-2 absolute top-2 right-0 translate-x-[50%]">
+                    <div className="absolute right-0 top-2 flex translate-x-1/2 flex-col gap-2">
                       <Button
                         size="icon"
-                        className="w-fit h-fit p-1"
+                        className="size-fit p-1"
                         variant="outline"
                         onClick={() => field.onChange("")}
                         type="button"
                       >
-                        <Trash className="w-4 h-4" />
+                        <Trash className="size-4" />
                       </Button>
                     </div>
                   </div>
@@ -183,9 +184,9 @@ export function EditBookModal({
             className="gap-2"
           >
             {editMutation.isPending ? (
-              <Loader className="w-4 h-4 animate-spin" />
+              <Loader className="size-4 animate-spin" />
             ) : (
-              <Edit className="w-4 h-4" />
+              <Edit className="size-4" />
             )}
             Редактировать
           </Button>
