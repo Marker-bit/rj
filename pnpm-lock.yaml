@@ -26,6 +26,9 @@ importers:
       '@node-rs/argon2':
         specifier: ^1.8.0
         version: 1.8.0
+      '@node-rs/argon2-win32-x64-msvc':
+        specifier: ^1.8.3
+        version: 1.8.3
       '@node-rs/bcrypt':
         specifier: ^1.10.1
         version: 1.10.1
@@ -1245,6 +1248,12 @@ packages:
 
   '@node-rs/argon2-win32-x64-msvc@1.8.0':
     resolution: {integrity: sha512-iwcfTlZQF988F+3QHcd/Ad13TmPmQDEzY4yd7QxzvUysex+O+6MMtKzTZH1K96TF/y7Dft7PfJudBgACYKCv9A==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [win32]
+
+  '@node-rs/argon2-win32-x64-msvc@1.8.3':
+    resolution: {integrity: sha512-ILlrRThdbp5xNR5gwYM2ic1n/vG5rJ8dQZ+YMRqksl+lnTJ/6FDe5BOyIhiPtiDwlCiCtUA+1NxpDB9KlUCAIA==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
@@ -6011,6 +6020,8 @@ snapshots:
 
   '@node-rs/argon2-win32-x64-msvc@1.8.0':
     optional: true
+
+  '@node-rs/argon2-win32-x64-msvc@1.8.3': {}
 
   '@node-rs/argon2@1.7.0':
     optionalDependencies:

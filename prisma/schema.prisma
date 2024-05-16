@@ -117,6 +117,16 @@ model Group {
 
   members    GroupMember[]
   groupBooks GroupBook[]
+  inviteLinks GroupInviteLink[]
+}
+
+model GroupInviteLink {
+  id     String @id
+  group  Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId String
+  createdAt DateTime @default(now())
+  createdBy GroupMember @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdById String
 }
 
 enum GroupMemberRole {
@@ -132,6 +142,8 @@ model GroupMember {
 
   group   Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
   groupId String
+
+  inviteLinks GroupInviteLink[]
 
   showInFeed Boolean @default(false)
 

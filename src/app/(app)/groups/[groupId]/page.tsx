@@ -18,6 +18,7 @@ import { AddBookButton } from "./add-book-button"
 import { AddMemberButton } from "./add-member-button"
 import { GroupBookView } from "./book-view"
 import { Progress } from "@/components/ui/progress"
+import { LinkMemberButton } from "./link-member-button"
 
 export const dynamic = "force-dynamic"
 
@@ -58,6 +59,7 @@ export default async function Page({
           },
         },
       },
+      inviteLinks: true,
     },
   })
   if (!group) {
@@ -159,13 +161,10 @@ export default async function Page({
           <div className="flex items-center gap-1 text-sm text-black/70 dark:text-white/70">
             <Users className="size-4" />
             <div>Участники</div>
-            <AddMemberButton
-              group={group}
-              isMember={group.members.some(
-                (m) =>
-                  m.userId === user?.id && m.role === GroupMemberRole.MEMBER
-              )}
-            />
+            <div className="ml-auto flex items-center gap-2">
+              <AddMemberButton group={group} isMember={isMember} />
+              <LinkMemberButton group={group} isMember={isMember} />
+            </div>
           </div>
           {group.members.map((member) => (
             <Link

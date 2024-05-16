@@ -1,11 +1,12 @@
 "use client"
 
+import AddGroupLink from "@/components/dialogs/add-group-link";
 import AddMember from "@/components/dialogs/add-member"
 import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
+import { Link2 } from "lucide-react"
 import { useState } from "react"
 
-export function AddMemberButton({
+export function LinkMemberButton({
   group,
   isMember,
 }: {
@@ -22,10 +23,10 @@ export function AddMemberButton({
           className="size-fit p-1"
           onClick={() => setOpen(true)}
         >
-          <Plus className="size-4" />
+          <Link2 className="size-4" />
         </Button>
       )}
-      <AddMember open={open} setOpen={setOpen} group={group} />
+      <AddGroupLink open={open} setOpen={setOpen} group={group} />
     </>
   )
 }

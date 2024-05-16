@@ -4,6 +4,8 @@ import { AddGroupButton } from "./add-group-button"
 import { declOfNum } from "@/lib/utils"
 import Link from "next/link"
 import { redirect } from "next/navigation"
+import { GroupMemberRole } from "@prisma/client";
+import { Crown, Shield } from "lucide-react";
 
 export const dynamic = "force-dynamic"
 
@@ -20,6 +22,7 @@ export default async function Page() {
     include: {
       members: true,
       groupBooks: true,
+      inviteLinks: true,
     },
   })
 
@@ -56,6 +59,27 @@ export default async function Page() {
                     "участника",
                     "участников",
                   ])}
+                </div>
+                {g.inviteLinks.length > 0 && (
+                  <>
+                    •
+                    <div>
+                      {g.inviteLinks.length}{" "}
+                      {declOfNum(g.inviteLinks.length, [
+                        "ссылка",
+                        "ссылки",
+                        "ссылок",
+                      ])}
+                    </div>
+                  </>
+                )}
+                •
+                <div>
+                  {g.members.find((m) => m.userId === user?.id)?.role === GroupMemberRole.MODERATOR ? (
+                    <Shield className="size-4" />
+                  ) : g.members.find((m) => m.userId === user?.id)?.role === GroupMemberRole.CREATOR ? (
+                    <Crown className="size-4" />
+                  ) : null}
                 </div>
               </div>
             </div>
