@@ -31,8 +31,7 @@ export async function StreakCounter({
       </div>
       <div className="hidden max-sm:block">
         <div className="text-2xl font-bold">
-          {declOfNum(streak, ["день", "дня", "дней"])}
-          подряд
+          {declOfNum(streak, ["день", "дня", "дней"])} подряд
         </div>
       </div>
       <div className="ml-auto mt-auto translate-x-8 translate-y-8">
