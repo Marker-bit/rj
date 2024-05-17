@@ -58,7 +58,7 @@ export function BottomBar() {
     <>
       <div className="hidden border-r bg-muted/40 md:block">
         <div className="flex h-screen flex-col gap-2 overflow-auto">
-          <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6 mt-2">
+          <div className="mt-2 flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
             <Link href="/" className="flex items-center gap-2 font-semibold">
               <span>Читательский дневник</span>
             </Link>
@@ -89,8 +89,8 @@ export function BottomBar() {
           </div>
         </div>
       </div>
-      <div className="fixed bottom-2 left-0 w-full flex items-center justify-center pointer-events-none z-50 md:hidden">
-        <div className="w-fit bg-neutral-100/70 dark:bg-neutral-900/70 backdrop-blur-lg flex gap-1 items-center content-center p-2 rounded-xl border pointer-events-auto overflow-auto max-w-full mx-2">
+      <div className="pointer-events-none fixed bottom-2 left-0 z-50 flex w-full items-center justify-center md:hidden">
+        <div className="pointer-events-auto mx-2 flex w-fit max-w-full content-center items-center gap-1 overflow-auto rounded-xl border bg-white/70 p-2 backdrop-blur-lg dark:bg-black/70">
           {urls.map((url) => (
             <Link href={`/${url.href}`} className="w-fit" key={url.href}>
               <div
@@ -107,7 +107,7 @@ export function BottomBar() {
                   {pathname === `/${url.href}` && (
                     <motion.div
                       layoutId="current"
-                      className="w-full h-full absolute top-0 left-0 bg-black/5 dark:bg-white/5 shadow-md -z-10 rounded-md"
+                      className="absolute left-0 top-0 -z-10 size-full rounded-md bg-black/5 shadow-md dark:bg-white/5"
                       transition={{
                         type: "tween",
                       }}
