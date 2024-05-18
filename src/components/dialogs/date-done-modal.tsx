@@ -47,6 +47,7 @@ export function DateDoneModal({
           disabled={[{ from: tomorrow, to: new Date(3000, 1) }]}
           weekStartsOn={1}
           locale={ru}
+          fixedWeeks
         />
         <Button
           onClick={() => {

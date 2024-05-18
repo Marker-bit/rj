@@ -50,6 +50,7 @@ export function DateReadModal({
           disabled={[{ from: tomorrow, to: new Date(3000, 1) }]}
           weekStartsOn={1}
           locale={ru}
+          fixedWeeks
         />
         <form
           onSubmit={(evt) => {
