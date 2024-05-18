@@ -96,7 +96,7 @@ export function RegisterForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
-        <div className="flex gap-2 w-full">
+        <div className="flex w-full gap-2">
           <FormField
             control={form.control}
             name="firstName"
@@ -173,10 +173,10 @@ export function RegisterForm() {
             </FormItem>
           )}
         />
-        <div className="flex gap-2 items-center flex-wrap">
+        <div className="flex flex-wrap items-center gap-2">
           <Button type="submit" disabled={userMutation.isPending}>
             {userMutation.isPending && (
-              <Loader invert className="w-4 h-4 mr-2" />
+              <Loader invert className="mr-2 size-4" />
             )}
             Зарегистрироваться
           </Button>

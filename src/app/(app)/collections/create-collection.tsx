@@ -66,9 +66,9 @@ export function CreateCollection() {
     <>
       <Button
         onClick={() => setOpen(true)}
-        className="md:w-fit items-center gap-2 m-2"
+        className="m-2 items-center gap-2 md:w-fit"
       >
-        <Plus className="w-4 h-4" />
+        <Plus className="size-4" />
         Создать коллекцию
       </Button>
       <DrawerDialog
@@ -96,13 +96,13 @@ export function CreateCollection() {
             />
             <Button
               type="submit"
-              className="mt-2 ml-auto gap-2"
+              className="ml-auto mt-2 gap-2"
               disabled={collectionMutation.isPending}
             >
               {collectionMutation.isPending ? (
-                <Loader className="w-4 h-4" />
+                <Loader className="size-4" />
               ) : (
-                <Plus className="w-4 h-4" />
+                <Plus className="size-4" />
               )}
               Создать
             </Button>

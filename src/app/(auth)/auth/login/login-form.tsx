@@ -94,10 +94,10 @@ export function LoginForm() {
             </FormItem>
           )}
         />
-        <div className="flex gap-2 items-center flex-wrap">
+        <div className="flex flex-wrap items-center gap-2">
           <Button type="submit" disabled={userMutation.isPending}>
             {userMutation.isPending && (
-              <Loader invert className="w-4 h-4 mr-2" />
+              <Loader invert className="mr-2 size-4" />
             )}
             Авторизоваться
           </Button>

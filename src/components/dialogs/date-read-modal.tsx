@@ -52,6 +52,7 @@ export function DateReadModal({
           locale={ru}
           fixedWeeks
         />
+        {/* добавить captionLayout? */}
         <form
           onSubmit={(evt) => {
             evt.preventDefault()

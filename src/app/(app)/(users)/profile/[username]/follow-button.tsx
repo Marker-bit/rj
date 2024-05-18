@@ -30,7 +30,7 @@ export default function FollowButton({
     mutationFn: async () => {
       return fetch(`/api/profile/${username}/follow`, {
         method: following ? "DELETE" : "POST",
-      }).then(() => router.refresh())
+      })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -39,6 +39,7 @@ export default function FollowButton({
       queryClient.invalidateQueries({
         queryKey: ["friends"],
       })
+      router.refresh()
     },
   })
 

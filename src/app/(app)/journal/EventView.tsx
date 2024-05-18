@@ -7,6 +7,8 @@ import { dateToString } from "@/lib/utils"
 import { useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { AnimatePresence, motion } from "framer-motion"
+import { useRouter } from "next/navigation";
+import { Book } from "@/lib/api-types";
 
 export function EventView({
   event,
@@ -20,6 +22,7 @@ export function EventView({
   }
 }) {
   const queryClient = useQueryClient()
+  const router = useRouter()
   const undoMutation = useMutation({
     mutationFn: async () =>
       await fetch(`/api/journal/events/${event.id}`, {
@@ -32,13 +35,14 @@ export function EventView({
       queryClient.invalidateQueries({
         queryKey: ["books"],
       })
+      router.refresh()
     },
   })
   return (
-    <div className="rounded-xl border p-2 cursor-default flex flex-wrap items-center gap-1">
+    <div className="flex cursor-default flex-wrap items-center gap-1 rounded-xl border p-2">
       {event.pagesRead === event.book.pages ? (
         <>
-          <BookOpenCheck className="w-4 h-4 mr-1 text-green-500" />
+          <BookOpenCheck className="mr-1 size-4 text-green-500" />
           <Link href={`/books#book-${event.bookId}`} className="font-semibold">
             Книга &quot;{event.book.title}&quot; автора {event.book.author}
           </Link>
@@ -46,7 +50,7 @@ export function EventView({
         </>
       ) : (
         <>
-          <BookOpen className="w-4 h-4 mr-1" />
+          <BookOpen className="mr-1 size-4" />
           До {event.pagesRead} страницы прочитано{" "}
           {dateToString(new Date(event.readAt))}
           <Link href={`/books#book-${event.bookId}`} className="font-semibold">
@@ -57,14 +61,14 @@ export function EventView({
       <Button
         variant="outline"
         size="icon"
-        className="p-1 w-fit h-fit ml-auto"
+        className="ml-auto size-fit p-1"
         disabled={undoMutation.isPending}
         onClick={() => undoMutation.mutate()}
       >
         {undoMutation.isPending ? (
-          <Loader className="w-4 h-4 animate-spin" />
+          <Loader className="size-4 animate-spin" />
         ) : (
-          <Undo className="w-4 h-4" />
+          <Undo className="size-4" />
         )}
       </Button>
     </div>

@@ -19,6 +19,7 @@ import { UploadButton } from "../uploadthing"
 import { Input } from "../ui/input"
 import { Textarea } from "../ui/textarea"
 import { Book } from "@prisma/client"
+import { useRouter } from "next/navigation"
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -49,6 +50,8 @@ export function EditBookModal({
     },
   })
 
+  const router = useRouter()
+
   const editMutation = useMutation({
     mutationFn: (values: z.infer<typeof bookSchema>) =>
       fetch(`/api/books/${book.id}/`, {
@@ -62,6 +65,7 @@ export function EditBookModal({
       queryClient.invalidateQueries({
         queryKey: ["events"],
       })
+      router.refresh()
     },
   })
 
