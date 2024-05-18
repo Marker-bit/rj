@@ -311,7 +311,7 @@ export function BookView({ book }: { book: Book }) {
           )}
           {book.groupBook && (
             <Tooltip>
-              <TooltipTrigger>
+              <TooltipTrigger asChild>
                 <Link href={`/groups/${book.groupBook.group.id}`}>
                   <Badge variant="outline">
                     <Users className="mr-2 size-4" />{" "}

@@ -9,6 +9,11 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { declOfNum } from "@/lib/utils"
 import Link from "next/link"
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip"
 
 export function GroupBookView({
   groupBook,
@@ -63,61 +68,76 @@ export function GroupBookView({
       </div>
       <div className="ml-auto flex gap-1">
         {book && (
-          <Link href={`/books?bookId=${book.id}`}>
-            <Button size="icon" variant="ghost" className="size-fit p-1">
-              <BookOpen className="size-4" />
-            </Button>
-          </Link>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link href={`/books?bookId=${book.id}`}>
+                <Button size="icon" variant="ghost" className="size-fit p-1">
+                  <BookOpen className="size-4" />
+                </Button>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent>Показать книгу</TooltipContent>
+          </Tooltip>
         )}
 
         {ownedBooks.every((b) => b.groupBookId !== groupBook.id) ? (
-          <Button
-            size="icon"
-            variant="ghost"
-            className="size-fit p-1"
-            onClick={() => {
-              setLoading(true)
-              fetch(
-                `/api/groups/${groupBook.groupId}/books/${groupBook.id}/own`,
-                {
-                  method: "POST",
-                }
-              ).then(() => {
-                setLoading(false)
-                router.refresh()
-              })
-            }}
-          >
-            {loading ? (
-              <Loader className="size-4 animate-spin" />
-            ) : (
-              <Plus className="size-4" />
-            )}
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                size="icon"
+                variant="ghost"
+                className="size-fit p-1"
+                onClick={() => {
+                  setLoading(true)
+                  fetch(
+                    `/api/groups/${groupBook.groupId}/books/${groupBook.id}/own`,
+                    {
+                      method: "POST",
+                    }
+                  ).then(() => {
+                    setLoading(false)
+                    router.refresh()
+                  })
+                }}
+              >
+                {loading ? (
+                  <Loader className="size-4 animate-spin" />
+                ) : (
+                  <Plus className="size-4" />
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Добавить себе книгу</TooltipContent>
+          </Tooltip>
         ) : (
-          <Button
-            size="icon"
-            variant="ghost"
-            className="size-fit p-1"
-            onClick={() => {
-              setLoading(true)
-              fetch(
-                `/api/groups/${groupBook.groupId}/books/${groupBook.id}/own`,
-                {
-                  method: "DELETE",
-                }
-              ).then(() => {
-                setLoading(false)
-                router.refresh()
-              })
-            }}
-          >
-            {loading ? (
-              <Loader className="size-4 animate-spin" />
-            ) : (
-              <Minus className="size-4" />
-            )}
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                size="icon"
+                variant="ghost"
+                className="size-fit p-1"
+                onClick={() => {
+                  setLoading(true)
+                  fetch(
+                    `/api/groups/${groupBook.groupId}/books/${groupBook.id}/own`,
+                    {
+                      method: "DELETE",
+                    }
+                  ).then(() => {
+                    setLoading(false)
+                    router.refresh()
+                  })
+                }}
+              >
+                {loading ? (
+                  <Loader className="size-4 animate-spin" />
+                ) : (
+                  <Minus className="size-4" />
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Удалить у себя книгу</TooltipContent>
+          </Tooltip>
         )}
         <MoreActions book={groupBook} />
       </div>

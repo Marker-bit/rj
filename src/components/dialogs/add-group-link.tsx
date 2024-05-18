@@ -37,13 +37,17 @@ export default function AddGroupLink({
         {group.inviteLinks.map((link) => (
           <div key={link.id} className="flex items-center gap-2 rounded-xl p-2">
             <Input
-              value={`${window.location.origin || ""}/join-group/${link.id}`}
+              value={`${
+                typeof window !== "undefined" ? window.location.origin : ""
+              }/join-group/${link.id}`}
               readOnly={true}
             />
             <Button
               onClick={() => {
                 navigator.clipboard.writeText(
-                  `${window.location.origin || ""}/join-group/${link.id}`
+                  `${
+                    typeof window !== "undefined" ? window.location.origin : ""
+                  }/join-group/${link.id}`
                 )
                 toast.success("Ссылка скопирована")
               }}

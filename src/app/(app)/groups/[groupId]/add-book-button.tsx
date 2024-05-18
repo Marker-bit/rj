@@ -9,6 +9,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { Book, BookCopy, BookDashed, Plus } from "lucide-react"
 import { useState } from "react"
 
@@ -29,9 +34,18 @@ export function AddBookButton({ groupId }: { groupId: string }) {
       />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button size="icon" variant="ghost" className="ml-auto size-fit p-1">
-            <Plus className="size-4" />
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                size="icon"
+                variant="ghost"
+                className="ml-auto size-fit p-1"
+              >
+                <Plus className="size-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Добавить книгу</TooltipContent>
+          </Tooltip>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem onClick={() => setModeOpen("create")}>
