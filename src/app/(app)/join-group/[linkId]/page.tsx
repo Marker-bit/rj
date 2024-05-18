@@ -34,7 +34,7 @@ export default async function Page({ params }: { params: { linkId: string } }) {
     return redirect("/home")
   }
   return (
-    <div className="flex flex-col p-4 md:min-h-screen md:items-center md:justify-center">
+    <div className="flex flex-col p-4 max-sm:mb-[15vh] md:min-h-screen md:items-center md:justify-center">
       <div className="flex flex-col gap-2 rounded-xl border p-4 max-sm:w-full md:m-1 md:min-w-[30vw]">
         <h1 className="text-3xl font-bold">Приглашение</h1>
         <div className="flex flex-col rounded-xl border p-2">

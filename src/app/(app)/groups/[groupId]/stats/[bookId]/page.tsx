@@ -89,7 +89,7 @@ export default async function Page({
   ratingKeys.sort((a, b) => rating[b] - rating[a])
 
   return (
-    <div className="flex flex-col p-8">
+    <div className="flex flex-col p-8 max-sm:mb-24">
       <Link href={`/groups/${book.groupId}`} className="mb-2">
         <Button className="w-fit items-center gap-2">
           <ChevronLeft className="size-4" />

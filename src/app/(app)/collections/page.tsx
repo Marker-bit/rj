@@ -17,7 +17,7 @@ export default async function Page() {
   })
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 max-sm:mb-[15vh]">
       <CreateCollection />
       {collections.map((collection) => (
         <CollectionView key={collection.id} collection={collection} />

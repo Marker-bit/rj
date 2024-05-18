@@ -15,9 +15,9 @@ export default async function Page({ params }: { params: { linkId: string } }) {
     return null
   }
   return (
-    <div className="p-2">
+    <div className="p-2 max-sm:mb-[15vh]">
       <div
-        className="border p-2 rounded-md flex gap-2 group relative"
+        className="group relative flex gap-2 rounded-md border p-2"
         id={`book-${book.id}`}
       >
         {book.coverUrl && (
@@ -26,12 +26,12 @@ export default async function Page({ params }: { params: { linkId: string } }) {
             alt="book"
             width={500}
             height={500}
-            className="rounded-md h-40 w-auto"
+            className="h-40 w-auto rounded-md"
           />
         )}
         <div className="flex flex-col gap-1">
           <div className="text-3xl font-bold">{book.title}</div>
-          <div className="text-zinc-500 -mt-1">{book.author}</div>
+          <div className="-mt-1 text-zinc-500">{book.author}</div>
           {book.readEvents.length === 0 ? (
             <Badge className="w-fit">Запланирована</Badge>
           ) : book.readEvents[0]?.pagesRead === book.pages ? (
@@ -55,16 +55,16 @@ export default async function Page({ params }: { params: { linkId: string } }) {
             }
             className="w-fit"
           >
-            <div className="rounded-xl border p-2 flex gap-2 w-fit pr-5">
+            <div className="flex w-fit gap-2 rounded-xl border p-2 pr-5">
               <Image
                 src={book.user?.avatarUrl || "/no-avatar.png"}
                 alt="user"
                 width={500}
                 height={500}
-                className="rounded-full w-10 h-10"
+                className="size-10 rounded-full"
               />
               {book.userId === user?.id ? (
-                <div className="text-sm font-semibold my-auto">Вы</div>
+                <div className="my-auto text-sm font-semibold">Вы</div>
               ) : (
                 <div className="flex flex-col">
                   <div className="text-sm font-semibold">

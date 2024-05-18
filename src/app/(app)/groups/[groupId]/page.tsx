@@ -124,7 +124,7 @@ export default async function Page({
   ratingKeys.sort((a, b) => rating[b] - rating[a])
 
   return (
-    <div className="p-2 max-sm:mb-20">
+    <div className="p-2 max-sm:mb-[15vh]">
       <div className="flex flex-col">
         <div className="text-3xl font-bold">
           <div>{group.title}</div>

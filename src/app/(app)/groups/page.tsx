@@ -31,7 +31,7 @@ export default async function Page() {
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col max-sm:mb-[15vh]">
       <div className="m-2 flex items-center gap-2 text-3xl font-bold">
         <div>Группы чтения</div>
         <div className="ml-auto">

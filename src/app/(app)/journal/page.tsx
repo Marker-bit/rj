@@ -8,11 +8,13 @@ import { ReadEvent } from "@prisma/client"
 import { useQuery } from "@tanstack/react-query"
 import { addDays, format, isAfter, isBefore, isEqual } from "date-fns"
 import { ru } from "date-fns/locale"
-import { BookMinus, ChevronLeft, Loader } from "lucide-react"
+import { BookMinus, ChevronLeft } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
 import { DateRange } from "react-day-picker"
 import { EventView } from "./EventView"
+import { Loader } from "@/components/ui/loader";
+import { Book } from "@/lib/api-types";
 
 export default function JournalPage() {
   const tomorrow = addDays(new Date(), 1)
@@ -25,7 +27,7 @@ export default function JournalPage() {
   if (eventsQuery.isPending) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <Loader className="w-6 h-6 animate-spin" />
+        <Loader className="size-6" />
       </div>
     )
   }
@@ -55,15 +57,15 @@ export default function JournalPage() {
   })
   return (
     <div>
-      <div className="text-5xl font-black m-2 flex gap-2 items-center">
+      <div className="m-2 flex items-center gap-2 text-5xl font-black max-sm:mb-[15vh]">
         <Link href="/">
           <Button variant="ghost" size="icon">
-            <ChevronLeft className="w-8 h-8" />
+            <ChevronLeft className="size-8" />
           </Button>
         </Link>
         Журнал
       </div>
-      <div className="p-3 flex flex-col gap-2">
+      <div className="flex flex-col gap-2 p-3">
         <DrawerDialog open={filterOpen} onOpenChange={setFilterOpen}>
           <DialogHeader>
             <DialogTitle>Выбор дня</DialogTitle>
@@ -72,7 +74,7 @@ export default function JournalPage() {
             mode="range"
             selected={dates}
             onSelect={setDates}
-            className="rounded-md border w-fit mx-auto mt-2"
+            className="mx-auto mt-2 w-fit rounded-md border"
             disabled={[{ from: tomorrow, to: new Date(3000, 1) }]}
             weekStartsOn={1}
             showToday={false}
@@ -90,14 +92,14 @@ export default function JournalPage() {
           {!dates && "выключен"}
         </Button>
         {eventsQuery.data?.length === 0 && events.length === 0 ? (
-          <div className="rounded-xl border p-2 flex gap-2 items-center">
-            <BookMinus className="w-10 h-10" />
+          <div className="flex items-center gap-2 rounded-xl border p-2">
+            <BookMinus className="size-10" />
             Журнал пуст
           </div>
         ) : (
           events.length === 0 && (
-            <div className="rounded-xl border p-2 flex gap-2 items-center">
-              <BookMinus className="w-10 h-10" />
+            <div className="flex items-center gap-2 rounded-xl border p-2">
+              <BookMinus className="size-10" />
               Фильтры ничего не выбрали
             </div>
           )

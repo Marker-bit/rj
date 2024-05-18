@@ -75,31 +75,31 @@ export default async function Page({
   )
 
   return (
-    <div className="p-8 flex flex-col">
+    <div className="flex flex-col p-8 max-sm:mb-24">
       <Link href={`/groups/${params.groupId}`} className="mb-2">
         <Button className="w-fit items-center gap-2" variant="outline">
-          <ChevronLeft className="w-4 h-4" />
+          <ChevronLeft className="size-4" />
           Назад
         </Button>
       </Link>
-      <div className="flex gap-2 items-center">
+      <div className="flex items-center gap-2">
         {member.user.avatarUrl && (
           <Image
             src={member.user.avatarUrl}
             alt="book"
             width={500}
             height={500}
-            className="rounded-full h-20 w-auto"
+            className="h-20 w-auto rounded-full"
           />
         )}
         <div className="flex flex-col">
           <div className="text-xl font-bold">
             {member.user.firstName} {member.user.lastName}
           </div>
-          <div className="text-muted-foreground/90 text-sm">
+          <div className="text-sm text-muted-foreground/90">
             @{member.user.username}
           </div>
-          <div className="text-muted-foreground/90 text-sm">
+          <div className="text-sm text-muted-foreground/90">
             {booksSaved.length}{" "}
             {declOfNum(booksSaved.length, [
               "книга сохранена",
@@ -110,21 +110,21 @@ export default async function Page({
         </div>
         <Link href={`/profile/${member.user.username}`} className="ml-auto">
           <Button className="w-fit items-center gap-2">
-            <UserCircle className="w-4 h-4" />
+            <UserCircle className="size-4" />
             Профиль
           </Button>
         </Link>
       </div>
 
-      <div className="w-full min-h-[20vh] bg-neutral-100 dark:bg-neutral-900 border rounded-xl p-4 mt-2">
-        <div className="flex gap-2 items-center text-muted-foreground/90">
-          <BookOpen className="w-4 h-4" />
+      <div className="mt-2 min-h-[20vh] w-full rounded-xl border bg-neutral-100 p-4 dark:bg-neutral-900">
+        <div className="flex items-center gap-2 text-muted-foreground/90">
+          <BookOpen className="size-4" />
           Книги
         </div>
-        <div className="flex flex-col mt-2">
+        <div className="mt-2 flex flex-col">
           {booksSaved.map((book, i) => (
             <div
-              className="flex items-center p-2 hover:bg-black/10 dark:hover:bg-white/10 rounded-md transition-all gap-2"
+              className="flex items-center gap-2 rounded-md p-2 transition-all hover:bg-black/10 dark:hover:bg-white/10"
               key={book.id}
             >
               {book.coverUrl && (
@@ -133,31 +133,31 @@ export default async function Page({
                   alt="book"
                   width={500}
                   height={500}
-                  className="rounded-md h-20 w-auto"
+                  className="h-20 w-auto rounded-md"
                 />
               )}
               <div className="flex flex-col">
                 <div className="text-xl font-bold">{book.title}</div>
-                <div className="text-muted-foreground/90 text-sm">
+                <div className="text-sm text-muted-foreground/90">
                   {book.author}
                 </div>
-                <div className="text-muted-foreground/90 text-sm">
+                <div className="text-sm text-muted-foreground/90">
                   {book.pages} стр.
                 </div>
-                <p className="text-muted-foreground/90 text-sm">
+                <p className="text-sm text-muted-foreground/90">
                   {book.description}
                 </p>
               </div>
               {book.readEvents[0] && (
-                <div className="flex flex-col ml-auto items-end">
+                <div className="ml-auto flex flex-col items-end">
                   {book.readEvents[0].pagesRead === book.pages ? (
-                    <Check className="text-green-500 w-4 h-4" />
+                    <Check className="size-4 text-green-500" />
                   ) : (
                     <>
                       <div className="font-bold">
                         {book.readEvents[0].pagesRead}
                       </div>
-                      <div className="text-muted-foreground text-xs">
+                      <div className="text-xs text-muted-foreground">
                         / {book.pages}
                       </div>
                     </>
