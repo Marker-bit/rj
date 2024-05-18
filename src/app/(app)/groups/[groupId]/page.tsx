@@ -218,7 +218,7 @@ export default async function Page({
                 </div>
                 <div className="flex flex-col items-end">
                   <div className="text-xl font-bold">
-                    {((stat.value / stat.max) * 100).toFixed(1)}%
+                    {(stat.max === 0 ? 0 : (stat.value / stat.max) * 100).toFixed(1)}%
                   </div>
                   <div className="text-sm text-muted-foreground/70">
                     {stat.value}/{stat.max}

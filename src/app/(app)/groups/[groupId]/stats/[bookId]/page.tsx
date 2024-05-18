@@ -89,10 +89,10 @@ export default async function Page({
   ratingKeys.sort((a, b) => rating[b] - rating[a])
 
   return (
-    <div className="p-8 flex flex-col">
+    <div className="flex flex-col p-8">
       <Link href={`/groups/${book.groupId}`} className="mb-2">
         <Button className="w-fit items-center gap-2">
-          <ChevronLeft className="w-4 h-4" />
+          <ChevronLeft className="size-4" />
           Назад
         </Button>
       </Link>
@@ -103,63 +103,67 @@ export default async function Page({
             alt="book"
             width={500}
             height={500}
-            className="rounded-md h-40 w-auto"
+            className="h-40 w-auto rounded-md"
           />
         )}
         <div className="flex flex-col">
           <div className="text-xl font-bold">{book.title}</div>
-          <div className="text-muted-foreground/90 text-sm">{book.author}</div>
-          <div className="text-muted-foreground/90 text-sm">
+          <div className="text-sm text-muted-foreground/90">{book.author}</div>
+          <div className="text-sm text-muted-foreground/90">
             {book.pages} стр.
           </div>
-          <p className="text-muted-foreground/90 text-sm">{book.description}</p>
+          <p className="text-sm text-muted-foreground/90">{book.description}</p>
         </div>
       </div>
 
-      <div className="w-full min-h-[20vh] bg-neutral-100 dark:bg-neutral-900 border rounded-xl p-4 mt-2">
-        <div className="flex gap-2 items-center text-muted-foreground/90">
-          <BarChartHorizontalBig className="w-4 h-4" />
+      <div className="mt-2 min-h-[20vh] w-full rounded-xl border bg-neutral-100 p-4 dark:bg-neutral-900">
+        <div className="flex items-center gap-2 text-muted-foreground/90">
+          <BarChartHorizontalBig className="size-4" />
           Статистика
         </div>
-        <div className="flex flex-col gap-2 mt-2">
+        <div className="mt-2 flex flex-col gap-2">
           <div className="flex justify-between">
             <div className="flex flex-col">
               <div className="text-xl">Читающих участников</div>
-              <div className="text-muted-foreground/70 text-sm">
+              <div className="text-sm text-muted-foreground/70">
                 Участников, добавивших себе эту книгу
               </div>
             </div>
             <div className="flex flex-col items-end">
               <div className="text-xl font-bold">
-                {((book.book.length / group.members.length) * 100).toFixed(1)}%
+                {(group.members.length === 0
+                  ? 0
+                  : (book.book.length / group.members.length) * 100
+                ).toFixed(1)}
+                %
               </div>
-              <div className="text-muted-foreground/70 text-sm">
+              <div className="text-sm text-muted-foreground/70">
                 {book.book.length}/{group.members.length}
               </div>
             </div>
           </div>
           <Progress value={(book.book.length / group.members.length) * 100} />
         </div>
-        <div className="flex flex-col gap-2 mt-2">
+        <div className="mt-2 flex flex-col gap-2">
           <div className="flex justify-between">
             <div className="flex flex-col">
               <div className="text-xl">Прочитавших участников</div>
-              <div className="text-muted-foreground/70 text-sm">
+              <div className="text-sm text-muted-foreground/70">
                 Участников, полностью прочитавших эту книгу
               </div>
             </div>
             <div className="flex flex-col items-end">
               <div className="text-xl font-bold">
                 {(
-                  (book.book.filter(
-                    (book) => book.readEvents[0]?.pagesRead === book.pages
-                  ).length /
-                    group.members.length) *
-                  100
+                  (group.members.length === 0
+                    ? 0
+                    : book.book.filter(
+                        (book) => book.readEvents[0]?.pagesRead === book.pages
+                      ).length / group.members.length) * 100
                 ).toFixed(1)}
                 %
               </div>
-              <div className="text-muted-foreground/70 text-sm">
+              <div className="text-sm text-muted-foreground/70">
                 {
                   book.book.filter(
                     (book) => book.readEvents[0]?.pagesRead === book.pages
@@ -179,7 +183,7 @@ export default async function Page({
             }
           />
         </div>
-        <div className="flex flex-col mt-2">
+        <div className="mt-2 flex flex-col">
           {ratingKeys.map((userId, i) => (
             <Link
               key={userId}
@@ -187,14 +191,14 @@ export default async function Page({
                 group.members.find((m) => m.userId === userId)?.id
               }`}
             >
-              <div className="flex items-center p-2 hover:bg-black/10 dark:hover:bg-white/10 rounded-md transition-all gap-2">
-                <div className="rounded-full flex w-6 h-6 items-center justify-center border">
+              <div className="flex items-center gap-2 rounded-md p-2 transition-all hover:bg-black/10 dark:hover:bg-white/10">
+                <div className="flex size-6 items-center justify-center rounded-full border">
                   {i + 1}
                 </div>
                 {group.members.find((m) => m.userId === userId)?.user.username}
-                <div className="font-bold ml-auto">
+                <div className="ml-auto font-bold">
                   {rating[userId] === book.pages ? (
-                    <Check className="text-green-500 w-4 h-4" />
+                    <Check className="size-4 text-green-500" />
                   ) : (
                     rating[userId]
                   )}
