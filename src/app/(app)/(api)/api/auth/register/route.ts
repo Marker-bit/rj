@@ -1,33 +1,36 @@
-import { lucia } from "@/lib/auth";
-import { db } from "@/lib/db";
-import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
-import { Argon2id } from "oslo/password";
+import { lucia } from "@/lib/auth"
+import { db } from "@/lib/db"
+import { cookies } from "next/headers"
+import { NextRequest, NextResponse } from "next/server"
+import { Argon2id } from "oslo/password"
 import {
   USERNAME_REGEX,
   USERNAME_MESSAGE,
   PASSWORD_REGEX,
   PASSWORD_MESSAGE,
-} from "@/lib/api-validate";
+} from "@/lib/api-validate"
+import { createAvatar } from "@dicebear/core"
+import { shapes } from "@dicebear/collection"
+import { utapi } from "../../uploadthing/core"
 
 export async function POST(request: NextRequest) {
-  const data = await request.json();
-  const username = data.username;
-  const password = data.password;
-  const hashedPassword = await new Argon2id().hash(password);
+  const data = await request.json()
+  const username = data.username
+  const password = data.password
+  const hashedPassword = await new Argon2id().hash(password)
 
   const user = await db.user.findFirst({
     where: {
       username: username,
     },
-  });
+  })
   if (user) {
     return NextResponse.json(
       {
         error: "Пользователь с таким именем уже существует",
       },
       { status: 400 }
-    );
+    )
   }
 
   if (USERNAME_REGEX.test(username) === false) {
@@ -36,7 +39,7 @@ export async function POST(request: NextRequest) {
         error: USERNAME_MESSAGE,
       },
       { status: 400 }
-    );
+    )
   }
 
   if (PASSWORD_REGEX.test(password) === false) {
@@ -45,7 +48,7 @@ export async function POST(request: NextRequest) {
         error: PASSWORD_MESSAGE,
       },
       { status: 400 }
-    );
+    )
   }
 
   if (
@@ -59,8 +62,33 @@ export async function POST(request: NextRequest) {
         error: "Укажите имя и фамилию (мин. 3 символа)",
       },
       { status: 400 }
-    );
+    )
   }
+
+  const avatar = createAvatar(shapes, {
+    seed: username,
+    size: 100,
+  })
+
+  const png = await avatar.png()
+  const buffer = await png.toArrayBuffer()
+
+  // const resp = await fetch("/api/uploadthing/uploadFiles", {
+  //   method: "POST",
+  //   body: JSON.stringify({
+  //     files: [
+  //       {
+  //         name: "avatar.png",
+  //         type: "image/png",
+  //         buffer: buffer,
+  //       },
+  //     ],
+  //   }),
+  // })
+
+  console.log(buffer.byteLength)
+
+  const files = await utapi.uploadFiles(new File([buffer], "avatar.png"))
 
   const createdUser = await db.user.create({
     data: {
@@ -69,15 +97,16 @@ export async function POST(request: NextRequest) {
       active: true,
       firstName: data.firstName,
       lastName: data.lastName,
+      avatarUrl: files.data?.url,
     },
-  });
+  })
 
-  const session = await lucia.createSession(createdUser.id, {});
-  const sessionCookie = lucia.createSessionCookie(session.id);
+  const session = await lucia.createSession(createdUser.id, {})
+  const sessionCookie = lucia.createSessionCookie(session.id)
   cookies().set(
     sessionCookie.name,
     sessionCookie.value,
     sessionCookie.attributes
-  );
-  return new NextResponse(null, { status: 200 });
+  )
+  return new NextResponse(null, { status: 200 })
 }

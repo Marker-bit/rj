@@ -75,11 +75,12 @@ export function BookView({ book }: { book: Book }) {
   })
 
   const doneMutation = useMutation({
-    mutationFn: async () => {
+    mutationFn: async ({ readAt }: { readAt?: Date }) => {
       await fetch(`/api/books/${book.id}/read/`, {
         method: "POST",
         body: JSON.stringify({
           pages: book.pages,
+          readAt: readAt || new Date(),
         }),
       })
     },

@@ -36,7 +36,7 @@ export function BookInfoModal({
   setDateOpen: (b: boolean) => void
   setCollectionsOpen: (b: boolean) => void
   doneMutation: {
-    mutate: () => void
+    mutate: ({ readAt }: { readAt?: Date }) => void
     isPending: boolean
   }
   setShareOpen: (b: boolean) => void
@@ -158,7 +158,7 @@ export function BookInfoModal({
               className="gap-2"
               variant="outline"
               disabled={doneMutation.isPending}
-              onClick={() => doneMutation.mutate()}
+              onClick={() => doneMutation.mutate({})}
             >
               {doneMutation.isPending ? (
                 <Loader className="size-4 animate-spin" />
