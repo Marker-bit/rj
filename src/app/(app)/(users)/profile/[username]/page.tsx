@@ -71,13 +71,13 @@ export default async function Page({
   if (currentUser?.id === user.id) return redirect("/profile")
   return (
     <div className="m-3">
-      <div className="p-4 rounded-md border flex gap-2 items-center">
+      <div className="flex items-center gap-2 rounded-md border p-4">
         <Image
           src={user?.avatarUrl ? user?.avatarUrl : "/no-avatar.png"}
           alt="avatar"
           width={100}
           height={100}
-          className="rounded-full w-20 h-20"
+          className="size-20 rounded-full"
         />
         <div className="flex flex-col">
           <div className="text-3xl font-semibold">

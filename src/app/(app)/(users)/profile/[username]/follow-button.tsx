@@ -27,10 +27,10 @@ export default function FollowButton({
   const queryClient = useQueryClient()
 
   const followMutation = useMutation({
-    mutationFn: () => {
+    mutationFn: async () => {
       return fetch(`/api/profile/${username}/follow`, {
         method: following ? "DELETE" : "POST",
-      })
+      }).then(() => router.refresh())
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -43,31 +43,31 @@ export default function FollowButton({
   })
 
   return following === undefined ? (
-    <Skeleton className="w-48 h-10 rounded-md" />
+    <Skeleton className="h-10 w-48 rounded-md" />
   ) : following ? (
     <Button
-      className="gap-2 w-fit"
+      className="w-fit gap-2"
       onClick={() => followMutation.mutate()}
       disabled={followMutation.isPending}
       variant="outline"
     >
       {followMutation.isPending ? (
-        <Loader className="w-4 h-4" />
+        <Loader className="size-4" />
       ) : (
-        <UserX className="w-4 h-4" />
+        <UserX className="size-4" />
       )}
       Удалить из друзей
     </Button>
   ) : (
     <Button
-      className="gap-2 w-fit"
+      className="w-fit gap-2"
       onClick={() => followMutation.mutate()}
       disabled={followMutation.isPending}
     >
       {followMutation.isPending ? (
-        <Loader className="w-4 h-4" />
+        <Loader invert className="size-4" />
       ) : (
-        <UserPlus className="w-4 h-4" />
+        <UserPlus className="size-4" />
       )}
       Добавить в друзья
     </Button>
