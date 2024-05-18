@@ -52,7 +52,7 @@ export default async function Page({
             include: {
               books: {
                 include: {
-                  groupBook: true,
+                  groupBook: true
                 },
               },
             },
@@ -71,6 +71,11 @@ export default async function Page({
       groupBook: {
         groupId: group.id,
       },
+    },
+    include: {
+      readEvents: {
+        orderBy: { readAt: "desc" },
+      }
     },
   })
 

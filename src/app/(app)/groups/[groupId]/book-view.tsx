@@ -2,7 +2,8 @@
 
 import { Button } from "@/components/ui/button"
 import { Book, Group, GroupBook } from "@prisma/client"
-import { BookOpen, Loader, Minus, Plus } from "lucide-react"
+import { BookOpen, Minus, Plus } from "lucide-react"
+import { Loader } from "@/components/ui/loader"
 import Image from "next/image"
 import { MoreActions } from "./more-actions"
 import { useState } from "react"
@@ -14,6 +15,8 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from "@/components/ui/tooltip"
+import RemoveBookDialog from "./remove-book-dialog"
+import { toast } from "sonner";
 
 export function GroupBookView({
   groupBook,
@@ -30,9 +33,12 @@ export function GroupBookView({
   userId: string
 }) {
   const [loading, setLoading] = useState(false)
+  const [removeDialogOpen, setRemoveDialogOpen] = useState(false)
   const router = useRouter()
 
   const book = groupBook.book.find((b) => b.userId === userId)
+
+  const b = ownedBooks.find((b) => b.groupBookId === groupBook.id)
 
   return (
     <div
@@ -94,14 +100,23 @@ export function GroupBookView({
                     {
                       method: "POST",
                     }
-                  ).then(() => {
+                  ).then(res => res.json()).then((res) => {
                     setLoading(false)
                     router.refresh()
+                    toast("Книга добавлена", {
+                      description: "Теперь вы можете читать ее",
+                      action: {
+                        onClick: () => {
+                          router.push(`/books?bookId=${res.id}`)
+                        },
+                        label: "Перейти",
+                      }
+                    })
                   })
                 }}
               >
                 {loading ? (
-                  <Loader className="size-4 animate-spin" />
+                  <Loader className="size-4" />
                 ) : (
                   <Plus className="size-4" />
                 )}
@@ -110,34 +125,46 @@ export function GroupBookView({
             <TooltipContent>Добавить себе книгу</TooltipContent>
           </Tooltip>
         ) : (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                size="icon"
-                variant="ghost"
-                className="size-fit p-1"
-                onClick={() => {
-                  setLoading(true)
-                  fetch(
-                    `/api/groups/${groupBook.groupId}/books/${groupBook.id}/own`,
-                    {
-                      method: "DELETE",
+          <>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="size-fit p-1"
+                  onClick={() => {
+                    if (b.readEvents.length === 0) {
+                      setLoading(true)
+                      fetch(
+                        `/api/groups/${groupBook.groupId}/books/${groupBook.id}/own`,
+                        {
+                          method: "DELETE",
+                        }
+                      ).then(() => {
+                        setLoading(false)
+                        router.refresh()
+                      })
+                    } else {
+                      setRemoveDialogOpen(true)
                     }
-                  ).then(() => {
-                    setLoading(false)
-                    router.refresh()
-                  })
-                }}
-              >
-                {loading ? (
-                  <Loader className="size-4 animate-spin" />
-                ) : (
-                  <Minus className="size-4" />
-                )}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Удалить у себя книгу</TooltipContent>
-          </Tooltip>
+                  }}
+                >
+                  {loading ? (
+                    <Loader className="size-4" />
+                  ) : (
+                    <Minus className="size-4" />
+                  )}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Удалить у себя книгу</TooltipContent>
+            </Tooltip>
+            <RemoveBookDialog
+              open={removeDialogOpen}
+              setOpen={setRemoveDialogOpen}
+              groupBook={groupBook}
+              book={b}
+            />
+          </>
         )}
         <MoreActions book={groupBook} />
       </div>
