@@ -71,6 +71,7 @@ export function BookView({ book }: { book: Book }) {
       })
       toast.success("Событие отменено")
       router.refresh()
+      router.push(`/books?bookId=${book.id}`)
     },
   })
 
@@ -95,6 +96,7 @@ export function BookView({ book }: { book: Book }) {
       setDoneOpen(false)
       setActionsDrawerOpen(false)
       router.refresh()
+      router.push(`/books?bookId=${book.id}`)
     },
   })
 
@@ -118,6 +120,7 @@ export function BookView({ book }: { book: Book }) {
       toast.success("Событие сохранено")
       setActionsDrawerOpen(false)
       router.refresh()
+      router.push(`/books?bookId=${book.id}`)
     },
   })
 
@@ -219,7 +222,7 @@ export function BookView({ book }: { book: Book }) {
             onClick={() => deleteMutation.mutate()}
             disabled={deleteMutation.isPending}
           >
-            {deleteMutation.isPending && <Loader className="mr-2 size-4" />}
+            {deleteMutation.isPending && <Loader invert className="mr-2 size-4" />}
             Удалить
           </Button>
         </div>

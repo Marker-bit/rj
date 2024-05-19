@@ -5,7 +5,7 @@ import { declOfNum } from "@/lib/utils"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import { GroupMemberRole } from "@prisma/client";
-import { Crown, Shield } from "lucide-react";
+import { BookMinus, Crown, Shield, Users2 } from "lucide-react";
 
 export const dynamic = "force-dynamic"
 
@@ -85,6 +85,14 @@ export default async function Page() {
             </div>
           </Link>
         ))}
+        {groups.length === 0 && (
+          <div className="flex items-center gap-2 rounded-xl border p-2 text-xl">
+            <Users2 className="size-10" />
+            <div className="flex flex-col">
+              <div>Вы не состоите ни в одной группе</div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

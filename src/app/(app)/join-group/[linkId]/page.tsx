@@ -31,7 +31,7 @@ export default async function Page({ params }: { params: { linkId: string } }) {
   })
 
   if (link.group.members.some((member) => member.userId === user.id)) {
-    return redirect("/home")
+    return redirect(`/groups/${link.group.id}`)
   }
   return (
     <div className="flex flex-col p-4 max-sm:mb-[15vh] md:min-h-screen md:items-center md:justify-center">

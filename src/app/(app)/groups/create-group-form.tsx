@@ -52,7 +52,7 @@ export function CreateGroupForm({ onDone }: { onDone: () => void }) {
             <FormItem>
               <FormLabel>Название</FormLabel>
               <FormControl>
-                <Input placeholder="shadcn" {...field} />
+                <Input {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

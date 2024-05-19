@@ -8,6 +8,7 @@ import {
   BarChartHorizontalBig,
   Book,
   Crown,
+  LogOut,
   Shield,
   User,
   Users,
@@ -19,6 +20,14 @@ import { AddMemberButton } from "./add-member-button"
 import { GroupBookView } from "./book-view"
 import { Progress } from "@/components/ui/progress"
 import { LinkMemberButton } from "./link-member-button"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Button } from "@/components/ui/button"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { LeaveGroupButton } from "./leave-group-button"
 
 export const dynamic = "force-dynamic"
 
@@ -52,7 +61,7 @@ export default async function Page({
             include: {
               books: {
                 include: {
-                  groupBook: true
+                  groupBook: true,
                 },
               },
             },
@@ -75,7 +84,7 @@ export default async function Page({
     include: {
       readEvents: {
         orderBy: { readAt: "desc" },
-      }
+      },
     },
   })
 
@@ -125,24 +134,34 @@ export default async function Page({
 
   return (
     <div className="p-2 max-sm:mb-[15vh]">
-      <div className="flex flex-col">
-        <div className="text-3xl font-bold">
-          <div>{group.title}</div>
+      <div className="flex items-center">
+        <div className="flex flex-col">
+          <div className="text-3xl font-bold">
+            <div>{group.title}</div>
+          </div>
+          <div className="flex gap-1 text-sm text-muted-foreground/70">
+            <div>
+              {group.groupBooks.length}{" "}
+              {declOfNum(group.groupBooks.length, ["книга", "книги", "книг"])}
+            </div>
+            •
+            <div>
+              {group.members.length}{" "}
+              {declOfNum(group.members.length, [
+                "участник",
+                "участника",
+                "участников",
+              ])}
+            </div>
+          </div>
         </div>
-        <div className="flex gap-1 text-sm text-muted-foreground/70">
-          <div>
-            {group.groupBooks.length}{" "}
-            {declOfNum(group.groupBooks.length, ["книга", "книги", "книг"])}
-          </div>
-          •
-          <div>
-            {group.members.length}{" "}
-            {declOfNum(group.members.length, [
-              "участник",
-              "участника",
-              "участников",
-            ])}
-          </div>
+        <div className="ml-auto">
+          <Tooltip>
+            <TooltipTrigger>
+              <LeaveGroupButton groupId={group.id} />
+            </TooltipTrigger>
+            <TooltipContent>Выйти из группы</TooltipContent>
+          </Tooltip>
         </div>
       </div>
       <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
@@ -150,17 +169,19 @@ export default async function Page({
           <div className="flex items-center gap-1 text-sm text-black/70 dark:text-white/70">
             <Book className="size-4" />
             <div>Книги</div>
-            <AddBookButton groupId={group.id} />
+            {!isMember && <AddBookButton groupId={group.id} />}
           </div>
-          {group.groupBooks.map((book) => (
-            <GroupBookView
-              groupBook={book}
-              key={book.id}
-              ownedBooks={myBooksFromGroup}
-              isMember={isMember}
-              userId={user.id}
-            />
-          ))}
+          <ScrollArea className="h-[40vh]">
+            {group.groupBooks.map((book) => (
+              <GroupBookView
+                groupBook={book}
+                key={book.id}
+                ownedBooks={myBooksFromGroup}
+                isMember={isMember}
+                userId={user.id}
+              />
+            ))}
+          </ScrollArea>
         </div>
         <div className="rounded-xl border p-4">
           <div className="flex items-center gap-1 text-sm text-black/70 dark:text-white/70">
@@ -171,41 +192,43 @@ export default async function Page({
               <LinkMemberButton group={group} isMember={isMember} />
             </div>
           </div>
-          {group.members.map((member) => (
-            <Link
-              href={`/profile/${member.user.username}`}
-              key={member.id}
-              className="mt-2 flex items-center gap-2 rounded-xl p-2 transition-all hover:bg-muted"
-            >
-              <Image
-                src={member.user.avatarUrl || "/no-avatar.png"}
-                alt="user"
-                width={500}
-                height={500}
-                className="h-8 w-auto rounded-md"
-              />
-              <div className="flex flex-col">
-                <div className="flex items-center gap-2 font-bold">
-                  {member.user.firstName} {member.user.lastName}
-                  {member.user.verified && (
-                    <BadgeCheck className="size-4 text-yellow-500" />
+          <ScrollArea className="h-[40vh]">
+            {group.members.map((member) => (
+              <Link
+                href={`/profile/${member.user.username}`}
+                key={member.id}
+                className="mt-2 flex items-center gap-2 rounded-xl p-2 transition-all hover:bg-muted"
+              >
+                <Image
+                  src={member.user.avatarUrl || "/no-avatar.png"}
+                  alt="user"
+                  width={500}
+                  height={500}
+                  className="h-8 w-auto rounded-md"
+                />
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-2 font-bold">
+                    {member.user.firstName} {member.user.lastName}
+                    {member.user.verified && (
+                      <BadgeCheck className="size-4 text-yellow-500" />
+                    )}
+                  </div>
+                  <div className="text-sm text-muted-foreground/70">
+                    @{member.user.username}
+                  </div>
+                </div>
+                <div className="ml-auto flex gap-1">
+                  {member.userId === user?.id && <User className="size-4" />}
+                  {member.role === GroupMemberRole.MODERATOR && (
+                    <Shield className="size-4 text-blue-500" />
+                  )}
+                  {member.role === GroupMemberRole.CREATOR && (
+                    <Crown className="size-4 text-yellow-500" />
                   )}
                 </div>
-                <div className="text-sm text-muted-foreground/70">
-                  @{member.user.username}
-                </div>
-              </div>
-              <div className="ml-auto flex gap-1">
-                {member.userId === user?.id && <User className="size-4" />}
-                {member.role === GroupMemberRole.MODERATOR && (
-                  <Shield className="size-4 text-blue-500" />
-                )}
-                {member.role === GroupMemberRole.CREATOR && (
-                  <Crown className="size-4 text-yellow-500" />
-                )}
-              </div>
-            </Link>
-          ))}
+              </Link>
+            ))}
+          </ScrollArea>
         </div>
         <div className="rounded-xl border p-4">
           <div className="flex items-center gap-1 text-sm text-black/70 dark:text-white/70">
@@ -223,7 +246,11 @@ export default async function Page({
                 </div>
                 <div className="flex flex-col items-end">
                   <div className="text-xl font-bold">
-                    {(stat.max === 0 ? 0 : (stat.value / stat.max) * 100).toFixed(1)}%
+                    {(stat.max === 0
+                      ? 0
+                      : (stat.value / stat.max) * 100
+                    ).toFixed(1)}
+                    %
                   </div>
                   <div className="text-sm text-muted-foreground/70">
                     {stat.value}/{stat.max}
@@ -239,7 +266,7 @@ export default async function Page({
             <BarChart2 className="size-4" />
             <div>Рейтинг</div>
           </div>
-          <div className="mt-2 flex flex-col">
+          <ScrollArea className="mt-2 flex h-[40vh] flex-col">
             {ratingKeys.map((userId, i) => (
               <Link
                 key={userId}
@@ -281,7 +308,7 @@ export default async function Page({
                 </div>
               </Link>
             ))}
-          </div>
+          </ScrollArea>
         </div>
       </div>
     </div>

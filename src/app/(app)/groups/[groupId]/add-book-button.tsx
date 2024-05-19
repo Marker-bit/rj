@@ -34,18 +34,9 @@ export function AddBookButton({ groupId }: { groupId: string }) {
       />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                size="icon"
-                variant="ghost"
-                className="ml-auto size-fit p-1"
-              >
-                <Plus className="size-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Добавить книгу</TooltipContent>
-          </Tooltip>
+          <Button size="icon" variant="ghost" className="ml-auto size-fit p-1">
+            <Plus className="size-4" />
+          </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem onClick={() => setModeOpen("create")}>

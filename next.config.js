@@ -49,9 +49,10 @@ const nextConfig = {
         ".js",
         ".mjs",
         ".json",
-      ],
+      ]
     },
     mdxRs: true,
+    serverComponentsExternalPackages: ["@node-rs/argon2"],
   },
 }
 
