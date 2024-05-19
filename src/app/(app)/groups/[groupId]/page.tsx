@@ -1,3 +1,10 @@
+import { Progress } from "@/components/ui/progress"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { db } from "@/lib/db"
 import { validateRequest } from "@/lib/server-validate-request"
 import { declOfNum } from "@/lib/utils"
@@ -8,7 +15,6 @@ import {
   BarChartHorizontalBig,
   Book,
   Crown,
-  LogOut,
   Shield,
   User,
   Users,
@@ -18,17 +24,10 @@ import Link from "next/link"
 import { AddBookButton } from "./add-book-button"
 import { AddMemberButton } from "./add-member-button"
 import { GroupBookView } from "./book-view"
-import { Progress } from "@/components/ui/progress"
-import { LinkMemberButton } from "./link-member-button"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Button } from "@/components/ui/button"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { LeaveGroupButton } from "./leave-group-button"
 import { DeleteGroupButton } from "./delete-group-button"
+import { LeaveGroupButton } from "./leave-group-button"
+import { LinkMemberButton } from "./link-member-button"
+import { MemberActions } from "./member-actions"
 
 export const dynamic = "force-dynamic"
 
@@ -133,6 +132,8 @@ export default async function Page({
 
   ratingKeys.sort((a, b) => rating[b] - rating[a])
 
+  const currentMember = group.members.find((m) => m.userId === user?.id)
+
   return (
     <div className="p-2 max-sm:mb-[15vh]">
       <div className="flex items-center">
@@ -204,30 +205,35 @@ export default async function Page({
           </div>
           <ScrollArea className="h-[40vh]">
             {group.members.map((member) => (
-              <Link
-                href={`/profile/${member.user.username}`}
+              <div
+                className="mt-2 flex items-center gap-2 rounded-xl p-2 transition-all"
                 key={member.id}
-                className="mt-2 flex items-center gap-2 rounded-xl p-2 transition-all hover:bg-muted"
               >
-                <Image
-                  src={member.user.avatarUrl || "/no-avatar.png"}
-                  alt="user"
-                  width={500}
-                  height={500}
-                  className="h-8 w-auto rounded-md"
-                />
-                <div className="flex flex-col">
-                  <div className="flex items-center gap-2 font-bold">
-                    {member.user.firstName} {member.user.lastName}
-                    {member.user.verified && (
-                      <BadgeCheck className="size-4 text-yellow-500" />
-                    )}
+                <Link
+                  href={`/profile/${member.user.username}`}
+                  key={member.id}
+                  className="flex items-center gap-2 rounded-xl p-2 transition-all hover:bg-muted"
+                >
+                  <Image
+                    src={member.user.avatarUrl || "/no-avatar.png"}
+                    alt="user"
+                    width={500}
+                    height={500}
+                    className="h-8 w-auto rounded-md"
+                  />
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-2 font-bold">
+                      {member.user.firstName} {member.user.lastName}
+                      {member.user.verified && (
+                        <BadgeCheck className="size-4 text-yellow-500" />
+                      )}
+                    </div>
+                    <div className="text-sm text-muted-foreground/70">
+                      @{member.user.username}
+                    </div>
                   </div>
-                  <div className="text-sm text-muted-foreground/70">
-                    @{member.user.username}
-                  </div>
-                </div>
-                <div className="ml-auto flex gap-1">
+                </Link>
+                <div className="ml-auto flex items-center gap-1">
                   {member.userId === user?.id && <User className="size-4" />}
                   {member.role === GroupMemberRole.MODERATOR && (
                     <Shield className="size-4 text-blue-500" />
@@ -235,8 +241,13 @@ export default async function Page({
                   {member.role === GroupMemberRole.CREATOR && (
                     <Crown className="size-4 text-yellow-500" />
                   )}
+                  {member.userId !== user?.id &&
+                    (currentMember?.role === GroupMemberRole.CREATOR ||
+                      currentMember?.role === GroupMemberRole.MODERATOR) && (
+                      <MemberActions member={member} groupId={group.id} />
+                    )}
                 </div>
-              </Link>
+              </div>
             ))}
           </ScrollArea>
         </div>
