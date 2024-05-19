@@ -1,19 +1,20 @@
 "use client"
 
-import { DrawerDialog } from "@/components/drawer";
-import { Button } from "@/components/ui/button";
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { DrawerDialog } from "@/components/drawer"
+import { Button } from "@/components/ui/button"
+import { DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Loader } from "@/components/ui/loader";
-import { GroupMemberRole } from "@prisma/client";
-import { MoreVertical, UserX } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
+} from "@/components/ui/dropdown-menu"
+import { Loader } from "@/components/ui/loader"
+import { GroupMemberRole } from "@prisma/client"
+import { MoreVertical, UserX } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { toast } from "sonner"
 
 export function MemberActions({
   member,
@@ -24,6 +25,7 @@ export function MemberActions({
 }) {
   const [loading, setLoading] = useState(false)
   const [kickOpen, setKickOpen] = useState(false)
+  const router = useRouter()
 
   const kickMember = async () => {
     setLoading(true)
@@ -31,15 +33,16 @@ export function MemberActions({
       method: "DELETE",
     })
     const res = await resp.json()
+    setLoading(false)
     if (res.error) {
       toast.error("Возникла проблема при исключении участника", {
         description: res.error,
       })
     } else {
+      setKickOpen(false)
       toast.success(res.message)
+      router.refresh()
     }
-    setLoading(false)
-    setKickOpen(false)
   }
 
   return (
