@@ -4,6 +4,7 @@ import { validateRequest } from "@/lib/server-validate-request"
 import { declOfNum } from "@/lib/utils"
 import Image from "next/image"
 import Link from "next/link"
+import { CloneButton } from "./clone-button"
 
 export default async function Page({ params }: { params: { linkId: string } }) {
   const { user } = await validateRequest()
@@ -47,36 +48,39 @@ export default async function Page({ params }: { params: { linkId: string } }) {
             </Badge>
           )}
 
-          <Link
-            href={
-              book.userId === user?.id
-                ? "/profile"
-                : `/profile/${book.user.username}`
-            }
-            className="w-fit"
-          >
-            <div className="flex w-fit gap-2 rounded-xl border p-2 pr-5">
-              <Image
-                src={book.user?.avatarUrl || "/no-avatar.png"}
-                alt="user"
-                width={500}
-                height={500}
-                className="size-10 rounded-full"
-              />
-              {book.userId === user?.id ? (
-                <div className="my-auto text-sm font-semibold">Вы</div>
-              ) : (
-                <div className="flex flex-col">
-                  <div className="text-sm font-semibold">
-                    {book.user.firstName} {book.user.lastName}
+          <div className="flex flex-wrap items-center gap-2">
+            <Link
+              href={
+                book.userId === user?.id
+                  ? "/profile"
+                  : `/profile/${book.user.username}`
+              }
+              className="w-fit"
+            >
+              <div className="flex w-fit gap-2 rounded-xl border p-2 pr-5">
+                <Image
+                  src={book.user?.avatarUrl || "/no-avatar.png"}
+                  alt="user"
+                  width={500}
+                  height={500}
+                  className="size-10 rounded-full"
+                />
+                {book.userId === user?.id ? (
+                  <div className="my-auto text-sm font-semibold">Вы</div>
+                ) : (
+                  <div className="flex flex-col">
+                    <div className="text-sm font-semibold">
+                      {book.user.firstName} {book.user.lastName}
+                    </div>
+                    <div className="text-sm text-zinc-500">
+                      @{book.user.username}
+                    </div>
                   </div>
-                  <div className="text-sm text-zinc-500">
-                    @{book.user.username}
-                  </div>
-                </div>
-              )}
-            </div>
-          </Link>
+                )}
+              </div>
+            </Link>
+            <CloneButton linkId={params.linkId} />
+          </div>
         </div>
       </div>
     </div>

@@ -222,7 +222,9 @@ export function BookView({ book }: { book: Book }) {
             onClick={() => deleteMutation.mutate()}
             disabled={deleteMutation.isPending}
           >
-            {deleteMutation.isPending && <Loader white className="mr-2 size-4" />}
+            {deleteMutation.isPending && (
+              <Loader white className="mr-2 size-4" />
+            )}
             Удалить
           </Button>
         </div>
@@ -330,7 +332,11 @@ export function BookView({ book }: { book: Book }) {
           )}
 
           {book.links.length !== 0 && (
-            <Badge variant="outline" onClick={() => setShareBookOpen(true)}>
+            <Badge
+              variant="outline"
+              onClick={() => setShareBookOpen(true)}
+              className="cursor-pointer"
+            >
               <Link2 className="mr-2 size-4" /> {book.links.length}{" "}
               {declOfNum(book.links.length, ["ссылка", "ссылки", "ссылок"])}
             </Badge>

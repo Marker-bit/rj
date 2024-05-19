@@ -16,10 +16,6 @@ export function BookList({ books }: { books: Book[] }) {
   const [searchText, setSearchText] = useState("")
   const [searchResults, setSearchResults] = useState<Book[]>()
 
-  const fuse = new Fuse(books, {
-    keys: ["title", "author"],
-  })
-
   useEffect(() => {
     const localStorageReadBooks = localStorage.getItem("readBooks")
     const localStorageNotStarted = localStorage.getItem("notStarted")
@@ -44,8 +40,10 @@ export function BookList({ books }: { books: Book[] }) {
     })
   }
 
+  let filteredBooks = books;
+
   if (readBooks) {
-    books = books.filter((book: Book) => {
+    filteredBooks = filteredBooks.filter((book: Book) => {
       if (book.readEvents.length === 0) {
         return true
       }
@@ -54,15 +52,31 @@ export function BookList({ books }: { books: Book[] }) {
   }
 
   if (notStarted) {
-    books = books.filter((book: Book) => {
+    filteredBooks = filteredBooks.filter((book: Book) => {
       return book.readEvents.length !== 0
     })
   }
 
-  function search(evt: any) {
+  const fuse = new Fuse(filteredBooks, {
+    keys: ["title", "author"],
+  })
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  function search(evt?: any) {
+    if (searchText === "") {
+      setSearchResults(undefined)
+      return
+    }
     setSearchResults(fuse.search(searchText).map((result) => result.item))
-    evt.preventDefault()
+    if (evt !== undefined) {
+      evt.preventDefault()
+    }
   }
+
+  useEffect(() => {
+    search()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchText, books, readBooks, notStarted])
 
   return (
     <div>
@@ -122,7 +136,7 @@ export function BookList({ books }: { books: Book[] }) {
             Сбросить поиск
           </Button>
         )}
-        {(searchResults || books).map((book: Book) => (
+        {(searchResults || filteredBooks).map((book: Book) => (
           <BookView book={book} key={book.id} />
         ))}
       </div>
