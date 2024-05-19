@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Loader } from "@/components/ui/loader"
 import { GroupMemberRole } from "@prisma/client"
-import { MoreVertical, UserX } from "lucide-react"
+import { MoreVertical, ShieldMinus, ShieldPlus, UserX } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { toast } from "sonner"
@@ -43,6 +43,68 @@ export function MemberActions({
       toast.success(res.message)
       router.refresh()
     }
+  }
+
+  // const changeRole = async (role: GroupMemberRole) => {
+  //   setLoading(true)
+  //   const resp = await fetch(`/api/groups/${groupId}/member/${member.id}`, {
+  //     method: "PATCH",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({ role }),
+  //   })
+  //   const res = await resp.json()
+  //   setLoading(false)
+  //   if (res.error) {
+  //     toast.error("Возникла проблема при изменении роли участника", {
+  //       description: res.error,
+  //     })
+  //   } else {
+  //     toast.success(res.message)
+  //     router.refresh()
+  //   }
+  // }
+
+  const changeRole = async (role: GroupMemberRole) => {
+    toast.promise(async () => {
+      const resp = await fetch(`/api/groups/${groupId}/member/${member.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ role }),
+      })
+      const res = await resp.json()
+      if (res.error) {
+        throw new Error(res.error)
+      } else {
+        router.refresh()
+        return res
+      }
+    }, {
+      loading: "Изменение роли участника...",
+      success: "Роль участника изменена",
+      error: (error) => `Возникла проблема при изменении роли участника: ${error.message}`,
+    })
+    // setLoading(true)
+    // const resp = await fetch(`/api/groups/${groupId}/member/${member.id}`, {
+    //   method: "PATCH",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({ role }),
+    // })
+    // const res = await resp.json()
+    // setLoading(false)
+    // if (res.error) {
+    //   toast.error("Возникла проблема при изменении роли участника", {
+    //     description: res.error,
+    //   })
+    // } else {
+    //   toast.success(res.message)
+    //   router.refresh()
+    // }
   }
 
   return (
@@ -91,13 +153,27 @@ export function MemberActions({
             className="flex items-center gap-2"
             onClick={() => setKickOpen(true)}
           >
-            {loading ? (
-              <Loader className="size-4" />
-            ) : (
-              <UserX className="size-4" />
-            )}
+            <UserX className="size-4" />
             Исключить
           </DropdownMenuItem>
+          {member.role === GroupMemberRole.MODERATOR && (
+            <DropdownMenuItem
+              className="flex items-center gap-2"
+              onClick={() => changeRole(GroupMemberRole.MEMBER)}
+            >
+              <ShieldMinus className="size-4" />
+              Понизить
+            </DropdownMenuItem>
+          )}
+          {member.role === GroupMemberRole.MEMBER && (
+            <DropdownMenuItem
+              className="flex items-center gap-2"
+              onClick={() => changeRole(GroupMemberRole.MODERATOR)}
+            >
+              <ShieldPlus className="size-4" />
+              Повысить
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </>

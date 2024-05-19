@@ -3,6 +3,90 @@ import { validateRequest } from "@/lib/server-validate-request"
 import { GroupMemberRole } from "@prisma/client"
 import { NextRequest, NextResponse } from "next/server"
 
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: { groupId: string; memberId: string } }
+) {
+  const { user } = await validateRequest()
+
+  if (!user) {
+    return new NextResponse("Unauthorized", {
+      status: 401,
+    })
+  }
+
+  const group = await db.group.findUniqueOrThrow({
+    where: {
+      id: params.groupId,
+      members: {
+        some: {
+          userId: user.id,
+          role: {
+            in: [GroupMemberRole.CREATOR, GroupMemberRole.MODERATOR],
+          },
+        },
+      },
+    },
+    include: {
+      members: true,
+    },
+  })
+
+  if (!group) {
+    return NextResponse.json(
+      {
+        error:
+          "Не существует группы, вы не состоите в ней или вы не создатель и не модератор",
+      },
+      { status: 404 }
+    )
+  }
+
+  const userMember = group.members.find((member) => member.userId === user.id)
+  const member = group.members.find((member) => member.id === params.memberId)
+  const body = (await req.json()) as { role: GroupMemberRole }
+
+  if (userMember?.role !== GroupMemberRole.CREATOR) {
+    return NextResponse.json(
+      {
+        error: "Вы не создатель группы",
+      },
+      { status: 403 }
+    )
+  }
+
+  if (body.role === GroupMemberRole.CREATOR) {
+    return NextResponse.json(
+      {
+        error: "Нельзя назначить создателя",
+      },
+      { status: 400 }
+    )
+  }
+
+  if (!member) {
+    return NextResponse.json(
+      {
+        error: "Не существует участника группы",
+      },
+      { status: 404 }
+    )
+  }
+
+  const updatedMember = await db.groupMember.update({
+    where: {
+      id: params.memberId,
+    },
+    data: {
+      role: body.role,
+    },
+  })
+
+  return NextResponse.json({
+    message: "Роль участника успешно изменена",
+  })
+}
+
 export async function DELETE(
   req: NextRequest,
   { params }: { params: { groupId: string; memberId: string } }
