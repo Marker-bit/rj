@@ -86,9 +86,7 @@ export async function POST(request: NextRequest) {
   //   }),
   // })
 
-  console.log(buffer.byteLength)
-
-  const files = await utapi.uploadFiles(new File([buffer], "avatar.png"))
+  // const files = await utapi.uploadFiles(new File([buffer], "avatar.png"))
 
   const createdUser = await db.user.create({
     data: {
@@ -97,7 +95,7 @@ export async function POST(request: NextRequest) {
       active: true,
       firstName: data.firstName,
       lastName: data.lastName,
-      avatarUrl: files.data?.url,
+      // avatarUrl: files.data?.url,
     },
   })
 

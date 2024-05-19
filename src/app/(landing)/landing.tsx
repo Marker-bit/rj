@@ -80,7 +80,7 @@ export function Landing({ loggedIn }: { loggedIn: boolean }) {
           />
         </div>
       </motion.div>
-      <div className="w-full">
+      {/* <div className="w-full">
         <motion.div className="m-2 grid min-h-screen w-fit grid-cols-2 items-center justify-center gap-2 p-2 max-sm:grid-cols-1">
           <motion.div
             initial={{ scale: 0.5, filter: "blur(10px)" }}
@@ -121,7 +121,7 @@ export function Landing({ loggedIn }: { loggedIn: boolean }) {
             </div>
           </motion.div>
         </motion.div>
-      </div>
+      </div> */}
     </div>
   )
 }
