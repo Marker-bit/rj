@@ -24,7 +24,7 @@ export function BookInfoModal({
   setDeleteDialogOpen,
   setDateOpen,
   setShareOpen,
-  doneMutation,
+  setDoneOpen,
   setCollectionsOpen,
 }: {
   open: boolean
@@ -35,10 +35,7 @@ export function BookInfoModal({
   setDeleteDialogOpen: (b: boolean) => void
   setDateOpen: (b: boolean) => void
   setCollectionsOpen: (b: boolean) => void
-  doneMutation: {
-    mutate: ({ readAt }: { readAt?: Date }) => void
-    isPending: boolean
-  }
+  setDoneOpen: (b: boolean) => void
   setShareOpen: (b: boolean) => void
 }) {
   const lastEvent = book.readEvents[0]
@@ -157,14 +154,9 @@ export function BookInfoModal({
             <Button
               className="gap-2"
               variant="outline"
-              disabled={doneMutation.isPending}
-              onClick={() => doneMutation.mutate({})}
+              onClick={() => setDoneOpen(true)}
             >
-              {doneMutation.isPending ? (
-                <Loader className="size-4 animate-spin" />
-              ) : (
-                <BookOpenCheck className="size-4" />
-              )}
+              <BookOpenCheck className="size-4" />
               Прочитана
             </Button>
             <Button

@@ -182,7 +182,7 @@ export function BookView({ book }: { book: Book }) {
         setDeleteDialogOpen={setDeleteDialogOpen}
         setDateOpen={setDateOpen}
         setCollectionsOpen={setCollectionsOpen}
-        doneMutation={doneMutation}
+        setDoneOpen={setDoneOpen}
         setShareOpen={setShareBookOpen}
       />
       <BookCollectionsModal
