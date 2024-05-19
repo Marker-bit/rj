@@ -222,7 +222,7 @@ export function BookView({ book }: { book: Book }) {
             onClick={() => deleteMutation.mutate()}
             disabled={deleteMutation.isPending}
           >
-            {deleteMutation.isPending && <Loader invert className="mr-2 size-4" />}
+            {deleteMutation.isPending && <Loader white className="mr-2 size-4" />}
             Удалить
           </Button>
         </div>

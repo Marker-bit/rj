@@ -63,7 +63,7 @@ export default function RemoveBookDialog({
             router.refresh()
           }}
         >
-          {loading ? <Loader invert className="size-4" /> : "Удалить"}
+          {loading ? <Loader white className="size-4" /> : "Удалить"}
         </Button>
         <Button
           variant="ghost"

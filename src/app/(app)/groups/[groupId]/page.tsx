@@ -28,6 +28,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { LeaveGroupButton } from "./leave-group-button"
+import { DeleteGroupButton } from "./delete-group-button"
 
 export const dynamic = "force-dynamic"
 
@@ -155,13 +156,22 @@ export default async function Page({
             </div>
           </div>
         </div>
-        <div className="ml-auto">
+        <div className="ml-auto flex items-center gap-2">
           <Tooltip>
             <TooltipTrigger>
               <LeaveGroupButton groupId={group.id} />
             </TooltipTrigger>
             <TooltipContent>Выйти из группы</TooltipContent>
           </Tooltip>
+          {group.members.find((m) => m.userId === user.id)?.role ===
+            GroupMemberRole.CREATOR && (
+            <Tooltip>
+              <TooltipTrigger>
+                <DeleteGroupButton groupId={group.id} />
+              </TooltipTrigger>
+              <TooltipContent>Удалить группу</TooltipContent>
+            </Tooltip>
+          )}
         </div>
       </div>
       <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">

@@ -4,9 +4,11 @@ import styles from "./loader.module.css"
 export function Loader({
   className,
   invert,
+  white,
 }: {
   className: string
   invert?: boolean
+  white?: boolean
 }) {
   return (
     <div className={className}>
@@ -17,7 +19,11 @@ export function Loader({
             <div
               className={cn(
                 styles.sonnerloadingbar,
-                invert ? "bg-white dark:bg-black" : "bg-black dark:bg-white"
+                white
+                  ? "bg-white"
+                  : invert
+                  ? "bg-white dark:bg-black"
+                  : "bg-black dark:bg-white"
               )}
               key={`spinner-bar-${i}`}
             />
