@@ -1,5 +1,5 @@
 import { Progress } from "@/components/ui/progress"
-import { ScrollArea } from "@/components/ui/scroll-area"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import {
   Tooltip,
   TooltipContent,
@@ -197,6 +197,8 @@ export default async function Page({
                 userId={user.id}
               />
             ))}
+            <ScrollBar orientation="vertical" />
+            <ScrollBar orientation="horizontal" />
           </ScrollArea>
         </div>
         <div className="rounded-xl border p-4">
