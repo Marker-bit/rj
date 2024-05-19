@@ -15,7 +15,7 @@ export async function POST(
     })
   }
 
-  const group = await db.group.findUniqueOrThrow({
+  const group = await db.group.findUnique({
     where: {
       id: params.groupId,
       members: {

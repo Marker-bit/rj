@@ -41,7 +41,7 @@ export default async function Page({
     return null
   }
   const group = await db.group.findUnique({
-    where: { id: params.groupId },
+    where: { id: params.groupId, members: { some: { userId: user.id } } },
     include: {
       groupBooks: {
         include: {
@@ -72,7 +72,12 @@ export default async function Page({
     },
   })
   if (!group) {
-    return null
+    return (
+      <div className="flex flex-col items-center p-4">
+        <p className="text-6xl font-black">404</p>
+        <p>Группа не найдена, или вы не состоите в ней.</p>
+      </div>
+    )
   }
   const myBooksFromGroup = await db.book.findMany({
     where: {

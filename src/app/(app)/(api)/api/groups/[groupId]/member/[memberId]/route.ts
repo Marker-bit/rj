@@ -167,5 +167,18 @@ export async function DELETE(
     },
   })
 
+  await db.group.update({
+    where: {
+      id: params.groupId,
+    },
+    data: {
+      blockedUsers: {
+        connect: {
+          id: member?.userId,
+        },
+      },
+    },
+  })
+
   return NextResponse.json({ message: "Участник исключен" }, { status: 200 })
 }

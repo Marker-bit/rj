@@ -20,6 +20,7 @@ export default async function Page({ params }: { params: { linkId: string } }) {
       group: {
         include: {
           members: true,
+          blockedUsers: true,
         },
       },
       createdBy: {
@@ -75,7 +76,7 @@ export default async function Page({ params }: { params: { linkId: string } }) {
           </div>
         </div>
         <div className="flex gap-2">
-          <JoinGroupButton linkId={link.id} />
+          <JoinGroupButton link={link} user={user} />
           <Link href="/home">
             <Button className="items-center gap-2" variant="outline">
               <Home className="size-4" />
@@ -83,6 +84,11 @@ export default async function Page({ params }: { params: { linkId: string } }) {
             </Button>
           </Link>
         </div>
+        {link.group.blockedUsers.some((u) => u.id === user.id) && (
+          <p className="rounded-xl border border-red-300 bg-red-200 p-4 text-xs text-red-500 dark:border-red-900 dark:bg-red-950">
+            Вы были заблокированы в этой группе
+          </p>
+        )}
       </div>
     </div>
   )

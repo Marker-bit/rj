@@ -48,6 +48,8 @@ model User {
   memberOf  GroupMember[]
 
   verified Boolean @default(false)
+  Group    Group?  @relation(fields: [groupId], references: [id])
+  groupId  String?
 }
 
 model Session {
@@ -115,17 +117,18 @@ model Group {
   id    String @id @default(cuid())
   title String
 
-  members    GroupMember[]
-  groupBooks GroupBook[]
-  inviteLinks GroupInviteLink[]
+  members      GroupMember[]
+  groupBooks   GroupBook[]
+  inviteLinks  GroupInviteLink[]
+  blockedUsers User[]
 }
 
 model GroupInviteLink {
-  id     String @id
-  group  Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  groupId String
-  createdAt DateTime @default(now())
-  createdBy GroupMember @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  id          String      @id
+  group       Group       @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId     String
+  createdAt   DateTime    @default(now())
+  createdBy   GroupMember @relation(fields: [createdById], references: [id], onDelete: Cascade)
   createdById String
 }
 
