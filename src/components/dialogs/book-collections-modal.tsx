@@ -1,6 +1,6 @@
 "use client"
 
-import { DrawerDialog } from "@/components/drawer"
+import { DrawerDialog } from "@/components/ui/drawer-dialog"
 import { DialogHeader, DialogTitle } from "../ui/dialog"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Loader } from "lucide-react"

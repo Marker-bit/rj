@@ -1,6 +1,6 @@
 "use client"
 
-import { DrawerDialog } from "@/components/drawer"
+import { DrawerDialog } from "@/components/ui/drawer-dialog"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog"

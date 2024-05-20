@@ -1,4 +1,4 @@
-import { DrawerDialog } from "@/components/drawer"
+import { DrawerDialog } from "@/components/ui/drawer-dialog"
 import {
   BookOpen,
   BookOpenCheck,

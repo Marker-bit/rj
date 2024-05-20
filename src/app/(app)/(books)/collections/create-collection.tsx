@@ -1,7 +1,7 @@
 "use client"
 
 import { DialogHeader } from "@/components/ui/dialog"
-import { DrawerDialog } from "@/components/drawer"
+import { DrawerDialog } from "@/components/ui/drawer-dialog"
 import { DialogTitle } from "@radix-ui/react-dialog"
 import { z } from "zod"
 import { useForm } from "react-hook-form"

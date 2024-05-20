@@ -1,6 +1,6 @@
 "use client"
 
-import { DrawerDialog } from "@/components/drawer"
+import { DrawerDialog } from "@/components/ui/drawer-dialog"
 import { Button } from "@/components/ui/button"
 import { DialogContent } from "@/components/ui/dialog"
 import { PlusIcon } from "lucide-react"

@@ -2,7 +2,7 @@
 
 import { DeleteGroupBookModal } from "@/components/dialogs/delete-group-book-modal"
 import { EditGroupBookModal } from "@/components/dialogs/edit-group-book-modal"
-import { DrawerDialog } from "@/components/drawer"
+import { DrawerDialog } from "@/components/ui/drawer-dialog"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,

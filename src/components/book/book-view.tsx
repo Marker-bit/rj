@@ -4,7 +4,7 @@ import { BookCollectionsModal } from "@/components/dialogs/book-collections-moda
 import { BookInfoModal } from "@/components/dialogs/book-info-modal"
 import { DateReadModal } from "@/components/dialogs/date-read-modal"
 import { EditBookModal } from "@/components/dialogs/edit-book-modal"
-import { DrawerDialog } from "@/components/drawer"
+import { DrawerDialog } from "@/components/ui/drawer-dialog"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {

@@ -18,7 +18,7 @@ import { Loader, Plus, Trash } from "lucide-react"
 import Image from "next/image"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { DrawerDialog } from "../drawer"
+import { DrawerDialog } from "../ui/drawer-dialog"
 import { DialogHeader, DialogTitle } from "../ui/dialog"
 import { useRouter } from "next/navigation"
 

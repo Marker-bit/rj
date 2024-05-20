@@ -5,11 +5,8 @@ import {
   BarChart,
   ResponsiveContainer,
   XAxis,
-  LineChart,
-  Line,
-  YAxis,
-  Tooltip,
-} from "recharts"
+  YAxis
+} from "recharts";
 
 export function Chart({ data }: { data: any[] }) {
   return (
