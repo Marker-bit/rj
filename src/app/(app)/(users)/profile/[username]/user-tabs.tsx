@@ -62,10 +62,10 @@ export function UserTabs({
     user.shareStats === SharePeople.ALL ||
     (user.shareStats === SharePeople.SUBS &&
       user.following.find((f) => f.secondId === currentUser?.id))
-  console.log(user)
+
   return (
     <div className="flex flex-col">
-      {shareSubscriptions && (
+      {shareSubscriptions && user.follower?.length !== 0 && (
         <div className="flex flex-col">
           <div className="text-3xl font-semibold">Подписки</div>
           {user.follower?.map(({ second: friend }: { second: any }) => (
@@ -73,7 +73,7 @@ export function UserTabs({
           ))}
         </div>
       )}
-      {shareFollowers && (
+      {shareFollowers && user.following?.length !== 0 && (
         <div className="flex flex-col">
           <div className="text-3xl font-semibold">Подписчики</div>
           {user.following.map(({ first: friend }: { first: any }) => (
@@ -91,17 +91,17 @@ export function UserTabs({
   )
   return (
     <>
-      <div className="flex p-1 w-full gap-2">
+      <div className="flex w-full gap-2 p-1">
         {shareSubscriptions && (
           <div
-            className="hover:bg-zinc-100 rounded-md p-2 w-full flex justify-center cursor-pointer pb-4 relative"
+            className="relative flex w-full cursor-pointer justify-center rounded-md p-2 pb-4 hover:bg-zinc-100"
             onClick={() => setCurrentTab(0)}
           >
             Подписки
             <AnimatePresence>
               {currentTab === 0 && (
                 <motion.div
-                  className="w-5 h-1 rounded-3xl bg-zinc-500 absolute bottom-[0.5rem]"
+                  className="absolute bottom-2 h-1 w-5 rounded-3xl bg-zinc-500"
                   layoutId="current"
                 />
               )}
@@ -110,14 +110,14 @@ export function UserTabs({
         )}
         {shareFollowers && (
           <div
-            className="hover:bg-zinc-100 rounded-md p-2 w-full flex justify-center cursor-pointer pb-4 relative"
+            className="relative flex w-full cursor-pointer justify-center rounded-md p-2 pb-4 hover:bg-zinc-100"
             onClick={() => setCurrentTab(1)}
           >
             Подписчики
             <AnimatePresence>
               {currentTab === 1 && (
                 <motion.div
-                  className="w-5 h-1 rounded-3xl bg-zinc-500 absolute bottom-[0.5rem]"
+                  className="absolute bottom-2 h-1 w-5 rounded-3xl bg-zinc-500"
                   layoutId="current"
                 />
               )}
@@ -142,7 +142,7 @@ export function UserTabs({
       ) : (
         shareSubscriptions === false &&
         shareFollowers === false && (
-          <div className="p-2 rounded-xl border border-zinc-100 flex items-center gap-2">
+          <div className="flex items-center gap-2 rounded-xl border border-zinc-100 p-2">
             <UserX className="size-8" />
             <div className="flex flex-col">
               <div>Пользователь скрыл подписки и подписчиков</div>
