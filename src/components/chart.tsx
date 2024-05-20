@@ -8,7 +8,7 @@ import {
   YAxis
 } from "recharts";
 
-export function Chart({ data }: { data: any[] }) {
+export function Chart({ data }: { data: { name: string; value: number }[] }) {
   return (
     <ResponsiveContainer width="100%" height="100%">
       <BarChart data={data}>

@@ -77,12 +77,12 @@ export async function Stats({
   date.setHours(0, 0, 0, 0)
   const [startOfWeek, _] = startAndEndOfWeek()
 
-  let booksStats: { [key: string]: { [key: string]: number } } = {}
-  let booksStatsNum: { [key: string]: number } = {}
-  let readWeek: { [key: string]: number } = {}
+  let booksStats: Record<string, Record<string, number>> = {}
+  let booksStatsNum: Record<string, number> = {}
+  let readWeek: Record<string, number> = {}
   let readWeekSum = 0
-  let currentWeek: { [key: string]: { [key: string]: number } } = {}
-  let currentWeekNum: { [key: string]: number } = {}
+  let currentWeek: Record<string, Record<string, number>> = {}
+  let currentWeekNum: Record<string, number> = {}
   let streak = 0
   let readSpeed = []
 
