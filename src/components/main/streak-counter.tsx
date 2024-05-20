@@ -55,7 +55,7 @@ export function StreakCounter({
                       : days[i] === 0
                       ? "bg-zinc-300 dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-700"
                       : "bg-green-300 dark:bg-green-700 border border-green-500",
-                    nowDay === i && "border-4 border-black"
+                    nowDay === i && "border-4 border-black dark:border-white"
                   )}
                 />
               </HoverCardTrigger>
