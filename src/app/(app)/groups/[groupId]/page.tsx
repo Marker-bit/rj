@@ -192,8 +192,6 @@ export default async function Page({
               <GroupBookView
                 groupBook={book}
                 key={book.id}
-                ownedBooks={myBooksFromGroup}
-                isMember={isMember}
                 userId={user.id}
               />
             ))}

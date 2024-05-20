@@ -16,20 +16,16 @@ import {
   TooltipContent,
 } from "@/components/ui/tooltip"
 import RemoveBookDialog from "./remove-book-dialog"
-import { toast } from "sonner";
+import { toast } from "sonner"
 
 export function GroupBookView({
   groupBook,
-  ownedBooks,
-  isMember,
   userId,
 }: {
   groupBook: GroupBook & {
     group: Group
-    book: Book[]
+    book: (Book & { readEvents: { pagesRead: number }[] })[]
   }
-  ownedBooks: any[]
-  isMember: boolean
   userId: string
 }) {
   const [loading, setLoading] = useState(false)
@@ -37,8 +33,6 @@ export function GroupBookView({
   const router = useRouter()
 
   const book = groupBook.book.find((b) => b.userId === userId)
-
-  const b = ownedBooks.find((b) => b.groupBookId === groupBook.id)
 
   return (
     <div
@@ -86,7 +80,7 @@ export function GroupBookView({
           </Tooltip>
         )}
 
-        {ownedBooks.every((b) => b.groupBookId !== groupBook.id) ? (
+        {!book ? (
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
@@ -100,19 +94,21 @@ export function GroupBookView({
                     {
                       method: "POST",
                     }
-                  ).then(res => res.json()).then((res) => {
-                    setLoading(false)
-                    router.refresh()
-                    toast("Книга добавлена", {
-                      description: "Теперь вы можете читать ее",
-                      action: {
-                        onClick: () => {
-                          router.push(`/books?bookId=${res.id}`)
+                  )
+                    .then((res) => res.json())
+                    .then((res) => {
+                      setLoading(false)
+                      router.refresh()
+                      toast("Книга добавлена", {
+                        description: "Теперь вы можете читать ее",
+                        action: {
+                          onClick: () => {
+                            router.push(`/books?bookId=${res.id}`)
+                          },
+                          label: "Перейти",
                         },
-                        label: "Перейти",
-                      }
+                      })
                     })
-                  })
                 }}
               >
                 {loading ? (
@@ -133,7 +129,7 @@ export function GroupBookView({
                   variant="ghost"
                   className="size-fit p-1"
                   onClick={() => {
-                    if (b.readEvents.length === 0) {
+                    if (book.readEvents.length === 0) {
                       setLoading(true)
                       fetch(
                         `/api/groups/${groupBook.groupId}/books/${groupBook.id}/own`,
@@ -162,7 +158,7 @@ export function GroupBookView({
               open={removeDialogOpen}
               setOpen={setRemoveDialogOpen}
               groupBook={groupBook}
-              book={b}
+              book={book}
             />
           </>
         )}
