@@ -1,17 +1,13 @@
 "use client"
 
 import { getDays, getStreak } from "@/lib/stats"
-import { cn, declOfNum } from "@/lib/utils"
+import { capitalizeFirstLetter, cn, declOfNum } from "@/lib/utils"
 import { ReadEvent } from "@prisma/client"
 import { addDays, differenceInDays, format, startOfWeek } from "date-fns"
 import { User } from "lucia"
 import { PartyPopper } from "lucide-react"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card"
 import { ru } from "date-fns/locale"
-
-function capitalizeFirstLetter(string: string) {
-  return string.charAt(0).toUpperCase() + string.slice(1)
-}
 
 export function StreakCounter({
   events,

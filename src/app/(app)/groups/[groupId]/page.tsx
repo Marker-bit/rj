@@ -28,6 +28,7 @@ import { DeleteGroupButton } from "./delete-group-button"
 import { LeaveGroupButton } from "./leave-group-button"
 import { LinkMemberButton } from "./link-member-button"
 import { MemberActions } from "./member-actions"
+import { AddGroupButton } from "../add-group-button"
 
 export const dynamic = "force-dynamic"
 
@@ -79,6 +80,9 @@ export default async function Page({
       </div>
     )
   }
+  const allGroups = await db.group.findMany({
+    where: { members: { some: { userId: user.id } } },
+  })
   const myBooksFromGroup = await db.book.findMany({
     where: {
       userId: user?.id,
@@ -178,6 +182,7 @@ export default async function Page({
               <TooltipContent>Удалить группу</TooltipContent>
             </Tooltip>
           )}
+          {allGroups.length === 1 && <AddGroupButton />}
         </div>
       </div>
       <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
@@ -189,11 +194,7 @@ export default async function Page({
           </div>
           <ScrollArea className="h-[40vh]">
             {group.groupBooks.map((book) => (
-              <GroupBookView
-                groupBook={book}
-                key={book.id}
-                userId={user.id}
-              />
+              <GroupBookView groupBook={book} key={book.id} userId={user.id} />
             ))}
             <ScrollBar orientation="vertical" />
             <ScrollBar orientation="horizontal" />
