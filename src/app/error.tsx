@@ -16,7 +16,7 @@ export default function Error({
   const env = process.env.NODE_ENV
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[100dvh]">
+    <div className="flex min-h-dvh flex-col items-center justify-center">
       <h1 className="text-xl font-bold">Что-то пошло не так!</h1>
       {env === "development" && (
         <>
@@ -24,7 +24,7 @@ export default function Error({
             <p className="text-muted-foreground">{error.message}</p>
           )}
           {error.stack && (
-            <pre className="w-[80%] overflow-auto bg-muted p-2 rounded-xl border">
+            <pre className="w-4/5 overflow-auto rounded-xl border bg-muted p-2">
               {error.stack}
             </pre>
           )}
