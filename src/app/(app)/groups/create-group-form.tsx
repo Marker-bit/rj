@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { AnimatePresence, motion } from "framer-motion"
 import { Loader, PlusIcon } from "lucide-react"
+import { useRouter } from "next/navigation";
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -22,7 +23,7 @@ const formSchema = z.object({
   title: z.string().min(1),
 })
 
-export function CreateGroupForm({ onDone }: { onDone: () => void }) {
+export function CreateGroupForm() {
   const [loading, setLoading] = useState(false)
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -30,16 +31,16 @@ export function CreateGroupForm({ onDone }: { onDone: () => void }) {
       title: "",
     },
   })
+  const router = useRouter()
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
     setLoading(true)
     fetch("/api/groups", {
       method: "POST",
       body: JSON.stringify(values),
-    }).then(() => {
+    }).then((res) => res.json()).then((res) => {
       setLoading(false)
-      onDone()
+      router.push(`/groups/${res.id}`)
     })
   }
   return (

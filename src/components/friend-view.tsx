@@ -9,6 +9,8 @@ import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Loader } from "./ui/loader"
+import { Badge } from "./ui/badge"
+import { useEffect, useState } from "react"
 
 export function FriendView({
   friend,
@@ -26,25 +28,31 @@ export function FriendView({
       return await res.json()
     },
   })
-  const followMutation = useMutation({
-    mutationFn: () => {
-      return fetch(`/api/profile/${friend.username}/follow`, {
-        method: following || userQuery.data?.following ? "DELETE" : "POST",
+  const [currentUserId, setCurrentUserId] = useState(null)
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    fetch("/api/profile").then((res) => {
+      res.json().then((data) => {
+        setCurrentUserId(data.id)
       })
-    },
-    onSuccess: () => {
+    })
+  }, [])
+  const follow = () => {
+    setLoading(true)
+    fetch(`/api/profile/${friend.username}/follow`, {
+      method: following || userQuery.data?.following ? "DELETE" : "POST",
+    }).then(() => {
+      setLoading(false)
       queryClient.invalidateQueries({
         queryKey: ["user", friend.username],
       })
       queryClient.invalidateQueries({
         queryKey: ["friends"],
       })
-      queryClient.invalidateQueries({
-        queryKey: ["followers"],
-      })
       router.refresh()
-    },
-  })
+    })
+  }
 
   const followingRes = following || userQuery.data?.following
   return (
@@ -67,21 +75,23 @@ export function FriendView({
           <div className="text-sm text-muted-foreground/70">
             @{friend.username}
           </div>
-          {followingRes === undefined && userQuery.isPending ? (
+          {currentUserId === friend.id ? (
+            <Badge className="w-fit">Вы</Badge>
+          ) : followingRes === undefined && userQuery.isPending ? (
             <Skeleton className="h-10 w-48 rounded-md" />
           ) : (
             <Button
               className="mt-2 w-fit gap-2"
               onClick={(evt) => {
-                followMutation.mutate()
+                follow()
                 evt.preventDefault()
               }}
-              disabled={followMutation.isPending}
+              disabled={loading}
               variant={followingRes === true ? "outline" : "default"}
             >
               {followingRes === false ? (
                 <>
-                  {followMutation.isPending ? (
+                  {loading ? (
                     <Loader invert={!followingRes} className="size-4" />
                   ) : (
                     <UserPlus className="size-4" />
@@ -90,7 +100,7 @@ export function FriendView({
                 </>
               ) : (
                 <>
-                  {followMutation.isPending ? (
+                  {loading ? (
                     <Loader invert={!followingRes} className="size-4" />
                   ) : (
                     <UserX className="size-4" />

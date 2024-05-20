@@ -20,7 +20,7 @@ export function AddGroupButton() {
   return (
     <>
       <DrawerDialog open={open} onOpenChange={setOpen} className="min-w-[50vw]">
-        <CreateGroupForm onDone={onDone} />
+        <CreateGroupForm />
       </DrawerDialog>
       <Button
         variant="ghost"
