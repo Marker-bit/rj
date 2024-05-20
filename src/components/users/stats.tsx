@@ -13,7 +13,7 @@ import {
   startOfISOWeek,
   subDays,
 } from "date-fns"
-import { Chart } from "./chart"
+import { Chart } from "@/components/ui/chart"
 import { ReadEvent, User } from "@prisma/client"
 import { declOfNum } from "@/lib/utils"
 

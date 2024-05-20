@@ -1,7 +1,7 @@
 import { ChevronLeft, Edit, Users2 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { Stats } from "@/components/stats"
+import { Stats } from "@/components/users/stats"
 import { validateRequest } from "@/lib/server-validate-request"
 import { db } from "@/lib/db"
 import { CopyUrl } from "./CopyUrl"

@@ -4,10 +4,10 @@ import { SharePeople } from "@prisma/client"
 import { User } from "lucia"
 import { User as DbUser } from "@prisma/client"
 import { useState } from "react"
-import { FriendView } from "@/components/friend-view"
+import { FriendView } from "@/components/users/friend-view"
 import { UserX } from "lucide-react"
 import { AnimatePresence, motion } from "framer-motion"
-import { Stats } from "@/components/stats"
+import { Stats } from "@/components/users/stats"
 
 export function UserTabs({
   user,

@@ -8,8 +8,8 @@ import { BadgeCheck, UserPlus, UserX } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Loader } from "./ui/loader"
-import { Badge } from "./ui/badge"
+import { Loader } from "../ui/loader"
+import { Badge } from "../ui/badge"
 import { useEffect, useState } from "react"
 
 export function FriendView({
