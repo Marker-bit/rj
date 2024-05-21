@@ -2,8 +2,8 @@
 
 import { DrawerDialog } from "@/components/ui/drawer-dialog"
 import { Book, Collection } from "@prisma/client"
-import { DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog"
-import { Button } from "../ui/button"
+import { DialogDescription, DialogHeader, DialogTitle } from "../../ui/dialog"
+import { Button } from "../../ui/button"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Loader, Router } from "lucide-react"
 import { declOfNum } from "@/lib/utils"

@@ -1,14 +1,14 @@
 "use client"
 
 import { DrawerDialog } from "@/components/ui/drawer-dialog"
-import { DialogHeader, DialogTitle } from "../ui/dialog"
+import { DialogHeader, DialogTitle } from "../../ui/dialog"
 import { CopyCheck, CopyIcon } from "lucide-react"
 import { useEffect, useState } from "react"
-import { Button } from "../ui/button"
-import { Input } from "../ui/input"
+import { Button } from "../../ui/button"
+import { Input } from "../../ui/input"
 import { AnimatePresence, motion } from "framer-motion"
 import { Book } from "@/lib/api-types"
-import { Loader } from "../ui/loader"
+import { Loader } from "../../ui/loader"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 

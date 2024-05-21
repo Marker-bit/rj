@@ -1,7 +1,7 @@
 "use client"
 
-import { DeleteGroupBookModal } from "@/components/dialogs/delete-group-book-modal"
-import { EditGroupBookModal } from "@/components/dialogs/edit-group-book-modal"
+import { DeleteGroupBookModal } from "@/components/dialogs/groups/delete-group-book-modal"
+import { EditGroupBookModal } from "@/components/dialogs/groups/edit-group-book-modal"
 import { DrawerDialog } from "@/components/ui/drawer-dialog"
 import { Button } from "@/components/ui/button"
 import {

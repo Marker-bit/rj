@@ -1,6 +1,6 @@
 "use client"
 
-import AddMember from "@/components/dialogs/add-member"
+import AddMember from "@/components/dialogs/groups/add-member"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import { useState } from "react"

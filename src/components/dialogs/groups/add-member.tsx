@@ -1,8 +1,8 @@
 "use client"
 
 import { Group } from "@prisma/client"
-import { DrawerDialog } from "../ui/drawer-dialog"
-import { DialogHeader, DialogTitle } from "../ui/dialog"
+import { DrawerDialog } from "../../ui/drawer-dialog"
+import { DialogHeader, DialogTitle } from "../../ui/dialog"
 import { useEffect, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import Image from "next/image"

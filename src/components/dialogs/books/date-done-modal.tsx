@@ -10,7 +10,7 @@ import { DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Save } from "lucide-react"
 import { addDays } from "date-fns"
 import { toast } from "sonner"
-import { Loader } from "../ui/loader"
+import { Loader } from "../../ui/loader"
 
 export function DateDoneModal({
   isOpen,

@@ -1,5 +1,5 @@
 import { DrawerDialog } from "@/components/ui/drawer-dialog"
-import { DialogHeader, DialogTitle } from "../ui/dialog"
+import { DialogHeader, DialogTitle } from "../../ui/dialog"
 import { Edit, Loader, Trash } from "lucide-react"
 import {
   Form,
@@ -8,16 +8,16 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form"
+} from "../../ui/form"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import Image from "next/image"
-import { Button } from "../ui/button"
-import { UploadButton } from "../uploadthing"
-import { Input } from "../ui/input"
-import { Textarea } from "../ui/textarea"
+import { Button } from "../../ui/button"
+import { UploadButton } from "../../uploadthing"
+import { Input } from "../../ui/input"
+import { Textarea } from "../../ui/textarea"
 import { Book, Group, GroupBook } from "@prisma/client"
 import { useRouter } from "next/navigation"
 

@@ -10,9 +10,9 @@ import {
   Trash,
 } from "lucide-react"
 import Image from "next/image"
-import { Button } from "../ui/button"
+import { Button } from "../../ui/button"
 import { dateToString, declOfNum } from "@/lib/utils"
-import { Badge } from "../ui/badge"
+import { Badge } from "../../ui/badge"
 import { Collection, ReadEvent } from "@prisma/client"
 
 export function BookInfoModal({

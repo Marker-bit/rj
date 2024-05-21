@@ -1,6 +1,6 @@
 "use client"
 
-import { DeleteCollectionModal } from "@/components/dialogs/delete-collection-modal"
+import { DeleteCollectionModal } from "@/components/dialogs/collections/delete-collection-modal"
 import { Button } from "@/components/ui/button"
 import { Book, Collection } from "@prisma/client"
 import { Pencil, Trash } from "lucide-react"
@@ -23,7 +23,7 @@ export function CollectionButtons({
       <div className="flex items-center gap-2">
         <Link href={`/collections/${collection.id}`}>
           <Button variant="outline" className="gap-2">
-            <Pencil className="w-4 h-4" />
+            <Pencil className="size-4" />
             <div className="max-sm:hidden">Редактировать</div>
           </Button>
         </Link>
@@ -32,7 +32,7 @@ export function CollectionButtons({
           className="gap-2"
           onClick={() => setDeleteDialogOpen(true)}
         >
-          <Trash className="w-4 h-4" />
+          <Trash className="size-4" />
           <div className="max-sm:hidden">Удалить</div>
         </Button>
       </div>

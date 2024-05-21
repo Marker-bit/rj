@@ -1,7 +1,7 @@
 "use client"
 
-import AddGroupLink from "@/components/dialogs/add-group-link";
-import AddMember from "@/components/dialogs/add-member"
+import AddGroupLink from "@/components/dialogs/groups/add-group-link";
+import AddMember from "@/components/dialogs/groups/add-member"
 import { Button } from "@/components/ui/button"
 import { Link2 } from "lucide-react"
 import { useState } from "react"
