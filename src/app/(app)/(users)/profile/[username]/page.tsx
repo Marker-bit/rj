@@ -25,7 +25,7 @@ export async function generateMetadata(
     openGraph: {
       title: `@${username} на RJ`,
       description: `Профиль пользователя @${username} на RJ`,
-      images: [`/profile/${username}/og`],
+      images: `/profile/${username}/og`,
     },
   };
 }
