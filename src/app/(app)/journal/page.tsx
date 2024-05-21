@@ -56,8 +56,8 @@ export default function JournalPage() {
     return true
   })
   return (
-    <div>
-      <div className="m-2 flex items-center gap-2 text-5xl font-black max-sm:mb-[15vh]">
+    <div className="max-sm:mb-[15vh]">
+      <div className="m-2 flex items-center gap-2 text-5xl font-black">
         <Link href="/">
           <Button variant="ghost" size="icon">
             <ChevronLeft className="size-8" />
