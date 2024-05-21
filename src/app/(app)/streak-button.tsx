@@ -23,24 +23,11 @@ import { toast } from "sonner"
 export function StreakButton({ events }: { events: ReadEvent[] }) {
   const streak = getStreak(events)
   const days = getDays(events)
-  const nowDay = differenceInDays(new Date(), startOfWeek(new Date())) - 1
+  const nowDay = differenceInDays(
+    new Date(),
+    startOfWeek(new Date(), { weekStartsOn: 1 })
+  )
   const router = useRouter()
-
-  const logOut = () => {
-    toast.promise(
-      async () => {
-        await fetch("/api/auth/", {
-          method: "DELETE",
-        })
-        router.refresh()
-      },
-      {
-        loading: "Выход...",
-        success: "Вы вышли из аккаунта",
-        error: (error) => `Возникла проблема при выходе: ${error.message}`,
-      }
-    )
-  }
 
   return (
     <Popover>
@@ -59,9 +46,7 @@ export function StreakButton({ events }: { events: ReadEvent[] }) {
                   <div
                     className={cn(
                       "size-8 rounded-xl",
-                      nowDay > i
-                        ? "bg-zinc-200 dark:bg-zinc-800"
-                        : days[i] === 0
+                      days[i] === 0
                         ? "bg-zinc-300 dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-700"
                         : "bg-green-300 dark:bg-green-700 border border-green-500",
                       nowDay === i && "border-4 border-black dark:border-white"
@@ -69,7 +54,10 @@ export function StreakButton({ events }: { events: ReadEvent[] }) {
                   />
                   <p className="text-xs">
                     {capitalizeFirstLetter(
-                      format(addDays(new Date(), i), "EE", { locale: ru })
+                      format(addDays(startOfWeek(new Date(), { weekStartsOn: 1 }), i), "EEE", {
+                        locale: ru,
+                        weekStartsOn: 1,
+                      })
                     ).slice(0, 2)}
                   </p>
                 </div>

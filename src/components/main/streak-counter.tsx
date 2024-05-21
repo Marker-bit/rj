@@ -18,7 +18,10 @@ export function StreakCounter({
 }) {
   const streak = getStreak(events)
   const days = getDays(events)
-  const nowDay = differenceInDays(new Date(), startOfWeek(new Date())) - 1
+  const nowDay = differenceInDays(
+    new Date(),
+    startOfWeek(new Date(), { weekStartsOn: 1 })
+  )
 
   // if (
   //   (streak % 50 !== 0 && user.id !== "clsqfrmec000013rgpmmb8eok") ||
@@ -60,7 +63,11 @@ export function StreakCounter({
                   </div>
 
                   {capitalizeFirstLetter(
-                    format(addDays(new Date(), i), "EEEE", { locale: ru })
+                    format(
+                      addDays(startOfWeek(new Date(), { weekStartsOn: 1 }), i),
+                      "EEEE",
+                      { locale: ru }
+                    )
                   )}
                 </div>
               </HoverCardContent>
