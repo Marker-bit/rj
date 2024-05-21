@@ -32,7 +32,7 @@ export function StreakCounter({
       <div className="flex flex-col rounded-xl border border-green-300 bg-green-100 p-2 text-green-500 dark:border-green-800 dark:bg-green-950 max-sm:items-center max-sm:text-center">
         <p className="text-xl font-bold">
           {days[nowDay] === 0
-            ? "Вы читали книги сегодня"
+            ? "Вы не читали книги сегодня"
             : "Вы прочитали " +
               days[nowDay] +
               " " +
@@ -46,9 +46,7 @@ export function StreakCounter({
                   key={i}
                   className={cn(
                     "size-8 rounded-xl",
-                    nowDay > i
-                      ? "bg-zinc-200 dark:bg-zinc-800"
-                      : days[i] === 0
+                    days[i] === 0
                       ? "bg-zinc-300 dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-700"
                       : "bg-green-300 dark:bg-green-700 border border-green-500",
                     nowDay === i && "border-4 border-black dark:border-white"

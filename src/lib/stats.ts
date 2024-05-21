@@ -4,7 +4,7 @@ import { addDays, endOfWeek, isSameDay, startOfWeek, subDays } from "date-fns"
 export function getStreak(events: ReadEvent[]) {
   let streak = 0
   let day = new Date()
-  // day = subDays(day, 1)
+  day = subDays(day, 1)
 
   while (true) {
     if (events.find((e) => isSameDay(e.readAt, day))) {
@@ -15,9 +15,9 @@ export function getStreak(events: ReadEvent[]) {
     }
   }
 
-  // if (events.find((e) => isSameDay(e.readAt, new Date()))) {
-  //   streak++
-  // }
+  if (events.find((e) => isSameDay(e.readAt, new Date()))) {
+    streak++
+  }
 
   return streak
 }

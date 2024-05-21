@@ -104,6 +104,7 @@ export function GroupBookView({
                         action: {
                           onClick: () => {
                             router.push(`/books?bookId=${res.id}`)
+                            router.refresh()
                           },
                           label: "Перейти",
                         },
