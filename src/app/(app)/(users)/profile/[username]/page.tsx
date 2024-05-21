@@ -11,21 +11,24 @@ type Props = {
   searchParams: { [key: string]: string | string[] | undefined }
 }
 
-// export async function generateMetadata(
-//   { params }: Props,
-//   parent: ResolvingMetadata
-// ): Promise<Metadata> {
-//   const username = params.username;
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const username = params.username;
 
-//   // optionally access and extend (rather than replace) parent metadata
-//   const previousImages = (await parent).openGraph?.images || [];
+  // optionally access and extend (rather than replace) parent metadata
+  const _previousImages = (await parent).openGraph?.images || [];
 
-//   return {
-//     openGraph: {
-//       images: [`/profile/${username}/og`, ...previousImages],
-//     },
-//   };
-// }
+  return {
+    title: `@${username} на RJ`,
+    openGraph: {
+      title: `@${username} на RJ`,
+      description: `Профиль пользователя @${username} на RJ`,
+      images: [`/profile/${username}/og`],
+    },
+  };
+}
 
 export default async function Page({
   params,
