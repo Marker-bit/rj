@@ -60,6 +60,9 @@ export function StreakButton({ events }: { events: ReadEvent[] }) {
                       })
                     ).slice(0, 2)}
                   </p>
+                  <p className="text-xs">
+                    {days[i]}
+                  </p>
                 </div>
               </TooltipTrigger>
               <TooltipContent>

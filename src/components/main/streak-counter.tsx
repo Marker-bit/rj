@@ -45,16 +45,27 @@ export function StreakCounter({
           {Array.from({ length: 7 }).map((_, i) => (
             <HoverCard key={i} openDelay={100} closeDelay={100}>
               <HoverCardTrigger asChild>
-                <div
-                  key={i}
-                  className={cn(
-                    "size-8 rounded-xl",
-                    days[i] === 0
-                      ? "bg-zinc-300 dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-700"
-                      : "bg-green-300 dark:bg-green-700 border border-green-500",
-                    nowDay === i && "border-4 border-black dark:border-white"
-                  )}
-                />
+                <div className="flex flex-col items-center gap-1">
+                  <div
+                    key={i}
+                    className={cn(
+                      "size-8 rounded-xl",
+                      days[i] === 0
+                        ? "bg-zinc-300 dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-700"
+                        : "bg-green-300 dark:bg-green-700 border border-green-500",
+                      nowDay === i && "border-4 border-black dark:border-white"
+                    )}
+                  />
+
+                  <p className="text-xs md:hidden">
+                    {format(
+                      addDays(startOfWeek(new Date(), { weekStartsOn: 1 }), i),
+                      "EEE",
+                      { locale: ru }
+                    ).slice(0, 2)}
+                  </p>
+                  <p className="text-xs md:hidden">{days[i]}</p>
+                </div>
               </HoverCardTrigger>
               <HoverCardContent className="w-80">
                 <div className="flex items-center justify-between space-x-4">

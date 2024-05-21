@@ -1,7 +1,7 @@
 "use client"
 
-import { cn } from "@/lib/utils";
-import { AnimatePresence, motion } from "framer-motion";
+import { cn } from "@/lib/utils"
+import { AnimatePresence, motion } from "framer-motion"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
@@ -38,16 +38,16 @@ export function BottomLinkMobile({
 }) {
   const pathname = usePathname()
   return (
-    <Link href={`/${href}`} className="w-fit">
+    <Link href={href} className="w-fit">
       <div
         className={cn(
           "flex flex-col text-gray-500 rounded-md p-2 items-center cursor-pointer transition-all relative",
-          pathname === `/${href}` && "text-black dark:text-white"
+          pathname === href && "text-black dark:text-white"
         )}
       >
         {children}
         <AnimatePresence>
-          {pathname === `/${href}` && (
+          {pathname === href && (
             <motion.div
               layoutId="current"
               className="absolute left-0 top-0 -z-10 size-full rounded-md bg-black/5 shadow-md dark:bg-white/5"
