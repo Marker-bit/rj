@@ -10,8 +10,8 @@ import {
 import Link from "next/link"
 import React, { Suspense } from "react"
 import { BottomLink, BottomLinkMobile } from "./bottom-link"
-import { StreakBar } from "./streak-bar"
-import { UserBar } from "./user-bar"
+import { StreakBar } from "./bars/streak-bar"
+import { UserBar } from "./bars/user-bar"
 
 export function BottomBar() {
   const urls = [

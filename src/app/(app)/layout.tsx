@@ -1,5 +1,5 @@
 import "@/app/globals.css"
-import { BottomBar } from "./BottomBar"
+import { BottomBar } from "../../components/navigation/bottom-bar"
 import React from "react"
 
 export default async function Layout({
