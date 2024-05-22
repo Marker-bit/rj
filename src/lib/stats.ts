@@ -45,6 +45,7 @@ export function getDays(events: ReadEvent[]) {
           dayStreak += event.pagesRead
         }
       }
+      streak[currentDays] = dayStreak
     }
     current = addDays(current, 1)
     currentDays++
