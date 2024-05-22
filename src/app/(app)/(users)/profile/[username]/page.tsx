@@ -16,9 +16,10 @@ export async function generateMetadata(
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const username = params.username;
+  const before = await parent;
 
   // optionally access and extend (rather than replace) parent metadata
-  const _previousImages = (await parent).openGraph?.images || [];
+  const _previousImages = before.openGraph?.images || [];
 
   return {
     title: `@${username} на RJ`,
@@ -27,6 +28,14 @@ export async function generateMetadata(
       description: `Профиль пользователя @${username} на RJ`,
       images: `/profile/${username}/og`,
     },
+    twitter: {
+      card: "summary_large_image",
+      title: `@${username} на RJ`,
+      description: `Профиль пользователя @${username} на RJ`,
+      images: `/profile/${username}/og`,
+    },
+    creator: "Marker-bit",
+    applicationName: "Читательский дневник",
   };
 }
 
