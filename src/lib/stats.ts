@@ -35,10 +35,16 @@ export function getDays(events: ReadEvent[]) {
   while (current <= to) {
     const todayEvents = events.filter((e) => isSameDay(e.readAt, current))
     if (todayEvents.length) {
-      streak[currentDays] += todayEvents.reduce(
-        (sum, e) => sum + e.pagesRead,
-        0
-      )
+      let dayStreak = 0
+      for (let event of todayEvents) {
+        const bookEvents = events.filter((e) => e.bookId === event.bookId)
+        const previousEvent = bookEvents[bookEvents.indexOf(event) - 1]
+        if (previousEvent) {
+          dayStreak += event.pagesRead - previousEvent.pagesRead
+        } else {
+          dayStreak += event.pagesRead
+        }
+      }
     }
     current = addDays(current, 1)
     currentDays++
