@@ -1,5 +1,10 @@
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { db } from "@/lib/db"
 import { validateRequest } from "@/lib/server-validate-request"
 import {
@@ -229,11 +234,23 @@ export default async function Page({
                     @{member.user.username}
                   </div>
                 </div>
-                <div className="ml-auto font-bold">
+                <div className="ml-auto">
                   {ratingDict[member.userId] === null ? (
-                    <X className="size-4 text-red-500" />
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <X className="size-4 text-red-500" />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        Человек не добавил себе эту книгу
+                      </TooltipContent>
+                    </Tooltip>
                   ) : ratingDict[member.userId] === groupBook.pages ? (
-                    <Check className="size-4 text-green-500" />
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Check className="size-4 text-green-500" />
+                      </TooltipTrigger>
+                      <TooltipContent>Книга полностью прочитана</TooltipContent>
+                    </Tooltip>
                   ) : (
                     ratingDict[member.userId]! < groupBook.pages &&
                     ratingDict[member.userId]
