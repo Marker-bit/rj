@@ -38,11 +38,13 @@ export function getDays(events: ReadEvent[]) {
       let dayStreak = 0
       for (let event of todayEvents) {
         const bookEvents = events.filter((e) => e.bookId === event.bookId)
-        const previousEvent = bookEvents[bookEvents.indexOf(event) - 1]
-        if (previousEvent) {
-          dayStreak += event.pagesRead - previousEvent.pagesRead
-        } else {
+        console.log(bookEvents, event)
+        if (bookEvents.length === 1 || bookEvents.indexOf(event) === 0) {
           dayStreak += event.pagesRead
+        } else {
+          const previousEventIndex = bookEvents.indexOf(event) - 1
+          const previousEvent = bookEvents[previousEventIndex]
+          dayStreak +=  event.pagesRead - previousEvent.pagesRead
         }
       }
       streak[currentDays] = dayStreak

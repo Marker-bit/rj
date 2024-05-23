@@ -18,7 +18,7 @@ export async function StreakInfo() {
       book: true,
     },
     orderBy: {
-      readAt: "desc",
+      readAt: "asc",
     },
   })
 

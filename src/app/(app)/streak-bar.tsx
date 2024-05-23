@@ -16,7 +16,7 @@ export async function StreakBar() {
       book: true,
     },
     orderBy: {
-      readAt: "desc",
+      readAt: "asc",
     },
   })
 
