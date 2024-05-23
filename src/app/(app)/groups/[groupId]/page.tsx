@@ -319,7 +319,6 @@ export default async function Page({
                   {/* <div className="flex size-6 items-center justify-center rounded-full border">
                     {i + 1}
                   </div> */}
-                  <div className="flex gap-2">
                     <div className="flex flex-col">
                       <div className="flex items-center gap-2 font-bold">
                         {member.user.firstName} {member.user.lastName}
@@ -331,7 +330,6 @@ export default async function Page({
                         @{member.user.username}
                       </div>
                     </div>
-                  </div>
 
                   <div className="ml-auto flex flex-col items-end">
                     <div className="font-bold">{ratingDict[member.userId]}</div>

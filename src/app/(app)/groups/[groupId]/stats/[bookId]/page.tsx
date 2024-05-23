@@ -3,10 +3,12 @@ import { Progress } from "@/components/ui/progress"
 import { db } from "@/lib/db"
 import { validateRequest } from "@/lib/server-validate-request"
 import {
+  BadgeCheck,
   BarChart2,
   BarChartHorizontalBig,
   Check,
   ChevronLeft,
+  X,
 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -48,7 +50,7 @@ export default async function Page({
     return null
   }
 
-  const book = await db.groupBook.findUnique({
+  const groupBook = await db.groupBook.findUnique({
     where: { id: params.bookId, groupId: params.groupId },
     include: {
       group: true,
@@ -62,7 +64,7 @@ export default async function Page({
       },
     },
   })
-  if (!book) {
+  if (!groupBook) {
     return null
   }
 
@@ -70,23 +72,27 @@ export default async function Page({
     {
       title: "Читающих участников",
       description: "Участников, добавивших себе эту книгу",
-      value: book.book.length,
+      value: groupBook.book.length,
       max: group.members.length,
     },
   ]
 
-  let ratingDict: { [key: string]: number } = {}
+  let ratingDict: Record<string, number | null> = {}
 
-  group.members.forEach(
-    (m) =>
-      (ratingDict[m.userId] =
-        book.book.find((b) => b.userId === m.userId)?.readEvents[0]
-          ?.pagesRead || 0)
-  )
+  group.members.forEach((m) => {
+    const book = groupBook.book.find((b) => b.userId === m.userId)
+
+    ratingDict[m.userId] =
+      book === undefined
+        ? null
+        : book.readEvents.length === 0
+        ? 0
+        : book.readEvents[0].pagesRead
+  })
 
   const ratingKeys = new Array(...Object.keys(ratingDict))
 
-  ratingKeys.sort((a, b) => ratingDict[b] - ratingDict[a])
+  ratingKeys.sort((a, b) => (ratingDict[b] || 0) - (ratingDict[a] || 0))
 
   const rating = ratingKeys.map(
     (key) => group.members.find((m) => m.userId === key)!
@@ -94,16 +100,16 @@ export default async function Page({
 
   return (
     <div className="flex flex-col p-8 max-sm:mb-24">
-      <Link href={`/groups/${book.groupId}`} className="mb-2">
+      <Link href={`/groups/${groupBook.groupId}`} className="mb-2">
         <Button className="w-fit items-center gap-2">
           <ChevronLeft className="size-4" />
           Назад
         </Button>
       </Link>
       <div className="flex gap-2">
-        {book.coverUrl && (
+        {groupBook.coverUrl && (
           <Image
-            src={book.coverUrl}
+            src={groupBook.coverUrl}
             alt="book"
             width={500}
             height={500}
@@ -111,12 +117,16 @@ export default async function Page({
           />
         )}
         <div className="flex flex-col">
-          <div className="text-xl font-bold">{book.title}</div>
-          <div className="text-sm text-muted-foreground/90">{book.author}</div>
+          <div className="text-xl font-bold">{groupBook.title}</div>
           <div className="text-sm text-muted-foreground/90">
-            {book.pages} стр.
+            {groupBook.author}
           </div>
-          <p className="text-sm text-muted-foreground/90">{book.description}</p>
+          <div className="text-sm text-muted-foreground/90">
+            {groupBook.pages} стр.
+          </div>
+          <p className="text-sm text-muted-foreground/90">
+            {groupBook.description}
+          </p>
         </div>
       </div>
 
@@ -137,16 +147,18 @@ export default async function Page({
               <div className="text-xl font-bold">
                 {(group.members.length === 0
                   ? 0
-                  : (book.book.length / group.members.length) * 100
+                  : (groupBook.book.length / group.members.length) * 100
                 ).toFixed(1)}
                 %
               </div>
               <div className="text-sm text-muted-foreground/70">
-                {book.book.length}/{group.members.length}
+                {groupBook.book.length}/{group.members.length}
               </div>
             </div>
           </div>
-          <Progress value={(book.book.length / group.members.length) * 100} />
+          <Progress
+            value={(groupBook.book.length / group.members.length) * 100}
+          />
         </div>
         <div className="mt-2 flex flex-col gap-2">
           <div className="flex justify-between">
@@ -161,7 +173,7 @@ export default async function Page({
                 {(
                   (group.members.length === 0
                     ? 0
-                    : book.book.filter(
+                    : groupBook.book.filter(
                         (book) => book.readEvents[0]?.pagesRead === book.pages
                       ).length / group.members.length) * 100
                 ).toFixed(1)}
@@ -169,7 +181,7 @@ export default async function Page({
               </div>
               <div className="text-sm text-muted-foreground/70">
                 {
-                  book.book.filter(
+                  groupBook.book.filter(
                     (book) => book.readEvents[0]?.pagesRead === book.pages
                   ).length
                 }
@@ -179,7 +191,7 @@ export default async function Page({
           </div>
           <Progress
             value={
-              (book.book.filter(
+              (groupBook.book.filter(
                 (book) => book.readEvents[0]?.pagesRead === book.pages
               ).length /
                 group.members.length) *
@@ -188,21 +200,43 @@ export default async function Page({
           />
         </div>
         <div className="mt-2 flex flex-col">
-          {rating.map((user, i) => (
+          {rating.map((member, i) => (
             <Link
-              key={user.userId}
-              href={`/groups/${group.id}/members/${user.id}`}
+              key={member.userId}
+              href={`/groups/${group.id}/members/${member.id}`}
             >
               <div className="flex items-center gap-2 rounded-md p-2 transition-all hover:bg-black/10 dark:hover:bg-white/10">
-                <div className="flex size-6 items-center justify-center rounded-full border">
-                  {i + 1}
+                <div className="relative">
+                  <Image
+                    src={member.user.avatarUrl || "/no-avatar.png"}
+                    alt="user"
+                    width={500}
+                    height={500}
+                    className="h-8 w-auto rounded-md"
+                  />
+                  <div className="absolute bottom-0 right-0 flex size-4 translate-x-1/2 translate-y-1/2 items-center justify-center rounded-full border bg-white text-xs dark:bg-black">
+                    {i + 1}
+                  </div>
                 </div>
-                {group.members.find((m) => m.userId === user.userId)?.user.username}
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-2 font-bold">
+                    {member.user.firstName} {member.user.lastName}
+                    {member.user.verified && (
+                      <BadgeCheck className="size-4 text-yellow-500" />
+                    )}
+                  </div>
+                  <div className="text-sm text-muted-foreground/70">
+                    @{member.user.username}
+                  </div>
+                </div>
                 <div className="ml-auto font-bold">
-                  {ratingDict[user.userId] === book.pages ? (
+                  {ratingDict[member.userId] === null ? (
+                    <X className="size-4 text-red-500" />
+                  ) : ratingDict[member.userId] === groupBook.pages ? (
                     <Check className="size-4 text-green-500" />
                   ) : (
-                    ratingDict[user.userId]
+                    ratingDict[member.userId]! < groupBook.pages &&
+                    ratingDict[member.userId]
                   )}
                 </div>
               </div>
