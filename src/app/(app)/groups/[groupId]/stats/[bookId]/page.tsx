@@ -1,4 +1,6 @@
+import { DrawerDialog } from "@/components/drawer"
 import { Button } from "@/components/ui/button"
+import { DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { Progress } from "@/components/ui/progress"
 import {
   Tooltip,
@@ -17,6 +19,7 @@ import {
 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import { MemberInfo } from "./member"
 
 export const dynamic = "force-dynamic"
 
@@ -135,7 +138,7 @@ export default async function Page({
         </div>
       </div>
 
-      <div className="mt-2 min-h-[20vh] w-full rounded-xl border bg-neutral-100 p-4 dark:bg-neutral-900">
+      <div className="mt-2 min-h-[20vh] w-full rounded-xl border bg-neutral-100/50 p-4 dark:bg-neutral-900/50">
         <div className="flex items-center gap-2 text-muted-foreground/90">
           <BarChartHorizontalBig className="size-4" />
           Статистика
@@ -206,58 +209,17 @@ export default async function Page({
         </div>
         <div className="mt-2 flex flex-col">
           {rating.map((member, i) => (
-            <Link
+            <MemberInfo
               key={member.userId}
-              href={`/groups/${group.id}/members/${member.id}`}
-            >
-              <div className="flex items-center gap-2 rounded-md p-2 transition-all hover:bg-black/10 dark:hover:bg-white/10">
-                <div className="relative">
-                  <Image
-                    src={member.user.avatarUrl || "/no-avatar.png"}
-                    alt="user"
-                    width={500}
-                    height={500}
-                    className="h-8 w-auto rounded-md"
-                  />
-                  <div className="absolute bottom-0 right-0 flex size-4 translate-x-1/2 translate-y-1/2 items-center justify-center rounded-full border bg-white text-xs dark:bg-black">
-                    {i + 1}
-                  </div>
-                </div>
-                <div className="flex flex-col">
-                  <div className="flex items-center gap-2 font-bold">
-                    {member.user.firstName} {member.user.lastName}
-                    {member.user.verified && (
-                      <BadgeCheck className="size-4 text-yellow-500" />
-                    )}
-                  </div>
-                  <div className="text-sm text-muted-foreground/70">
-                    @{member.user.username}
-                  </div>
-                </div>
-                <div className="ml-auto">
-                  {ratingDict[member.userId] === null ? (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <X className="size-4 text-red-500" />
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        Человек не добавил себе эту книгу
-                      </TooltipContent>
-                    </Tooltip>
-                  ) : ratingDict[member.userId] === groupBook.pages ? (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <Check className="size-4 text-green-500" />
-                      </TooltipTrigger>
-                      <TooltipContent>Книга полностью прочитана</TooltipContent>
-                    </Tooltip>
-                  ) : (
-                    ratingDict[member.userId]! < groupBook.pages &&
-                    ratingDict[member.userId]
-                  )}
-                </div>
-              </div>
-            </Link>
+              member={member}
+              i={i}
+              groupBook={groupBook}
+              group={group}
+              pages={ratingDict[member.userId]}
+              savedBook={
+                groupBook.book.find((b) => b.userId === member.userId)!
+              }
+            />
           ))}
         </div>
       </div>
