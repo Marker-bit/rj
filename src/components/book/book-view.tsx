@@ -148,17 +148,17 @@ export function BookView({ book }: { book: Book }) {
 
   const lastEvent = book.readEvents[0]
 
-  if (book.groupBook) {
-    book = {
-      ...book,
-      groupBook: book.groupBook,
-      groupBookId: book.groupBookId,
-      title: book.groupBook.title,
-      author: book.groupBook.author,
-      pages: book.groupBook.pages,
-      coverUrl: book.groupBook.coverUrl,
-    }
-  }
+  // if (book.groupBook) {
+  //   book = {
+  //     ...book,
+  //     groupBook: book.groupBook,
+  //     groupBookId: book.groupBookId,
+  //     title: book.groupBook.title,
+  //     author: book.groupBook.author,
+  //     pages: book.groupBook.pages,
+  //     coverUrl: book.groupBook.coverUrl,
+  //   }
+  // }
 
   return (
     <div
@@ -405,7 +405,7 @@ export function BookView({ book }: { book: Book }) {
               variant="outline"
               className="size-fit p-1"
               onClick={() => setEditOpen(true)}
-              disabled={book.groupBookId !== null}
+              // disabled={book.groupBookId !== null}
             >
               <Edit className="size-4" />
             </Button>

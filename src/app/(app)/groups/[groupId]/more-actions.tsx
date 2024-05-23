@@ -27,23 +27,23 @@ export function MoreActions({ book }: { book: GroupBook & { group: Group } }) {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button size="icon" variant="ghost" className="p-1 h-fit w-fit">
-            <MoreHorizontal className="w-4 h-4" />
+          <Button size="icon" variant="ghost" className="size-fit p-1">
+            <MoreHorizontal className="size-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <Link href={`/groups/${book.group.id}/stats/${book.id}`}>
             <DropdownMenuItem>
-              <BarChartHorizontalBig className="w-4 h-4 mr-2" />
+              <BarChartHorizontalBig className="mr-2 size-4" />
               Статистика
             </DropdownMenuItem>
           </Link>
           <DropdownMenuItem onClick={() => setEditOpen(true)}>
-            <Edit className="w-4 h-4 mr-2" />
+            <Edit className="mr-2 size-4" />
             Редактировать
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setDeleteOpen(true)}>
-            <Trash className="w-4 h-4 mr-2" />
+            <Trash className="mr-2 size-4" />
             Удалить
           </DropdownMenuItem>
         </DropdownMenuContent>

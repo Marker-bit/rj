@@ -127,19 +127,23 @@ export default async function Page({
 
   const allBooks = group.groupBooks.map((b) => b.book).flat()
 
-  let rating: { [key: string]: number } = {}
+  let ratingDict: { [key: string]: number } = {}
 
   group.members.forEach(
     (m) =>
-      (rating[m.user.id] = allBooks
+      (ratingDict[m.user.id] = allBooks
         .filter((b) => b.userId === m.user.id)
         .map((book) => book.readEvents[0]?.pagesRead || 0)
         .reduce((a, b) => a + b, 0))
   )
 
-  const ratingKeys = new Array(...Object.keys(rating))
+  const ratingKeys = new Array(...Object.keys(ratingDict))
 
-  ratingKeys.sort((a, b) => rating[b] - rating[a])
+  ratingKeys.sort((a, b) => ratingDict[b] - ratingDict[a])
+
+  const rating = ratingKeys.map(
+    (key) => group.members.find((m) => m.user.id === key)!
+  )
 
   const currentMember = group.members.find((m) => m.userId === user?.id)
 
@@ -294,37 +298,49 @@ export default async function Page({
             <div>Рейтинг</div>
           </div>
           <ScrollArea className="mt-2 flex h-[40vh] flex-col">
-            {ratingKeys.map((userId, i) => (
+            {rating.map((member, i) => (
               <Link
-                key={userId}
-                href={`/groups/${group.id}/members/${
-                  group.members.find((m) => m.userId === userId)?.id
-                }`}
+                key={member.userId}
+                href={`/groups/${group.id}/members/${member.id}`}
               >
                 <div className="flex items-center gap-2 rounded-md p-2 transition-all hover:bg-black/10 dark:hover:bg-white/10">
-                  <div className="flex size-6 items-center justify-center rounded-full border">
-                    {i + 1}
+                  <div className="relative">
+                    <Image
+                      src={member.user.avatarUrl || "/no-avatar.png"}
+                      alt="user"
+                      width={500}
+                      height={500}
+                      className="h-8 w-auto rounded-md"
+                    />
+                    <div className="absolute bottom-0 right-0 flex size-4 translate-x-1/2 translate-y-1/2 items-center justify-center rounded-full border bg-white text-xs dark:bg-black">
+                      {i + 1}
+                    </div>
                   </div>
+                  {/* <div className="flex size-6 items-center justify-center rounded-full border">
+                    {i + 1}
+                  </div> */}
                   <div className="flex gap-2">
-                    {
-                      group.members.find((m) => m.userId === userId)?.user
-                        .username
-                    }
-
-                    {group.members.find((m) => m.userId === userId)?.user
-                      .verified && (
-                      <BadgeCheck className="size-6 text-yellow-500" />
-                    )}
+                    <div className="flex flex-col">
+                      <div className="flex items-center gap-2 font-bold">
+                        {member.user.firstName} {member.user.lastName}
+                        {member.user.verified && (
+                          <BadgeCheck className="size-4 text-yellow-500" />
+                        )}
+                      </div>
+                      <div className="text-sm text-muted-foreground/70">
+                        @{member.user.username}
+                      </div>
+                    </div>
                   </div>
 
                   <div className="ml-auto flex flex-col items-end">
-                    <div className="font-bold">{rating[userId]}</div>
+                    <div className="font-bold">{ratingDict[member.userId]}</div>
                     <div className="text-sm text-muted-foreground">
                       {
                         group.groupBooks.filter((groupBook) =>
                           groupBook.book.find(
                             (book) =>
-                              book.userId === userId &&
+                              book.userId === member.userId &&
                               book.readEvents[0]?.pagesRead === book.pages
                           )
                         ).length

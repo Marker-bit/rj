@@ -75,18 +75,22 @@ export default async function Page({
     },
   ]
 
-  let rating: { [key: string]: number } = {}
+  let ratingDict: { [key: string]: number } = {}
 
   group.members.forEach(
     (m) =>
-      (rating[m.userId] =
+      (ratingDict[m.userId] =
         book.book.find((b) => b.userId === m.userId)?.readEvents[0]
           ?.pagesRead || 0)
   )
 
-  const ratingKeys = new Array(...Object.keys(rating))
+  const ratingKeys = new Array(...Object.keys(ratingDict))
 
-  ratingKeys.sort((a, b) => rating[b] - rating[a])
+  ratingKeys.sort((a, b) => ratingDict[b] - ratingDict[a])
+
+  const rating = ratingKeys.map(
+    (key) => group.members.find((m) => m.userId === key)!
+  )
 
   return (
     <div className="flex flex-col p-8 max-sm:mb-24">
@@ -184,23 +188,21 @@ export default async function Page({
           />
         </div>
         <div className="mt-2 flex flex-col">
-          {ratingKeys.map((userId, i) => (
+          {rating.map((user, i) => (
             <Link
-              key={userId}
-              href={`/groups/${group.id}/members/${
-                group.members.find((m) => m.userId === userId)?.id
-              }`}
+              key={user.userId}
+              href={`/groups/${group.id}/members/${user.id}`}
             >
               <div className="flex items-center gap-2 rounded-md p-2 transition-all hover:bg-black/10 dark:hover:bg-white/10">
                 <div className="flex size-6 items-center justify-center rounded-full border">
                   {i + 1}
                 </div>
-                {group.members.find((m) => m.userId === userId)?.user.username}
+                {group.members.find((m) => m.userId === user.userId)?.user.username}
                 <div className="ml-auto font-bold">
-                  {rating[userId] === book.pages ? (
+                  {ratingDict[user.userId] === book.pages ? (
                     <Check className="size-4 text-green-500" />
                   ) : (
-                    rating[userId]
+                    ratingDict[user.userId]
                   )}
                 </div>
               </div>

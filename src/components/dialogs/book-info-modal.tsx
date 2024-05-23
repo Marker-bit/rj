@@ -136,7 +136,7 @@ export function BookInfoModal({
           className="gap-2"
           variant="outline"
           onClick={() => setEditOpen(true)}
-          disabled={book.groupBookId}
+          // disabled={book.groupBookId}
         >
           <Edit className="size-4" />
           Редактировать

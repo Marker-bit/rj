@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button"
 import { db } from "@/lib/db"
 import { validateRequest } from "@/lib/server-validate-request"
 import { declOfNum } from "@/lib/utils"
-import { BookOpen, Check, ChevronLeft, UserCircle } from "lucide-react"
+import { BookOpen, Check, ChevronLeft, UserCircle, X, XCircle } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 
@@ -148,22 +148,23 @@ export default async function Page({
                   {book.description}
                 </p>
               </div>
-              {book.readEvents[0] && (
-                <div className="ml-auto flex flex-col items-end">
-                  {book.readEvents[0].pagesRead === book.pages ? (
-                    <Check className="size-4 text-green-500" />
-                  ) : (
-                    <>
-                      <div className="font-bold">
-                        {book.readEvents[0].pagesRead}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        / {book.pages}
-                      </div>
-                    </>
-                  )}
-                </div>
-              )}
+
+              <div className="ml-auto flex flex-col items-end">
+                {book.readEvents.length === 0 ? (
+                  <XCircle className="size-4 text-red-500" />
+                ) : book.readEvents[0].pagesRead === book.pages ? (
+                  <Check className="size-4 text-green-500" />
+                ) : (
+                  <>
+                    <div className="font-bold">
+                      {book.readEvents[0].pagesRead}
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      / {book.pages}
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           ))}
         </div>
