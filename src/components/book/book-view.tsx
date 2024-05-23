@@ -71,8 +71,8 @@ export function BookView({ book }: { book: Book }) {
       })
       toast.success("Событие отменено")
       router.refresh()
-      router.push(`/books?bookId=${book.id}`)
-      router.refresh()
+      // router.push(`/books?bookId=${book.id}`)
+      // router.refresh()
     },
   })
 
@@ -97,8 +97,8 @@ export function BookView({ book }: { book: Book }) {
       setDoneOpen(false)
       setActionsDrawerOpen(false)
       router.refresh()
-      router.push(`/books?bookId=${book.id}`)
-      router.refresh()
+      // router.push(`/books?bookId=${book.id}`)
+      // router.refresh()
     },
   })
 
@@ -122,8 +122,8 @@ export function BookView({ book }: { book: Book }) {
       toast.success("Событие сохранено")
       setActionsDrawerOpen(false)
       router.refresh()
-      router.push(`/books?bookId=${book.id}`)
-      router.refresh()
+      // router.push(`/books?bookId=${book.id}`)
+      // router.refresh()
     },
   })
 
