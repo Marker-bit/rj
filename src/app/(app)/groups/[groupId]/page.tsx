@@ -251,11 +251,13 @@ export default async function Page({
                   {member.role === GroupMemberRole.CREATOR && (
                     <Crown className="size-4 text-yellow-500" />
                   )}
-                  {member.userId !== user?.id &&
-                    (currentMember?.role === GroupMemberRole.CREATOR ||
-                      currentMember?.role === GroupMemberRole.MODERATOR) && (
-                      <MemberActions member={member} groupId={group.id} />
-                    )}
+                  {member.userId !== user?.id && currentMember && (
+                    <MemberActions
+                      member={member}
+                      groupId={group.id}
+                      role={currentMember.role}
+                    />
+                  )}
                 </div>
               </div>
             ))}
@@ -319,17 +321,17 @@ export default async function Page({
                   {/* <div className="flex size-6 items-center justify-center rounded-full border">
                     {i + 1}
                   </div> */}
-                    <div className="flex flex-col">
-                      <div className="flex items-center gap-2 font-bold">
-                        {member.user.firstName} {member.user.lastName}
-                        {member.user.verified && (
-                          <BadgeCheck className="size-4 text-yellow-500" />
-                        )}
-                      </div>
-                      <div className="text-sm text-muted-foreground/70">
-                        @{member.user.username}
-                      </div>
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-2 font-bold">
+                      {member.user.firstName} {member.user.lastName}
+                      {member.user.verified && (
+                        <BadgeCheck className="size-4 text-yellow-500" />
+                      )}
                     </div>
+                    <div className="text-sm text-muted-foreground/70">
+                      @{member.user.username}
+                    </div>
+                  </div>
 
                   <div className="ml-auto flex flex-col items-end">
                     <div className="font-bold">{ratingDict[member.userId]}</div>

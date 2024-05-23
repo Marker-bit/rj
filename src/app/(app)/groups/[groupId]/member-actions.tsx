@@ -11,7 +11,14 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Loader } from "@/components/ui/loader"
 import { GroupMemberRole } from "@prisma/client"
-import { MoreVertical, ShieldMinus, ShieldPlus, UserX } from "lucide-react"
+import {
+  BarChart2,
+  MoreVertical,
+  ShieldMinus,
+  ShieldPlus,
+  UserX,
+} from "lucide-react"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { toast } from "sonner"
@@ -19,9 +26,11 @@ import { toast } from "sonner"
 export function MemberActions({
   member,
   groupId,
+  role,
 }: {
   member: { id: string; role: GroupMemberRole; user: { username: string } }
   groupId: string
+  role: GroupMemberRole
 }) {
   const [loading, setLoading] = useState(false)
   const [kickOpen, setKickOpen] = useState(false)
@@ -67,26 +76,30 @@ export function MemberActions({
   // }
 
   const changeRole = async (role: GroupMemberRole) => {
-    toast.promise(async () => {
-      const resp = await fetch(`/api/groups/${groupId}/member/${member.id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ role }),
-      })
-      const res = await resp.json()
-      if (res.error) {
-        throw new Error(res.error)
-      } else {
-        router.refresh()
-        return res
+    toast.promise(
+      async () => {
+        const resp = await fetch(`/api/groups/${groupId}/member/${member.id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ role }),
+        })
+        const res = await resp.json()
+        if (res.error) {
+          throw new Error(res.error)
+        } else {
+          router.refresh()
+          return res
+        }
+      },
+      {
+        loading: "Изменение роли участника...",
+        success: "Роль участника изменена",
+        error: (error) =>
+          `Возникла проблема при изменении роли участника: ${error.message}`,
       }
-    }, {
-      loading: "Изменение роли участника...",
-      success: "Роль участника изменена",
-      error: (error) => `Возникла проблема при изменении роли участника: ${error.message}`,
-    })
+    )
     // setLoading(true)
     // const resp = await fetch(`/api/groups/${groupId}/member/${member.id}`, {
     //   method: "PATCH",
@@ -149,30 +162,40 @@ export function MemberActions({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem
-            className="flex items-center gap-2"
-            onClick={() => setKickOpen(true)}
-          >
-            <UserX className="size-4" />
-            Исключить
-          </DropdownMenuItem>
-          {member.role === GroupMemberRole.MODERATOR && (
-            <DropdownMenuItem
-              className="flex items-center gap-2"
-              onClick={() => changeRole(GroupMemberRole.MEMBER)}
-            >
-              <ShieldMinus className="size-4" />
-              Понизить
+          <Link href={`/groups/${groupId}/members/${member.id}`}>
+            <DropdownMenuItem className="flex items-center gap-2">
+              <BarChart2 className="size-4" />
+              Статистика
             </DropdownMenuItem>
-          )}
-          {member.role === GroupMemberRole.MEMBER && (
-            <DropdownMenuItem
-              className="flex items-center gap-2"
-              onClick={() => changeRole(GroupMemberRole.MODERATOR)}
-            >
-              <ShieldPlus className="size-4" />
-              Повысить
-            </DropdownMenuItem>
+          </Link>
+          {role !== GroupMemberRole.MEMBER && (
+            <>
+              <DropdownMenuItem
+                className="flex items-center gap-2"
+                onClick={() => setKickOpen(true)}
+              >
+                <UserX className="size-4" />
+                Исключить
+              </DropdownMenuItem>
+              {member.role === GroupMemberRole.MODERATOR && (
+                <DropdownMenuItem
+                  className="flex items-center gap-2"
+                  onClick={() => changeRole(GroupMemberRole.MEMBER)}
+                >
+                  <ShieldMinus className="size-4" />
+                  Понизить
+                </DropdownMenuItem>
+              )}
+              {member.role === GroupMemberRole.MEMBER && (
+                <DropdownMenuItem
+                  className="flex items-center gap-2"
+                  onClick={() => changeRole(GroupMemberRole.MODERATOR)}
+                >
+                  <ShieldPlus className="size-4" />
+                  Повысить
+                </DropdownMenuItem>
+              )}
+            </>
           )}
         </DropdownMenuContent>
       </DropdownMenu>
