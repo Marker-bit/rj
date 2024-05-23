@@ -8,7 +8,7 @@ import { DrawerDialog } from "@/components/drawer"
 import { useRef, useState } from "react"
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Save } from "lucide-react"
-import { addDays } from "date-fns"
+import { addDays, getDate, startOfDay, subYears } from "date-fns"
 import { toast } from "sonner"
 import { Loader } from "../ui/loader"
 
@@ -16,13 +16,24 @@ export function DateDoneModal({
   isOpen,
   setIsOpen,
   readDoneMutation,
+  book,
 }: {
   isOpen: boolean
   setIsOpen: (open: boolean) => void
   readDoneMutation: any
+  book: { readEvents: { readAt: Date }[] }
 }) {
   const tomorrow = addDays(new Date(), 1)
   const [date, setDate] = useState<Date | undefined>(new Date())
+
+  const days: Date[] = []
+
+  for (const event of book.readEvents) {
+    const date = startOfDay(event.readAt)
+    if (!days.includes(date)) {
+      days.push(date)
+    }
+  }
 
   const handleClose = (b: boolean) => {
     if (b) {
@@ -48,25 +59,29 @@ export function DateDoneModal({
           weekStartsOn={1}
           locale={ru}
           fixedWeeks
+          toDate={new Date()}
+          modifiers={{ events: days }}
+          modifiersClassNames={{ events: "bg-green-100 dark:bg-green-800" }}
         />
-        <Button
-          onClick={() => {
-            if (!date) {
-              toast.error("Вы не выбрали дату")
-              return
-            }
-            readDoneMutation.mutate({ readAt: date })
-          }}
-          className="w-fit max-sm:w-full"
-        >
-          {readDoneMutation.isPending ? (
-            <Loader invert className="mr-2 size-4" />
-          ) : (
-            <Save className="mr-2 size-4" />
-          )}
-          Отметить
-        </Button>
       </div>
+
+      <Button
+        onClick={() => {
+          if (!date) {
+            toast.error("Вы не выбрали дату")
+            return
+          }
+          readDoneMutation.mutate({ readAt: date })
+        }}
+        className="w-fit max-sm:w-full"
+      >
+        {readDoneMutation.isPending ? (
+          <Loader invert className="mr-2 size-4" />
+        ) : (
+          <Save className="mr-2 size-4" />
+        )}
+        Отметить
+      </Button>
     </DrawerDialog>
   )
 }

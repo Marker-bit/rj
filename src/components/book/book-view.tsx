@@ -202,11 +202,13 @@ export function BookView({ book }: { book: Book }) {
         isOpen={dateOpen}
         setIsOpen={setDateOpen}
         readDateMutation={readDateMutation}
+        book={book}
       />
       <DateDoneModal
         isOpen={doneOpen}
         setIsOpen={setDoneOpen}
         readDoneMutation={doneMutation}
+        book={book}
       />
       <DrawerDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <DialogHeader>
