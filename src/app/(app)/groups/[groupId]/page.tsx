@@ -29,6 +29,7 @@ import { LeaveGroupButton } from "./leave-group-button"
 import { LinkMemberButton } from "./link-member-button"
 import { MemberActions } from "./member-actions"
 import { AddGroupButton } from "../add-group-button"
+import Books from "./books"
 
 export const dynamic = "force-dynamic"
 
@@ -172,7 +173,7 @@ export default async function Page({
         </div>
         <div className="ml-auto flex items-center gap-2">
           <Tooltip>
-            <TooltipTrigger>
+            <TooltipTrigger asChild>
               <LeaveGroupButton groupId={group.id} />
             </TooltipTrigger>
             <TooltipContent>Выйти из группы</TooltipContent>
@@ -190,20 +191,7 @@ export default async function Page({
         </div>
       </div>
       <div className="mt-2 grid grid-cols-1 gap-2 md:grid-cols-2">
-        <div className="rounded-xl border p-4">
-          <div className="flex items-center gap-1 text-sm text-black/70 dark:text-white/70">
-            <Book className="size-4" />
-            <div>Книги</div>
-            {!isMember && <AddBookButton groupId={group.id} />}
-          </div>
-          <ScrollArea className="h-[40vh]">
-            {group.groupBooks.map((book) => (
-              <GroupBookView groupBook={book} key={book.id} userId={user.id} />
-            ))}
-            <ScrollBar orientation="vertical" />
-            <ScrollBar orientation="horizontal" />
-          </ScrollArea>
-        </div>
+        <Books isMember={isMember} group={group} userId={user.id} />
         <div className="rounded-xl border p-4">
           <div className="flex items-center gap-1 text-sm text-black/70 dark:text-white/70">
             <Users className="size-4" />
