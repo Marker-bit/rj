@@ -7,7 +7,8 @@ import { GroupBookView } from "./book-view"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
-import Fuse from "fuse.js";
+import Fuse from "fuse.js"
+import { ExportBooksButton } from "./export-books-button"
 
 export default function Books({
   isMember,
@@ -31,7 +32,7 @@ export default function Books({
     } else {
       setFilteredBooks(undefined)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchText, group.groupBooks])
 
   return (
@@ -39,7 +40,10 @@ export default function Books({
       <div className="flex items-center gap-1 text-sm text-black/70 dark:text-white/70">
         <BookIcon className="size-4" />
         <div>Книги</div>
-        {!isMember && <AddBookButton groupId={group.id} />}
+        <div className="ml-auto flex items-center gap-1">
+          {!isMember && <AddBookButton groupId={group.id} />}
+          <ExportBooksButton books={group.groupBooks} />
+        </div>
       </div>
       <div className="mt-2 flex gap-2">
         <Input

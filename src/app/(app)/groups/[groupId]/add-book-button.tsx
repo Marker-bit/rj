@@ -34,7 +34,7 @@ export function AddBookButton({ groupId }: { groupId: string }) {
       />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button size="icon" variant="ghost" className="ml-auto size-fit p-1">
+          <Button size="icon" variant="ghost" className="size-fit p-1">
             <Plus className="size-4" />
           </Button>
         </DropdownMenuTrigger>
