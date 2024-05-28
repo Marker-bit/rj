@@ -25,6 +25,7 @@ export function MemberInfo({
   savedBook,
   groupBook,
   pages,
+  currentMember,
 }: {
   member: {
     userId: string
@@ -36,6 +37,9 @@ export function MemberInfo({
       verified: boolean
     }
     id: string
+  }
+  currentMember: {
+    userId: string
     role: GroupMemberRole
   }
   group: { id: string }
@@ -78,7 +82,8 @@ export function MemberInfo({
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="max-w-[400px] p-4">
-                  {member.role !== GroupMemberRole.MEMBER ? (
+                  {currentMember.role !== GroupMemberRole.MEMBER ||
+                  currentMember.userId === member.userId ? (
                     savedBook.description
                   ) : (
                     <p className="text-muted-foreground">

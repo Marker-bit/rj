@@ -106,6 +106,8 @@ export default async function Page({
     (key) => group.members.find((m) => m.userId === key)!
   )
 
+  const currentMember = group.members.find((m) => m.userId === user.id)
+
   return (
     <div className="flex flex-col p-8 max-sm:mb-24">
       <Link href={`/groups/${groupBook.groupId}`} className="mb-2">
@@ -211,6 +213,7 @@ export default async function Page({
           {rating.map((member, i) => (
             <MemberInfo
               key={member.userId}
+              currentMember={currentMember!}
               member={member}
               i={i}
               groupBook={groupBook}
