@@ -203,6 +203,7 @@ export function BookView({ book }: { book: Book }) {
         setIsOpen={setDateOpen}
         readDateMutation={readDateMutation}
         book={book}
+        lastEvent={lastEvent}
       />
       <DateDoneModal
         isOpen={doneOpen}

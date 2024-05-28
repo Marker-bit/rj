@@ -16,15 +16,19 @@ export function DateReadModal({
   setIsOpen,
   readDateMutation,
   book,
+  lastEvent,
 }: {
   isOpen: boolean
   setIsOpen: (open: boolean) => void
   readDateMutation: any
   book: { readEvents: { readAt: Date }[] }
+  lastEvent: { pagesRead: number }
 }) {
   const tomorrow = addDays(new Date(), 1)
   const [date, setDate] = useState<Date | undefined>(new Date())
-  const [changePages, setChangePages] = useState<string>("")
+  const [changePages, setChangePages] = useState<string>(
+    lastEvent?.pagesRead.toString() || ""
+  )
   const input = useRef<HTMLInputElement>(null)
 
   const days: Date[] = []
@@ -43,7 +47,7 @@ export function DateReadModal({
       return
     }
     setDate(new Date())
-    setChangePages("")
+    setChangePages(lastEvent?.pagesRead.toString() || "")
     setIsOpen(false)
   }
 
@@ -88,22 +92,31 @@ export function DateReadModal({
             readDateMutation.mutate({ date, pages: parseInt(changePages) })
           }}
         >
-          <div className="flex gap-2">
-            <Input
-              type="number"
-              min={1}
-              value={changePages}
-              onChange={(evt) => setChangePages(evt.target.value)}
-              autoFocus
-              ref={input}
-            />
-            <Button type="submit" disabled={readDateMutation.isPending}>
-              {readDateMutation.isPending ? (
-                <Loader className="size-4 animate-spin" />
-              ) : (
-                <Save className="size-4" />
-              )}
-            </Button>
+          <div className="flex flex-col items-center">
+            <div className="flex gap-2">
+              <Input
+                type="number"
+                min={1}
+                value={changePages}
+                onChange={(evt) => setChangePages(evt.target.value)}
+                autoFocus
+                ref={input}
+              />
+              <Button type="submit" disabled={readDateMutation.isPending}>
+                {readDateMutation.isPending ? (
+                  <Loader className="size-4 animate-spin" />
+                ) : (
+                  <Save className="size-4" />
+                )}
+              </Button>
+            </div>
+            <p className="mt-2 text-sm text-muted-foreground">
+              {!isNaN(parseInt(changePages)) &&
+                lastEvent &&
+                `Относительно прошлого: ${
+                  parseInt(changePages) - lastEvent.pagesRead
+                }`}
+            </p>
           </div>
         </form>
       </div>
