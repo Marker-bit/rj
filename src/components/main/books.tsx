@@ -8,7 +8,7 @@ export async function Books() {
   const { user } = await validateRequest()
   if (!user) return null
   const books = (await fetchBooks(user.id))
-    .filter((book) => book.readEvents[0]?.pagesRead !== book.pages)
+    .filter((book) => book.readEvents[0]?.pagesRead !== book.pages && !book.isHidden)
     .slice(0, 3)
   return (
     <div className="flex cursor-default flex-col gap-3 border-b p-3">
