@@ -22,6 +22,8 @@ import {
   BookOpenTextIcon,
   CalendarDays,
   Edit,
+  Eye,
+  EyeOff,
   Info,
   Link2,
   Plus,
@@ -142,6 +144,16 @@ export function BookView({ book }: { book: Book }) {
       setDeleteDialogOpen(false)
       setActionsDrawerOpen(false)
       toast.success("Книга удалена")
+      router.refresh()
+    },
+  })
+
+  const hideMutation = useMutation({
+    mutationFn: () => fetch(`/api/books/${book.id}/hide`, { method: "POST" }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["books"] })
+      setActionsDrawerOpen(false)
+      toast.success("Книга скрыта")
       router.refresh()
     },
   })
@@ -402,6 +414,35 @@ export function BookView({ book }: { book: Book }) {
             <Share className="size-4" />
             <div className="max-sm:hidden">Поделиться</div>
           </Button>
+          {book.isHidden ? (
+            <Button
+              className="gap-2"
+              variant="outline"
+              onClick={() => hideMutation.mutate()}
+              disabled={hideMutation.isPending}
+            >
+              {hideMutation.isPending ? (
+                <Loader className="size-4" />
+              ) : (
+                <Eye className="size-4" />
+              )}
+              <div className="max-sm:hidden">Показать</div>
+            </Button>
+          ) : (
+            <Button
+              className="gap-2"
+              variant="outline"
+              onClick={() => hideMutation.mutate()}
+              disabled={hideMutation.isPending}
+            >
+              {hideMutation.isPending ? (
+                <Loader className="size-4" />
+              ) : (
+                <EyeOff className="size-4" />
+              )}
+              <div className="max-sm:hidden">Скрыть</div>
+            </Button>
+          )}
           <div className="absolute right-0 top-0 m-2 flex scale-0 gap-2 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
             <Button
               size="icon"

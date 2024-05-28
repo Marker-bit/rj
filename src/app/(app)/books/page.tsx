@@ -44,7 +44,24 @@ export default async function BooksPage({
           )}
         </div>
       ) : (
-        <BookList books={books} />
+        <>
+          <BookList books={books.filter((b) => !b.isHidden)} />
+          {books.filter((b) => b.isHidden).length > 0 && (
+            <div className="m-2">
+              <h2 className="text-2xl font-bold">Скрытые</h2>
+              <p className="mb-2 text-muted-foreground">
+                Книги, которые вы скрыли
+              </p>
+              <div className="flex flex-col gap-2">
+                {books
+                  .filter((b) => b.isHidden)
+                  .map((b) => (
+                    <BookView key={b.id} book={b} />
+                  ))}
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   )

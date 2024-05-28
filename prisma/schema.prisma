@@ -70,7 +70,7 @@ model Book {
   coverUrl    String?
   links       BookLink[]
 
-  hiddenUntil DateTime?
+  isHidden Boolean @default(false)
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
