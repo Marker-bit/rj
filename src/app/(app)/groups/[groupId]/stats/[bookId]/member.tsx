@@ -13,6 +13,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { GroupMemberRole } from "@prisma/client"
 import { BadgeCheck, Check, UserSquare2, X } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -35,6 +36,7 @@ export function MemberInfo({
       verified: boolean
     }
     id: string
+    role: GroupMemberRole
   }
   group: { id: string }
   i: number
@@ -76,7 +78,13 @@ export function MemberInfo({
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="max-w-[400px] p-4">
-                  {savedBook.description}
+                  {member.role !== GroupMemberRole.MEMBER ? (
+                    savedBook.description
+                  ) : (
+                    <p className="text-muted-foreground">
+                      Вы не можете просмотреть чужое описание
+                    </p>
+                  )}
                 </PopoverContent>
               </Popover>
             )}
