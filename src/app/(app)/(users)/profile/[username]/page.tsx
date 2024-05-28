@@ -80,6 +80,18 @@ export default async function Page({
       readAt: "asc",
     },
   })
+  const books = await db.book.findMany({
+    where: {
+      userId: user.id,
+    },
+    include: {
+      readEvents: {
+        orderBy: {
+          readAt: "desc",
+        },
+      },
+    },
+  })
   if (currentUser?.id === user.id) return redirect("/profile")
   return (
     <div className="m-3">
@@ -104,7 +116,7 @@ export default async function Page({
           />
         </div>
       </div>
-      <UserTabs user={user} currentUser={currentUser} events={events} />
+      <UserTabs user={user} currentUser={currentUser} events={events} books={books} />
     </div>
   )
 }

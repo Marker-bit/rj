@@ -51,7 +51,6 @@ export function CreateCollection() {
   })
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
     collectionMutation.mutate(values)
   }
 

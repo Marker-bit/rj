@@ -30,7 +30,6 @@ export default function RemoveBookDialog({
 }) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
-  console.log(book)
 
   return (
     <DrawerDialog open={open} onOpenChange={setOpen} className="min-w-[50vw]">

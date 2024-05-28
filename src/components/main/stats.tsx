@@ -29,6 +29,18 @@ export async function Stats() {
       readAt: "asc",
     },
   })
+  const books = await db.book.findMany({
+    where: {
+      userId: user.id,
+    },
+    include: {
+      readEvents: {
+        orderBy: {
+          readAt: "desc",
+        },
+      },
+    },
+  })
   return (
     <div className="flex cursor-default flex-col gap-3 border-b p-3">
       <Link href="/profile#stats">
@@ -38,7 +50,7 @@ export async function Stats() {
           <ChevronRight className="size-8" />
         </h2>
       </Link>
-      <StatsData profile={profile} events={events} />
+      <StatsData profile={profile} events={events} books={books} />
     </div>
   )
 }

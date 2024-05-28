@@ -35,31 +35,43 @@ export default async function ProfilePage() {
       readAt: "asc",
     },
   })
+  const books = await db.book.findMany({
+    where: {
+      userId: user.id,
+    },
+    include: {
+      readEvents: {
+        orderBy: {
+          readAt: "desc",
+        },
+      },
+    },
+  })
 
   return (
     <div className="mb-[15vh]">
-      <div className="text-5xl font-black m-2 flex gap-2 items-center">
+      <div className="m-2 flex items-center gap-2 text-5xl font-black">
         <Button variant="ghost" size="icon" asChild>
           <Link href="/">
-            <ChevronLeft className="w-6 h-6" />
+            <ChevronLeft className="size-6" />
           </Link>
         </Button>
         Профиль
         <div className="ml-auto">
           <Button variant="ghost" size="icon" asChild>
             <Link href="/profile/settings">
-              <Edit className="w-6 h-6" />
+              <Edit className="size-6" />
             </Link>
           </Button>
         </div>
       </div>
-      <div className="m-3 p-4 rounded-md border flex gap-2 items-center">
+      <div className="m-3 flex items-center gap-2 rounded-md border p-4">
         <Image
           src={userData?.avatarUrl ? userData?.avatarUrl : "/no-avatar.png"}
           alt="avatar"
           width={100}
           height={100}
-          className="rounded-full w-20 h-20"
+          className="size-20 rounded-full"
         />
         <div className="flex flex-col">
           <div className="text-3xl font-semibold">
@@ -75,15 +87,15 @@ export default async function ProfilePage() {
       </div>
       <Suspense
         fallback={
-          <div className="grid grid-cols-2 gap-2 mt-2">
-            <Skeleton className="w-full h-14" />
-            <Skeleton className="w-full h-14" />
-            <Skeleton className="w-full h-14" />
-            <Skeleton className="w-full h-14" />
+          <div className="mt-2 grid grid-cols-2 gap-2">
+            <Skeleton className="h-14 w-full" />
+            <Skeleton className="h-14 w-full" />
+            <Skeleton className="h-14 w-full" />
+            <Skeleton className="h-14 w-full" />
           </div>
         }
       >
-        <Stats profile={userData} events={events} />
+        <Stats profile={userData} events={events} books={books} />
       </Suspense>
     </div>
   )

@@ -38,7 +38,6 @@ export function getDays(events: ReadEvent[]) {
       let dayStreak = 0
       for (let event of todayEvents) {
         const bookEvents = events.filter((e) => e.bookId === event.bookId)
-        console.log(bookEvents, event)
         if (bookEvents.length === 1 || bookEvents.indexOf(event) === 0) {
           dayStreak += event.pagesRead
         } else {

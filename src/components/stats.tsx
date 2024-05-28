@@ -1,6 +1,12 @@
 "use client"
 
-import { BookOpen, CalendarRange, Users2, UsersIcon } from "lucide-react"
+import {
+  BookCheck,
+  BookOpen,
+  CalendarRange,
+  Users2,
+  UsersIcon,
+} from "lucide-react"
 import Link from "next/link"
 import {
   addHours,
@@ -20,6 +26,7 @@ import { declOfNum } from "@/lib/utils"
 export async function Stats({
   profile,
   events,
+  books,
 }: {
   profile: User & {
     follower: {
@@ -44,6 +51,13 @@ export async function Stats({
       userId: string
     }
   })[]
+  books: {
+    id: string
+    readEvents: {
+      pagesRead: number
+    }[]
+    pages: number
+  }[]
 }) {
   // const profile = await db.user.findUniqueOrThrow({
   //   where: {
@@ -85,6 +99,9 @@ export async function Stats({
   let currentWeekNum: { [key: string]: number } = {}
   let streak = 0
   let readSpeed = []
+  const readBooks = books.filter((book) =>
+    book.readEvents.find((event) => event.pagesRead >= book.pages)
+  )
 
   if (events) {
     // events?.reverse();
@@ -204,7 +221,7 @@ export async function Stats({
 
   return (
     <>
-      <div id="stats" className="grid grid-cols-2 grid-rows-2 gap-2 p-2">
+      <div id="stats" className="grid grid-cols-2 gap-2 p-2">
         <div className="flex items-center gap-1 rounded-md border p-2">
           <CalendarRange className="size-6" />
           <div className="flex flex-col">
@@ -225,6 +242,19 @@ export async function Stats({
                 "страниц прочитано",
               ])}{" "}
               за последнюю неделю
+            </div>
+          </div>
+        </div>
+        <div className="col-span-2 flex items-center gap-1 rounded-md border p-2">
+          <BookCheck className="size-6" />
+          <div className="flex flex-col">
+            <div className="font-bold">{readBooks.length}</div>
+            <div className="-mt-1 text-xs lowercase text-muted-foreground/70">
+              {declOfNum(streak, [
+                "прочитанная книга",
+                "прочитанные книги",
+                "прочитанных книг",
+              ])}
             </div>
           </div>
         </div>

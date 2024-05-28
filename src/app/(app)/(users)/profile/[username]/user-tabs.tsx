@@ -13,6 +13,7 @@ export function UserTabs({
   user,
   currentUser,
   events,
+  books
 }: {
   user: DbUser & {
     following: {
@@ -46,6 +47,13 @@ export function UserTabs({
     pagesRead: number
     bookId: string
   })[]
+  books: {
+    id: string
+    readEvents: {
+      pagesRead: number
+    }[]
+    pages: number
+  }[]
 }) {
   const [currentTab, setCurrentTab] = useState(0)
 
@@ -84,7 +92,7 @@ export function UserTabs({
       {shareStats && (
         <div className="flex flex-col">
           <div className="text-3xl font-semibold">Статистика</div>
-          <Stats profile={user as any} events={events} />
+          <Stats profile={user as any} events={events} books={books} />
         </div>
       )}
     </div>
