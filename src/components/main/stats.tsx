@@ -1,6 +1,6 @@
 import { BarChartBig, ChevronRight } from "lucide-react"
 import Link from "next/link"
-import { Stats as StatsData } from "@/components/stats"
+import { Stats as StatsData } from "@/components/users/stats"
 import { db } from "@/lib/db"
 import { validateRequest } from "@/lib/server-validate-request"
 

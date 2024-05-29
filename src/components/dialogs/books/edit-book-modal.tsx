@@ -1,6 +1,6 @@
-"use client"
-
-import { Button } from "@/components/ui/button"
+import { DrawerDialog } from "@/components/ui/drawer-dialog"
+import { DialogHeader, DialogTitle } from "../../ui/dialog"
+import { Edit, Loader, Trash } from "lucide-react"
 import {
   Form,
   FormControl,
@@ -8,18 +8,17 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { UploadButton } from "@/components/uploadthing"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Loader, Plus, Trash } from "lucide-react"
-import Image from "next/image"
+} from "../../ui/form"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { DrawerDialog } from "../ui/drawer-dialog"
-import { DialogHeader, DialogTitle } from "../ui/dialog"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import Image from "next/image"
+import { Button } from "../../ui/button"
+import { UploadButton } from "../../uploadthing"
+import { Input } from "../../ui/input"
+import { Textarea } from "../../ui/textarea"
+import { Book } from "@prisma/client"
 import { useRouter } from "next/navigation"
 
 const bookSchema = z.object({
@@ -30,54 +29,57 @@ const bookSchema = z.object({
   coverUrl: z.string().optional(),
 })
 
-export function GroupBookForm({
-  onSuccess,
-  groupId,
+export function EditBookModal({
   open,
   setOpen,
+  book,
 }: {
-  onSuccess?: () => void
-  groupId: string
   open: boolean
-  setOpen: (open: boolean) => void
+  setOpen: (b: boolean) => void
+  book: Book
 }) {
   const queryClient = useQueryClient()
   const form = useForm<z.infer<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
+    defaultValues: {
+      title: book.title,
+      author: book.author,
+      pages: book.pages,
+      description: book.description ?? "",
+      coverUrl: book.coverUrl ?? "",
+    },
   })
+
   const router = useRouter()
 
-  const bookMutation = useMutation({
+  const editMutation = useMutation({
     mutationFn: (values: z.infer<typeof bookSchema>) =>
-      fetch(`/api/groups/${groupId}/books`, {
-        method: "POST",
+      fetch(`/api/books/${book.id}/`, {
+        method: "PATCH",
         body: JSON.stringify(values),
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["books"],
       })
-      form.reset({
-        title: "",
-        author: "",
-        pages: NaN,
-        coverUrl: "",
-        description: "",
+      queryClient.invalidateQueries({
+        queryKey: ["events"],
       })
-      if (onSuccess) onSuccess()
-      setOpen(false)
       router.refresh()
     },
   })
 
-  function onSubmit(values: z.infer<typeof bookSchema>) {
-    bookMutation.mutate(values)
+  async function onSubmit(values: z.infer<typeof bookSchema>) {
+    await editMutation.mutateAsync(values)
+    setOpen(false)
   }
 
   return (
     <DrawerDialog open={open} onOpenChange={setOpen} className="min-w-[50vw]">
-      <DialogHeader>
-        <DialogTitle>Добавить книгу</DialogTitle>
+      <DialogHeader className="mb-2">
+        <DialogTitle className="flex items-center gap-2">
+          <Edit className="size-4" /> Редактировать книгу
+        </DialogTitle>
       </DialogHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
@@ -120,9 +122,6 @@ export function GroupBookForm({
                       }}
                       onUploadError={(error: Error) => {
                         alert(`ERROR! ${error.message}`)
-                      }}
-                      appearance={{
-                        allowedContent: "text-black/70 dark:text-white/70",
                       }}
                     />
                   </div>
@@ -183,13 +182,17 @@ export function GroupBookForm({
               </FormItem>
             )}
           />
-          <Button type="submit" disabled={bookMutation.isPending}>
-            {bookMutation.isPending ? (
-              <Loader className="mr-2 size-4 animate-spin" />
+          <Button
+            type="submit"
+            disabled={editMutation.isPending}
+            className="gap-2"
+          >
+            {editMutation.isPending ? (
+              <Loader className="size-4 animate-spin" />
             ) : (
-              <Plus className="mr-2 size-4" />
+              <Edit className="size-4" />
             )}
-            Создать
+            Редактировать
           </Button>
         </form>
       </Form>

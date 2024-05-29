@@ -1,6 +1,6 @@
 import { ChevronLeft, UserX } from "lucide-react"
 import Link from "next/link"
-import { FriendView } from "@/components/friend-view"
+import { FriendView } from "@/components/users/friend-view"
 import { Button } from "@/components/ui/button"
 import { db } from "@/lib/db"
 import { validateRequest } from "@/lib/server-validate-request"
@@ -25,10 +25,10 @@ export default async function FriendsPage() {
   })
   return (
     <div>
-      <div className="text-5xl font-black m-2 flex gap-2 items-center">
+      <div className="m-2 flex items-center gap-2 text-5xl font-black">
         <Link href="/">
           <Button variant="ghost" size="icon">
-            <ChevronLeft className="w-8 h-8" />
+            <ChevronLeft className="size-8" />
           </Button>
         </Link>
         Подписки
@@ -41,8 +41,8 @@ export default async function FriendsPage() {
       <div className="p-3">
         <div className="flex flex-col gap-2">
           {friends.length === 0 && (
-            <div className="p-2 flex gap-2 items-center rounded-xl border text-xl">
-              <UserX className="w-10 h-10" />
+            <div className="flex items-center gap-2 rounded-xl border p-2 text-xl">
+              <UserX className="size-10" />
               <div className="flex flex-col">
                 <div>У вас нет подписок</div>
                 <div className="text-xs text-black/50">Подписывайтесь!</div>

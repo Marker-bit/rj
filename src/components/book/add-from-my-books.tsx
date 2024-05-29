@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { DrawerDialog } from "../drawer"
+import { DrawerDialog } from "../ui/drawer-dialog"
 import { DialogHeader, DialogTitle } from "../ui/dialog"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
