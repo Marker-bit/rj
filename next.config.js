@@ -1,3 +1,4 @@
+const MillionLint = require("@million/lint")
 const withMDX = require("@next/mdx")()
 const withPWA = require("next-pwa")({
   dest: "public",
@@ -9,7 +10,11 @@ const withPWA = require("next-pwa")({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   webpack: (config) => {
-    config.externals.push("@node-rs/argon2", "@node-rs/bcrypt", "@resvg/resvg-js")
+    config.externals.push(
+      "@node-rs/argon2",
+      "@node-rs/bcrypt",
+      "@resvg/resvg-js"
+    )
     return config
   },
   images: {
@@ -49,11 +54,10 @@ const nextConfig = {
         ".js",
         ".mjs",
         ".json",
-      ]
+      ],
     },
     mdxRs: true,
     serverComponentsExternalPackages: ["@node-rs/argon2"],
   },
 }
-
-module.exports = withPWA(withMDX(nextConfig))
+module.exports = MillionLint.next({ rsc: true })(withPWA(withMDX(nextConfig)))
