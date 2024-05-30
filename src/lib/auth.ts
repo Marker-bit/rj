@@ -25,6 +25,7 @@ export const lucia = new Lucia(adapter, {
       shareFollowers: attributes.shareFollowers,
       shareStats: attributes.shareStats,
       verified: attributes.verified,
+      admin: attributes.admin,
     };
   },
 });
@@ -46,4 +47,5 @@ interface DatabaseUserAttributes {
   shareSubscriptions: SharePeople;
   shareStats: SharePeople;
   verified: boolean;
+  admin: boolean;
 }
