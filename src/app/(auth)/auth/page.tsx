@@ -8,5 +8,5 @@ export default async function Page() {
     return redirect("/home")
   }
 
-  return redirect("/auth/login")
+  return redirect("/auth/register")
 }
