@@ -1,4 +1,3 @@
-const MillionLint = require("@million/lint")
 const withMDX = require("@next/mdx")()
 const withPWA = require("next-pwa")({
   dest: "public",
@@ -60,4 +59,4 @@ const nextConfig = {
     serverComponentsExternalPackages: ["@node-rs/argon2"],
   },
 }
-module.exports = MillionLint.next({ rsc: true })(withPWA(withMDX(nextConfig)))
+module.exports = withPWA(withMDX(nextConfig))
