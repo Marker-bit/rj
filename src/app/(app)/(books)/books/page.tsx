@@ -5,7 +5,6 @@ import { validateRequest } from "@/lib/server-validate-request"
 import { ChevronLeft } from "lucide-react"
 import Link from "next/link"
 import { BookList } from "./book-list"
-import { BOOKS_PER_PAGE } from "@/lib/constants";
 
 export default async function BooksPage({
   searchParams,
@@ -15,7 +14,7 @@ export default async function BooksPage({
   const { user } = await validateRequest()
   if (!user) return null
 
-  const books = await fetchBooks(user.id, 0, BOOKS_PER_PAGE)
+  const books = await fetchBooks(user.id)
   let bookId = searchParams?.bookId
 
   const foundBook = bookId ? books.find((b) => b.id === bookId) : undefined
