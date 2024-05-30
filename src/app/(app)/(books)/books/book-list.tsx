@@ -9,6 +9,7 @@ import { Book } from "@/lib/api-types"
 import { BookMinus, Search } from "lucide-react"
 import { useEffect, useState } from "react"
 import Fuse from "fuse.js"
+import { BookInfiniteScroll } from "@/components/book/infinite-scroll";
 
 export function BookList({ books }: { books: Book[] }) {
   const [readBooks, setReadBooks] = useState(false)
@@ -136,9 +137,13 @@ export function BookList({ books }: { books: Book[] }) {
             Сбросить поиск
           </Button>
         )}
-        {(searchResults || filteredBooks).map((book: Book) => (
+        {/* {(searchResults || filteredBooks).map((book: Book) => (
+          <BookView book={book} key={book.id} />
+        ))} */}
+        {searchResults?.map((book: Book) => (
           <BookView book={book} key={book.id} />
         ))}
+        {!searchResults && <BookInfiniteScroll initialBooks={filteredBooks} />}
       </div>
     </div>
   )
