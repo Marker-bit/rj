@@ -39,7 +39,7 @@ export function UserButton({ user }: { user: User }) {
         <Button variant="ghost" className="flex justify-between gap-2">
           <Image
             className="size-8 rounded-full"
-            src={user.avatarUrl}
+            src={user.avatarUrl || "/no-avatar.png"}
             alt="avatar"
             width={32}
             height={32}
