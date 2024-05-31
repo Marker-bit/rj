@@ -14,21 +14,36 @@ export default async function BooksCountInfo() {
       },
     },
   })
-  const days: { date: Date; count: number }[] = []
+  const users = await db.user.findMany({
+    where: {
+      registeredAt: {
+        gte: monthStart,
+        lte: monthEnd,
+      },
+    },
+  })
+  const days: { date: Date; usersCount: number; booksCount: number }[] = []
   for (let i = monthStart; i <= monthEnd; i = addDays(i, 1)) {
     if (isAfter(i, now)) break
-    days.push({ date: i, count: 0 })
+    days.push({ date: i, usersCount: 0, booksCount: 0 })
   }
   books.forEach((book) => {
     const date = new Date(book.createdAt)
     const index = days.findIndex((d) => isSameDay(d.date, date))
     if (index !== -1) {
-      days[index].count += 1
+      days[index].booksCount += 1
+    }
+  })
+  users.forEach((user) => {
+    const date = new Date(user.registeredAt)
+    const index = days.findIndex((d) => isSameDay(d.date, date))
+    if (index !== -1) {
+      days[index].usersCount += 1
     }
   })
   return (
     <div className="col-span-3 rounded-xl border p-4">
-      <div className="mb-2 font-bold">Книги за месяц</div>
+      <div className="mb-2 font-bold">Книги и пользователи за месяц</div>
       <BooksCountChart data={days} />
     </div>
   )

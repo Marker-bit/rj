@@ -20,8 +20,19 @@ export default function BooksCountChart({ data }: { data: any[] }) {
           dataKey="date"
           tickFormatter={(date: Date) => format(date, "dd/MM")}
         />
-        <YAxis dataKey="count" />
-        <Line type="monotone" dataKey="count" stroke="#8884d8" dot={false} />
+        <YAxis dataKey="booksCount" />
+        <Line
+          type="monotone"
+          dataKey="booksCount"
+          stroke="#8884d8"
+          dot={false}
+        />
+        <Line
+          type="monotone"
+          dataKey="usersCount"
+          stroke="#82ca9d"
+          dot={false}
+        />
         <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
         <Tooltip
           labelFormatter={(date: Date) => format(date, "dd/MM")}
@@ -37,6 +48,19 @@ export default function BooksCountChart({ data }: { data: any[] }) {
                     payload[0].value +
                       " " +
                       declOfNum(payload[0].value, ["книга", "книги", "книг"])}
+                </p>
+                <p>
+                  {payload &&
+                    payload[1] &&
+                    payload[1].value !== undefined &&
+                    typeof payload[1].value === "number" &&
+                    payload[1].value +
+                      " " +
+                      declOfNum(payload[1].value, [
+                        "пользователь",
+                        "пользователя",
+                        "пользователей",
+                      ])}
                 </p>
               </div>
             ) : null

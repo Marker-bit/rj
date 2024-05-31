@@ -3,7 +3,6 @@ import { Suspense } from "react"
 import BooksCountCard from "./cards/books-count"
 import BooksCountInfo from "./cards/books-count-info"
 import UsersCountCard from "./cards/users-count"
-import UsersCountInfo from "./cards/users-count-info";
 
 export default async function Page() {
   return (
@@ -22,9 +21,6 @@ export default async function Page() {
         </Suspense>
         <Suspense fallback={<Skeleton className="h-36 min-w-36 rounded-xl" />}>
           <BooksCountInfo />
-        </Suspense>
-        <Suspense fallback={<Skeleton className="h-36 min-w-36 rounded-xl" />}>
-          <UsersCountInfo />
         </Suspense>
       </div>
     </div>
