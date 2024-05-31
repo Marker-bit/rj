@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button"
 import { db } from "@/lib/db"
 import Image from "next/image"
 import ReadButton from "./read-button"
+import AnswerQuestion from "@/app/(app)/support/answer-question"
 
 export default async function Page({
   params,
@@ -65,6 +66,7 @@ export default async function Page({
             />
           </div>
         ))}
+        <AnswerQuestion questionId={question.id} />
       </div>
     </div>
   )
