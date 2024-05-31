@@ -1,13 +1,9 @@
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
-import { db } from "@/lib/db"
-import { declOfNum } from "@/lib/utils"
-import { endOfDay, startOfDay } from "date-fns"
-import { ChevronDown } from "lucide-react"
-import Image from "next/image"
-import { Suspense } from "react"
-import UsersCountCard from "./cards/users-count"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Suspense } from "react"
 import BooksCountCard from "./cards/books-count"
+import BooksCountInfo from "./cards/books-count-info"
+import UsersCountCard from "./cards/users-count"
+import UsersCountInfo from "./cards/users-count-info";
 
 export default async function Page() {
   return (
@@ -21,12 +17,14 @@ export default async function Page() {
         >
           <UsersCountCard />
         </Suspense>
-        <Suspense
-          fallback={
-            <Skeleton className="h-36 min-w-36 rounded-xl" />
-          }
-        >
+        <Suspense fallback={<Skeleton className="h-36 min-w-36 rounded-xl" />}>
           <BooksCountCard />
+        </Suspense>
+        <Suspense fallback={<Skeleton className="h-36 min-w-36 rounded-xl" />}>
+          <BooksCountInfo />
+        </Suspense>
+        <Suspense fallback={<Skeleton className="h-36 min-w-36 rounded-xl" />}>
+          <UsersCountInfo />
         </Suspense>
       </div>
     </div>
