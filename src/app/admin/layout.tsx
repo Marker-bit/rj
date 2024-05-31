@@ -1,20 +1,21 @@
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { validateRequest } from "@/lib/server-validate-request";
+} from "@/components/ui/tooltip"
+import { validateRequest } from "@/lib/server-validate-request"
 import {
   Book,
+  BookLock,
   HomeIcon,
   LineChart,
   PanelLeft,
-  Users2
-} from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
+  Users2,
+} from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
 
 export default async function Layout({
   children,
@@ -33,13 +34,7 @@ export default async function Layout({
             href="#"
             className="group flex size-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:size-8 md:text-base"
           >
-            <Image
-              src="/favicon.png"
-              alt="logo"
-              width={32}
-              height={32}
-              className="size-4 transition-all group-hover:scale-110"
-            />
+            <BookLock className="size-4 transition-all group-hover:scale-110" />
             <span className="sr-only">Читательский дневник</span>
           </Link>
           <Tooltip>
@@ -57,7 +52,7 @@ export default async function Layout({
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
-                href="#"
+                href="/admin/books"
                 className="flex size-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:size-8"
               >
                 <Book className="size-5" />
@@ -107,13 +102,7 @@ export default async function Layout({
                   href="#"
                   className="group flex size-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
                 >
-                  <Image
-                    src="/favicon.png"
-                    alt="logo"
-                    width={32}
-                    height={32}
-                    className="size-4 transition-all group-hover:scale-110"
-                  />
+                  <BookLock className="size-4 transition-all group-hover:scale-110" />
                   <span className="sr-only">Читательский дневник</span>
                 </Link>
                 <Link
