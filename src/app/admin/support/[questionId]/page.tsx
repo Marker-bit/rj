@@ -3,14 +3,15 @@ import { db } from "@/lib/db"
 import Image from "next/image"
 import ReadButton from "./read-button"
 import AnswerQuestion from "@/app/(app)/support/answer-question"
-import { validateRequest } from "@/lib/server-validate-request";
+import { validateRequest } from "@/lib/server-validate-request"
+import DoneButton from "./done-button"
 
 export default async function Page({
   params,
 }: {
   params: { questionId: string }
 }) {
-  const {user} = await validateRequest()
+  const { user } = await validateRequest()
   if (!user || !user.admin) return null
   const question = await db.supportQuestion.findUnique({
     where: { id: params.questionId },
@@ -41,6 +42,7 @@ export default async function Page({
       </div>
       <h1 className="text-3xl font-bold">{question.title}</h1>
       <div>{question.content}</div>
+      <DoneButton questionId={question.id} done={question.isDone} />
 
       <div>
         {question.answers.map((answer) => (

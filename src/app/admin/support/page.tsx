@@ -1,6 +1,7 @@
 import { db } from "@/lib/db"
 import { validateRequest } from "@/lib/server-validate-request"
 import { declOfNum } from "@/lib/utils"
+import { Check } from "lucide-react"
 import Link from "next/link"
 
 export default async function Support() {
@@ -25,7 +26,7 @@ export default async function Support() {
       <div className="grid items-stretch gap-2 sm:grid-cols-5">
         {questions.map((question) => (
           <Link href={`/admin/support/${question.id}`} key={question.id}>
-            <div className="flex h-full flex-col rounded-xl border p-4">
+            <div className="relative flex h-full flex-col rounded-xl border p-4">
               <div className="text-2xl font-bold">{question.title}</div>
               <div className="text-sm text-black/50 dark:text-white/50">
                 {question.answers.length}{" "}
@@ -34,6 +35,9 @@ export default async function Support() {
                   "ответа",
                   "ответов",
                 ])}
+              </div>
+              <div className="absolute right-5 top-5">
+                {question.isDone && <Check className="size-4" />}
               </div>
             </div>
           </Link>
