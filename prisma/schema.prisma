@@ -51,8 +51,47 @@ model User {
   verified Boolean @default(false)
   admin    Boolean @default(false)
 
-  Group   Group?  @relation(fields: [groupId], references: [id])
-  groupId String?
+  Group            Group?            @relation(fields: [groupId], references: [id])
+  groupId          String?
+  supportQuestions SupportQuestion[]
+  supportAnswers   SupportAnswer[]
+  AnswerRead       AnswerRead[]
+}
+
+model SupportQuestion {
+  id         String @id @default(cuid())
+  fromUser   User   @relation(fields: [fromUserId], references: [id])
+  fromUserId String
+
+  title   String
+  content String
+  date    DateTime @default(now())
+
+  answers SupportAnswer[]
+  isDone  Boolean         @default(false)
+}
+
+model SupportAnswer {
+  id         String @id @default(cuid())
+  fromUser   User   @relation(fields: [fromUserId], references: [id])
+  fromUserId String
+
+  question   SupportQuestion @relation(fields: [questionId], references: [id])
+  questionId String
+
+  content String
+  date    DateTime @default(now())
+
+  read AnswerRead[]
+}
+
+model AnswerRead {
+  id     String @id @default(cuid())
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  answer   SupportAnswer @relation(fields: [answerId], references: [id])
+  answerId String
 }
 
 model Session {

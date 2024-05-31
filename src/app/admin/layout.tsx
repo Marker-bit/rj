@@ -11,6 +11,7 @@ import {
   BookLock,
   HomeIcon,
   LineChart,
+  MessageCircleQuestion,
   PanelLeft,
   Users2,
 } from "lucide-react"
@@ -85,6 +86,18 @@ export default async function Layout({
             </TooltipTrigger>
             <TooltipContent side="right">Аналитика</TooltipContent>
           </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link
+                href="/admin/support"
+                className="flex size-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:size-8"
+              >
+                <MessageCircleQuestion className="size-5" />
+                <span className="sr-only">Поддержка</span>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent side="right">Поддержка</TooltipContent>
+          </Tooltip>
         </nav>
       </aside>
       <div className="flex flex-col sm:pl-14">
@@ -132,6 +145,13 @@ export default async function Layout({
                 >
                   <LineChart className="size-5" />
                   Аналитика
+                </Link>
+                <Link
+                  href="/admin/support"
+                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                >
+                  <MessageCircleQuestion className="size-5" />
+                  Поддержка
                 </Link>
               </nav>
             </SheetContent>
