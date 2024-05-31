@@ -3,8 +3,12 @@ import { Profile } from "@/components/main/profile"
 import { Stats } from "@/components/main/stats"
 import { StreakInfo } from "@/components/main/streak-info"
 import { ModeToggle } from "@/components/mode-toggle"
+import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
+import { MessageCircleQuestion } from "lucide-react"
+import Link from "next/link"
 import { Suspense } from "react"
+import SupportButton from "./support-button";
 
 export const dynamic = "force-dynamic"
 
@@ -13,8 +17,11 @@ export default function Home() {
     <div className="mb-[15vh]">
       <div className="m-2 flex items-center text-5xl font-black">
         Главная
-        <div className="ml-auto">
+        <div className="ml-auto flex items-center gap-2">
           <ModeToggle />
+          <Suspense fallback={<></>}>
+            <SupportButton />
+          </Suspense>
         </div>
       </div>
       <Suspense fallback={<></>}>
