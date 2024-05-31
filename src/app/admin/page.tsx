@@ -1,8 +1,8 @@
-import { Skeleton } from "@/components/ui/skeleton"
-import { Suspense } from "react"
-import BooksCountCard from "./cards/books-count"
-import BooksCountInfo from "./cards/books-count-info"
-import UsersCountCard from "./cards/users-count"
+import { Skeleton } from "@/components/ui/skeleton";
+import { Suspense } from "react";
+import BooksCountCard from "./cards/books-count";
+import BooksCountInfo from "./cards/books-count-info";
+import UsersCountCard from "./cards/users-count";
 
 export default async function Page() {
   return (
@@ -11,7 +11,7 @@ export default async function Page() {
       <div className="grid gap-4 sm:grid-cols-6">
         <Suspense
           fallback={
-            <Skeleton className="h-36 rounded-xl sm:col-span-5 sm:w-auto" />
+            <Skeleton className="h-36 rounded-xl sm:col-span-6 sm:w-auto" />
           }
         >
           <UsersCountCard />

@@ -1,6 +1,8 @@
-import { db } from "@/lib/db"
-import BooksCountChart from "./books-count-chart"
-import { addDays, endOfMonth, isAfter, isSameDay, startOfMonth } from "date-fns"
+import { db } from "@/lib/db";
+import { addDays, endOfMonth, isAfter, isSameDay, startOfMonth } from "date-fns";
+import { ChevronRight } from "lucide-react";
+import Link from "next/link";
+import BooksCountChart from "./books-count-chart";
 
 export default async function BooksCountInfo() {
   const now = new Date()
@@ -43,7 +45,10 @@ export default async function BooksCountInfo() {
   })
   return (
     <div className="col-span-3 rounded-xl border p-4">
-      <div className="mb-2 font-bold">Книги и пользователи за месяц</div>
+      <Link className="group mb-2 flex w-fit items-center gap-2 font-bold" href="/admin/stats">
+        Книги и пользователи за месяц
+        <ChevronRight className="size-4 transition-transform group-hover:translate-x-1" strokeWidth={3} />
+      </Link>
       <BooksCountChart data={days} />
     </div>
   )

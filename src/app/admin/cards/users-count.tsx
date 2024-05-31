@@ -21,7 +21,7 @@ export default async function UsersCountCard() {
   const allUsersCount = await db.user.count()
 
   return (
-    <div className="flex rounded-xl border p-4 sm:col-span-5">
+    <div className="flex rounded-xl border p-4 sm:col-span-6">
       <div className="flex flex-col">
         <div className="text-3xl font-bold">
           {usersToday.length}

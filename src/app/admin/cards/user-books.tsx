@@ -1,21 +1,14 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Book, Group, GroupBook, User } from "@prisma/client"
-import { ChevronDown } from "lucide-react"
-import Image from "next/image"
-import Link from "next/link"
+} from "@/components/ui/popover";
+import { Book, Group, GroupBook, User } from "@prisma/client";
+import { ChevronDown } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function UserBooks({
   user,
@@ -25,16 +18,10 @@ export default function UserBooks({
   books: (Book & { groupBook: (GroupBook & { group: Group }) | null })[]
 }) {
   return (
-    <p key={user.id} className="text-muted-foreground">
-      от{" "}
-      <HoverCard>
-        <HoverCardTrigger asChild>
-          <Button variant="link" asChild size="sm" className="px-0">
-            <Link href={`/profile/${user.username}`}>@{user.username}</Link>
-          </Button>
-        </HoverCardTrigger>
-        <HoverCardContent>
-          <div className="flex space-x-8">
+    <>
+      <Popover>
+        <PopoverTrigger asChild>
+          <div className="group relative flex cursor-pointer flex-col items-center rounded-xl border p-2">
             <Image
               src={user.avatarUrl || "/no-avatar.png"}
               alt={user.username}
@@ -42,30 +29,25 @@ export default function UserBooks({
               height={64}
               className="size-12 rounded-full"
             />
-            <div className="flex flex-col">
-              <h3>
-                {user.firstName} {user.lastName}
-              </h3>
-              <p className="text-muted-foreground">@{user.username}</p>
+            <h3>
+              {user.firstName} {user.lastName}
+            </h3>
+            <p className="text-muted-foreground">@{user.username}</p>
+            <div className="absolute bottom-0 right-0 translate-x-1/2 translate-y-1/2 rounded-full border bg-white p-0.5 dark:bg-black">
+              <ChevronDown className="size-4 transition group-hover:-rotate-90" />
             </div>
           </div>
-        </HoverCardContent>
-      </HoverCard>
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button variant="ghost" size="icon" className="ml-2 size-6">
-            <ChevronDown className="size-4" />
-          </Button>
         </PopoverTrigger>
-        <PopoverContent className="max-h-[50vh] overflow-auto">
+        <PopoverContent className="flex max-h-[50vh] flex-col gap-2 overflow-auto">
           {books.map((book) => (
             <div className="flex gap-2" key={book.id}>
               {book.coverUrl && (
                 <Image
                   src={book.coverUrl}
                   alt={"Обложка книги " + book.title}
-                  width={32}
-                  height={32}
+                  width={256}
+                  height={256}
+                  className="h-auto w-20 rounded-xl"
                 />
               )}
               <div className="flex flex-col gap-1">
@@ -86,6 +68,6 @@ export default function UserBooks({
           ))}
         </PopoverContent>
       </Popover>
-    </p>
+    </>
   )
 }
