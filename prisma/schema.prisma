@@ -51,7 +51,7 @@ model User {
   verified Boolean @default(false)
   admin    Boolean @default(false)
 
-  Group            Group?            @relation(fields: [groupId], references: [id])
+  Group            Group?                @relation(fields: [groupId], references: [id])
   groupId          String?
   supportQuestions SupportQuestion[]
   supportAnswers   SupportAnswer[]
@@ -164,6 +164,25 @@ model Group {
   groupBooks   GroupBook[]
   inviteLinks  GroupInviteLink[]
   blockedUsers User[]
+  suggestions  GroupBookSuggestion[]
+}
+
+model GroupBookSuggestion {
+  id String @id @default(cuid())
+
+  group   Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId String
+
+  title       String
+  author      String
+  coverUrl    String?
+  pages       Int
+  description String @default("")
+
+  member   GroupMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  memberId String
+
+  createdAt DateTime @default(now())
 }
 
 model GroupInviteLink {
@@ -195,7 +214,8 @@ model GroupMember {
 
   role GroupMemberRole
 
-  booksAdded GroupBook[]
+  booksAdded  GroupBook[]
+  suggestions GroupBookSuggestion[]
 }
 
 model GroupBook {

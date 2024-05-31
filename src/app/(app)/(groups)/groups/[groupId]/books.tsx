@@ -9,6 +9,12 @@ import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
 import Fuse from "fuse.js"
 import { ExportBooksButton } from "./export-books-button"
+import { BookSuggestions } from "./book-suggestions"
+import {
+  GroupBookSuggestion,
+  GroupMember,
+  GroupMemberRole,
+} from "@prisma/client"
 
 export default function Books({
   isMember,
@@ -16,7 +22,12 @@ export default function Books({
   userId,
 }: {
   isMember: boolean
-  group: { id: string; groupBooks: any[] }
+  group: {
+    id: string
+    groupBooks: any[]
+    suggestions: GroupBookSuggestion[]
+    members: GroupMember[]
+  }
   userId: string
 }) {
   const [searchText, setSearchText] = useState("")
@@ -43,6 +54,10 @@ export default function Books({
         <div className="ml-auto flex items-center gap-1">
           {!isMember && <AddBookButton groupId={group.id} />}
           <ExportBooksButton books={group.groupBooks} />
+          <BookSuggestions
+            suggestions={group.suggestions}
+            member={group.members.find((member) => member.userId === userId)!}
+          />
         </div>
       </div>
       <div className="mt-2 flex gap-2">
