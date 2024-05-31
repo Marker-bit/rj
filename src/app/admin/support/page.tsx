@@ -8,9 +8,6 @@ export default async function Support() {
   if (!user) return null
 
   const questions = await db.supportQuestion.findMany({
-    where: {
-      fromUserId: user.id,
-    },
     include: {
       answers: {
         include: {
