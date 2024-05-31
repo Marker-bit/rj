@@ -1,20 +1,21 @@
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { validateRequest } from "@/lib/server-validate-request";
+} from "@/components/ui/tooltip"
+import { validateRequest } from "@/lib/server-validate-request"
 import {
   Book,
+  BookLock,
   HomeIcon,
   LineChart,
   PanelLeft,
-  Users2
-} from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
+  Users2,
+} from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
 
 export default async function Layout({
   children,
@@ -30,22 +31,16 @@ export default async function Layout({
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
         <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
           <Link
-            href="#"
+            href="/"
             className="group flex size-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:size-8 md:text-base"
           >
-            <Image
-              src="/favicon.png"
-              alt="logo"
-              width={32}
-              height={32}
-              className="size-4 transition-all group-hover:scale-110"
-            />
+            <BookLock className="size-4 transition-all group-hover:scale-110" />
             <span className="sr-only">Читательский дневник</span>
           </Link>
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
-                href="#"
+                href="/admin"
                 className="flex size-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:size-8"
               >
                 <HomeIcon className="size-5" />
@@ -57,7 +52,7 @@ export default async function Layout({
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
-                href="#"
+                href="/admin/books"
                 className="flex size-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:size-8"
               >
                 <Book className="size-5" />
@@ -69,7 +64,7 @@ export default async function Layout({
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
-                href="#"
+                href="/admin/users"
                 className="flex size-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:size-8"
               >
                 <Users2 className="size-5" />
@@ -81,7 +76,7 @@ export default async function Layout({
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
-                href="#"
+                href="/admin/stats"
                 className="flex size-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:size-8"
               >
                 <LineChart className="size-5" />
@@ -104,41 +99,35 @@ export default async function Layout({
             <SheetContent side="left" className="sm:max-w-xs">
               <nav className="grid gap-6 text-lg font-medium">
                 <Link
-                  href="#"
+                  href="/"
                   className="group flex size-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
                 >
-                  <Image
-                    src="/favicon.png"
-                    alt="logo"
-                    width={32}
-                    height={32}
-                    className="size-4 transition-all group-hover:scale-110"
-                  />
+                  <BookLock className="size-4 transition-all group-hover:scale-110" />
                   <span className="sr-only">Читательский дневник</span>
                 </Link>
                 <Link
-                  href="#"
+                  href="/admin"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                 >
                   <HomeIcon className="size-5" />
                   Главная
                 </Link>
                 <Link
-                  href="#"
+                  href="/admin/books"
                   className="flex items-center gap-4 px-2.5 text-foreground"
                 >
                   <Book className="size-5" />
                   Книги
                 </Link>
                 <Link
-                  href="#"
+                  href="/admin/users"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                 >
                   <Users2 className="size-5" />
                   Пользователи
                 </Link>
                 <Link
-                  href="#"
+                  href="/admin/stats"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                 >
                   <LineChart className="size-5" />
