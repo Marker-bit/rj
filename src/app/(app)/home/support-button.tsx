@@ -7,13 +7,16 @@ import Link from "next/link"
 
 export default async function SupportButton() {
   const { user } = await validateRequest()
+  if (!user) return null
   const unread = await db.supportAnswer.count({
     where: {
-      fromUserId: user?.id,
       read: {
         none: {
           userId: user?.id,
         },
+      },
+      question: {
+        fromUserId: user?.id,
       },
     },
   })

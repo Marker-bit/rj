@@ -60,7 +60,7 @@ export default function QuestionAnswer({
         ) : (
           <CheckCheck className="size-4" />
         )}
-        {answer.read.find((r) => r.userId === answer.fromUser.id) ? "Не прочитан" : "Прочитан"}
+        {answer.read.find((r) => r.userId === currentUserId) ? "Не прочитан" : "Прочитан"}
       </Button>
     </div>
   )
