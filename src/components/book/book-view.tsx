@@ -252,8 +252,8 @@ export function BookView({ book }: { book: Book }) {
         <Image
           src={book.coverUrl}
           alt="book"
-          width={500}
-          height={500}
+          width={192}
+          height={320}
           className="h-40 w-auto rounded-md"
         />
       )}
