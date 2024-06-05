@@ -3,14 +3,10 @@
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { DrawerDialog } from "@/components/ui/drawer-dialog"
 import { getBooks } from "@/lib/actions/books"
-import { fetchBooks } from "@/lib/books"
 import { Book, Group, GroupBook } from "@prisma/client"
-import { useQuery } from "@tanstack/react-query"
-import { Loader } from "lucide-react"
-import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { toast } from "sonner";
+import { toast } from "sonner"
 
 export default function BindBookModal({
   open,
@@ -66,17 +62,7 @@ export default function BindBookModal({
           {books.map((book) => (
             <button
               className="flex flex-col gap-1"
-              onClick={async () => {
-                setLoading(book.id)
-                await fetch(
-                  `/api/groups/${groupBook.group.id}/books/${groupBook.id}/bind-book`,
-                  {
-                    method: "POST",
-                    body: JSON.stringify({ bookId: book.id }),
-                  }
-                )
-                router.refresh()
-              }}
+              onClick={() => bindBook(book.id)}
               key={book.id}
             >
               <div className="font-bold">{book.title}</div>
