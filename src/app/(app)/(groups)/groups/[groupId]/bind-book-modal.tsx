@@ -2,6 +2,7 @@
 
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { DrawerDialog } from "@/components/ui/drawer-dialog"
+import { Loader } from "@/components/ui/loader"
 import { getBooks } from "@/lib/actions/books"
 import { Book, Group, GroupBook } from "@prisma/client"
 import { useRouter } from "next/navigation"
@@ -31,6 +32,7 @@ export default function BindBookModal({
   }, [])
 
   const bindBook = async (bookId: string) => {
+    if (loading) return
     setLoading(bookId)
     const resp = await fetch(
       `/api/groups/${groupBook.group.id}/books/${groupBook.id}/bind-book`,
@@ -68,7 +70,10 @@ export default function BindBookModal({
               <div className="font-bold">{book.title}</div>
               <div className="text-xs">{book.author}</div>
               {loading === book.id && (
-                <div className="text-xs">Подождите...</div>
+                <div className="flex items-center gap-2 text-xs">
+                  <Loader className="size-4" />
+                  Подождите...
+                </div>
               )}
             </button>
           ))}
