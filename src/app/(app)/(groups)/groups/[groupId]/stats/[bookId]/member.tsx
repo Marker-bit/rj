@@ -1,8 +1,6 @@
 "use client"
 
-import { DrawerDialog } from "@/components/drawer"
 import { Button } from "@/components/ui/button"
-import { DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import {
   Popover,
   PopoverContent,
@@ -13,10 +11,17 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { GroupMemberRole } from "@prisma/client"
+import {
+  Book,
+  GroupBook,
+  GroupMember,
+  GroupMemberRole,
+  User,
+} from "@prisma/client"
 import { BadgeCheck, Check, UserSquare2, X } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import ChangedInfo from "../../_components/changed-info"
 
 export function MemberInfo({
   member,
@@ -27,25 +32,14 @@ export function MemberInfo({
   pages,
   currentMember,
 }: {
-  member: {
-    userId: string
-    user: {
-      avatarUrl: string | null
-      firstName: string | null
-      lastName: string | null
-      username: string
-      verified: boolean
-    }
-    id: string
+  member: GroupMember & {
+    user: User
   }
-  currentMember: {
-    userId: string
-    role: GroupMemberRole
-  }
+  currentMember: GroupMember
   group: { id: string }
   i: number
-  savedBook?: { id: string; description: string; pages: number }
-  groupBook: { description: string; pages: number }
+  savedBook?: Book
+  groupBook: GroupBook
   pages: number | null
 }) {
   return (
@@ -73,32 +67,12 @@ export function MemberInfo({
           @{member.user.username}
         </div>
         {savedBook && (
-          <>
-            {savedBook?.description === groupBook.description ? null : (
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" size="sm" className="w-fit">
-                    Описание
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="max-w-[400px] p-4">
-                  {currentMember.role !== GroupMemberRole.MEMBER ||
-                  currentMember.userId === member.userId ? (
-                    savedBook.description
-                  ) : (
-                    <p className="text-muted-foreground">
-                      Вы не можете просмотреть чужое описание
-                    </p>
-                  )}
-                </PopoverContent>
-              </Popover>
-            )}
-            {savedBook.pages === groupBook.pages ? null : (
-              <div className="text-sm text-muted-foreground/70">
-                {savedBook.pages} стр. вместо {groupBook.pages}
-              </div>
-            )}
-          </>
+          <ChangedInfo
+            book={savedBook}
+            member={member}
+            groupBook={groupBook}
+            currentMember={currentMember}
+          />
         )}
       </div>
       <div className="ml-auto flex flex-wrap items-center gap-2">

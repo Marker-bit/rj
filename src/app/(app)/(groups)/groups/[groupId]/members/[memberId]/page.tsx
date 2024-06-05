@@ -2,9 +2,22 @@ import { Button } from "@/components/ui/button"
 import { db } from "@/lib/db"
 import { validateRequest } from "@/lib/server-validate-request"
 import { declOfNum } from "@/lib/utils"
-import { BookOpen, Check, ChevronLeft, UserCircle, X, XCircle } from "lucide-react"
+import {
+  BookOpen,
+  Check,
+  ChevronLeft,
+  UserCircle,
+  X,
+  XCircle,
+} from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import ChangedInfo from "../../_components/changed-info"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 export const dynamic = "force-dynamic"
 
@@ -42,6 +55,13 @@ export default async function Page({
   if (!group) {
     return null
   }
+  const currentMember = group.members.find(
+    (member) => member.userId === user.id
+  )
+
+  if (!currentMember) {
+    return null
+  }
 
   const member = await db.groupMember.findUnique({
     where: {
@@ -65,6 +85,7 @@ export default async function Page({
     },
     include: {
       readEvents: { orderBy: { readAt: "desc" } },
+      groupBook: true,
     },
   })
 
@@ -124,7 +145,7 @@ export default async function Page({
         <div className="mt-2 flex flex-col">
           {booksSaved.map((book, i) => (
             <div
-              className="flex items-center gap-2 rounded-md p-2 transition-all hover:bg-black/10 dark:hover:bg-white/10"
+              className="flex items-center gap-2 rounded-md p-2"
               key={book.id}
             >
               {book.coverUrl && (
@@ -147,13 +168,35 @@ export default async function Page({
                 <p className="text-sm text-muted-foreground/90">
                   {book.description}
                 </p>
+                {book.groupBook && (
+                  <ChangedInfo
+                    groupBook={book.groupBook}
+                    book={book}
+                    currentMember={currentMember}
+                    member={member}
+                  />
+                )}
               </div>
 
               <div className="ml-auto flex flex-col items-end">
                 {book.readEvents.length === 0 ? (
-                  <XCircle className="size-4 text-red-500" />
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <XCircle className="size-4 text-red-500" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      Человек добавил себе эту книгу, но не читал её.
+                    </TooltipContent>
+                  </Tooltip>
                 ) : book.readEvents[0].pagesRead === book.pages ? (
-                  <Check className="size-4 text-green-500" />
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Check className="size-4 text-green-500" />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      Человек полностью прочитал книгу.
+                    </TooltipContent>
+                  </Tooltip>
                 ) : (
                   <>
                     <div className="font-bold">

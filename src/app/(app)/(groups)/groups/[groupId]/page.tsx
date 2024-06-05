@@ -285,7 +285,7 @@ export default async function Page({
         <div className="rounded-xl border p-4">
           <div className="flex items-center gap-1 text-sm text-black/70 dark:text-white/70">
             <BarChart2 className="size-4" />
-            <div>Рейтинг</div>
+            <div>Рейтинг</div>
           </div>
           <ScrollArea className="mt-2 flex h-[40vh] flex-col">
             {rating.map((member, i) => (

@@ -163,7 +163,7 @@ export function GroupBookView({
             />
           </>
         )}
-        <MoreActions book={groupBook} />
+        <MoreActions book={groupBook} addedBook={!!book} />
       </div>
     </div>
   )

@@ -14,15 +14,25 @@ import { Group, GroupBook } from "@prisma/client"
 import {
   BarChartHorizontalBig,
   Edit,
+  LinkIcon,
   MoreHorizontal,
   Trash,
 } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
+import BindBookModal from "./bind-book-modal"
 
-export function MoreActions({ book }: { book: GroupBook & { group: Group } }) {
+export function MoreActions({
+  book,
+  addedBook,
+}: {
+  book: GroupBook & { group: Group }
+  addedBook: boolean
+}) {
   const [editOpen, setEditOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
+  const [bindOpen, setBindOpen] = useState(false)
+
   return (
     <>
       <DropdownMenu>
@@ -32,6 +42,13 @@ export function MoreActions({ book }: { book: GroupBook & { group: Group } }) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
+          {!addedBook && (
+            <DropdownMenuItem onClick={() => setBindOpen(true)}>
+              <LinkIcon className="mr-2 size-4" />
+              Связать
+            </DropdownMenuItem>
+          )}
+
           <Link href={`/groups/${book.group.id}/stats/${book.id}`}>
             <DropdownMenuItem>
               <BarChartHorizontalBig className="mr-2 size-4" />
@@ -54,6 +71,7 @@ export function MoreActions({ book }: { book: GroupBook & { group: Group } }) {
         book={book}
       />
       <EditGroupBookModal open={editOpen} setOpen={setEditOpen} book={book} />
+      <BindBookModal open={bindOpen} setOpen={setBindOpen} groupBook={book} />
     </>
   )
 }
