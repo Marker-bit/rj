@@ -9,6 +9,7 @@ import { MessageCircleQuestion } from "lucide-react"
 import Link from "next/link"
 import { Suspense } from "react"
 import SupportButton from "./support-button";
+import FirstSteps from "@/components/main/first-steps";
 
 export const dynamic = "force-dynamic"
 
@@ -26,6 +27,9 @@ export default function Home() {
       </div>
       <Suspense fallback={<></>}>
         <StreakInfo />
+      </Suspense>
+      <Suspense fallback={<></>}>
+        <FirstSteps />
       </Suspense>
       <div className="flex flex-col">
         <Suspense
