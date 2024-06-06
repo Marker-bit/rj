@@ -4,8 +4,8 @@ import { AddGroupButton } from "./add-group-button"
 import { declOfNum } from "@/lib/utils"
 import Link from "next/link"
 import { redirect } from "next/navigation"
-import { GroupMemberRole } from "@prisma/client";
-import { BookMinus, Crown, Shield, Users2 } from "lucide-react";
+import { GroupMemberRole } from "@prisma/client"
+import { BookMinus, Crown, Shield, Users2 } from "lucide-react"
 
 export const dynamic = "force-dynamic"
 
@@ -73,14 +73,21 @@ export default async function Page() {
                     </div>
                   </>
                 )}
-                •
-                <div>
-                  {g.members.find((m) => m.userId === user?.id)?.role === GroupMemberRole.MODERATOR ? (
-                    <Shield className="size-4" />
-                  ) : g.members.find((m) => m.userId === user?.id)?.role === GroupMemberRole.CREATOR ? (
-                    <Crown className="size-4" />
-                  ) : null}
-                </div>
+                {g.members.find((m) => m.userId === user?.id)?.role !==
+                  GroupMemberRole.MEMBER && (
+                  <>
+                    •
+                    <div>
+                      {g.members.find((m) => m.userId === user?.id)?.role ===
+                      GroupMemberRole.MODERATOR ? (
+                        <Shield className="size-4" />
+                      ) : g.members.find((m) => m.userId === user?.id)?.role ===
+                        GroupMemberRole.CREATOR ? (
+                        <Crown className="size-4" />
+                      ) : null}
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </Link>

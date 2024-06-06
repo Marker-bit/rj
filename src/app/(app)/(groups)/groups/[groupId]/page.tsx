@@ -148,6 +148,10 @@ export default async function Page({
 
   const currentMember = group.members.find((m) => m.userId === user?.id)
 
+  const fullyReadBooks = myBooksFromGroup.filter((b) =>
+    b.readEvents.find((r) => r.pagesRead === b.pages)
+  )
+
   return (
     <div className="p-2 max-sm:mb-[15vh]">
       <div className="flex items-center">
@@ -167,6 +171,24 @@ export default async function Page({
                 "участник",
                 "участника",
                 "участников",
+              ])}
+            </div>
+            •
+            <div>
+              {myBooksFromGroup.length}{" "}
+              {declOfNum(myBooksFromGroup.length, [
+                "книга сохранена",
+                "книги сохранены",
+                "книг сохранено",
+              ])}
+            </div>
+            •
+            <div>
+              {fullyReadBooks.length}{" "}
+              {declOfNum(fullyReadBooks.length, [
+                "полностью прочитана",
+                "полностью прочитаны",
+                "полностью прочитано",
               ])}
             </div>
           </div>
