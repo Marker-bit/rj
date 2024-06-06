@@ -18,6 +18,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const dynamic = "force-dynamic"
 
@@ -104,15 +105,13 @@ export default async function Page({
         </Button>
       </Link>
       <div className="flex items-center gap-2">
-        {member.user.avatarUrl && (
-          <Image
-            src={member.user.avatarUrl}
-            alt="book"
-            width={500}
-            height={500}
-            className="h-20 w-auto rounded-full"
-          />
-        )}
+        <Avatar className="h-20 w-auto">
+          <AvatarImage src={member.user?.avatarUrl} />
+          <AvatarFallback>
+            {member.user?.firstName && member.user?.firstName[0]}
+            {member.user?.lastName && member.user?.lastName[0]}
+          </AvatarFallback>
+        </Avatar>
         <div className="flex flex-col">
           <div className="text-xl font-bold">
             {member.user.firstName} {member.user.lastName}

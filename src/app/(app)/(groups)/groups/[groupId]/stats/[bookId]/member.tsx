@@ -22,6 +22,7 @@ import { BadgeCheck, Check, UserSquare2, X } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import ChangedInfo from "../../_components/changed-info"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function MemberInfo({
   member,
@@ -45,13 +46,13 @@ export function MemberInfo({
   return (
     <div className="flex items-center gap-2 rounded-md p-2 transition-all">
       <div className="relative">
-        <Image
-          src={member.user.avatarUrl || "/no-avatar.png"}
-          alt="user"
-          width={500}
-          height={500}
-          className="h-8 w-auto rounded-md"
-        />
+        <Avatar>
+          <AvatarImage src={member.user?.avatarUrl} />
+          <AvatarFallback>
+            {member.user?.firstName && member.user?.firstName[0]}
+            {member.user?.lastName && member.user?.lastName[0]}
+          </AvatarFallback>
+        </Avatar>
         <div className="absolute bottom-0 right-0 flex size-4 translate-x-1/2 translate-y-1/2 items-center justify-center rounded-full border bg-white text-xs dark:bg-black">
           {i + 1}
         </div>

@@ -5,6 +5,7 @@ import FollowButton from "./follow-button"
 import { UserTabs } from "./user-tabs"
 import { redirect } from "next/navigation"
 import { Metadata, ResolvingMetadata } from "next"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 type Props = {
   params: { username: string }
@@ -15,11 +16,11 @@ export async function generateMetadata(
   { params }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const username = params.username;
-  const before = await parent;
+  const username = params.username
+  const before = await parent
 
   // optionally access and extend (rather than replace) parent metadata
-  const _previousImages = before.openGraph?.images || [];
+  const _previousImages = before.openGraph?.images || []
 
   return {
     title: `@${username} на RJ`,
@@ -36,7 +37,7 @@ export async function generateMetadata(
     },
     creator: "Marker-bit",
     applicationName: "Читательский дневник",
-  };
+  }
 }
 
 export default async function Page({
@@ -96,13 +97,13 @@ export default async function Page({
   return (
     <div className="m-3">
       <div className="flex items-center gap-2 rounded-md border p-4">
-        <Image
-          src={user?.avatarUrl ? user?.avatarUrl : "/no-avatar.png"}
-          alt="avatar"
-          width={100}
-          height={100}
-          className="size-20 rounded-full"
-        />
+        <Avatar className="size-20">
+          <AvatarImage src={user?.avatarUrl} />
+          <AvatarFallback>
+            {user?.firstName && user?.firstName[0]}
+            {user?.lastName && user?.lastName[0]}
+          </AvatarFallback>
+        </Avatar>
         <div className="flex flex-col">
           <div className="text-3xl font-semibold">
             {user.firstName} {user.lastName}
@@ -116,7 +117,12 @@ export default async function Page({
           />
         </div>
       </div>
-      <UserTabs user={user} currentUser={currentUser} events={events} books={books} />
+      <UserTabs
+        user={user}
+        currentUser={currentUser}
+        events={events}
+        books={books}
+      />
     </div>
   )
 }

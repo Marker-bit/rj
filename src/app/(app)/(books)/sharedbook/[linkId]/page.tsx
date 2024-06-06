@@ -5,6 +5,7 @@ import { declOfNum } from "@/lib/utils"
 import Image from "next/image"
 import Link from "next/link"
 import { CloneButton } from "./clone-button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export default async function Page({ params }: { params: { linkId: string } }) {
   const { user } = await validateRequest()
@@ -58,13 +59,13 @@ export default async function Page({ params }: { params: { linkId: string } }) {
               className="w-fit"
             >
               <div className="flex w-fit gap-2 rounded-xl border p-2 pr-5">
-                <Image
-                  src={book.user?.avatarUrl || "/no-avatar.png"}
-                  alt="user"
-                  width={500}
-                  height={500}
-                  className="size-10 rounded-full"
-                />
+                <Avatar>
+                  <AvatarImage src={book.user?.avatarUrl} />
+                  <AvatarFallback>
+                    {book.user?.firstName && book.user?.firstName[0]}
+                    {book.user?.lastName && book.user?.lastName[0]}
+                  </AvatarFallback>
+                </Avatar>
                 {book.userId === user?.id ? (
                   <div className="my-auto text-sm font-semibold">Вы</div>
                 ) : (

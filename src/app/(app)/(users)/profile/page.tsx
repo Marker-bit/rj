@@ -8,6 +8,7 @@ import { CopyUrl } from "./CopyUrl"
 import { Suspense } from "react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export default async function ProfilePage() {
   const { user } = await validateRequest()
@@ -66,13 +67,13 @@ export default async function ProfilePage() {
         </div>
       </div>
       <div className="m-3 flex items-center gap-2 rounded-md border p-4">
-        <Image
-          src={userData?.avatarUrl ? userData?.avatarUrl : "/no-avatar.png"}
-          alt="avatar"
-          width={100}
-          height={100}
-          className="size-20 rounded-full"
-        />
+        <Avatar className="size-20">
+          <AvatarImage src={userData?.avatarUrl} />
+          <AvatarFallback>
+            {userData?.firstName && userData?.firstName[0]}
+            {userData?.lastName && userData?.lastName[0]}
+          </AvatarFallback>
+        </Avatar>
         <div className="flex flex-col">
           <div className="text-3xl font-semibold">
             {userData?.firstName} {userData?.lastName}

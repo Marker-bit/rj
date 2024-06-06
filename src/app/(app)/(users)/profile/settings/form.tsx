@@ -147,7 +147,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
     <div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="m-3 p-4 rounded-md border">
+          <div className="m-3 rounded-md border p-4">
             <div className="space-y-2">
               <FormField
                 control={form.control}
@@ -159,12 +159,12 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
                       <div className="flex flex-col gap-2">
                         {field.value ? (
                           <div
-                            className="flex cursor-pointer relative w-fit h-fit"
+                            className="relative flex size-fit cursor-pointer"
                             {...getRootProps()}
                           >
                             <Image
                               src={field.value}
-                              className="w-20 h-20 rounded-full"
+                              className="size-20 rounded-full"
                               width={80}
                               height={80}
                               alt="avatar"
@@ -176,7 +176,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
                                 uploadProgress !== null && "opacity-100"
                               )}
                             >
-                              <Loader className="w-4 h-4" />
+                              <Loader className="size-4" />
                               {uploadProgress !== null && (
                                 <div>{uploadProgress}%</div>
                               )}
@@ -184,10 +184,10 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
                           </div>
                         ) : (
                           <div
-                            className="w-20 h-20 border rounded-full flex items-center justify-center cursor-pointer"
+                            className="flex size-20 cursor-pointer items-center justify-center rounded-full border"
                             {...getRootProps()}
                           >
-                            <Plus className="w-4 h-4 text-zinc-500" />
+                            <Plus className="size-4 text-zinc-500" />
                             <input {...getInputProps()} />
                           </div>
                         )}
@@ -238,13 +238,13 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
                           }}
                         />
                         {usernameFound === true && (
-                          <X className="text-red-500 w-8 h-8" />
+                          <X className="size-8 text-red-500" />
                         )}
                         {usernameFound === false && (
-                          <Check className="text-green-500 w-8 h-8" />
+                          <Check className="size-8 text-green-500" />
                         )}
                         {usernameFound === null && (
-                          <Loader className="w-8 h-8" />
+                          <Loader className="size-8" />
                         )}
                       </div>
                     </FormControl>
@@ -368,12 +368,12 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
             <Button type="submit" className="items-center gap-2">
               {userMutation.isPending ? (
                 <>
-                  <Loader invert className="w-6 h-6" />
+                  <Loader invert className="size-6" />
                   Сохранение...
                 </>
               ) : (
                 <>
-                  <Check className="w-6 h-6" />
+                  <Check className="size-6" />
                   Сохранить
                 </>
               )}
@@ -393,7 +393,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
               disabled={logOutLoading}
             >
               {logOutLoading ? (
-                <Loader className="w-4 h-4" />
+                <Loader className="size-4" />
               ) : (
                 <LogOut className="size-4" />
               )}

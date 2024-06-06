@@ -30,6 +30,7 @@ import { LinkMemberButton } from "./link-member-button"
 import { MemberActions } from "./member-actions"
 import { AddGroupButton } from "../add-group-button"
 import Books from "./books"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export const dynamic = "force-dynamic"
 
@@ -234,13 +235,13 @@ export default async function Page({
                   key={member.id}
                   className="flex items-center gap-2 rounded-xl p-2 transition-all hover:bg-muted"
                 >
-                  <Image
-                    src={member.user.avatarUrl || "/no-avatar.png"}
-                    alt="user"
-                    width={500}
-                    height={500}
-                    className="h-8 w-auto rounded-md"
-                  />
+                  <Avatar>
+                    <AvatarImage src={member.user?.avatarUrl} />
+                    <AvatarFallback>
+                      {member.user?.firstName && member.user?.firstName[0]}
+                      {member.user?.lastName && member.user?.lastName[0]}
+                    </AvatarFallback>
+                  </Avatar>
                   <div className="flex flex-col">
                     <div className="flex items-center gap-2 font-bold">
                       {member.user.firstName} {member.user.lastName}
@@ -317,13 +318,13 @@ export default async function Page({
               >
                 <div className="flex items-center gap-2 rounded-md p-2 transition-all hover:bg-black/10 dark:hover:bg-white/10">
                   <div className="relative">
-                    <Image
-                      src={member.user.avatarUrl || "/no-avatar.png"}
-                      alt="user"
-                      width={500}
-                      height={500}
-                      className="h-8 w-auto rounded-md"
-                    />
+                    <Avatar>
+                      <AvatarImage src={member.user?.avatarUrl} />
+                      <AvatarFallback>
+                        {member.user?.firstName && member.user?.firstName[0]}
+                        {member.user?.lastName && member.user?.lastName[0]}
+                      </AvatarFallback>
+                    </Avatar>
                     <div className="absolute bottom-0 right-0 flex size-4 translate-x-1/2 translate-y-1/2 items-center justify-center rounded-full border bg-white text-xs dark:bg-black">
                       {i + 1}
                     </div>
