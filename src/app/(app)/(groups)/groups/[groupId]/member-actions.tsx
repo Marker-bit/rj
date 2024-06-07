@@ -47,6 +47,7 @@ export function MemberActions({
       toast.error("Возникла проблема при исключении участника", {
         description: res.error,
       })
+      setKickOpen(false)
     } else {
       setKickOpen(false)
       toast.success(res.message)
