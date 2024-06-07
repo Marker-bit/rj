@@ -56,7 +56,7 @@ const nextConfig = {
       ],
     },
     mdxRs: true,
-    serverComponentsExternalPackages: ["@node-rs/argon2"],
+    serverComponentsExternalPackages: ["@node-rs/argon2-win32-x64-msvc"],
   },
 }
 module.exports = withPWA(withMDX(nextConfig))

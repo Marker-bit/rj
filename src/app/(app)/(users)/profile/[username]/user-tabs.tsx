@@ -60,16 +60,16 @@ export function UserTabs({
   const shareSubscriptions =
     user.shareSubscriptions === SharePeople.ALL ||
     (user.shareSubscriptions === SharePeople.SUBS &&
-      user.following.find((f) => f.secondId === currentUser?.id))
+      user.follower.find((f) => f.secondId === currentUser?.id))
   const shareFollowers =
     user.shareFollowers === SharePeople.ALL ||
     (user.shareFollowers === SharePeople.SUBS &&
       user.shareFollowers === SharePeople.SUBS &&
-      user.following.find((f) => f.secondId === currentUser?.id))
+      user.follower.find((f) => f.secondId === currentUser?.id))
   const shareStats =
     user.shareStats === SharePeople.ALL ||
     (user.shareStats === SharePeople.SUBS &&
-      user.following.find((f) => f.secondId === currentUser?.id))
+      user.follower.find((f) => f.secondId === currentUser?.id))
 
   return (
     <div className="flex flex-col">
