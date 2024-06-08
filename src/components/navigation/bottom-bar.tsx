@@ -61,7 +61,7 @@ export function BottomBar() {
             </Link>
           </div>
           <div className="flex-1">
-            <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
+            <nav className="grid items-start justify-start px-2 text-sm font-medium lg:px-4">
               {urls.map((url) => (
                 <BottomLink href={url.href} key={url.label}>
                   {React.createElement(url.icon, {
