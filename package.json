@@ -21,6 +21,7 @@
     "@node-rs/argon2-win32-x64-msvc": "^1.8.3",
     "@node-rs/bcrypt": "^1.10.1",
     "@prisma/client": "^5.9.1",
+    "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-avatar": "^1.0.4",
     "@radix-ui/react-checkbox": "^1.0.4",
