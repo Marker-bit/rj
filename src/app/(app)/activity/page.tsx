@@ -62,7 +62,7 @@ export default async function Page({
     take: pageSize,
   })
   return (
-    <div className="flex flex-col gap-2 p-2">
+    <div className="mb-[15vh] flex flex-col gap-2 p-2">
       {activity.map((event) => (
         <Event key={event.id} event={event} />
       ))}
