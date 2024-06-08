@@ -14,7 +14,7 @@ export default async function Page({
   const { user } = await validateRequest()
   if (!user) return null
   let page = searchParams?.page ? parseInt(searchParams.page as string) : 1
-  const pageSize = 10
+  const pageSize = 20
   if (page < 1) {
     page = 1
   }
