@@ -3,6 +3,7 @@ import { cn, dateToString, declOfNum } from "@/lib/utils"
 import { Book, ReadEvent, User } from "@prisma/client"
 import { BookCheck, BookOpen } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link"
 
 export default function Event({
   event,
@@ -16,7 +17,10 @@ export default function Event({
 
   return (
     <div className="flex flex-col gap-2 rounded-xl border p-2">
-      <div className="flex items-center gap-2">
+      <Link
+        href={`/profile/${user.username}`}
+        className="flex items-center gap-2"
+      >
         <Avatar>
           <AvatarImage src={user.avatarUrl} />
           <AvatarFallback>
@@ -30,7 +34,7 @@ export default function Event({
           </div>
           <div className="text-sm text-muted-foreground">@{user.username}</div>
         </div>
-      </div>
+      </Link>
       <div className="flex gap-2">
         {book.coverUrl && (
           <Image
