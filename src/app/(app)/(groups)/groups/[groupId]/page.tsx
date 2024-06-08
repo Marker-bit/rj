@@ -71,6 +71,7 @@ export default async function Page({
           },
         },
       },
+      suggestions: true,
       inviteLinks: true,
     },
   })
