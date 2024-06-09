@@ -25,7 +25,6 @@ export default function StreakNotification({
 }) {
   const [isClient, setIsClient] = useState(false)
   const streak = getStreak(events)
-  // if (!goodNumbers.includes(streak)) return null
   const randomWordIndex = Math.floor(Math.random() * happyWords.length)
   const randomWord = happyWords[randomWordIndex]
 
@@ -34,6 +33,7 @@ export default function StreakNotification({
   }, [])
 
   if (!isClient) return null
+  if (!goodNumbers.includes(streak)) return null
 
   return (
     <div className="m-2 flex flex-col rounded-xl bg-orange-500 p-2 text-white">
