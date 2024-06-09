@@ -1,8 +1,7 @@
-import { db } from "@/lib/db"
-import { validateRequest } from "@/lib/server-validate-request"
-import { getStreak } from "@/lib/stats"
-import { PartyPopper } from "lucide-react"
-import { StreakCounter } from "./streak-counter"
+import { db } from "@/lib/db";
+import { validateRequest } from "@/lib/server-validate-request";
+import { StreakCounter } from "./streak-counter";
+import StreakNotification from "../streak-notification";
 
 export async function StreakInfo() {
   const { user } = await validateRequest()
@@ -22,5 +21,10 @@ export async function StreakInfo() {
     },
   })
 
-  return <StreakCounter events={events} user={user} />
+  return (
+    <>
+      <StreakNotification events={events} user={user} />
+      <StreakCounter events={events} user={user} />
+    </>
+  )
 }

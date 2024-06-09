@@ -1,6 +1,10 @@
 import { ReadEvent } from "@prisma/client"
 import { addDays, endOfWeek, isSameDay, startOfWeek, subDays } from "date-fns"
 
+export const goodNumbers = [
+  5, 10, 15, 20, 50, 100, 200, 365, 730, 1095, 1460, 1825, 2190, 2555, 2920,
+]
+
 export function getStreak(events: ReadEvent[]) {
   let streak = 0
   let day = new Date()
@@ -43,7 +47,7 @@ export function getDays(events: ReadEvent[]) {
         } else {
           const previousEventIndex = bookEvents.indexOf(event) - 1
           const previousEvent = bookEvents[previousEventIndex]
-          dayStreak +=  event.pagesRead - previousEvent.pagesRead
+          dayStreak += event.pagesRead - previousEvent.pagesRead
         }
       }
       streak[currentDays] = dayStreak
