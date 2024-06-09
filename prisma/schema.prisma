@@ -29,20 +29,22 @@ enum SharePeople {
 }
 
 model User {
-  id                 String       @id @default(cuid())
-  username           String       @unique
-  firstName          String?
-  lastName           String?
-  active             Boolean      @default(false)
-  hashedPassword     String
-  avatarUrl          String       @default("")
-  registeredAt       DateTime     @default(now())
-  sessions           Session[]
-  books              Book[]
-  collections        Collection[]
-  shareFollowers     SharePeople  @default(NONE)
-  shareSubscriptions SharePeople  @default(NONE)
-  shareStats         SharePeople  @default(NONE)
+  id             String       @id @default(cuid())
+  username       String       @unique
+  firstName      String?
+  lastName       String?
+  active         Boolean      @default(false)
+  hashedPassword String
+  avatarUrl      String       @default("")
+  registeredAt   DateTime     @default(now())
+  sessions       Session[]
+  books          Book[]
+  collections    Collection[]
+
+  shareFollowers     SharePeople @default(NONE)
+  shareSubscriptions SharePeople @default(NONE)
+  shareStats         SharePeople @default(NONE)
+  hideActivity       Boolean     @default(false)
 
   follower  Follow[]      @relation("FollowerToUser")
   following Follow[]      @relation("FollowingToUser")
@@ -51,7 +53,7 @@ model User {
   verified Boolean @default(false)
   admin    Boolean @default(false)
 
-  Group            Group?                @relation(fields: [groupId], references: [id])
+  Group            Group?            @relation(fields: [groupId], references: [id])
   groupId          String?
   supportQuestions SupportQuestion[]
   supportAnswers   SupportAnswer[]
@@ -177,7 +179,7 @@ model GroupBookSuggestion {
   author      String
   coverUrl    String?
   pages       Int
-  description String @default("")
+  description String  @default("")
 
   member   GroupMember @relation(fields: [memberId], references: [id], onDelete: Cascade)
   memberId String

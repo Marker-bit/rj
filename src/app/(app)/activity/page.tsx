@@ -29,6 +29,7 @@ export default async function Page({
               },
             },
           },
+          hideActivity: false
         },
       },
     },

@@ -1,11 +1,11 @@
 /* src/lib/utils.ts */
-import { Lucia } from "lucia";
-import { PrismaAdapter } from "@lucia-auth/adapter-prisma";
+import { Lucia } from "lucia"
+import { PrismaAdapter } from "@lucia-auth/adapter-prisma"
 
-import { db } from "./db";
-import { SharePeople } from "@prisma/client";
+import { db } from "./db"
+import { SharePeople } from "@prisma/client"
 
-const adapter = new PrismaAdapter(db.session, db.user);
+const adapter = new PrismaAdapter(db.session, db.user)
 
 export const lucia = new Lucia(adapter, {
   sessionCookie: {
@@ -26,26 +26,28 @@ export const lucia = new Lucia(adapter, {
       shareStats: attributes.shareStats,
       verified: attributes.verified,
       admin: attributes.admin,
-    };
+      hideActivity: attributes.hideActivity,
+    }
   },
-});
+})
 
 declare module "lucia" {
   interface Register {
-    Lucia: typeof lucia;
-    DatabaseUserAttributes: DatabaseUserAttributes;
+    Lucia: typeof lucia
+    DatabaseUserAttributes: DatabaseUserAttributes
   }
 }
 
 interface DatabaseUserAttributes {
-  username: string;
-  firstName: string;
-  lastName: string;
-  active: boolean;
-  avatarUrl: string;
-  shareFollowers: SharePeople;
-  shareSubscriptions: SharePeople;
-  shareStats: SharePeople;
-  verified: boolean;
-  admin: boolean;
+  username: string
+  firstName: string
+  lastName: string
+  active: boolean
+  avatarUrl: string
+  shareFollowers: SharePeople
+  shareSubscriptions: SharePeople
+  shareStats: SharePeople
+  verified: boolean
+  admin: boolean
+  hideActivity: boolean
 }

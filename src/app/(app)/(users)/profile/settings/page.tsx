@@ -9,10 +9,10 @@ export default async function SettingsPage() {
   if (!user) return null
   return (
     <div className="mb-20">
-      <div className="text-5xl font-black m-2 flex gap-2 items-center">
+      <div className="m-2 flex items-center gap-2 text-5xl font-black">
         <Button variant="ghost" size="icon" asChild>
           <Link href="/profile">
-            <ChevronLeft className="w-8 h-8" />
+            <ChevronLeft className="size-8" />
           </Link>
         </Button>
         Настройки

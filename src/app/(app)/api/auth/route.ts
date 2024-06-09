@@ -122,6 +122,7 @@ export async function PATCH(request: NextRequest) {
       shareStats: d.shareStats,
       avatarUrl: d.avatarUrl,
       active: true,
+      hideActivity: d.hideActivity,
     },
   });
 

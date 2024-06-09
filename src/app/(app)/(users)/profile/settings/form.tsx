@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -34,6 +35,7 @@ import { generateClientDropzoneAccept } from "uploadthing/client"
 import { toast } from "sonner"
 import { User as LuciaUser } from "lucia"
 import { SharePeople } from "@prisma/client"
+import { Switch } from "@/components/ui/switch"
 
 const formSchema = z.object({
   username: z.string().min(2).max(50),
@@ -46,6 +48,7 @@ const formSchema = z.object({
     .optional(),
   shareFollowers: z.enum(["ALL", "SUBS", "NONE"]).default("NONE").optional(),
   shareStats: z.enum(["ALL", "SUBS", "NONE"]).default("NONE").optional(),
+  hideActivity: z.boolean(),
 })
 
 export function SettingsForm({ user }: { user: LuciaUser }) {
@@ -79,6 +82,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
           : user.shareStats === SharePeople.SUBS
           ? "SUBS"
           : "NONE",
+      hideActivity: user.hideActivity,
     },
   })
 
@@ -144,264 +148,275 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
   })
 
   return (
-    <div>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="m-3 rounded-md border p-4">
-            <div className="space-y-2">
-              <FormField
-                control={form.control}
-                name="avatarUrl"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Аватар</FormLabel>
-                    <FormControl>
-                      <div className="flex flex-col gap-2">
-                        {field.value ? (
-                          <div
-                            className="relative flex size-fit cursor-pointer"
-                            {...getRootProps()}
-                          >
-                            <Image
-                              src={field.value}
-                              className="size-20 rounded-full"
-                              width={80}
-                              height={80}
-                              alt="avatar"
-                            />
-                            <input {...getInputProps()} />
-                            <div
-                              className={cn(
-                                "absolute top-0 left-0 pointer-events-none w-full h-full bg-white/80 flex flex-col items-center justify-center opacity-0 transition-opacity",
-                                uploadProgress !== null && "opacity-100"
-                              )}
-                            >
-                              <Loader className="size-4" />
-                              {uploadProgress !== null && (
-                                <div>{uploadProgress}%</div>
-                              )}
-                            </div>
-                          </div>
-                        ) : (
-                          <div
-                            className="flex size-20 cursor-pointer items-center justify-center rounded-full border"
-                            {...getRootProps()}
-                          >
-                            <Plus className="size-4 text-zinc-500" />
-                            <input {...getInputProps()} />
-                          </div>
-                        )}
-                        {files.length > 0 && (
-                          <CropImage
-                            open={cropOpen}
-                            setOpen={setCropOpen}
-                            file={files[0]}
-                            onSelect={(file) => {
-                              startUpload([file])
-                            }}
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <div className="m-3 rounded-md border p-4">
+          <div className="space-y-2">
+            <FormField
+              control={form.control}
+              name="avatarUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Аватар</FormLabel>
+                  <FormControl>
+                    <div className="flex flex-col gap-2">
+                      {field.value ? (
+                        <div
+                          className="relative flex size-fit cursor-pointer"
+                          {...getRootProps()}
+                        >
+                          <Image
+                            src={field.value}
+                            className="size-20 rounded-full"
+                            width={80}
+                            height={80}
+                            alt="avatar"
                           />
-                        )}
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Имя пользователя</FormLabel>
-                    <FormControl>
-                      <div className="flex items-center gap-2">
-                        <Input
-                          {...field}
-                          onChange={(e) => {
-                            field.onChange(e)
-                            if (e.target.value === user.username) {
-                              setUsernameFound(undefined)
-                              return
-                            }
-                            setUsernameFound(null)
-                            fetch(
-                              `/api/auth/username?username=${e.target.value}`
-                            )
-                              .then((res) => res.json())
-                              .then((data) => {
-                                setUsernameFound(
-                                  e.target.value === user.username
-                                    ? false
-                                    : data.found
-                                )
-                              })
+                          <input {...getInputProps()} />
+                          <div
+                            className={cn(
+                              "absolute top-0 left-0 pointer-events-none w-full h-full bg-white/80 flex flex-col items-center justify-center opacity-0 transition-opacity",
+                              uploadProgress !== null && "opacity-100"
+                            )}
+                          >
+                            <Loader className="size-4" />
+                            {uploadProgress !== null && (
+                              <div>{uploadProgress}%</div>
+                            )}
+                          </div>
+                        </div>
+                      ) : (
+                        <div
+                          className="flex size-20 cursor-pointer items-center justify-center rounded-full border"
+                          {...getRootProps()}
+                        >
+                          <Plus className="size-4 text-zinc-500" />
+                          <input {...getInputProps()} />
+                        </div>
+                      )}
+                      {files.length > 0 && (
+                        <CropImage
+                          open={cropOpen}
+                          setOpen={setCropOpen}
+                          file={files[0]}
+                          onSelect={(file) => {
+                            startUpload([file])
                           }}
                         />
-                        {usernameFound === true && (
-                          <X className="size-8 text-red-500" />
-                        )}
-                        {usernameFound === false && (
-                          <Check className="size-8 text-green-500" />
-                        )}
-                        {usernameFound === null && (
-                          <Loader className="size-8" />
-                        )}
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="firstName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Имя</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="lastName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Фамилия</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="shareFollowers"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Кто видит ваших подписчиков?</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      value={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="ALL">Все</SelectItem>
-                        <SelectItem value="SUBS">
-                          Только мои подписки
-                        </SelectItem>
-                        <SelectItem value="NONE">Только я</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="shareSubscriptions"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Кто видит ваши подписки?</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      value={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="ALL">Все</SelectItem>
-                        <SelectItem value="SUBS">
-                          Только мои подписки
-                        </SelectItem>
-                        <SelectItem value="NONE">Только я</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="shareStats"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Кто видит вашу статистику?</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      value={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="ALL">Все</SelectItem>
-                        <SelectItem value="SUBS">
-                          Только мои подписки
-                        </SelectItem>
-                        <SelectItem value="NONE">Только я</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </div>
-          <div className="flex justify-center gap-2">
-            <Button type="submit" className="items-center gap-2">
-              {userMutation.isPending ? (
-                <>
-                  <Loader invert className="size-6" />
-                  Сохранение...
-                </>
-              ) : (
-                <>
-                  <Check className="size-6" />
-                  Сохранить
-                </>
+                      )}
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
-            </Button>
-            <Button
-              variant="outline"
-              className="items-center gap-2"
-              onClick={() => {
-                setLogOutLoading(true)
-                fetch("/api/auth/", {
-                  method: "DELETE",
-                }).then(() => {
-                  setLogOutLoading(false)
-                  window.location.href = "/"
-                })
-              }}
-              disabled={logOutLoading}
-            >
-              {logOutLoading ? (
-                <Loader className="size-4" />
-              ) : (
-                <LogOut className="size-4" />
+            />
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Имя пользователя</FormLabel>
+                  <FormControl>
+                    <div className="flex items-center gap-2">
+                      <Input
+                        {...field}
+                        onChange={(e) => {
+                          field.onChange(e)
+                          if (e.target.value === user.username) {
+                            setUsernameFound(undefined)
+                            return
+                          }
+                          setUsernameFound(null)
+                          fetch(`/api/auth/username?username=${e.target.value}`)
+                            .then((res) => res.json())
+                            .then((data) => {
+                              setUsernameFound(
+                                e.target.value === user.username
+                                  ? false
+                                  : data.found
+                              )
+                            })
+                        }}
+                      />
+                      {usernameFound === true && (
+                        <X className="size-8 text-red-500" />
+                      )}
+                      {usernameFound === false && (
+                        <Check className="size-8 text-green-500" />
+                      )}
+                      {usernameFound === null && <Loader className="size-8" />}
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
-              Выйти из аккаунта
-            </Button>
+            />
+            <FormField
+              control={form.control}
+              name="firstName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Имя</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="lastName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Фамилия</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="shareFollowers"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Кто видит ваших подписчиков?</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    value={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="ALL">Все</SelectItem>
+                      <SelectItem value="SUBS">Только мои подписки</SelectItem>
+                      <SelectItem value="NONE">Только я</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="shareSubscriptions"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Кто видит ваши подписки?</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    value={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="ALL">Все</SelectItem>
+                      <SelectItem value="SUBS">Только мои подписки</SelectItem>
+                      <SelectItem value="NONE">Только я</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="shareStats"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Кто видит вашу статистику?</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    value={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="ALL">Все</SelectItem>
+                      <SelectItem value="SUBS">Только мои подписки</SelectItem>
+                      <SelectItem value="NONE">Только я</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="hideActivity"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                  <div className="space-y-0.5">
+                    <FormLabel className="text-base">
+                      Скрывать активность
+                    </FormLabel>
+                    <FormDescription>
+                      На вкладке &quot;Активность&quot; не будут отображаться
+                      ваши события чтения.
+                    </FormDescription>
+                  </div>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
           </div>
-        </form>
-      </Form>
-    </div>
+        </div>
+        <div className="flex justify-center gap-2">
+          <Button type="submit" className="items-center gap-2">
+            {userMutation.isPending ? (
+              <>
+                <Loader invert className="size-6" />
+                Сохранение...
+              </>
+            ) : (
+              <>
+                <Check className="size-6" />
+                Сохранить
+              </>
+            )}
+          </Button>
+          <Button
+            variant="outline"
+            className="items-center gap-2"
+            onClick={() => {
+              setLogOutLoading(true)
+              fetch("/api/auth/", {
+                method: "DELETE",
+              }).then(() => {
+                setLogOutLoading(false)
+                window.location.href = "/"
+              })
+            }}
+            disabled={logOutLoading}
+          >
+            {logOutLoading ? (
+              <Loader className="size-4" />
+            ) : (
+              <LogOut className="size-4" />
+            )}
+            Выйти из аккаунта
+          </Button>
+        </div>
+      </form>
+    </Form>
   )
 }
