@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { dateToString, declOfNum } from "@/lib/utils"
+import { cn, dateToString, declOfNum } from "@/lib/utils"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { isSameDay } from "date-fns"
 import {
@@ -43,6 +43,9 @@ import { toast } from "sonner"
 import { Loader } from "../ui/loader"
 import { DateDoneModal } from "../dialogs/books/date-done-modal"
 import { Book } from "@/lib/api-types"
+import Palette from "./palette"
+import { backgroundColors } from "@/lib/colors"
+import { BackgroundColor } from "@prisma/client"
 
 export const dynamic = "force-dynamic"
 
@@ -172,11 +175,26 @@ export function BookView({ book }: { book: Book }) {
   //   }
   // }
 
+  const color =
+    book.background !== BackgroundColor.NONE &&
+    backgroundColors.find((bg) => bg.type === book.background)
+
   return (
     <div
-      className="group relative flex gap-2 rounded-md border p-2 transition-shadow hover:shadow"
+      className={cn(
+        "group relative flex gap-2 rounded-md border p-2 transition-shadow hover:shadow overflow-hidden",
+        book.background !== BackgroundColor.NONE && "outline outline-8",
+        color && color.outline
+        // color
+      )}
       id={`book-${book.id}`}
     >
+      {/* {book.background !== BackgroundColor.NONE && (
+        <div
+          className={cn("absolute left-0 top-0 h-full w-[2%] -z-10", color)}
+        />
+      )} */}
+
       <DrawerDialog
         open={descriptionDrawerOpen}
         onOpenChange={setDescriptionDrawerOpen}
@@ -443,6 +461,7 @@ export function BookView({ book }: { book: Book }) {
               <div className="max-sm:hidden">Скрыть</div>
             </Button>
           )}
+          <Palette background={book.background} bookId={book.id} />
           <div className="absolute right-0 top-0 m-2 flex scale-0 gap-2 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
             <Button
               size="icon"

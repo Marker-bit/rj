@@ -103,6 +103,14 @@ model Session {
   user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
 }
 
+enum BackgroundColor {
+  NONE
+  YELLOW
+  RED
+  BLUE
+  GREEN
+}
+
 model Book {
   id          String       @id @default(cuid())
   title       String
@@ -114,6 +122,8 @@ model Book {
   description String       @default("")
   coverUrl    String?
   links       BookLink[]
+
+  background BackgroundColor @default(NONE)
 
   isHidden Boolean @default(false)
 
