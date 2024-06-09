@@ -5,6 +5,7 @@ import { declOfNum } from "@/lib/utils"
 import { ReadEvent } from "@prisma/client"
 import { User } from "lucia"
 import { Flame, PartyPopper } from "lucide-react"
+import { useEffect, useState } from "react"
 
 const happyWords = [
   "Так держать!",
@@ -22,10 +23,17 @@ export default function StreakNotification({
   events: ReadEvent[]
   user: User
 }) {
+  const [isClient, setIsClient] = useState(false)
   const streak = getStreak(events)
   // if (!goodNumbers.includes(streak)) return null
   const randomWordIndex = Math.floor(Math.random() * happyWords.length)
   const randomWord = happyWords[randomWordIndex]
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  if (!isClient) return null
 
   return (
     <div className="m-2 flex flex-col rounded-xl bg-orange-500 p-2 text-white">

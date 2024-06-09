@@ -8,8 +8,9 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { MessageCircleQuestion } from "lucide-react"
 import Link from "next/link"
 import { Suspense } from "react"
-import SupportButton from "./support-button";
-import FirstSteps from "@/components/main/first-steps";
+import SupportButton from "./support-button"
+import FirstSteps from "@/components/main/first-steps"
+import Notifications from "@/components/notifications"
 
 export const dynamic = "force-dynamic"
 
@@ -25,6 +26,7 @@ export default function Home() {
           </Suspense>
         </div>
       </div>
+      <Notifications />
       <Suspense fallback={<></>}>
         <StreakInfo />
       </Suspense>
