@@ -22,6 +22,7 @@ import {
 import { Chart } from "@/components/ui/chart"
 import { ReadEvent, User } from "@prisma/client"
 import { declOfNum } from "@/lib/utils"
+import { getStreak } from "@/lib/stats"
 
 export async function Stats({
   profile,
@@ -97,7 +98,7 @@ export async function Stats({
   let readWeekSum = 0
   let currentWeek: Record<string, Record<string, number>> = {}
   let currentWeekNum: Record<string, number> = {}
-  let streak = 0
+  const streak = getStreak(events)
   let readSpeed = []
   const readBooks = books.filter((book) =>
     book.readEvents.find((event) => event.pagesRead >= book.pages)
@@ -160,20 +161,6 @@ export async function Stats({
         }
         booksStats[event.bookId][day] += event.pagesRead - beforeEventPages
       }
-    }
-    let day = new Date()
-    day = subDays(day, 1)
-
-    while (true) {
-      if (events.find((e) => isSameDay(e.readAt, day))) {
-        streak++
-        day = subDays(day, 1)
-      } else {
-        break
-      }
-    }
-    if (events.find((e) => isSameDay(e.readAt, day))) {
-      streak++
     }
   }
 
