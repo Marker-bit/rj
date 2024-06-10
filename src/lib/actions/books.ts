@@ -1,5 +1,6 @@
 "use server"
 
+import { BackgroundColor } from "@prisma/client"
 import { fetchBooks } from "../books"
 import { db } from "../db"
 import { validateRequest } from "../server-validate-request"
@@ -49,4 +50,17 @@ export async function deleteBook(bookId: string) {
   }
 
   await db.book.delete({ where: { id: bookId, userId: user.id } })
+}
+
+export async function setBookColor(bookId: string, color: BackgroundColor) {
+  const { user } = await validateRequest()
+
+  if (!user) {
+    throw new Error("Unauthorized")
+  }
+
+  await db.book.update({
+    where: { id: bookId, userId: user.id },
+    data: { background: color },
+  })
 }

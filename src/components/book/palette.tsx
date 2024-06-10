@@ -1,15 +1,16 @@
 "use client"
 
-import { BackgroundColor } from "@prisma/client"
-import { Button } from "../ui/button"
-import { Check, PaletteIcon } from "lucide-react"
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
-import { useState } from "react"
-import { AnimatePresence, motion } from "framer-motion"
+import { setBookColor } from "@/lib/actions/books"
 import { backgroundColors } from "@/lib/colors"
 import { cn } from "@/lib/utils"
-import { toast } from "sonner"
+import { BackgroundColor } from "@prisma/client"
+import { AnimatePresence, motion } from "framer-motion"
+import { Check, PaletteIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { toast } from "sonner"
+import { Button } from "../ui/button"
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 
 export default function Palette({
   background,
@@ -30,18 +31,9 @@ export default function Palette({
 
   const updateColor = async (color: BackgroundColor) => {
     setLoading(true)
-    const resp = await fetch(`/api/books/${bookId}/color`, {
-      method: "POST",
-      body: JSON.stringify({ color }),
-    })
-    const json = await resp.json()
+    await setBookColor(bookId, color)
     setLoading(false)
-    if (json.error) {
-      toast.error(json.error)
-    }
-    if (resp.ok) {
-      toast.success("Цвет изменен")
-    }
+    toast.success("Цвет изменен")
     router.refresh()
   }
   return (
