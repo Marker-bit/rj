@@ -24,6 +24,7 @@ import { DialogHeader, DialogTitle } from "../ui/dialog"
 import { Loader } from "../ui/loader"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { createBook } from "@/lib/actions/books"
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -34,7 +35,6 @@ const bookSchema = z.object({
 })
 
 export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
-  const queryClient = useQueryClient()
   const form = useForm<z.infer<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
   })
@@ -48,30 +48,22 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
     }[]
   >()
   const [fileUploading, setFileUploading] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const router = useRouter()
 
-  const bookMutation = useMutation({
-    mutationFn: (values: z.infer<typeof bookSchema>) =>
-      fetch("/api/books", {
-        method: "POST",
-        body: JSON.stringify(values),
-      }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["books"],
-      })
-      form.reset({
-        title: "",
-        author: "",
-        pages: NaN,
-        coverUrl: "",
-        description: "",
-      })
-      if (onSuccess) onSuccess()
-    },
-  })
-
-  function onSubmit(values: z.infer<typeof bookSchema>) {
-    bookMutation.mutate(values)
+  async function onSubmit(values: z.infer<typeof bookSchema>) {
+    setLoading(true)
+    await createBook(values)
+    setLoading(false)
+    router.refresh()
+    form.reset({
+      title: "",
+      author: "",
+      pages: NaN,
+      coverUrl: "",
+      description: "",
+    })
+    if (onSuccess) onSuccess()
   }
 
   function searchClick() {
@@ -253,11 +245,8 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
               </FormItem>
             )}
           />
-          <Button
-            type="submit"
-            disabled={bookMutation.isPending || fileUploading}
-          >
-            {bookMutation.isPending ? (
+          <Button type="submit" disabled={loading || fileUploading}>
+            {loading ? (
               <Loader invert className="mr-2 size-4" />
             ) : (
               <Plus className="mr-2 size-4" />
@@ -289,7 +278,6 @@ export function MobileForm() {
           <BookForm
             onSuccess={() => {
               setOpen(false)
-              router.refresh()
             }}
           />
         </div>
