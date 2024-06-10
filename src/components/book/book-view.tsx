@@ -183,7 +183,7 @@ export function BookView({ book }: { book: Book }) {
     <div
       className={cn(
         "group relative flex gap-2 rounded-md border p-2 transition-shadow hover:shadow overflow-hidden",
-        book.background !== BackgroundColor.NONE && "outline outline-8",
+        book.background !== BackgroundColor.NONE && "outline outline-8 my-2",
         color && color.outline
         // color
       )}
