@@ -1,13 +1,12 @@
 "use client"
 
-import { getDays, getStreak, goodNumbers } from "@/lib/stats"
-import { capitalizeFirstLetter, cn, declOfNum } from "@/lib/utils"
-import { ReadEvent } from "@prisma/client"
-import { addDays, differenceInDays, format, startOfWeek } from "date-fns"
-import { User } from "lucia"
-import { PartyPopper } from "lucide-react"
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card"
-import { ru } from "date-fns/locale"
+import { getDays, getStreak, goodNumbers } from "@/lib/stats";
+import { capitalizeFirstLetter, cn, declOfNum } from "@/lib/utils";
+import { ReadEvent } from "@prisma/client";
+import { addDays, differenceInDays, format, startOfWeek } from "date-fns";
+import { ru } from "date-fns/locale";
+import { User } from "lucia";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card";
 
 export function StreakCounter({
   events,

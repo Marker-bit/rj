@@ -1,7 +1,7 @@
-import { db } from "@/lib/db";
-import { validateRequest } from "@/lib/server-validate-request";
-import { StreakCounter } from "./streak-counter";
-import StreakNotification from "../streak-notification";
+import { db } from "@/lib/db"
+import { validateRequest } from "@/lib/server-validate-request"
+import { StreakCounter } from "./streak-counter"
+import StreakNotification from "../streak-notification"
 
 export async function StreakInfo() {
   const { user } = await validateRequest()
@@ -20,6 +20,8 @@ export async function StreakInfo() {
       readAt: "asc",
     },
   })
+
+  if (events.length === 0) return null
 
   return (
     <>

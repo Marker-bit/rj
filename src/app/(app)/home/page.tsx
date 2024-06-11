@@ -11,6 +11,7 @@ import { Suspense } from "react"
 import SupportButton from "./support-button"
 import FirstSteps from "@/components/main/first-steps"
 import Notifications from "@/components/notifications"
+import OldUsers from "./old-users"
 
 export const dynamic = "force-dynamic"
 
@@ -29,7 +30,11 @@ export default function Home() {
       <Suspense fallback={<></>}>
         <FirstSteps />
       </Suspense>
-      <Notifications />
+      <Suspense fallback={<></>}>
+        <OldUsers>
+          <Notifications />
+        </OldUsers>
+      </Suspense>
       <Suspense fallback={<></>}>
         <StreakInfo />
       </Suspense>
