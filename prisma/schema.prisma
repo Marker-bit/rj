@@ -58,6 +58,7 @@ model User {
   supportQuestions SupportQuestion[]
   supportAnswers   SupportAnswer[]
   AnswerRead       AnswerRead[]
+  lists            List[]
 }
 
 model SupportQuestion {
@@ -246,4 +247,27 @@ model GroupBook {
   coverUrl    String?
 
   book Book[]
+}
+
+model List {
+  id String @id @default(cuid())
+
+  name  String
+  books ListBook[]
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+}
+
+model ListBook {
+  id String @id @default(cuid())
+
+  list   List   @relation(fields: [listId], references: [id], onDelete: Cascade)
+  listId String
+
+  title       String
+  author      String
+  pages       Int
+  coverUrl    String?
+  description String  @default("")
 }
