@@ -9,6 +9,7 @@ import { Book } from "@/lib/api-types"
 import { BookMinus, Search } from "lucide-react"
 import { useEffect, useState } from "react"
 import Fuse from "fuse.js"
+import { BackgroundColor } from "@prisma/client"
 
 export function BookList({ books }: { books: Book[] }) {
   const [readBooks, setReadBooks] = useState(false)
@@ -40,7 +41,7 @@ export function BookList({ books }: { books: Book[] }) {
     })
   }
 
-  let filteredBooks = books;
+  let filteredBooks = books
 
   if (readBooks) {
     filteredBooks = filteredBooks.filter((book: Book) => {
@@ -75,8 +76,16 @@ export function BookList({ books }: { books: Book[] }) {
 
   useEffect(() => {
     search()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchText, books, readBooks, notStarted])
+
+  const outlinedBooks = filteredBooks.filter(
+    (book: Book) => book.background !== BackgroundColor.NONE
+  )
+
+  const notOutlinedBooks = filteredBooks.filter(
+    (book: Book) => book.background === BackgroundColor.NONE
+  )
 
   return (
     <div>
@@ -136,9 +145,23 @@ export function BookList({ books }: { books: Book[] }) {
             Сбросить поиск
           </Button>
         )}
-        {(searchResults || filteredBooks).map((book: Book) => (
+        {searchResults ? (
+          searchResults.map((book: Book) => (
+            <BookView book={book} key={book.id} />
+          ))
+        ) : (
+          <>
+            {outlinedBooks.map((book: Book) => (
+              <BookView key={book.id} book={book} />
+            ))}
+            {notOutlinedBooks.map((book: Book) => (
+              <BookView key={book.id} book={book} />
+            ))}
+          </>
+        )}
+        {/* {(searchResults || filteredBooks).map((book: Book) => (
           <BookView book={book} key={book.id} />
-        ))}
+        ))} */}
       </div>
     </div>
   )
