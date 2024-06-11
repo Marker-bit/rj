@@ -2,6 +2,8 @@ import { db } from "@/lib/db"
 import { validateRequest } from "@/lib/server-validate-request"
 import { cn } from "@/lib/utils"
 import { Check } from "lucide-react"
+import Link from "next/link"
+import { Button } from "../ui/button"
 
 export default async function FirstSteps() {
   const { user } = await validateRequest()
@@ -51,7 +53,10 @@ export default async function FirstSteps() {
           >
             {createdBook ? <Check className="size-4" /> : "1"}
           </div>
-          Добавить книгу
+          Добавить книгу на странице
+          <Link href="/books">
+            <Button>Книги</Button>
+          </Link>
         </div>
         <div className="flex items-center gap-2">
           <div

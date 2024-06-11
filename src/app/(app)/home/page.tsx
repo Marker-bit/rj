@@ -26,12 +26,12 @@ export default function Home() {
           </Suspense>
         </div>
       </div>
+      <Suspense fallback={<></>}>
+        <FirstSteps />
+      </Suspense>
       <Notifications />
       <Suspense fallback={<></>}>
         <StreakInfo />
-      </Suspense>
-      <Suspense fallback={<></>}>
-        <FirstSteps />
       </Suspense>
       <div className="flex flex-col">
         <Suspense
