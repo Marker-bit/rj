@@ -35,6 +35,7 @@ export const metadata: Metadata = {
   },
   creator: "Mark Pentus",
   keywords: ["rj", "reading journal", "reading", "journal"],
+  icons: "https://rj-ten.vercel.app/favicon.png",
   other: {
     ["yandex-verification"]: process.env.YANDEX_VERIFICATION || "",
   },
