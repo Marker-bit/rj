@@ -15,6 +15,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://rj-ten.vercel.app/"),
   title: "Читательский дневник",
   description: "Читательский дневник",
+  manifest: "https://rj-ten.vercel.app/manifest.json",
   twitter: {
     card: "summary_large_image",
     title: "Reading Journal",
