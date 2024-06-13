@@ -482,11 +482,8 @@ export function BookView({ book }: { book: Book }) {
           </div>
         </div>
         {book.description && (
-          <pre className="relative block overflow-hidden text-wrap font-sans text-black/70">
-            {isMobile
-              ? book.description.split("\n").slice(0, 3).join("\n")
-              : book.description}
-            {book.description.split("\n").length > 3 && isMobile && "..."}
+          <pre className="relative line-clamp-2 block overflow-hidden text-ellipsis text-wrap font-sans text-muted-foreground">
+            {book.description}
           </pre>
         )}
       </div>

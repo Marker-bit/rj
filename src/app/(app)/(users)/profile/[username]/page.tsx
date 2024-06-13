@@ -95,7 +95,7 @@ export default async function Page({
   })
   if (currentUser?.id === user.id) return redirect("/profile")
   return (
-    <div className="m-3">
+    <div className="m-3 mb-[15vh]">
       <div className="flex items-center gap-2 rounded-md border p-4">
         <Avatar className="size-20">
           <AvatarImage src={user?.avatarUrl} />
