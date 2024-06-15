@@ -274,6 +274,12 @@ model ListBook {
   description String  @default("")
 }
 
+enum PromiseMode {
+  FULL_BOOKS
+  READ_PAGES
+  STREAK
+}
+
 model ReadPromise {
   id String @id @default(cuid())
 
@@ -281,6 +287,9 @@ model ReadPromise {
   userId String
 
   books Book[]
+
+  pagesCount  Int?
+  streakPages Int?
 
   dueDate DateTime
 }
