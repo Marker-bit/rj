@@ -28,9 +28,11 @@ export default async function Page() {
       <h1 className="text-3xl font-bold">Обещания</h1>
       <CreatePromise books={books} />
       {promises.length === 0 && <p>Вы не создали ни одного обещания</p>}
-      {promises.map((promise) => (
-        <PromiseCard key={promise.id} promise={promise} />
-      ))}
+      <div className="flex flex-col gap-2">
+        {promises.map((promise) => (
+          <PromiseCard key={promise.id} promise={promise} />
+        ))}
+      </div>
     </div>
   )
 }

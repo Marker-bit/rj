@@ -31,6 +31,9 @@ import { ru } from "date-fns/locale"
 import { CalendarIcon } from "lucide-react"
 import { Calendar } from "@/components/ui/calendar"
 import BooksSelect from "./books-select"
+import { createPromise } from "@/lib/actions/promises"
+import { toast } from "sonner"
+import { Loader } from "@/components/ui/loader"
 
 const formSchema = z
   .object({
@@ -89,6 +92,7 @@ const formSchema = z
 
 export default function CreatePromise({ books }: { books: Book[] }) {
   const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
   const router = useRouter()
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -101,8 +105,13 @@ export default function CreatePromise({ books }: { books: Book[] }) {
   const mode = form.watch("mode")
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setLoading(true)
+    await createPromise(values)
+    setLoading(false)
+    router.refresh()
+    toast.success("Обещание создано")
+    setOpen(false)
   }
 
   return (
@@ -251,7 +260,9 @@ export default function CreatePromise({ books }: { books: Book[] }) {
                 </FormItem>
               )}
             />
-            <Button type="submit">Создать</Button>
+            <Button type="submit" disabled={loading}>
+              {loading && <Loader invert className="mr-2 size-4" />}Создать
+            </Button>
           </form>
         </Form>
       </DrawerDialog>

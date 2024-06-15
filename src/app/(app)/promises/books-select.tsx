@@ -12,6 +12,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn, declOfNum } from "@/lib/utils"
 import { Book } from "@prisma/client"
+import Fuse from "fuse.js"
 import { BookPlusIcon, Check } from "lucide-react"
 import { useState } from "react"
 import { ControllerRenderProps } from "react-hook-form"
@@ -34,6 +35,12 @@ export default function BooksSelect({
 }) {
   const [searchText, setSearchText] = useState("")
   const [open, setOpen] = useState(false)
+
+  const search = new Fuse(books, {
+    keys: ["title", "author", "description"],
+  })
+
+  const filteredBooks = search.search(searchText).map((result) => result.item)
 
   return (
     <>
@@ -69,7 +76,7 @@ export default function BooksSelect({
           onChange={(e) => setSearchText(e.target.value)}
           className="mb-2"
         />
-        {books.map((book) => (
+        {(searchText ? filteredBooks : books).map((book) => (
           <button
             key={book.id}
             onClick={() =>
