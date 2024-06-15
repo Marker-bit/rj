@@ -291,7 +291,7 @@ model ReadPromise {
   pagesCount  Int?
   streakPages Int?
 
-  startDate DateTime
+  startDate DateTime @default(now())
   dueDate   DateTime
 
   mode PromiseMode
