@@ -7,6 +7,7 @@ export default function PromiseCard({
 }) {
   return (
     <div className="flex flex-col gap-2 rounded-xl border p-2">
+      
     </div>
   )
 }
