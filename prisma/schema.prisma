@@ -59,6 +59,7 @@ model User {
   supportAnswers   SupportAnswer[]
   AnswerRead       AnswerRead[]
   lists            List[]
+  promises         ReadPromise[]
 }
 
 model SupportQuestion {
@@ -131,8 +132,9 @@ model Book {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
-  groupBook   GroupBook? @relation(fields: [groupBookId], references: [id])
+  groupBook   GroupBook?    @relation(fields: [groupBookId], references: [id])
   groupBookId String?
+  promises    ReadPromise[]
 }
 
 model BookLink {
@@ -270,4 +272,15 @@ model ListBook {
   pages       Int
   coverUrl    String?
   description String  @default("")
+}
+
+model ReadPromise {
+  id String @id @default(cuid())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  books Book[]
+
+  dueDate DateTime
 }
