@@ -95,7 +95,6 @@ export async function getPromiseProgress(
       if (!todayEvents.length) {
         break
       }
-      console.log(currentDay, dueDate, startDate, todayEvents)
 
       let totalRead = 0
 

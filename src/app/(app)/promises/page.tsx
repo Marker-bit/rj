@@ -16,7 +16,15 @@ export default async function Page() {
       userId,
     },
     include: {
-      books: true,
+      books: {
+        include: {
+          readEvents: {
+            orderBy: {
+              readAt: "desc",
+            },
+          },
+        },
+      },
     },
   })
   const books = await db.book.findMany({

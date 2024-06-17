@@ -1,5 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton"
-import { Book, PromiseMode, ReadPromise } from "@prisma/client"
+import { Book, PromiseMode, ReadEvent, ReadPromise } from "@prisma/client"
 import { Suspense } from "react"
 import PromiseTag from "./promise-tag"
 import { getPromiseProgress } from "@/lib/promises"
@@ -12,7 +12,7 @@ import {
   Timer,
   X,
 } from "lucide-react"
-import { cn, declOfNum } from "@/lib/utils"
+import { cn, dateToString, declOfNum } from "@/lib/utils"
 import Image from "next/image"
 import PromisedBooks from "./promised-books"
 import { Progress } from "@/components/ui/progress"
@@ -22,15 +22,22 @@ import { differenceInDays, format, isAfter, isBefore } from "date-fns"
 export default async function PromiseCard({
   promise,
 }: {
-  promise: ReadPromise & { books: Book[] }
+  promise: ReadPromise & { books: (Book & { readEvents: ReadEvent[] })[] }
 }) {
   const { progress, total, mode, breakDay } = await getPromiseProgress(promise)
+
+  const pagesRead = promise.books
+    .map((book) => book.readEvents[book.readEvents.length - 1]?.pagesRead || 0)
+    .reduce((a, b) => a + b, 0)
+  const fullPages = promise.books
+    .map((book) => book.pages)
+    .reduce((a, b) => a + b, 0)
 
   const time = differenceInDays(promise.dueDate, promise.startDate) + 1
 
   return (
-    <div className="flex items-start justify-stretch rounded-xl border">
-      <div className="p-2">
+    <div className="flex flex-col gap-2 rounded-xl border p-2">
+      <div>
         {mode === PromiseMode.FULL_BOOKS ? (
           <PromisedBooks books={promise.books} />
         ) : mode === PromiseMode.STREAK ? (
@@ -38,7 +45,7 @@ export default async function PromiseCard({
         ) : null}
       </div>
 
-      <div className="flex flex-col p-2">
+      <div className="flex flex-col">
         <div className="flex items-center gap-2">
           {progress === total ? (
             <>
@@ -54,7 +61,8 @@ export default async function PromiseCard({
           ) : mode === PromiseMode.STREAK ? (
             <>
               Вы читали {progress}{" "}
-              {declOfNum(progress, ["день", "дня", "дней"])} из {total}
+              {declOfNum(progress, ["день", "дня", "дней"])} из {total}, вы
+              прервали чтение {dateToString(breakDay!)}
             </>
           ) : (
             <>
@@ -63,6 +71,24 @@ export default async function PromiseCard({
             </>
           )}
         </div>
+        {mode === PromiseMode.FULL_BOOKS && progress !== total && (
+          <p className="text-muted-foreground">
+            Вы прочитали {pagesRead}{" "}
+            {declOfNum(pagesRead, ["страницу", "страницы", "страниц"])} из{" "}
+            {fullPages},{" "}
+            {declOfNum(fullPages - pagesRead, [
+              "осталась",
+              "осталось",
+              "осталось",
+            ])}{" "}
+            {fullPages - pagesRead}{" "}
+            {declOfNum(fullPages - pagesRead, [
+              "страница",
+              "страницы",
+              "страниц",
+            ])}
+          </p>
+        )}
         <div className="text-sm text-muted-foreground">
           С {format(promise.startDate, "dd.MM.yyyy")} по{" "}
           {format(promise.dueDate, "dd.MM.yyyy")} ({time}{" "}
@@ -77,7 +103,12 @@ export default async function PromiseCard({
             <CalendarIcon className="size-4" strokeWidth={1.5} /> Создано
           </div>
         ) : (
-          <div className={cn("flex items-center gap-2 text-sm", progress === total ? "text-green-500" : "text-orange-500")}>
+          <div
+            className={cn(
+              "flex items-center gap-2 text-sm",
+              progress === total ? "text-green-500" : "text-orange-500"
+            )}
+          >
             <Clock className="size-4" strokeWidth={1.5} />{" "}
             {declOfNum(differenceInDays(promise.dueDate, new Date()) + 1, [
               "Остался",

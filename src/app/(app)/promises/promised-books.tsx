@@ -6,13 +6,18 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { cn, declOfNum } from "@/lib/utils"
-import { Book } from "@prisma/client"
+import { Book, ReadEvent } from "@prisma/client"
 import { AnimatePresence, motion } from "framer-motion"
-import { BookCheck, ChevronDown } from "lucide-react"
+import { BookCheck, Check, ChevronDown } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link";
 import { useState } from "react"
 
-export default function PromisedBooks({ books }: { books: Book[] }) {
+export default function PromisedBooks({
+  books,
+}: {
+  books: (Book & { readEvents: ReadEvent[] })[]
+}) {
   const [open, setOpen] = useState(false)
   return (
     <>
@@ -31,7 +36,7 @@ export default function PromisedBooks({ books }: { books: Book[] }) {
             className="flex w-[300px] flex-col gap-2 p-4"
           >
             {books.map((book) => (
-              <div key={book.id} className="flex gap-2">
+              <Link key={book.id} className="flex gap-2" href={`/books/?bookId=${book.id}`}>
                 {book.coverUrl && (
                   <Image
                     src={book.coverUrl}
@@ -45,7 +50,10 @@ export default function PromisedBooks({ books }: { books: Book[] }) {
                   <div className="font-bold">{book.title}</div>
                   <div className="text-sm text-zinc-500">{book.author}</div>
                 </div>
-              </div>
+                {book.readEvents.find(
+                  (event) => event.pagesRead === book.pages
+                ) && <Check className="ml-auto size-4" />}
+              </Link>
             ))}
           </PopoverContent>
         </Popover>

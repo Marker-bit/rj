@@ -1,16 +1,7 @@
 "use client"
-import { Button } from "@/components/ui/button"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import { cn, declOfNum } from "@/lib/utils"
-import { Book, ReadPromise } from "@prisma/client"
-import { AnimatePresence, motion } from "framer-motion"
-import { BookCheck, ChevronDown, Flame } from "lucide-react"
-import Image from "next/image"
-import { useState } from "react"
+import { declOfNum } from "@/lib/utils";
+import { ReadPromise } from "@prisma/client";
+import { Flame } from "lucide-react";
 
 export default function PromisedStreak({ promise }: { promise: ReadPromise }) {
   return (
