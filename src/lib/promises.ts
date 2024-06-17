@@ -1,4 +1,4 @@
-import { PromiseMode, ReadEvent, ReadPromise } from "@prisma/client"
+import { Book, PromiseMode, ReadEvent, ReadPromise } from "@prisma/client"
 import { db } from "./db"
 import {
   addDays,
@@ -13,7 +13,7 @@ export async function getPromises() {}
 
 export async function getPromiseProgress(
   promise: ReadPromise & { books: { id: string }[] }
-): Promise<{ progress: number; total: number }> {
+) {
   const startDate = startOfDay(promise.startDate)
   const dueDate = startOfDay(promise.dueDate)
 
@@ -38,9 +38,17 @@ export async function getPromiseProgress(
     const fullEvents = events.filter(
       (event) => event.pagesRead === event.book.pages
     )
+    const books: Book[] = []
+
+    for (const event of events) {
+      if (!books.find((book) => book.id === event.bookId))
+        books.push(event.book)
+    }
+
     return {
       progress: fullEvents.length,
       total: promise.books.length,
+      mode: PromiseMode.FULL_BOOKS,
     }
   } else if (promise.mode === PromiseMode.READ_PAGES) {
     const events = await db.readEvent.findMany({
@@ -70,6 +78,7 @@ export async function getPromiseProgress(
     return {
       progress: totalPages,
       total: promise.pagesCount!,
+      mode: PromiseMode.READ_PAGES,
     }
   } else {
     const events = await db.readEvent.findMany({
@@ -86,6 +95,7 @@ export async function getPromiseProgress(
       if (!todayEvents.length) {
         break
       }
+      console.log(currentDay, dueDate, startDate, todayEvents)
 
       let totalRead = 0
 
@@ -105,10 +115,10 @@ export async function getPromiseProgress(
       currentDay = addDays(currentDay, 1)
     }
     return {
-      progress:
-        differenceInDays(dueDate, currentDay) +
-        (isSameDay(currentDay, dueDate) ? 1 : 0),
-      total: differenceInDays(dueDate, startDate) + 1,
+      progress: differenceInDays(currentDay, startDate),
+      total: differenceInDays(dueDate, startDate),
+      breakDay: isSameDay(currentDay, addDays(dueDate, 1)) ? null : currentDay,
+      mode: PromiseMode.STREAK,
     }
   }
 }
