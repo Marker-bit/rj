@@ -18,6 +18,7 @@ import PromisedBooks from "./promised-books"
 import { Progress } from "@/components/ui/progress"
 import PromisedStreak from "./promised-streak"
 import { differenceInDays, format, isAfter, isBefore } from "date-fns"
+import PromisedRead from "./promised-read"
 
 export default async function PromiseCard({
   promise,
@@ -42,7 +43,9 @@ export default async function PromiseCard({
           <PromisedBooks books={promise.books} />
         ) : mode === PromiseMode.STREAK ? (
           <PromisedStreak promise={promise} />
-        ) : null}
+        ) : (
+          mode === PromiseMode.READ_PAGES && <PromisedRead promise={promise} />
+        )}
       </div>
 
       <div className="flex flex-col">
@@ -56,7 +59,8 @@ export default async function PromiseCard({
             <>
               <Flame className="size-4" strokeWidth={1.5} />
               Прочитано {progress}{" "}
-              {declOfNum(progress, ["страница", "страницы", "страниц"])}
+              {declOfNum(progress, ["страница", "страницы", "страниц"])} из{" "}
+              {total}
             </>
           ) : mode === PromiseMode.STREAK ? (
             <>
