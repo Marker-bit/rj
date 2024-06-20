@@ -11,7 +11,10 @@ export default async function Page({ params }: { params: { linkId: string } }) {
   const { user } = await validateRequest()
   const book = await db.book.findFirst({
     where: { links: { some: { id: params.linkId } } },
-    include: { readEvents: { orderBy: { readAt: "desc" } }, user: true },
+    include: {
+      readEvents: { orderBy: [{ pagesRead: "desc" }, { readAt: "desc" }] },
+      user: true,
+    },
   })
   if (!book) {
     return null

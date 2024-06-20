@@ -7,9 +7,12 @@ export async function fetchBooks(userId: string) {
     },
     include: {
       readEvents: {
-        orderBy: {
-          readAt: "desc",
-        },
+        orderBy: [
+          { pagesRead: "desc" },
+          {
+            readAt: "desc",
+          },
+        ],
       },
       collections: true,
       groupBook: {

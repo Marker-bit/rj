@@ -1,14 +1,11 @@
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { db } from "@/lib/db";
-import { validateRequest } from "@/lib/server-validate-request";
-import {
-  BarChartHorizontalBig,
-  ChevronLeft
-} from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { MemberInfo } from "./member";
+import { Button } from "@/components/ui/button"
+import { Progress } from "@/components/ui/progress"
+import { db } from "@/lib/db"
+import { validateRequest } from "@/lib/server-validate-request"
+import { BarChartHorizontalBig, ChevronLeft } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
+import { MemberInfo } from "./member"
 
 export const dynamic = "force-dynamic"
 
@@ -55,7 +52,7 @@ export default async function Page({
         include: {
           user: true,
           readEvents: {
-            orderBy: { readAt: "desc" },
+            orderBy: [{ pagesRead: "desc" }, { readAt: "desc" }],
           },
         },
       },

@@ -85,7 +85,7 @@ export default async function Page({
       },
     },
     include: {
-      readEvents: { orderBy: { readAt: "desc" } },
+      readEvents: { orderBy: [{ pagesRead: "desc" }, { readAt: "desc" }] },
       groupBook: true,
     },
   })
