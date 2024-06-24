@@ -104,6 +104,9 @@ export function LoginForm() {
           <Link href="/auth/register">
             <Button variant="ghost">Нет аккаунта? Зарегистрироваться</Button>
           </Link>
+          <Link href="/auth/reset-password">
+            <Button variant="outline">Забыл пароль</Button>
+          </Link>
         </div>
         <p className="text-xs">
           При авторизации, вы соглашаетесь с{" "}
