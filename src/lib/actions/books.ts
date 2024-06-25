@@ -64,3 +64,17 @@ export async function setBookColor(bookId: string, color: BackgroundColor) {
     data: { background: color },
   })
 }
+
+export async function deleteBookLink(linkId: string) {
+  const { user } = await validateRequest()
+
+  if (!user) {
+    throw new Error("Unauthorized")
+  }
+
+  await db.bookLink.delete({ where: { id: linkId, book: { userId: user.id } } })
+
+  return {
+    error: false
+  }
+}

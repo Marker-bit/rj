@@ -2,7 +2,7 @@
 
 import { DrawerDialog } from "@/components/ui/drawer-dialog"
 import { DialogHeader, DialogTitle } from "../../ui/dialog"
-import { CopyCheck, CopyIcon } from "lucide-react"
+import { CopyCheck, CopyIcon, Trash } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Button } from "../../ui/button"
 import { Input } from "../../ui/input"
@@ -11,6 +11,7 @@ import { Book } from "@/lib/api-types"
 import { Loader } from "../../ui/loader"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { deleteBookLink } from "@/lib/actions/books"
 
 export function ShareBookModal({
   open,
@@ -44,6 +45,20 @@ export function ShareBookModal({
       })
     }
   }
+
+  const deleteLink = async (id: string) => {
+    toast.promise(async () => {
+      setLoading(true)
+      const resp = await deleteBookLink(id)
+      setLoading(false)
+      router.refresh()
+    }, {
+      loading: "Удаление ссылки...",
+      success: "Ссылка удалена",
+      error: "Возникла проблема при удалении ссылки",
+    })
+  }
+
   return (
     <DrawerDialog
       open={open}
@@ -51,10 +66,10 @@ export function ShareBookModal({
       className="md:w-[50vw] lg:w-[40vw]"
     >
       <DialogHeader>
-        <DialogTitle>Поделиться</DialogTitle>
+        <DialogTitle>Ссылки</DialogTitle>
       </DialogHeader>
       <div className="mt-2">
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col items-stretch gap-2">
           {book.links.map((link) => (
             <div className="flex w-full gap-2" key={link.id}>
               <Input
@@ -62,7 +77,7 @@ export function ShareBookModal({
                 value={`${
                   typeof window !== "undefined" && window.location.origin
                 }/sharedbook/${link.id}`}
-                className="sm:w-full md:w-4/5"
+                className="w-full"
               />
               <Button
                 onClick={() => {
@@ -81,27 +96,28 @@ export function ShareBookModal({
                   {copyLink === link.id ? (
                     <motion.div
                       className="flex items-center gap-2 text-green-400 dark:text-green-600"
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.8 }}
+                      initial={{ opacity: 0.5, filter: "blur(15px)" }}
+                      animate={{ opacity: 1, filter: "blur(0px)" }}
+                      exit={{ opacity: 0.5, filter: "blur(15px)" }}
                       key="copied"
                     >
                       <CopyCheck className="size-4" />
-                      <div className="max-sm:hidden">Скопировано</div>
                     </motion.div>
                   ) : (
                     <motion.div
                       className="flex items-center gap-2"
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.8 }}
+                      initial={{ opacity: 0.5, filter: "blur(15px)" }}
+                      animate={{ opacity: 1, filter: "blur(0px)" }}
+                      exit={{ opacity: 0.5, filter: "blur(15px)" }}
                       key="copy"
                     >
                       <CopyIcon className="size-4" />
-                      <div className="max-sm:hidden">Скопировать</div>
                     </motion.div>
                   )}
                 </AnimatePresence>
+              </Button>
+              <Button onClick={() => deleteLink(link.id)} disabled={loading} variant="outline">
+                <Trash className="size-4" />
               </Button>
             </div>
           ))}
