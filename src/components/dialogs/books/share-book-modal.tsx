@@ -2,7 +2,7 @@
 
 import { DrawerDialog } from "@/components/ui/drawer-dialog"
 import { DialogHeader, DialogTitle } from "../../ui/dialog"
-import { CopyCheck, CopyIcon, Trash } from "lucide-react"
+import { CopyCheck, CopyIcon, Settings, Trash } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Button } from "../../ui/button"
 import { Input } from "../../ui/input"
@@ -96,9 +96,9 @@ export function ShareBookModal({
                   {copyLink === link.id ? (
                     <motion.div
                       className="flex items-center gap-2 text-green-400 dark:text-green-600"
-                      initial={{ opacity: 0.5, filter: "blur(15px)" }}
-                      animate={{ opacity: 1, filter: "blur(0px)" }}
-                      exit={{ opacity: 0.5, filter: "blur(15px)" }}
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0 }}
                       key="copied"
                     >
                       <CopyCheck className="size-4" />
@@ -106,9 +106,9 @@ export function ShareBookModal({
                   ) : (
                     <motion.div
                       className="flex items-center gap-2"
-                      initial={{ opacity: 0.5, filter: "blur(15px)" }}
-                      animate={{ opacity: 1, filter: "blur(0px)" }}
-                      exit={{ opacity: 0.5, filter: "blur(15px)" }}
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0 }}
                       key="copy"
                     >
                       <CopyIcon className="size-4" />
@@ -118,6 +118,9 @@ export function ShareBookModal({
               </Button>
               <Button onClick={() => deleteLink(link.id)} disabled={loading} variant="outline">
                 <Trash className="size-4" />
+              </Button>
+              <Button onClick={() => toast.info("В разработке")} disabled={loading} variant="outline">
+                <Settings className="size-4" />
               </Button>
             </div>
           ))}
