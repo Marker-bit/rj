@@ -31,6 +31,7 @@ import {
   Users,
 } from "lucide-react"
 import Link from "next/link"
+import BookMenu from "./book-menu";
 
 export default async function Page() {
   const readEvents = await db.readEvent.count()
@@ -238,9 +239,7 @@ export default async function Page() {
                       </div>
                     </TableCell>
                     <TableCell className="max-lg:hidden">
-                      <Button size="icon" variant="outline">
-                        <MoreVertical className="size-4" />
-                      </Button>
+                      <BookMenu book={book} />
                     </TableCell>
                   </TableRow>
                 ))}
