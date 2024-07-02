@@ -1,16 +1,7 @@
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination"
-import { db } from "@/lib/db"
-import { declOfNum } from "@/lib/utils"
-import BookPagination from "./pagination"
-import BookTable from "./table"
+import { db } from "@/lib/db";
+import { declOfNum } from "@/lib/utils";
+import BookPagination from "./pagination";
+import BookTable from "./table";
 
 export default async function Page({
   searchParams,

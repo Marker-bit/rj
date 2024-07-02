@@ -44,7 +44,7 @@ export default function BookTable({
             <TableCell className="font-medium">{book.id}</TableCell>
             <TableCell>
               <Link
-                 href={`/admin/profile/${book.userId}`}
+                href={`/admin/profile/${book.userId}`}
                 className="flex items-center gap-2 rounded-xl p-2 transition hover:bg-black/5 dark:hover:bg-white/5"
               >
                 <Avatar>
@@ -78,7 +78,10 @@ export default function BookTable({
             </TableCell>
             <TableCell>
               {book.groupBook ? (
-                <>
+                <Link
+                  href={`/admin/groups/${book.userId}`}
+                  className="flex flex-col items-start rounded-xl p-2 transition hover:bg-black/5 dark:hover:bg-white/5"
+                >
                   <div className="font-medium">
                     {book.groupBook.group.title}
                   </div>
@@ -90,7 +93,7 @@ export default function BookTable({
                       "участников",
                     ])}
                   </div>
-                </>
+                </Link>
               ) : (
                 "Без группы"
               )}

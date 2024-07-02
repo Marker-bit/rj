@@ -31,7 +31,7 @@ import {
   Users,
 } from "lucide-react"
 import Link from "next/link"
-import BookMenu from "./book-menu";
+import BookMenu from "./book-menu"
 
 export default async function Page() {
   const readEvents = await db.readEvent.count()
@@ -162,7 +162,7 @@ export default async function Page() {
             </div>
             <Button asChild size="sm" className="ml-auto gap-1">
               <Link href="/admin/books">
-                Показать все
+                <div className="max-sm:hidden">Показать все</div>
                 <ArrowUpRight className="size-4" />
               </Link>
             </Button>
@@ -221,9 +221,7 @@ export default async function Page() {
                         </>
                       ) : (
                         <>
-                          <div className="font-medium">
-                            Не начата
-                          </div>
+                          <div className="font-medium">Не начата</div>
                           <div className="text-sm text-muted-foreground">
                             {book.pages}
                           </div>
