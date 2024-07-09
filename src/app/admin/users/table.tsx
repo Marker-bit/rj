@@ -44,7 +44,7 @@ export default function UserTable({
             <TableCell className="font-medium">{user.id}</TableCell>
             <TableCell>
               <Link
-                href={`/admin/profile/${user.id}`}
+                href={`/admin/users/${user.id}`}
                 className="flex items-center gap-2 rounded-xl p-2 transition hover:bg-black/5 dark:hover:bg-white/5"
               >
                 <Avatar>

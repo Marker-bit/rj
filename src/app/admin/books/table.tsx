@@ -44,7 +44,7 @@ export default function BookTable({
             <TableCell className="font-medium">{book.id}</TableCell>
             <TableCell>
               <Link
-                href={`/admin/profile/${book.userId}`}
+                href={`/admin/users/${book.userId}`}
                 className="flex items-center gap-2 rounded-xl p-2 transition hover:bg-black/5 dark:hover:bg-white/5"
               >
                 <Avatar>

@@ -20,7 +20,7 @@ export default function BookMenu({ book }: { book: Book }) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <Link href={`/admin/profile/${book.userId}`}>
+        <Link href={`/admin/users/${book.userId}`}>
           <DropdownMenuItem>
             <UserCircle className="mr-2 size-4" /> Посмотреть профиль
           </DropdownMenuItem>
