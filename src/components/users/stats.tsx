@@ -1,28 +1,25 @@
 "use client"
 
-import {
-  BookCheck,
-  BookOpen,
-  CalendarRange,
-  Users2,
-  UsersIcon,
-} from "lucide-react"
-import Link from "next/link"
+import { getStreak } from "@/lib/stats";
+import { declOfNum } from "@/lib/utils";
+import { ReadEvent, User } from "@prisma/client";
 import {
   addHours,
   differenceInDays,
   differenceInMinutes,
   endOfISOWeek,
   getDay,
-  isSameDay,
   max,
-  startOfISOWeek,
-  subDays,
-} from "date-fns"
-import { Chart } from "@/components/ui/chart"
-import { ReadEvent, User } from "@prisma/client"
-import { declOfNum } from "@/lib/utils"
-import { getStreak } from "@/lib/stats"
+  startOfISOWeek
+} from "date-fns";
+import {
+  BookCheck,
+  BookOpen,
+  CalendarRange,
+  Users2,
+  UsersIcon,
+} from "lucide-react";
+import Link from "next/link";
 
 export async function Stats({
   profile,
@@ -276,7 +273,7 @@ export async function Stats({
           </div>
         </Link>
       </div>
-      <div className="mx-auto w-fit cursor-default rounded-full bg-gradient-to-b from-zinc-100 to-zinc-200 p-1 px-3 dark:from-zinc-900 dark:to-zinc-800">
+      {/* <div className="mx-auto w-fit cursor-default rounded-full bg-gradient-to-b from-zinc-100 to-zinc-200 p-1 px-3 dark:from-zinc-900 dark:to-zinc-800">
         Эта неделя
       </div>
       <div className="mt-3 h-[20vh]">
@@ -287,7 +284,7 @@ export async function Stats({
       </div>
       <div className="mt-3 h-[20vh]">
         <Chart data={data} />
-      </div>
+      </div> */}
     </>
   )
 }

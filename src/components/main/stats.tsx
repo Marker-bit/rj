@@ -1,8 +1,8 @@
-import { BarChartBig, ChevronRight } from "lucide-react"
-import Link from "next/link"
-import { Stats as StatsData } from "@/components/users/stats"
 import { db } from "@/lib/db"
 import { validateRequest } from "@/lib/server-validate-request"
+import { BarChart } from "lucide-react"
+import MainChart from "./main-chart"
+import { addDays, isSameDay, subMonths } from "date-fns"
 
 export async function Stats() {
   const { user } = await validateRequest()
@@ -29,28 +29,34 @@ export async function Stats() {
       readAt: "asc",
     },
   })
-  const books = await db.book.findMany({
-    where: {
-      userId: user.id,
-    },
-    include: {
-      readEvents: {
-        orderBy: {
-          readAt: "desc",
-        },
-      },
-    },
+  const threeMonthsAgo = subMonths(new Date(), 3)
+  const threeMonthsEvents = events.filter((event) => {
+    return event.readAt > threeMonthsAgo
   })
-  return (
-    <div className="flex cursor-default flex-col gap-3 border-b p-3">
-      <Link href="/profile#stats">
-        <h2 className="flex w-fit cursor-pointer flex-wrap items-center gap-1 text-3xl font-black hover:text-black/70 dark:hover:text-white/70">
-          <BarChartBig className="mr-1 size-8" />
-          Статистика
-          <ChevronRight className="size-8" />
-        </h2>
-      </Link>
-      <StatsData profile={profile} events={events} books={books} />
-    </div>
-  )
+  const chartData = []
+  let day = threeMonthsAgo
+  while (day <= new Date()) {
+    let result = 0
+    const todayEvents = threeMonthsEvents.filter((e) => {
+      return isSameDay(e.readAt, day)
+    })
+    todayEvents.forEach((event) => {
+      const bookEvents = threeMonthsEvents.filter((e) => {
+        return event.bookId === e.book.id
+      })
+      if (bookEvents.length === 1 || bookEvents.indexOf(event) === 0) {
+        result += event.pagesRead
+      } else {
+        const previousEventIndex = bookEvents.indexOf(event) - 1
+        const previousEvent = bookEvents[previousEventIndex]
+        result += event.pagesRead - previousEvent.pagesRead
+      }
+    })
+    chartData.push({
+      date: day.toISOString().split("T")[0],
+      desktop: result,
+    })
+    day = addDays(day, 1)
+  }
+  return <MainChart chartData={chartData} />
 }
