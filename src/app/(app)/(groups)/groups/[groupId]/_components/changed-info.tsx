@@ -5,6 +5,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { Book, GroupBook, GroupMember, GroupMemberRole } from "@prisma/client"
+import { Text } from "lucide-react";
 
 export default function ChangedInfo({
   book,
@@ -27,6 +28,7 @@ export default function ChangedInfo({
         <Popover>
           <PopoverTrigger asChild>
             <Button variant="outline" size="sm" className="w-fit">
+              <Text className="mr-2 size-4" />
               Описание
             </Button>
           </PopoverTrigger>

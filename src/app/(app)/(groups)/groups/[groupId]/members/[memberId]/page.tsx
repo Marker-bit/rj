@@ -18,7 +18,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export const dynamic = "force-dynamic"
 
@@ -164,9 +164,11 @@ export default async function Page({
                 <div className="text-sm text-muted-foreground/90">
                   {book.pages} стр.
                 </div>
-                <p className="text-sm text-muted-foreground/90">
-                  {book.description}
-                </p>
+                {book.groupBook?.description === book.description && (
+                  <p className="text-sm text-muted-foreground/90">
+                    {book.description}
+                  </p>
+                )}
                 {book.groupBook && (
                   <ChangedInfo
                     groupBook={book.groupBook}
