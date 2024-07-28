@@ -58,3 +58,41 @@ export function getDays(events: ReadEvent[]) {
 
   return streak
 }
+
+export function getDays2(events: ReadEvent[]) {
+  const now = new Date()
+  const from = subDays(now, 6)
+  const to = now
+  let current = from
+  let currentDays = 0
+  let streak: Record<string, number> = {}
+  let res = []
+  for (let i = 0; i < 7; i++) {
+    streak[i] = 0
+  }
+  while (current <= to) {
+    const todayEvents = events.filter((e) => isSameDay(e.readAt, current))
+    let dayStreak = 0
+    if (todayEvents.length) {
+      for (let event of todayEvents) {
+        const bookEvents = events.filter((e) => e.bookId === event.bookId)
+        if (bookEvents.length === 1 || bookEvents.indexOf(event) === 0) {
+          dayStreak += event.pagesRead
+        } else {
+          const previousEventIndex = bookEvents.indexOf(event) - 1
+          const previousEvent = bookEvents[previousEventIndex]
+          dayStreak += event.pagesRead - previousEvent.pagesRead
+        }
+      }
+      streak[currentDays] = dayStreak
+    }
+    res.push({
+      date: current,
+      pagesRead: dayStreak,
+    })
+    current = addDays(current, 1)
+    currentDays++
+  }
+
+  return res
+}
