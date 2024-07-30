@@ -18,6 +18,8 @@ import { ReadEvent } from "@prisma/client"
 import { getDays, getDays2, getStreak } from "@/lib/stats"
 import { declOfNum } from "@/lib/utils"
 import { User } from "lucia"
+import { ConfettiButton } from "./confetti-button"
+import { Star } from "lucide-react"
 
 export default function StreakBlock({
   events,
@@ -27,6 +29,7 @@ export default function StreakBlock({
 }) {
   const streak = getStreak(events)
   const days = getDays2(events)
+  const goodNumbers = [2, 5, 10, 20, 50, 100, 200, 365, 500, 730, 1000]
 
   if (streak === 0) {
     return null
@@ -35,7 +38,16 @@ export default function StreakBlock({
   return (
     <Card>
       <CardHeader className="p-4 pb-0">
-        <CardTitle>Чтение подряд</CardTitle>
+        <CardTitle className="flex items-center gap-2">
+          {goodNumbers.includes(streak) ? (
+            <>
+              <Star className="size-6" />
+              Поздравляем!
+            </>
+          ) : (
+            "Чтение подряд"
+          )}
+        </CardTitle>
         <CardDescription>
           Вы читаете подряд уже{" "}
           <span className="font-bold">
@@ -50,6 +62,7 @@ export default function StreakBlock({
               "страниц",
             ])}
           </span>
+          {goodNumbers.includes(streak) && "!"}
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-row items-baseline gap-4 p-4 pt-0">
@@ -59,42 +72,45 @@ export default function StreakBlock({
             {declOfNum(streak, ["день", "дня", "дней"])}
           </span>
         </div>
-        <ChartContainer
-          config={{
-            pagesRead: {
-              label: "Страниц",
-              color: "hsl(var(--chart-1))",
-            },
-          }}
-          className="ml-auto w-[72px]"
-        >
-          <BarChart
-            accessibilityLayer
-            margin={{
-              left: 0,
-              right: 0,
-              top: 0,
-              bottom: 0,
+        <div className="ml-auto flex items-end gap-2">
+          <ChartContainer
+            config={{
+              pagesRead: {
+                label: "Страниц",
+                color: "hsl(var(--chart-1))",
+              },
             }}
-            data={days}
+            className="w-[72px]"
           >
-            <Bar
-              dataKey="pagesRead"
-              fill="var(--color-pagesRead)"
-              radius={2}
-              fillOpacity={0.2}
-              activeIndex={6}
-              activeBar={<Rectangle fillOpacity={0.8} />}
-            />
-            <XAxis
-              dataKey="date"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={4}
-              hide
-            />
-          </BarChart>
-        </ChartContainer>
+            <BarChart
+              accessibilityLayer
+              margin={{
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0,
+              }}
+              data={days}
+            >
+              <Bar
+                dataKey="pagesRead"
+                fill="var(--color-pagesRead)"
+                radius={2}
+                fillOpacity={0.2}
+                activeIndex={6}
+                activeBar={<Rectangle fillOpacity={0.8} />}
+              />
+              <XAxis
+                dataKey="date"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={4}
+                hide
+              />
+            </BarChart>
+          </ChartContainer>
+          <ConfettiButton />
+        </div>
       </CardContent>
     </Card>
   )

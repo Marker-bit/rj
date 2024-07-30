@@ -1,8 +1,8 @@
-import { db } from "@/lib/db";
-import { validateRequest } from "@/lib/server-validate-request";
-import StreakBlock from "./streak-block";
-import { BadgeCheck } from "lucide-react";
-import Image from "next/image";
+import { db } from "@/lib/db"
+import { validateRequest } from "@/lib/server-validate-request"
+import StreakBlock from "./streak-block"
+import { BadgeCheck } from "lucide-react"
+import Image from "next/image"
 
 export async function StreakInfo() {
   const { user } = await validateRequest()
