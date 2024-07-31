@@ -95,7 +95,7 @@ export async function Stats({
   let readWeekSum = 0
   let currentWeek: Record<string, Record<string, number>> = {}
   let currentWeekNum: Record<string, number> = {}
-  const streak = getStreak(events)
+  const {streak} = getStreak(events)
   let readSpeed = []
   const readBooks = books.filter((book) =>
     book.readEvents.find((event) => event.pagesRead >= book.pages)

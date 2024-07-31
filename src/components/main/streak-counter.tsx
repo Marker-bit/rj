@@ -15,7 +15,7 @@ export function StreakCounter({
   events: ReadEvent[]
   user: User
 }) {
-  const streak = getStreak(events)
+  const {streak} = getStreak(events)
   const days = getDays(events)
   const nowDay = differenceInDays(
     new Date(),

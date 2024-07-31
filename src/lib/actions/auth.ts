@@ -2,13 +2,29 @@
 
 import { Argon2id } from "oslo/password"
 import { db } from "../db"
+import { validateRequest } from "../server-validate-request"
+import { NextResponse } from "next/server"
+import { lucia } from "../auth"
+import { cookies } from "next/headers"
 
 export async function resetPassword(data: {
   username: string
   password: string
-  book1: { title: string; author?: string | undefined; pages?: number | undefined }
-  book2: { title: string; author?: string | undefined; pages?: number | undefined }
-  book3: { title: string; author?: string | undefined; pages?: number | undefined }
+  book1: {
+    title: string
+    author?: string | undefined
+    pages?: number | undefined
+  }
+  book2: {
+    title: string
+    author?: string | undefined
+    pages?: number | undefined
+  }
+  book3: {
+    title: string
+    author?: string | undefined
+    pages?: number | undefined
+  }
 }) {
   const user = await db.user.findUnique({
     where: {
@@ -47,7 +63,11 @@ export async function resetPassword(data: {
 
   function validateBook(
     book: { title: string; author: string; pages: number },
-    goodBook: { title: string; author?: string | undefined; pages?: number | undefined }
+    goodBook: {
+      title: string
+      author?: string | undefined
+      pages?: number | undefined
+    }
   ) {
     return book.title === goodBook.title && goodBook.author
       ? book.author === goodBook.author
@@ -79,4 +99,23 @@ export async function resetPassword(data: {
   return {
     error: false,
   }
+}
+
+export async function logOut() {
+  const { session } = await validateRequest()
+  if (!session) {
+    return NextResponse.json({
+      error: "Unauthorized",
+    })
+  }
+
+  await lucia.invalidateSession(session.id)
+
+  const sessionCookie = lucia.createBlankSessionCookie()
+  cookies().set(
+    sessionCookie.name,
+    sessionCookie.value,
+    sessionCookie.attributes
+  )
+  return new NextResponse()
 }

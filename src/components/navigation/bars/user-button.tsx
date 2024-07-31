@@ -7,8 +7,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { logOut } from "@/lib/actions/auth";
 import { User } from "lucia"
-import { ChevronsUpDown, LogOut, Settings, UserIcon } from "lucide-react"
+import { ChevronsUpDown, LockKeyhole, LogOut, Settings, UserIcon } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -17,12 +18,10 @@ import { toast } from "sonner"
 export function UserButton({ user }: { user: User }) {
   const router = useRouter()
 
-  const logOut = () => {
+  const logOutClick = () => {
     toast.promise(
       async () => {
-        await fetch("/api/auth/", {
-          method: "DELETE",
-        })
+        await logOut()
         router.push("/")
       },
       {
@@ -59,7 +58,14 @@ export function UserButton({ user }: { user: User }) {
             <Settings className="mr-2 size-4" /> Настройки
           </DropdownMenuItem>
         </Link>
-        <DropdownMenuItem onClick={logOut}>
+        {user.admin && (
+          <Link href="/admin">
+            <DropdownMenuItem>
+              <LockKeyhole className="mr-2 size-4" /> Админ-панель
+            </DropdownMenuItem>
+          </Link>
+        )}
+        <DropdownMenuItem onClick={logOutClick}>
           <LogOut className="mr-2 size-4" /> Выйти
         </DropdownMenuItem>
       </DropdownMenuContent>

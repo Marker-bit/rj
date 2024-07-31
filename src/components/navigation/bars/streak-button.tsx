@@ -21,7 +21,7 @@ import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 
 export function StreakButton({ events }: { events: ReadEvent[] }) {
-  const streak = getStreak(events)
+  const {streak} = getStreak(events)
   const days = getDays(events)
   const nowDay = differenceInDays(
     new Date(),

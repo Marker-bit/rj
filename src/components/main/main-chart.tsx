@@ -1,7 +1,7 @@
 "use client"
 
-import * as React from "react"
-import { Area, AreaChart, Bar, BarChart, CartesianGrid, XAxis } from "recharts"
+import * as React from "react";
+import { Area, AreaChart, Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
 import {
   Card,
@@ -9,24 +9,22 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
   ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart"
+  ChartTooltipContent
+} from "@/components/ui/chart";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
-import { AreaChartIcon, BarChartIcon } from "lucide-react"
+} from "@/components/ui/select";
+import { AreaChartIcon, BarChartIcon } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
 const chartConfig = {
   desktop: {

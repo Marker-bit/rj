@@ -24,7 +24,7 @@ export default function StreakNotification({
   user: User
 }) {
   const [isClient, setIsClient] = useState(false)
-  const streak = getStreak(events)
+  const {streak} = getStreak(events)
   const randomWordIndex = Math.floor(Math.random() * happyWords.length)
   const randomWord = happyWords[randomWordIndex]
 

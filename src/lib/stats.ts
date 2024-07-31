@@ -9,21 +9,25 @@ export function getStreak(events: ReadEvent[]) {
   let streak = 0
   let day = new Date()
   day = subDays(day, 1)
+  let breakDay: null | Date = null
 
   while (true) {
     if (events.find((e) => isSameDay(e.readAt, day))) {
       streak++
       day = subDays(day, 1)
     } else {
+      breakDay = day
       break
     }
   }
 
+  let readToday = false;
   if (events.find((e) => isSameDay(e.readAt, new Date()))) {
+    readToday = true;
     streak++
   }
 
-  return streak
+  return {streak, breakDay, readToday}
 }
 
 export function getDays(events: ReadEvent[]) {
