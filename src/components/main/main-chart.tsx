@@ -1,7 +1,7 @@
 "use client"
 
-import * as React from "react";
-import { Area, AreaChart, Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+import * as React from "react"
+import { Area, AreaChart, Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 
 import {
   Card,
@@ -9,22 +9,23 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/components/ui/card"
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
-  ChartTooltipContent
-} from "@/components/ui/chart";
+  ChartTooltipContent,
+} from "@/components/ui/chart"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { AreaChartIcon, BarChartIcon } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+} from "@/components/ui/select"
+import { AreaChartIcon, BarChartIcon } from "lucide-react"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
+import { addDays, isSameDay, subMonths } from "date-fns"
 
 const chartConfig = {
   desktop: {
@@ -33,7 +34,42 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export default function MainChart({ chartData }: { chartData: any[] }) {
+export default function MainChart({
+  events,
+  profile,
+}: {
+  events: any[]
+  profile: any
+}) {
+  const threeMonthsAgo = subMonths(new Date(), 3)
+  const threeMonthsEvents = events.filter((event) => {
+    return event.readAt > threeMonthsAgo
+  })
+  const chartData = []
+  let day = threeMonthsAgo
+  while (day <= new Date()) {
+    let result = 0
+    const todayEvents = threeMonthsEvents.filter((e) => {
+      return isSameDay(e.readAt, day)
+    })
+    todayEvents.forEach((event) => {
+      const bookEvents = threeMonthsEvents.filter((e) => {
+        return event.bookId === e.book.id
+      })
+      if (bookEvents.length === 1 || bookEvents.indexOf(event) === 0) {
+        result += event.pagesRead
+      } else {
+        const previousEventIndex = bookEvents.indexOf(event) - 1
+        const previousEvent = bookEvents[previousEventIndex]
+        result += event.pagesRead - previousEvent.pagesRead
+      }
+    })
+    chartData.push({
+      date: day.toISOString().split("T")[0],
+      desktop: result,
+    })
+    day = addDays(day, 1)
+  }
   const [timeRange, setTimeRange] = React.useState("90d")
 
   const filteredData = chartData.filter((item) => {
