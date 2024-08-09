@@ -16,6 +16,9 @@ export function getStreak(events: ReadEvent[]) {
       streak++
       day = subDays(day, 1)
     } else {
+      while (!events.find((e) => isSameDay(e.readAt, day))) {
+        day = subDays(day, 1)
+      }
       breakDay = day
       break
     }
