@@ -26,8 +26,8 @@ services:
     # env_file:
     #   - .docker.env
     environment:
-      - DB_PRISMA_URL: "postgresql://test:example@db:5432/rj?schema=public"
-      - DB_URL_NON_POOLING: "postgresql://test:example@db:5432/rj?schema=public"
+      DB_PRISMA_URL: "postgresql://test:example@db:5432/rj?schema=public"
+      DB_URL_NON_POOLING: "postgresql://test:example@db:5432/rj?schema=public"
 
 volumes:
   pgdata:
