@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate"
+    "deploy:start": "node server.js",
+    "deploy": "npx prisma db push --skip-generate && npm run deploy:start"
   },
   "dependencies": {
     "@dicebear/collection": "^8.0.1",

@@ -8,6 +8,7 @@ const withPWA = require("next-pwa")({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "standalone",
   webpack: (config) => {
     config.externals.push(
       "@node-rs/argon2",
