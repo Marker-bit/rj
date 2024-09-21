@@ -50,7 +50,6 @@ import { BackgroundColor } from "@prisma/client"
 export const dynamic = "force-dynamic"
 
 export function BookView({ book }: { book: Book }) {
-  const queryClient = useQueryClient()
   const [editOpen, setEditOpen] = useState(false)
   const [dateOpen, setDateOpen] = useState(false)
   const [doneOpen, setDoneOpen] = useState(false)
@@ -68,12 +67,6 @@ export function BookView({ book }: { book: Book }) {
         method: "DELETE",
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["books"],
-      })
-      queryClient.invalidateQueries({
-        queryKey: ["events"],
-      })
       toast.success("Событие отменено")
       router.refresh()
       // router.push(`/books?bookId=${book.id}`)
@@ -92,12 +85,6 @@ export function BookView({ book }: { book: Book }) {
       })
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["books"],
-      })
-      queryClient.invalidateQueries({
-        queryKey: ["events"],
-      })
       toast.success("Книга отмечена как прочитанная")
       setDoneOpen(false)
       setActionsDrawerOpen(false)
@@ -117,12 +104,6 @@ export function BookView({ book }: { book: Book }) {
         }),
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["books"],
-      })
-      queryClient.invalidateQueries({
-        queryKey: ["events"],
-      })
       setDateOpen(false)
       toast.success("Событие сохранено")
       setActionsDrawerOpen(false)
@@ -138,12 +119,6 @@ export function BookView({ book }: { book: Book }) {
         method: "DELETE",
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["books"],
-      })
-      queryClient.invalidateQueries({
-        queryKey: ["events"],
-      })
       setDeleteDialogOpen(false)
       setActionsDrawerOpen(false)
       toast.success("Книга удалена")
@@ -154,7 +129,6 @@ export function BookView({ book }: { book: Book }) {
   const hideMutation = useMutation({
     mutationFn: () => fetch(`/api/books/${book.id}/hide`, { method: "POST" }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["books"] })
       setActionsDrawerOpen(false)
       toast.success("Книга скрыта")
       router.refresh()

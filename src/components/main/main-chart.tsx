@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 
 import {
@@ -26,6 +25,7 @@ import {
 import { AreaChartIcon, BarChartIcon } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
 import { addDays, isSameDay, subMonths } from "date-fns"
+import { useState } from "react";
 
 const chartConfig = {
   desktop: {
@@ -70,7 +70,7 @@ export default function MainChart({
     })
     day = addDays(day, 1)
   }
-  const [timeRange, setTimeRange] = React.useState("90d")
+  const [timeRange, setTimeRange] = useState("90d")
 
   const filteredData = chartData.filter((item) => {
     const date = new Date(item.date)

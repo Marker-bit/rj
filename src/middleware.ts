@@ -14,6 +14,7 @@ export async function middleware(request: NextRequest) {
     "/icon.png",
     "/yandex_82f007f1c17a7d7a.html",
     "/sitemap.xml",
+    "/rjrj"
   ]
   if (
     !cookies().get("auth_session") &&

@@ -18,15 +18,6 @@ export function dateToString(date: Date) {
   return formatRelative(date, new Date(), {
     locale: ru,
   })
-  const yesterday = moment().subtract(1, "day")
-  if (moment(date).isSame(new Date(), "day")) {
-    return `Сегодня в ${date.getHours()}:${date.getMinutes()}`
-  } else if (moment(date).isSame(yesterday, "day")) {
-    return `Вчера в ${date.getHours()}:${date.getMinutes()}`
-  } else {
-    return moment(date).calendar()
-  }
-  return date.toLocaleString()
 }
 
 export async function canvasPreview(
