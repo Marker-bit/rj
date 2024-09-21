@@ -10,7 +10,7 @@ services:
       - 5433:5432
     volumes:
       - pgdata:/var/lib/postgresql/data
-  
+
   adminer:
     image: adminer
     restart: always
@@ -23,8 +23,11 @@ services:
       - "3000:3000"
     depends_on:
       - db
-    env_file:
-      - .docker.env
+    # env_file:
+    #   - .docker.env
+    environment:
+      - DB_PRISMA_URL: "postgresql://test:example@db:5432/rj?schema=public"
+      - DB_URL_NON_POOLING: "postgresql://test:example@db:5432/rj?schema=public"
 
 volumes:
   pgdata:
