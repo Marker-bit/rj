@@ -1,8 +1,8 @@
-name: Go
+name: Docker
 on:
  push:
    branches:
-     - 'main'
+     - 'master'
 
 permissions:
   packages: write
