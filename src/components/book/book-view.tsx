@@ -46,6 +46,7 @@ import { Book } from "@/lib/api-types"
 import Palette from "./palette"
 import { backgroundColors } from "@/lib/colors"
 import { BackgroundColor } from "@prisma/client"
+import ExpandableText from "../ui/expandable-text";
 
 export const dynamic = "force-dynamic"
 
@@ -249,8 +250,13 @@ export function BookView({ book }: { book: Book }) {
         />
       )}
       <div className="flex flex-col">
-        <div className="text-xl font-bold">{book.title}</div>
-        <div className="text-sm">{book.author}</div>
+        <div className="text-xl font-bold">
+          {book.title}
+          <span className="ml-1 text-muted-foreground">— {book.author}</span>
+        </div>
+        {book.description && (
+          <ExpandableText text={book.description} />
+        )}
         <div className="my-2 flex flex-wrap items-center gap-2">
           {book.readEvents.length === 0 ? (
             <>
@@ -455,11 +461,6 @@ export function BookView({ book }: { book: Book }) {
             </Button>
           </div>
         </div>
-        {book.description && (
-          <pre className="relative line-clamp-2 block overflow-hidden text-ellipsis text-wrap font-sans text-muted-foreground">
-            {book.description}
-          </pre>
-        )}
       </div>
     </div>
   )
