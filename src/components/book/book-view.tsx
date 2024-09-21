@@ -441,7 +441,7 @@ export function BookView({ book }: { book: Book }) {
             </Button>
           )}
           <Palette background={book.background} bookId={book.id} />
-          <div className="absolute right-0 top-0 m-2 flex scale-0 gap-2 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
+          <div className="absolute right-0 top-0 m-2 flex gap-2 opacity-0 transition-all group-hover:opacity-100">
             <Button
               size="icon"
               variant="outline"

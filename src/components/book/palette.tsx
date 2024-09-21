@@ -11,6 +11,7 @@ import { useState } from "react"
 import { toast } from "sonner"
 import { Button } from "../ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
+import { Loader } from "../ui/loader"
 
 export default function Palette({
   background,
@@ -92,10 +93,29 @@ export default function Palette({
             >
               <Button
                 className="mt-2 flex w-full items-center justify-center"
-                disabled={loading}
-                onClick={() => updateColor(chosenBackground)}
+                onClick={() => ~loading && updateColor(chosenBackground)}
               >
-                Сохранить
+                <AnimatePresence mode="popLayout" initial={false}>
+                  {loading ? (
+                    <motion.div
+                      initial={{ opacity: 0, y: -20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      key="loading"
+                    >
+                      <Loader invert className="size-4" />
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      initial={{ opacity: 0, filter: "blur(5px)", y: 0 }}
+                      animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+                      exit={{ opacity: 0, filter: "blur(5px)", y: 0 }}
+                      key="save"
+                    >
+                      Сохранить
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </Button>
             </motion.div>
           )}

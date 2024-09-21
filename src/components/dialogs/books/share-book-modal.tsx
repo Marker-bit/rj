@@ -47,16 +47,19 @@ export function ShareBookModal({
   }
 
   const deleteLink = async (id: string) => {
-    toast.promise(async () => {
-      setLoading(true)
-      const resp = await deleteBookLink(id)
-      setLoading(false)
-      router.refresh()
-    }, {
-      loading: "Удаление ссылки...",
-      success: "Ссылка удалена",
-      error: "Возникла проблема при удалении ссылки",
-    })
+    toast.promise(
+      async () => {
+        setLoading(true)
+        const resp = await deleteBookLink(id)
+        setLoading(false)
+        router.refresh()
+      },
+      {
+        loading: "Удаление ссылки...",
+        success: "Ссылка удалена",
+        error: "Возникла проблема при удалении ссылки",
+      }
+    )
   }
 
   return (
@@ -92,13 +95,13 @@ export function ShareBookModal({
                   }, 2000)
                 }}
               >
-                <AnimatePresence mode="wait" initial={false}>
+                <AnimatePresence mode="popLayout" initial={false}>
                   {copyLink === link.id ? (
                     <motion.div
                       className="flex items-center gap-2 text-green-400 dark:text-green-600"
-                      initial={{ opacity: 0, scale: 0 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0 }}
+                      initial={{ opacity: 0, y: -20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
                       key="copied"
                     >
                       <CopyCheck className="size-4" />
@@ -106,9 +109,9 @@ export function ShareBookModal({
                   ) : (
                     <motion.div
                       className="flex items-center gap-2"
-                      initial={{ opacity: 0, scale: 0 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0 }}
+                      initial={{ opacity: 0, filter: "blur(5px)", y: 0 }}
+                      animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+                      exit={{ opacity: 0, filter: "blur(5px)", y: 0 }}
                       key="copy"
                     >
                       <CopyIcon className="size-4" />
@@ -116,10 +119,18 @@ export function ShareBookModal({
                   )}
                 </AnimatePresence>
               </Button>
-              <Button onClick={() => deleteLink(link.id)} disabled={loading} variant="outline">
+              <Button
+                onClick={() => deleteLink(link.id)}
+                disabled={loading}
+                variant="outline"
+              >
                 <Trash className="size-4" />
               </Button>
-              <Button onClick={() => toast.info("В разработке")} disabled={loading} variant="outline">
+              <Button
+                onClick={() => toast.info("В разработке")}
+                disabled={loading}
+                variant="outline"
+              >
                 <Settings className="size-4" />
               </Button>
             </div>
@@ -130,11 +141,29 @@ export function ShareBookModal({
         )}
         <Button
           className="mt-2 w-full items-center gap-2"
-          disabled={loading}
-          onClick={createLink}
+          onClick={() => !loading && createLink()}
         >
-          {loading && <Loader invert className="size-4" />}
-          Создать ссылку
+          <AnimatePresence mode="popLayout" initial={false}>
+            {loading ? (
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                key="loading"
+              >
+                <Loader invert className="size-4" />
+              </motion.div>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0, filter: "blur(5px)", y: 0 }}
+                animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+                exit={{ opacity: 0, filter: "blur(5px)", y: 0 }}
+                key="add-link"
+              >
+                Добавить ссылку
+              </motion.div>
+            )}
+          </AnimatePresence>
         </Button>
       </div>
     </DrawerDialog>

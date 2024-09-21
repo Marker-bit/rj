@@ -179,7 +179,9 @@ export default async function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={font.className + "  overflow-x-hidden"}>
+      <body
+        className={font.className + "  overflow-x-hidden"}
+      >
         <QueryProvider>
           <ThemeProvider
             attribute="class"
@@ -191,7 +193,7 @@ export default async function RootLayout({
               <NextSSRPlugin
                 routerConfig={extractRouterConfig(ourFileRouter)}
               />
-              {children}
+              <div vaul-drawer-wrapper="" className="bg-background">{children}</div>
               <Analytics />
               <SpeedInsights />
               <Toaster />
