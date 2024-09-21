@@ -117,7 +117,7 @@ export function EditBookModal({
                         button: "Обложка",
                         allowedContent: "Картинка (до 8МБ)",
                       }}
-                      onClientUploadComplete={(res) => {
+                      onClientUploadComplete={(res: any) => {
                         field.onChange(res[0].url)
                       }}
                       onUploadError={(error: Error) => {

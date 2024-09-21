@@ -8,6 +8,10 @@ import { ThemeProvider } from "@/components/providers/theme-provider"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { Toaster } from "@/components/ui/toaster"
 import { Toaster as Sonner } from "@/components/ui/sonner"
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin"
+import { extractRouterConfig } from "uploadthing/server"
+
+import { ourFileRouter } from "@/app/(app)/api/uploadthing/core"
 
 const font = Inter({ subsets: ["latin"] })
 
@@ -184,6 +188,9 @@ export default async function RootLayout({
             disableTransitionOnChange
           >
             <TooltipProvider>
+              <NextSSRPlugin
+                routerConfig={extractRouterConfig(ourFileRouter)}
+              />
               {children}
               <Analytics />
               <SpeedInsights />

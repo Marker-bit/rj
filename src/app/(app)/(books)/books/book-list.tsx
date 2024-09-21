@@ -1,6 +1,5 @@
 "use client"
 
-import { MobileForm } from "@/components/book/book-form"
 import { BookView } from "@/components/book/book-view"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -89,7 +88,6 @@ export function BookList({ books }: { books: Book[] }) {
 
   return (
     <div>
-      <MobileForm />
       <div className="flex flex-col gap-2 p-3">
         <div
           className="mb-2 flex cursor-pointer select-none items-center space-x-2 rounded-md border p-2 transition-all hover:bg-neutral-100 dark:hover:bg-neutral-900"

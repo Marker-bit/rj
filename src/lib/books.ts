@@ -20,11 +20,7 @@ export async function fetchBooks(userId: string) {
           group: true,
         },
       },
-      links: {
-        include: {
-          book: true,
-        },
-      },
+      links: true,
     },
   })
   const compareBooks = (a: any, b: any) => {

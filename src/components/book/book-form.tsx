@@ -259,7 +259,7 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
   )
 }
 
-export function MobileForm() {
+export function AddBookButton() {
   const [open, setOpen] = useState(false)
   const router = useRouter()
 
