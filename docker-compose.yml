@@ -25,6 +25,12 @@ services:
       - db
     # env_file:
     #   - .docker.env
+    healthcheck:
+      test: ["CMD", "wget", "-q", "http://0.0.0.0:3000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     environment:
       DB_PRISMA_URL: "postgresql://test:example@db:5432/rj?schema=public"
       DB_URL_NON_POOLING: "postgresql://test:example@db:5432/rj?schema=public"
