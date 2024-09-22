@@ -18,7 +18,7 @@ services:
       - 8080:8080
 
   app:
-    image: ghcr.io/marker-bit/rj:prod
+    build: .
     ports:
       - "3000:3000"
     depends_on:
