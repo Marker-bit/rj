@@ -1,4 +1,15 @@
 services:
+  reverse-proxy:
+    image: traefik:v3.1
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker"
+    ports:
+      - "80:80"
+      - "8081:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  
   db:
     image: postgres
     restart: always
@@ -8,6 +19,11 @@ services:
       POSTGRES_DB: rj
     ports:
       - 5433:5432
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "test", "-p", "5432",  "-d", "rj" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     volumes:
       - pgdata:/var/lib/postgresql/data
 
@@ -17,20 +33,23 @@ services:
     ports:
       - 8080:8080
 
-  app:
+  rj:
     image: ghcr.io/marker-bit/rj:prod
-    ports:
-      - "3000:3000"
     depends_on:
-      - db
-    # env_file:
-    #   - .docker.env
+      db:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "wget", "-q", "http://0.0.0.0:3000/api/health"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 30s
+    deploy:
+      mode: replicated
+      replicas: 3
+    restart: always
+    labels:
+      - "traefik.http.routers.rj.rule=Host(`rj.markerbit.ru`)"
     environment:
       DB_PRISMA_URL: "postgresql://test:example@db:5432/rj?schema=public"
       DB_URL_NON_POOLING: "postgresql://test:example@db:5432/rj?schema=public"
