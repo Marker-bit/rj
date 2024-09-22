@@ -33,6 +33,8 @@ import {
 import Link from "next/link"
 import BookMenu from "./book-menu"
 
+export const dynamic = "force-dynamic"
+
 export default async function Page() {
   const readEvents = await db.readEvent.count()
 
