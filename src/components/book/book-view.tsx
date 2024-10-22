@@ -153,6 +153,13 @@ export function BookView({ book }: { book: Book }) {
     book.background !== BackgroundColor.NONE &&
     backgroundColors.find((bg) => bg.type === book.background)
 
+  const fieldsData =
+    typeof book.fields === "string"
+      ? JSON.parse(book.fields)
+      : Array.isArray(book.fields)
+      ? book.fields
+      : []
+
   return (
     <div
       className={cn(
@@ -459,6 +466,18 @@ export function BookView({ book }: { book: Book }) {
           <pre className="relative line-clamp-2 block overflow-hidden text-ellipsis text-wrap font-sans text-muted-foreground">
             {book.description}
           </pre>
+        )}
+        {fieldsData && (
+          <div className="grid w-fit grid-cols-2 space-x-4">
+            {fieldsData.map((field: { title: string; value: string }) => (
+              <>
+                <div className="text-end font-bold text-muted-foreground">
+                  {field.title}:
+                </div>
+                <div>{field.value}</div>
+              </>
+            ))}
+          </div>
         )}
       </div>
     </div>

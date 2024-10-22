@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -14,10 +15,10 @@ import { Textarea } from "@/components/ui/textarea"
 import { UploadButton } from "@/components/uploadthing"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Plus, Trash } from "lucide-react"
+import { Plus, Trash, X } from "lucide-react"
 import Image from "next/image"
 import { useState } from "react"
-import { useForm } from "react-hook-form"
+import { useFieldArray, useForm } from "react-hook-form"
 import { z } from "zod"
 import { DrawerDialog } from "../ui/drawer-dialog"
 import { DialogHeader, DialogTitle } from "../ui/dialog"
@@ -25,6 +26,7 @@ import { Loader } from "../ui/loader"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { createBook } from "@/lib/actions/books"
+import { cn } from "@/lib/utils"
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -32,6 +34,15 @@ const bookSchema = z.object({
   pages: z.coerce.number().min(1),
   description: z.string().optional(),
   coverUrl: z.string().optional(),
+  fields: z
+    .array(
+      z.object({
+        title: z.string({ required_error: "Название поля обязательно" }),
+        value: z.string({
+          required_error: "Значение поля обязательно",
+        }),
+      })
+    ),
 })
 
 export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
@@ -51,6 +62,11 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
+  const { fields, append, remove } = useFieldArray({
+    name: "fields",
+    control: form.control,
+  })
+
   async function onSubmit(values: z.infer<typeof bookSchema>) {
     setLoading(true)
     await createBook(values)
@@ -62,18 +78,9 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
       pages: NaN,
       coverUrl: "",
       description: "",
+      fields: [],
     })
     if (onSuccess) onSuccess()
-  }
-
-  function searchClick() {
-    setSearchLoading(true)
-    fetch(`/api/labirintSearch?q=${encodeURIComponent(search)}`)
-      .then((res) => res.json())
-      .then((res) => {
-        setSearchLoading(false)
-        setSearchResults(res)
-      })
   }
 
   return (
@@ -245,6 +252,60 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
               </FormItem>
             )}
           />
+          <div>
+            {fields.map((field, index) => (
+              <FormItem key={field.id}>
+                <FormLabel className={cn(index !== 0 && "sr-only")}>
+                  Поля
+                </FormLabel>
+                <FormDescription className={cn(index !== 0 && "sr-only")}>
+                  Добавьте дополнительные поля с информацией о книге.
+                </FormDescription>
+                <FormControl>
+                  <div className="flex flex-col items-center gap-2 sm:flex-row">
+                    <FormField
+                      control={form.control}
+                      name={`fields.${index}.title`}
+                      render={({ field }) => (
+                        <FormItem className="w-full">
+                          <Input {...field} placeholder="Название поля" />
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`fields.${index}.value`}
+                      render={({ field }) => (
+                        <FormItem className="w-full">
+                          <Input {...field} placeholder="Значение поля" />
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => remove(index)}
+                    >
+                      <X className="size-4" />
+                    </Button>
+                  </div>
+                </FormControl>
+              </FormItem>
+            ))}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="mt-2"
+              onClick={() => append({ title: "", value: "" })}
+            >
+              <Plus className="mr-2 size-4" />
+              Добавить поле
+            </Button>
+          </div>
           <Button type="submit" disabled={loading || fileUploading}>
             {loading ? (
               <Loader invert className="mr-2 size-4" />

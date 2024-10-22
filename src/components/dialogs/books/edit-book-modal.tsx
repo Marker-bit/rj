@@ -1,15 +1,16 @@
 import { DrawerDialog } from "@/components/ui/drawer-dialog"
 import { DialogHeader, DialogTitle } from "../../ui/dialog"
-import { Edit, Loader, Trash } from "lucide-react"
+import { Edit, Loader, Plus, Trash, X } from "lucide-react"
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "../../ui/form"
-import { useForm } from "react-hook-form"
+import { useFieldArray, useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
@@ -20,6 +21,7 @@ import { Input } from "../../ui/input"
 import { Textarea } from "../../ui/textarea"
 import { Book } from "@prisma/client"
 import { useRouter } from "next/navigation"
+import { cn } from "@/lib/utils";
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -27,6 +29,15 @@ const bookSchema = z.object({
   pages: z.coerce.number().min(1),
   description: z.string().optional(),
   coverUrl: z.string().optional(),
+  fields: z
+    .array(
+      z.object({
+        title: z.string({ required_error: "Название поля обязательно" }),
+        value: z.string({
+          required_error: "Значение поля обязательно",
+        }),
+      })
+    ),
 })
 
 export function EditBookModal({
@@ -39,6 +50,13 @@ export function EditBookModal({
   book: Book
 }) {
   const queryClient = useQueryClient()
+
+  const fieldsData =
+    typeof book.fields === "string"
+      ? JSON.parse(book.fields)
+      : Array.isArray(book.fields)
+      ? book.fields
+      : []
   const form = useForm<z.infer<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
     defaultValues: {
@@ -47,7 +65,13 @@ export function EditBookModal({
       pages: book.pages,
       description: book.description ?? "",
       coverUrl: book.coverUrl ?? "",
+      fields: fieldsData ?? [],
     },
+  })
+
+  const { fields, append, remove } = useFieldArray({
+    name: "fields",
+    control: form.control,
   })
 
   const router = useRouter()
@@ -182,6 +206,60 @@ export function EditBookModal({
               </FormItem>
             )}
           />
+          <div>
+            {fields.map((field, index) => (
+              <FormItem key={field.id}>
+                <FormLabel className={cn(index !== 0 && "sr-only")}>
+                  Поля
+                </FormLabel>
+                <FormDescription className={cn(index !== 0 && "sr-only")}>
+                  Добавьте дополнительные поля с информацией о книге.
+                </FormDescription>
+                <FormControl>
+                  <div className="flex flex-col items-center gap-2 sm:flex-row">
+                    <FormField
+                      control={form.control}
+                      name={`fields.${index}.title`}
+                      render={({ field }) => (
+                        <FormItem className="w-full">
+                          <Input {...field} placeholder="Название поля" />
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`fields.${index}.value`}
+                      render={({ field }) => (
+                        <FormItem className="w-full">
+                          <Input {...field} placeholder="Значение поля" />
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => remove(index)}
+                    >
+                      <X className="size-4" />
+                    </Button>
+                  </div>
+                </FormControl>
+              </FormItem>
+            ))}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="mt-2"
+              onClick={() => append({ title: "", value: "" })}
+            >
+              <Plus className="mr-2 size-4" />
+              Добавить поле
+            </Button>
+          </div>
           <Button
             type="submit"
             disabled={editMutation.isPending}

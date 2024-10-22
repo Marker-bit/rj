@@ -123,6 +123,7 @@ model Book {
   description String       @default("")
   coverUrl    String?
   links       BookLink[]
+  fields      Json        @default("[]")
 
   background BackgroundColor @default(NONE)
 
