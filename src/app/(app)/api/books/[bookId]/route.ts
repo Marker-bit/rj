@@ -1,6 +1,24 @@
 import { validateRequest } from "@/lib/server-validate-request";
 import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
+
+const bookSchema = z.object({
+  title: z.string().min(1),
+  author: z.string().min(1),
+  pages: z.coerce.number().min(1),
+  description: z.string().optional(),
+  coverUrl: z.string().optional(),
+  fields: z
+    .array(
+      z.object({
+        title: z.string({ required_error: "Название поля обязательно" }),
+        value: z.string({
+          required_error: "Значение поля обязательно",
+        }),
+      })
+    ),
+})
 
 export async function PATCH(
   req: NextRequest,
@@ -14,6 +32,15 @@ export async function PATCH(
     });
   }
   const data = await req.json();
+
+  const d = bookSchema.safeParse(data);
+  if (!d.success) {
+    return NextResponse.json({
+      errors: d.error,
+    }, {
+      status: 400
+    })
+  }
   const updateBook = await db.book.update({
     where: {
       id: bookId,
