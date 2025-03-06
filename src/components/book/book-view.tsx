@@ -169,6 +169,7 @@ export function BookView({ book }: { book: Book }) {
       )}
       id={`book-${book.id}`}
     >
+      <div className={cn("absolute left-0 top-0 -z-50 h-full", color ? color.background : "bg-neutral-100/50 dark:bg-neutral-900/50")} style={{ width: `${(lastEvent?.pagesRead || 0) / book.pages * 100}%` }} />
       {/* {book.background !== BackgroundColor.NONE && (
         <div
           className={cn("absolute left-0 top-0 h-full w-[2%] -z-10", color)}
