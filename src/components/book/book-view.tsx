@@ -163,8 +163,8 @@ export function BookView({ book }: { book: Book }) {
   return (
     <div
       className={cn(
-        "group relative flex gap-2 rounded-md border p-2 transition-shadow hover:shadow overflow-hidden",
-        book.background !== BackgroundColor.NONE && "outline outline-8 my-2",
+        "group relative flex gap-2 rounded-md border p-2 transition-shadow hover:shadow-sm overflow-hidden",
+        book.background !== BackgroundColor.NONE && "outline-solid outline-8 my-2",
         color && color.outline
       )}
       id={`book-${book.id}`}

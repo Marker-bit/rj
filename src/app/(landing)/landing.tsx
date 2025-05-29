@@ -27,7 +27,7 @@ export function Landing({ loggedIn }: { loggedIn: boolean }) {
           alt="hero"
           height={910}
           width={1900}
-          className="mx-auto h-full rounded-2xl object-cover object-left-top"
+          className="mx-auto h-full rounded-2xl object-cover object-top-left"
           draggable={false}
         />
       </ContainerScroll>

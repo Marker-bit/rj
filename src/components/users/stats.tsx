@@ -273,13 +273,13 @@ export async function Stats({
           </div>
         </Link>
       </div>
-      {/* <div className="mx-auto w-fit cursor-default rounded-full bg-gradient-to-b from-zinc-100 to-zinc-200 p-1 px-3 dark:from-zinc-900 dark:to-zinc-800">
+      {/* <div className="mx-auto w-fit cursor-default rounded-full bg-linear-to-b from-zinc-100 to-zinc-200 p-1 px-3 dark:from-zinc-900 dark:to-zinc-800">
         Эта неделя
       </div>
       <div className="mt-3 h-[20vh]">
         <Chart data={currentWeekData} />
       </div>
-      <div className="mx-auto w-fit cursor-default rounded-full bg-gradient-to-b from-zinc-100 to-zinc-200 p-1 px-3 dark:from-zinc-900 dark:to-zinc-800">
+      <div className="mx-auto w-fit cursor-default rounded-full bg-linear-to-b from-zinc-100 to-zinc-200 p-1 px-3 dark:from-zinc-900 dark:to-zinc-800">
         По дням недели
       </div>
       <div className="mt-3 h-[20vh]">
