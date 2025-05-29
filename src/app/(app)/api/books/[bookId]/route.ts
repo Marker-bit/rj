@@ -20,10 +20,8 @@ const bookSchema = z.object({
     ),
 })
 
-export async function PATCH(
-  req: NextRequest,
-  { params }: { params: { bookId: string } }
-) {
+export async function PATCH(req: NextRequest, props: { params: Promise<{ bookId: string }> }) {
+  const params = await props.params;
   const bookId = params.bookId;
   const { user } = await validateRequest();
   if (!user) {
@@ -56,10 +54,8 @@ export async function PATCH(
   });
 }
 
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { bookId: string } }
-) {
+export async function DELETE(req: NextRequest, props: { params: Promise<{ bookId: string }> }) {
+  const params = await props.params;
   const bookId = params.bookId;
   const { user } = await validateRequest();
   if (!user) {

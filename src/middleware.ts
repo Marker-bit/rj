@@ -17,7 +17,7 @@ export async function middleware(request: NextRequest) {
     "/rjrj.png"
   ]
   if (
-    !cookies().get("auth_session") &&
+    !(await cookies()).get("auth_session") &&
     pathname !== "/auth" &&
     pathname !== "/" &&
     pathname !== "/favicon.png" &&

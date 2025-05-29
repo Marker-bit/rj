@@ -7,7 +7,8 @@ import { ChevronLeft } from "lucide-react"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
-export default async function Page({ params }: { params: { bookId: string } }) {
+export default async function Page(props: { params: Promise<{ bookId: string }> }) {
+  const params = await props.params;
   const { user } = await validateRequest()
   if (!user) return null
 

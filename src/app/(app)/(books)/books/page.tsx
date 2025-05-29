@@ -7,11 +7,12 @@ import Link from "next/link"
 import { BookList } from "./book-list"
 import { AddBookButton } from "@/components/book/book-form"
 
-export default async function BooksPage({
-  searchParams,
-}: {
-  searchParams: { bookId: string | undefined }
-}) {
+export default async function BooksPage(
+  props: {
+    searchParams: Promise<{ bookId: string | undefined }>
+  }
+) {
+  const searchParams = await props.searchParams;
   const { user } = await validateRequest()
   if (!user) return null
 

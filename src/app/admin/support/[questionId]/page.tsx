@@ -7,11 +7,12 @@ import { validateRequest } from "@/lib/server-validate-request"
 import QuestionButtons from "./question-buttons"
 import { notFound } from "next/navigation";
 
-export default async function Page({
-  params,
-}: {
-  params: { questionId: string }
-}) {
+export default async function Page(
+  props: {
+    params: Promise<{ questionId: string }>
+  }
+) {
+  const params = await props.params;
   const { user } = await validateRequest()
   if (!user || !user.admin) return null
   const question = await db.supportQuestion.findUnique({

@@ -2,10 +2,8 @@ import { db } from "@/lib/db"
 import { validateRequest } from "@/lib/server-validate-request"
 import { NextRequest, NextResponse } from "next/server"
 
-export async function POST(
-  req: NextRequest,
-  { params }: { params: { username: string } }
-) {
+export async function POST(req: NextRequest, props: { params: Promise<{ username: string }> }) {
+  const params = await props.params;
   const { user: currentUser } = await validateRequest()
 
   if (!currentUser) {
@@ -44,10 +42,8 @@ export async function POST(
   return NextResponse.json({ message: `Вы подписались на @${user.username}` })
 }
 
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { username: string } }
-) {
+export async function DELETE(req: NextRequest, props: { params: Promise<{ username: string }> }) {
+  const params = await props.params;
   const { user: currentUser } = await validateRequest()
 
   if (!currentUser) {

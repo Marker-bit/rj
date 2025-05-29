@@ -3,10 +3,8 @@ import { validateRequest } from "@/lib/server-validate-request"
 import { GroupMemberRole } from "@prisma/client"
 import { NextResponse } from "next/server"
 
-export async function POST(
-  request: Request,
-  { params }: { params: { groupId: string } }
-) {
+export async function POST(request: Request, props: { params: Promise<{ groupId: string }> }) {
+  const params = await props.params;
   const { user } = await validateRequest()
   if (!user) return new NextResponse("Unauthorized", { status: 401 })
   const group = await db.group.findUniqueOrThrow({

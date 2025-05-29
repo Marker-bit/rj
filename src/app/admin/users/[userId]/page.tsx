@@ -5,7 +5,8 @@ import { notFound } from "next/navigation"
 import BadgeCheckButton from "./badge-check-button";
 import PasswordUpdateButton from "./password-update";
 
-export default async function Page({ params }: { params: { userId: string } }) {
+export default async function Page(props: { params: Promise<{ userId: string }> }) {
+  const params = await props.params;
   const user = await db.user.findFirst({
     where: {
       id: params.userId,

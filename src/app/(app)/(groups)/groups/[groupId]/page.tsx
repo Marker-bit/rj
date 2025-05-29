@@ -34,11 +34,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export const dynamic = "force-dynamic"
 
-export default async function Page({
-  params,
-}: {
-  params: { groupId: string }
-}) {
+export default async function Page(
+  props: {
+    params: Promise<{ groupId: string }>
+  }
+) {
+  const params = await props.params;
   const { user } = await validateRequest()
   if (!user) {
     return null

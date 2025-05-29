@@ -8,14 +8,12 @@ import { Metadata, ResolvingMetadata } from "next"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 type Props = {
-  params: { username: string }
-  searchParams: { [key: string]: string | string[] | undefined }
+  params: Promise<{ username: string }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
-export async function generateMetadata(
-  { params }: Props,
-  parent: ResolvingMetadata
-): Promise<Metadata> {
+export async function generateMetadata(props: Props, parent: ResolvingMetadata): Promise<Metadata> {
+  const params = await props.params;
   const username = params.username
   const before = await parent
 
@@ -40,11 +38,12 @@ export async function generateMetadata(
   }
 }
 
-export default async function Page({
-  params,
-}: {
-  params: { username: string }
-}) {
+export default async function Page(
+  props: {
+    params: Promise<{ username: string }>
+  }
+) {
+  const params = await props.params;
   const username = params.username
   const { user: currentUser } = await validateRequest()
   const user = await db.user.findFirstOrThrow({

@@ -9,11 +9,12 @@ import { MemberInfo } from "./member"
 
 export const dynamic = "force-dynamic"
 
-export default async function Page({
-  params,
-}: {
-  params: { groupId: string; bookId: string }
-}) {
+export default async function Page(
+  props: {
+    params: Promise<{ groupId: string; bookId: string }>
+  }
+) {
+  const params = await props.params;
   const { user } = await validateRequest()
   if (!user) {
     return null

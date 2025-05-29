@@ -7,7 +7,8 @@ import Link from "next/link"
 import { CloneButton } from "./clone-button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
-export default async function Page({ params }: { params: { linkId: string } }) {
+export default async function Page(props: { params: Promise<{ linkId: string }> }) {
+  const params = await props.params;
   const { user } = await validateRequest()
   const book = await db.book.findFirst({
     where: { links: { some: { id: params.linkId } } },

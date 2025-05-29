@@ -5,8 +5,9 @@ import { NextResponse } from "next/server"
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { groupId: string; linkId: string } }
+  props: { params: Promise<{ groupId: string; linkId: string }> }
 ) {
+  const params = await props.params;
   const { user } = await validateRequest()
   if (!user) return new NextResponse("Unauthorized", { status: 401 })
   const group = await db.group.findUniqueOrThrow({
