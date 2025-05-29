@@ -64,13 +64,13 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  const avatar = createAvatar(shapes, {
-    seed: username,
-    size: 100,
-  })
+  // const avatar = createAvatar(shapes, {
+  //   seed: username,
+  //   size: 100,
+  // })
 
-  const png = await avatar.png()
-  const buffer = await png.toArrayBuffer()
+  // const png = avatar.png()
+  // const buffer = await png.toArrayBuffer()
 
   // const resp = await fetch("/api/uploadthing/uploadFiles", {
   //   method: "POST",
