@@ -4,13 +4,13 @@ import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import { Argon2id } from "oslo/password";
+import { hash, verify } from "@node-rs/argon2";
 
 export async function POST(request: NextRequest) {
   const data = await request.json();
   const username = data.username;
   const password = data.password;
-  const hashedPassword = await new Argon2id().hash(password);
+  const hashedPassword = await hash(password);
 
   const user = await db.user.findFirst({
     where: {
@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     },
   });
   if (user) {
-    const validPassword = await new Argon2id().verify(
+    const validPassword = await verify(
       user.hashedPassword,
       password
     );

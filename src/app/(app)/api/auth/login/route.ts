@@ -2,8 +2,8 @@ import { lucia } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import { Argon2id } from "oslo/password";
 import { validateRequest } from "@/lib/server-validate-request";
+import { verify } from "@node-rs/argon2";
 
 export async function POST(request: NextRequest) {
   const data = await request.json();
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     },
   });
   if (user) {
-    const validPassword = await new Argon2id().verify(
+    const validPassword = await verify(
       user.hashedPassword,
       password
     );

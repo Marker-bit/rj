@@ -44,20 +44,20 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  experimental: {
-    turbo: {
-      resolveExtensions: [
-        ".mdx",
-        ".tsx",
-        ".ts",
-        ".jsx",
-        ".js",
-        ".mjs",
-        ".json",
-      ],
-    },
-    mdxRs: true,
-    serverComponentsExternalPackages: ["@node-rs/argon2-win32-x64-msvc"],
-  },
+  // experimental: {
+  //   turbo: {
+  //     resolveExtensions: [
+  //       ".mdx",
+  //       ".tsx",
+  //       ".ts",
+  //       ".jsx",
+  //       ".js",
+  //       ".mjs",
+  //       ".json",
+  //     ],
+  //   },
+  //   mdxRs: true,
+  //   serverComponentsExternalPackages: ["@node-rs/argon2-win32-x64-msvc"],
+  // },
 }
 module.exports = withPWA(withMDX(nextConfig))

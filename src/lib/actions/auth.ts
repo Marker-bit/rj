@@ -1,11 +1,11 @@
 "use server"
 
-import { Argon2id } from "oslo/password"
 import { db } from "../db"
 import { validateRequest } from "../server-validate-request"
 import { NextResponse } from "next/server"
 import { lucia } from "../auth"
 import { cookies } from "next/headers"
+import { hash } from "@node-rs/argon2"
 
 export async function resetPassword(data: {
   username: string
@@ -85,7 +85,7 @@ export async function resetPassword(data: {
     }
   }
 
-  const hashedPassword = await new Argon2id().hash(data.password)
+  const hashedPassword = await hash(data.password)
 
   await db.user.update({
     where: {
@@ -111,7 +111,7 @@ export async function logOut() {
 
   await lucia.invalidateSession(session.id)
 
-  const sessionCookie = lucia.createBlankSessionCookie()
+  const sessionCookie = lucia.createBlankSessionCookie();
   (await cookies()).set(
     sessionCookie.name,
     sessionCookie.value,

@@ -1,6 +1,6 @@
 "use server"
 
-import { Argon2id } from "oslo/password";
+import { hash } from "@node-rs/argon2";
 import { db } from "../db";
 import { validateRequest } from "../server-validate-request";
 
@@ -32,7 +32,7 @@ export async function setPassword(userId: string, password: string) {
   if (!currentUser.admin) {
     throw new Error("Unauthorized");
   }
-  const hashedPassword = await new Argon2id().hash(password);
+  const hashedPassword = await hash(password);
   const user = await db.user.update({
     where: {
       id: userId
