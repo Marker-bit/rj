@@ -21,45 +21,23 @@ import { useForm } from "react-hook-form"
 import { useDebounceCallback } from "usehooks-ts"
 import { z } from "zod"
 import { Loader } from "@/components/ui/loader"
-
-const formSchema = z.object({
-  username: z
-    .string()
-    .regex(
-      /^[a-zA-Z0-9_.-]{3,15}$/,
-      "Имя пользователя должно быть буквенно-цифровой строкой, которая может включать в себя _, . и -, длиной от 3 до 16 символов."
-    ),
-  password: z
-    .string()
-    .regex(
-      /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&.*-]).{8,}$/,
-      "Пароль должен содержать минимум 8 символов, по крайней мере, одну заглавную английскую букву, одну строчную английскую букву, одну цифру и один специальный символ"
-    ),
-  firstName: z
-    .string({
-      required_error: "Имя обязательно",
-    })
-    .min(3, "Имя должно содержать минимум 3 символа"),
-  lastName: z
-    .string({
-      required_error: "Фамилия обязательна",
-    })
-    .min(3, "Фамилия должна содержать минимум 3 символа"),
-})
+import { registerSchema } from "@/lib/validation/schemas"
 
 export function RegisterForm() {
   const [usernameFound, setUsernameFound] = useState<boolean | null>(null)
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof registerSchema>>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       username: "",
       password: "",
+      firstName: "",
+      lastName: ""
     },
   })
   const router = useRouter()
 
   const userMutation = useMutation({
-    mutationFn: (values: z.infer<typeof formSchema>) => {
+    mutationFn: (values: z.infer<typeof registerSchema>) => {
       return fetch("/api/auth/register", {
         body: JSON.stringify(values),
         method: "POST",
@@ -79,7 +57,7 @@ export function RegisterForm() {
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<typeof registerSchema>) {
     userMutation.mutate(values)
   }
 
@@ -102,7 +80,7 @@ export function RegisterForm() {
             name="firstName"
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel>Имя</FormLabel>
+                <FormLabel>Имя (псевдоним)</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>

@@ -1,16 +1,16 @@
-import { lucia } from "@/lib/auth"
-import { db } from "@/lib/db"
-import { cookies } from "next/headers"
-import { NextRequest, NextResponse } from "next/server"
-import { hash } from "@node-rs/argon2";
 import {
-  USERNAME_REGEX,
-  USERNAME_MESSAGE,
-  PASSWORD_REGEX,
   PASSWORD_MESSAGE,
-} from "@/lib/api-validate"
-import { createAvatar } from "@dicebear/core"
-import { shapes } from "@dicebear/collection"
+  PASSWORD_REGEX,
+  USERNAME_MESSAGE,
+  USERNAME_REGEX,
+} from "@/lib/api-validate";
+import { lucia } from "@/lib/auth";
+import { db } from "@/lib/db";
+import { registerSchema } from "@/lib/validation/schemas";
+import { hash } from "@node-rs/argon2";
+import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 
 export async function POST(request: NextRequest) {
   const data = await request.json()
@@ -32,36 +32,32 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  if (USERNAME_REGEX.test(username) === false) {
-    return NextResponse.json(
-      {
-        error: USERNAME_MESSAGE,
-      },
-      { status: 400 }
-    )
-  }
-
-  if (PASSWORD_REGEX.test(password) === false) {
-    return NextResponse.json(
-      {
-        error: PASSWORD_MESSAGE,
-      },
-      { status: 400 }
-    )
-  }
-
-  if (
-    !data.firstName ||
-    !data.lastName ||
-    data.firstName.length < 3 ||
-    data.lastName.length < 3
-  ) {
-    return NextResponse.json(
-      {
-        error: "Укажите имя и фамилию (мин. 3 символа)",
-      },
-      { status: 400 }
-    )
+  try {
+    registerSchema.parse(data);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      const message = error.issues.map(i => i.message).join(", ")
+      return NextResponse.json(
+        {
+          error: message,
+        },
+        { status: 400 }
+      )
+      /* [
+        {
+          expected: 'string',
+          code: 'invalid_type',
+          path: [ 'username' ],
+          message: 'Invalid input: expected string'
+        },
+        {
+          expected: 'number',
+          code: 'invalid_type',
+          path: [ 'xp' ],
+          message: 'Invalid input: expected number'
+        }
+      ] */
+    }
   }
 
   // const avatar = createAvatar(shapes, {
