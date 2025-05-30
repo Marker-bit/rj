@@ -10,18 +10,15 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
+  ChartContainer
 } from "@/components/ui/chart"
-import { ReadEvent } from "@prisma/client"
-import { getDays, getDays2, getStreak } from "@/lib/stats"
+import { getDays2, getStreak } from "@/lib/stats"
 import { declOfNum } from "@/lib/utils"
+import { ReadEvent } from "@prisma/client"
+import { differenceInDays, isSameDay, subDays } from "date-fns"
 import { User } from "lucia"
-import { ConfettiButton } from "./confetti-button"
 import { Star } from "lucide-react"
-import { differenceInDays, formatRelative, isSameDay, subDays } from "date-fns"
-import { ru } from "date-fns/locale"
+import { ConfettiButton } from "./confetti-button"
 
 export default function StreakBlock({
   events,
@@ -33,13 +30,9 @@ export default function StreakBlock({
   const days = getDays2(events)
   const goodNumbers = [2, 5, 10, 20, 50, 100, 200, 365, 500, 730, 1000]
 
-  // if (streak === 0) {
-  //   return null
-  // }
-
   return (
     <Card>
-      <CardHeader className="p-4 pb-0">
+      <CardHeader>
         <CardTitle className="flex items-center gap-2">
           {goodNumbers.includes(streak) ? (
             <>
@@ -55,7 +48,7 @@ export default function StreakBlock({
           )}
         </CardTitle>
         <CardDescription>
-          {streak > 1 ? (
+          {streak > 0 ? (
             <>
               Вы читаете подряд уже{" "}
               <span className="font-bold">
@@ -87,7 +80,7 @@ export default function StreakBlock({
           )}
         </CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-row items-baseline gap-4 p-4 pt-0">
+      <CardContent className="flex flex-row items-baseline gap-4">
         <div className="flex items-baseline gap-1 text-3xl font-bold tabular-nums leading-none">
           {streak}
           <span className="text-sm font-normal text-muted-foreground">
@@ -99,7 +92,7 @@ export default function StreakBlock({
             config={{
               pagesRead: {
                 label: "Страниц",
-                color: "hsl(var(--chart-1))",
+                color: "var(--chart-1)",
               },
             }}
             className="w-[72px]"

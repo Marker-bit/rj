@@ -7,7 +7,7 @@ export const goodNumbers = [
 
 export function getStreak(events: ReadEvent[]) {
   if (events.length === 0) {
-    return {streak: 0, breakDay: new Date(), readToday: false}
+    return { streak: 0, breakDay: new Date(), readToday: false }
   }
   let streak = 0
   let day = new Date()
@@ -20,8 +20,10 @@ export function getStreak(events: ReadEvent[]) {
       streak++
       day = subDays(day, 1)
     } else {
-      while (!events.find((e) => isSameDay(e.readAt, day))) {
+      let l = 50;
+      while (!events.find((e) => isSameDay(e.readAt, day)) && l > 0) {
         day = subDays(day, 1)
+        l--
       }
       breakDay = day
       break
@@ -34,7 +36,7 @@ export function getStreak(events: ReadEvent[]) {
     streak++
   }
 
-  return {streak, breakDay, readToday}
+  return { streak, breakDay, readToday }
 }
 
 export function getDays(events: ReadEvent[]) {
