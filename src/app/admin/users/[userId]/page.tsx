@@ -26,7 +26,7 @@ export default async function Page(props: { params: Promise<{ userId: string }> 
       <div className="flex flex-wrap gap-2">
         <BadgeCheckButton isVerified={user.verified} userId={user.id} />
         <Button variant="outline">
-          <Ban className="mr-2 size-4" />
+          <Ban />
           Удалить аккаунт
         </Button>
         <PasswordUpdateButton userId={user.id} />

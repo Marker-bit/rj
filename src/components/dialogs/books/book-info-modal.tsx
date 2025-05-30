@@ -14,6 +14,7 @@ import { Button } from "../../ui/button"
 import { dateToString, declOfNum } from "@/lib/utils"
 import { Badge } from "../../ui/badge"
 import { Collection, ReadEvent } from "@prisma/client"
+import { DialogTitle } from "@/components/ui/dialog"
 
 export function BookInfoModal({
   open,
@@ -42,6 +43,7 @@ export function BookInfoModal({
 
   return (
     <DrawerDialog open={open} onOpenChange={setOpen} className="min-w-[50vw]">
+        <DialogTitle className="hidden">{book.title}</DialogTitle>
       <div className="mt-2 flex flex-col gap-2">
         <div className="flex">
           {book.coverUrl && (
@@ -121,7 +123,7 @@ export function BookInfoModal({
             </div>
           ))}
           <Button variant="outline" onClick={() => setCollectionsOpen(true)}>
-            <Pencil className="mr-2 size-4" /> Редактировать коллекции
+            <Pencil /> Редактировать коллекции
           </Button>
         </div>
         <Button

@@ -10,8 +10,9 @@ import { cn } from "@/lib/utils"
 export function DrawerDialog({
   children,
   className,
+  title,
   ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Root> & { className?: string }) {
+}: React.ComponentProps<typeof DrawerPrimitive.Root> & { className?: string; title?: string }) {
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
   if (isDesktop) {

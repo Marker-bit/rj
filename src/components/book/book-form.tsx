@@ -302,7 +302,7 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
               className="mt-2"
               onClick={() => append({ title: "", value: "" })}
             >
-              <Plus className="mr-2 size-4" />
+              <Plus />
               Добавить поле
             </Button>
           </div>
@@ -310,7 +310,7 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
             {loading ? (
               <Loader invert className="mr-2 size-4" />
             ) : (
-              <Plus className="mr-2 size-4" />
+              <Plus />
             )}
             Создать
           </Button>
@@ -328,7 +328,7 @@ export function AddBookButton() {
     <>
       <div className="m-2 flex items-center">
         <Button onClick={() => setOpen(true)}>
-          <Plus className="mr-2 size-4" /> Добавить книгу
+          <Plus /> Добавить книгу
         </Button>
       </div>
       <DrawerDialog open={open} onOpenChange={setOpen} className="min-w-[50vw]">

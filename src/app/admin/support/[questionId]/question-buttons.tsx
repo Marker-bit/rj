@@ -64,15 +64,15 @@ export default function QuestionButtons({
 
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={deleteClick} disabled={loading}>
-          <Trash className="mr-2 size-4" /> Удалить
+          <Trash /> Удалить
         </DropdownMenuItem>
         {question.isDone ? (
           <DropdownMenuItem onClick={markClick} disabled={loading}>
-            <X className="mr-2 size-4" /> Пометить как не выполненное
+            <X /> Пометить как не выполненное
           </DropdownMenuItem>
         ) : (
           <DropdownMenuItem onClick={markClick} disabled={loading}>
-            <Check className="mr-2 size-4" /> Пометить как выполненное
+            <Check /> Пометить как выполненное
           </DropdownMenuItem>
         )}
       </DropdownMenuContent>

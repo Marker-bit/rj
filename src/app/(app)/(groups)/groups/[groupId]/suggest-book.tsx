@@ -180,9 +180,9 @@ export function SuggestBook({ groupId }: { groupId: string }) {
             />
             <Button type="submit" disabled={bookMutation.isPending}>
               {bookMutation.isPending ? (
-                <Loader className="mr-2 size-4 animate-spin" />
+                <Loader className="animate-spin" />
               ) : (
-                <Plus className="mr-2 size-4" />
+                <Plus />
               )}
               Предложить
             </Button>
