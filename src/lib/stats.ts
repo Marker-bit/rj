@@ -6,6 +6,9 @@ export const goodNumbers = [
 ]
 
 export function getStreak(events: ReadEvent[]) {
+  if (events.length === 0) {
+    return {streak: 0, breakDay: new Date(), readToday: false}
+  }
   let streak = 0
   let day = new Date()
   day = subDays(day, 1)

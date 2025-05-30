@@ -24,7 +24,7 @@ export default async function BooksPage(
   return (
     <div className="max-sm:mb-[15vh]">
       <div className="m-2 flex items-center gap-2 text-5xl font-black">
-        <Link href="/">
+        <Link href="/home">
           <Button variant="ghost" size="icon">
             <ChevronLeft className="size-8" />
           </Button>

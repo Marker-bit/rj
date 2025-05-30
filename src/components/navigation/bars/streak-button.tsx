@@ -27,7 +27,6 @@ export function StreakButton({ events }: { events: ReadEvent[] }) {
     new Date(),
     startOfWeek(new Date(), { weekStartsOn: 1 })
   )
-  const router = useRouter()
 
   return (
     <Popover>
