@@ -44,7 +44,7 @@ export default function PasswordUpdateButton({ userId }: { userId: string }) {
     <Popover>
       <PopoverTrigger asChild>
         <Button variant="outline">
-          <KeyRound className="mr-2 size-4" />
+          <KeyRound />
           Сменить пароль
         </Button>
       </PopoverTrigger>

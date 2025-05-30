@@ -9,10 +9,12 @@ import { BookMinus, Search } from "lucide-react"
 import { useEffect, useState } from "react"
 import Fuse from "fuse.js"
 import { BackgroundColor } from "@prisma/client"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Label } from "@/components/ui/label"
 
 export function BookList({ books }: { books: Book[] }) {
-  const [readBooks, setReadBooks] = useState(false)
-  const [notStarted, setNotStarted] = useState(false)
+  const [readBooks, _setReadBooks] = useState(false)
+  const [notStarted, _setNotStarted] = useState(false)
   const [searchText, setSearchText] = useState("")
   const [searchResults, setSearchResults] = useState<Book[]>()
 
@@ -20,24 +22,20 @@ export function BookList({ books }: { books: Book[] }) {
     const localStorageReadBooks = localStorage.getItem("readBooks")
     const localStorageNotStarted = localStorage.getItem("notStarted")
     if (localStorageReadBooks) {
-      setReadBooks(JSON.parse(localStorageReadBooks))
+      _setReadBooks(JSON.parse(localStorageReadBooks))
     }
     if (localStorageNotStarted) {
-      setNotStarted(JSON.parse(localStorageNotStarted))
+      _setNotStarted(JSON.parse(localStorageNotStarted))
     }
   }, [])
 
-  function changeReadBooks() {
-    setReadBooks((readBooks) => {
-      localStorage.setItem("readBooks", JSON.stringify(!readBooks))
-      return !readBooks
-    })
+  function setReadBooks(value: boolean) {
+    localStorage.setItem("readBooks", JSON.stringify(value))
+    _setReadBooks(value)
   }
-  function changeNotStarted() {
-    setNotStarted((notStarted) => {
-      localStorage.setItem("notStarted", JSON.stringify(!notStarted))
-      return !notStarted
-    })
+  function setNotStarted(value: boolean) {
+    localStorage.setItem("notStarted", JSON.stringify(value))
+    _setNotStarted(value)
   }
 
   let filteredBooks = books
@@ -89,28 +87,36 @@ export function BookList({ books }: { books: Book[] }) {
   return (
     <div>
       <div className="flex flex-col gap-2 p-3">
-        <div
-          className="mb-2 flex cursor-pointer select-none items-center space-x-2 rounded-md border p-2 transition-all hover:bg-neutral-100 dark:hover:bg-neutral-900"
-          onClick={changeReadBooks}
-        >
-          <Switch id="readBooks" checked={readBooks} />
-          <div
-            className="cursor-pointer select-none text-sm font-medium leading-none peer-disabled:opacity-70"
-            onClick={changeReadBooks}
-          >
-            Скрывать прочитанные книги
+        <div className="grid md:grid-cols-2 gap-2">
+          <div className="border-input has-data-[state=checked]:border-primary/50 relative flex w-full items-start gap-2 rounded-md border p-4 shadow-xs outline-none">
+            <Checkbox
+              id="readBooks"
+              aria-describedby="readBooks-description"
+              onCheckedChange={setReadBooks}
+            />
+            <div className="grid grow gap-2">
+              <Label htmlFor="readBooks">
+                Скрывать прочитанные книги
+              </Label>
+              <p id="readBooks-description" className="text-muted-foreground text-xs">
+                Включите, чтобы прочитанные вами книги не отображались в списке.
+              </p>
+            </div>
           </div>
-        </div>
-        <div
-          className="mb-2 flex cursor-pointer select-none items-center space-x-2 rounded-md border p-2 transition-all hover:bg-neutral-100 dark:hover:bg-neutral-900"
-          onClick={changeNotStarted}
-        >
-          <Switch id="notStarted" checked={notStarted} />
-          <div
-            className="cursor-pointer select-none text-sm font-medium leading-none peer-disabled:opacity-70"
-            onClick={changeNotStarted}
-          >
-            Скрывать не начатые книги
+          <div className="border-input has-data-[state=checked]:border-primary/50 relative flex w-full items-start gap-2 rounded-md border p-4 shadow-xs outline-none">
+            <Checkbox
+              id="notStarted"
+              aria-describedby="notStarted-description"
+              onCheckedChange={setNotStarted}
+            />
+            <div className="grid grow gap-2">
+              <Label htmlFor="notStarted">
+                Скрывать не начатые книги
+              </Label>
+              <p id="notStarted-description" className="text-muted-foreground text-xs">
+                Включите, чтобы книги без прочитанных страниц не отображались в списке.
+              </p>
+            </div>
           </div>
         </div>
         {books.length === 0 && (

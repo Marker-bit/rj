@@ -59,7 +59,7 @@ export default function Notifications() {
 function Notification({
   notification,
 }: {
-  notification: { id: string; title: string; body: ReactElement }
+  notification: { id: string; title: string; body: ReactElement<any> }
 }) {
   const [isClient, setIsClient] = useState(false)
   const [notifications, setNotifications] = useLocalStorage<string[]>(

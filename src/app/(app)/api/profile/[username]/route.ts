@@ -3,10 +3,8 @@ import { validateRequest } from "@/lib/server-validate-request";
 import { SharePeople } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { username: string } }
-) {
+export async function GET(req: NextRequest, props: { params: Promise<{ username: string }> }) {
+  const params = await props.params;
   const { user: currentUser } = await validateRequest();
   const user = await db.user.findFirstOrThrow({
     where: {

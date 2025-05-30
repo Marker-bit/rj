@@ -22,11 +22,11 @@ export default function BookMenu({ book }: { book: Book }) {
       <DropdownMenuContent>
         <Link href={`/admin/users/${book.userId}`}>
           <DropdownMenuItem>
-            <UserCircle className="mr-2 size-4" /> Посмотреть профиль
+            <UserCircle /> Посмотреть профиль
           </DropdownMenuItem>
         </Link>
         <DropdownMenuItem>
-          <Trash className="mr-2 size-4" /> Удалить
+          <Trash /> Удалить
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

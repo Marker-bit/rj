@@ -3,11 +3,12 @@ import { declOfNum } from "@/lib/utils";
 import BookPagination from "./pagination";
 import BookTable from "./table";
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams?: { [key: string]: string | string[] | undefined }
-}) {
+export default async function Page(
+  props: {
+    searchParams?: Promise<{ [key: string]: string | string[] | undefined }>
+  }
+) {
+  const searchParams = await props.searchParams;
   let page = searchParams?.page ? parseInt(searchParams.page as string) : 1
   const pageSize = 20
   if (page < 1) {

@@ -2,8 +2,8 @@ import { lucia } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import { Argon2id } from "oslo/password";
 import { validateRequest } from "@/lib/server-validate-request";
+import { verify } from "@node-rs/argon2";
 
 export async function POST(request: NextRequest) {
   const data = await request.json();
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     },
   });
   if (user) {
-    const validPassword = await new Argon2id().verify(
+    const validPassword = await verify(
       user.hashedPassword,
       password
     );
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     if (validPassword) {
       const session = await lucia.createSession(user.id, {});
       const sessionCookie = lucia.createSessionCookie(session.id);
-      cookies().set(
+      (await cookies()).set(
         sessionCookie.name,
         sessionCookie.value,
         sessionCookie.attributes
@@ -86,7 +86,7 @@ export async function DELETE(request: NextRequest) {
   await lucia.invalidateSession(session.id);
 
   const sessionCookie = lucia.createBlankSessionCookie();
-  cookies().set(
+  (await cookies()).set(
     sessionCookie.name,
     sessionCookie.value,
     sessionCookie.attributes

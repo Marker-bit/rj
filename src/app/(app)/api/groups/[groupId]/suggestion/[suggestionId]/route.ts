@@ -4,8 +4,9 @@ import { GroupMemberRole } from "@prisma/client"
 import { NextRequest, NextResponse } from "next/server"
 export async function POST(
   req: NextRequest,
-  { params }: { params: { groupId: string; suggestionId: string } }
+  props: { params: Promise<{ groupId: string; suggestionId: string }> }
 ) {
+  const params = await props.params;
   const { user } = await validateRequest()
   if (!user) {
     return new NextResponse("Unauthorized", {

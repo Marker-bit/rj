@@ -2,10 +2,8 @@ import { validateRequest } from "@/lib/server-validate-request";
 import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function PATCH(
-  req: NextRequest,
-  { params }: { params: { bookId: string } }
-) {
+export async function PATCH(req: NextRequest, props: { params: Promise<{ bookId: string }> }) {
+  const params = await props.params;
   const bookId = params.bookId;
   const { user } = await validateRequest();
   if (!user) {

@@ -1,5 +1,3 @@
-"use client"
-
 import { getStreak } from "@/lib/stats";
 import { declOfNum } from "@/lib/utils";
 import { ReadEvent, User } from "@prisma/client";
@@ -57,29 +55,6 @@ export async function Stats({
     pages: number
   }[]
 }) {
-  // const profile = await db.user.findUniqueOrThrow({
-  //   where: {
-  //     id: user.id,
-  //   },
-  //   include: {
-  //     follower: true,
-  //     following: true,
-  //   },
-  // });
-  // let events = await db.readEvent.findMany({
-  //   where: {
-  //     book: {
-  //       userId: user.id,
-  //     },
-  //   },
-  //   include: {
-  //     book: true,
-  //   },
-  //   orderBy: {
-  //     readAt: "desc",
-  //   },
-  // });
-
   const startAndEndOfWeek = () => {
     const monday = startOfISOWeek(new Date())
     const sunday = endOfISOWeek(new Date())
@@ -183,26 +158,6 @@ export async function Stats({
     readWeekSum += n
   }
 
-  const currentWeekData = [
-    { name: "Пн", value: currentWeekNum["1"] },
-    { name: "Вт", value: currentWeekNum["2"] },
-    { name: "Ср", value: currentWeekNum["3"] },
-    { name: "Чт", value: currentWeekNum["4"] },
-    { name: "Пт", value: currentWeekNum["5"] },
-    { name: "Сб", value: currentWeekNum["6"] },
-    { name: "Вс", value: currentWeekNum["0"] },
-  ]
-
-  const data = [
-    { name: "Пн", value: booksStatsNum["1"] },
-    { name: "Вт", value: booksStatsNum["2"] },
-    { name: "Ср", value: booksStatsNum["3"] },
-    { name: "Чт", value: booksStatsNum["4"] },
-    { name: "Пт", value: booksStatsNum["5"] },
-    { name: "Сб", value: booksStatsNum["6"] },
-    { name: "Вс", value: booksStatsNum["0"] },
-  ]
-
   return (
     <>
       <div id="stats" className="grid grid-cols-2 gap-2 p-2">
@@ -273,18 +228,6 @@ export async function Stats({
           </div>
         </Link>
       </div>
-      {/* <div className="mx-auto w-fit cursor-default rounded-full bg-gradient-to-b from-zinc-100 to-zinc-200 p-1 px-3 dark:from-zinc-900 dark:to-zinc-800">
-        Эта неделя
-      </div>
-      <div className="mt-3 h-[20vh]">
-        <Chart data={currentWeekData} />
-      </div>
-      <div className="mx-auto w-fit cursor-default rounded-full bg-gradient-to-b from-zinc-100 to-zinc-200 p-1 px-3 dark:from-zinc-900 dark:to-zinc-800">
-        По дням недели
-      </div>
-      <div className="mt-3 h-[20vh]">
-        <Chart data={data} />
-      </div> */}
     </>
   )
 }

@@ -77,7 +77,7 @@ export default function JournalPage() {
             className="mx-auto mt-2 w-fit rounded-md border"
             disabled={[{ from: tomorrow, to: new Date(3000, 1) }]}
             weekStartsOn={1}
-            showToday={false}
+            // showToday={false}
             locale={ru}
           />
         </DrawerDialog>

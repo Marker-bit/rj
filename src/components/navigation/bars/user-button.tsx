@@ -50,23 +50,23 @@ export function UserButton({ user }: { user: User }) {
       <DropdownMenuContent>
         <Link href="/profile">
           <DropdownMenuItem>
-            <UserIcon className="mr-2 size-4" /> Профиль
+            <UserIcon /> Профиль
           </DropdownMenuItem>
         </Link>
         <Link href="/profile/settings">
           <DropdownMenuItem>
-            <Settings className="mr-2 size-4" /> Настройки
+            <Settings /> Настройки
           </DropdownMenuItem>
         </Link>
         {user.admin && (
           <Link href="/admin">
             <DropdownMenuItem>
-              <LockKeyhole className="mr-2 size-4" /> Админ-панель
+              <LockKeyhole /> Админ-панель
             </DropdownMenuItem>
           </Link>
         )}
         <DropdownMenuItem onClick={logOutClick}>
-          <LogOut className="mr-2 size-4" /> Выйти
+          <LogOut /> Выйти
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -17,7 +17,7 @@ export default function UserBooks({ books }: { books: Book[] }) {
     <Popover>
       <PopoverTrigger asChild>
         <Button size="sm">
-          <ChevronDown className="mr-2 size-4 opacity-70" />
+          <ChevronDown />
           {books.length} {declOfNum(books.length, ["книга", "книги", "книг"])}
         </Button>
       </PopoverTrigger>

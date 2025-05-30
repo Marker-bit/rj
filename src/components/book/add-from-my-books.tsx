@@ -41,7 +41,7 @@ export function AddFromMyBooks({
       <div className="flex items-center gap-2 rounded-xl border p-2">
         <Search className="size-4 text-muted-foreground/80" />
         <input
-          className="w-full bg-transparent outline-none"
+          className="w-full bg-transparent outline-hidden"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Поиск"

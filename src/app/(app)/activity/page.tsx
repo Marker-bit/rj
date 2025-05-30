@@ -6,11 +6,12 @@ import { Book, ReadEvent, User } from "@prisma/client"
 import EventRepeat from "./event-repeat"
 import { ReactElement } from "react"
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams?: { [key: string]: string | string[] | undefined }
-}) {
+export default async function Page(
+  props: {
+    searchParams?: Promise<{ [key: string]: string | string[] | undefined }>
+  }
+) {
+  const searchParams = await props.searchParams;
   const { user } = await validateRequest()
   if (!user) return null
   let page = searchParams?.page ? parseInt(searchParams.page as string) : 1
@@ -65,7 +66,7 @@ export default async function Page({
     skip: (page - 1) * pageSize,
     take: pageSize,
   })
-  let components: ReactElement[] = []
+  let components: ReactElement<any>[] = []
   let tempArray: (ReadEvent & { book: Book & { user: User } })[] = []
 
   activity.forEach((event, index) => {

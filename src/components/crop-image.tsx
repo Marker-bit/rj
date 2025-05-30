@@ -1,125 +1,27 @@
 "use client"
 
-import React, { useState, useRef } from "react"
+import React, { useRef, useState } from "react"
 
-import ReactCrop, {
-  centerCrop,
-  makeAspectCrop,
-  Crop,
-  PixelCrop,
-  convertToPixelCrop,
-} from "react-image-crop"
-
+import { Area, getCroppedImg } from "@/lib/crop/utils"
 import "react-image-crop/dist/ReactCrop.css"
-import Image from "next/image"
-import { canvasPreview } from "@/lib/utils"
-import { Dialog, DialogContent } from "./ui/dialog"
 import { Button } from "./ui/button"
-import { useDebounceEffect } from "@/lib/use-debounce-effect"
-
-// This is to demonstate how to make and center a % aspect crop
-// which is a bit trickier so we use some helper functions.
-function centerAspectCrop(
-  mediaWidth: number,
-  mediaHeight: number,
-  aspect: number
-) {
-  return centerCrop(
-    makeAspectCrop(
-      {
-        unit: "%",
-        width: 90,
-      },
-      aspect,
-      mediaWidth,
-      mediaHeight
-    ),
-    mediaWidth,
-    mediaHeight
-  )
-}
+import { Cropper, CropperCropArea, CropperDescription, CropperImage } from "./ui/cropper"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog"
 
 export function CropImage({
   open,
   setOpen,
   file,
-  onSelect,
+  onSelect
 }: {
   open: boolean
   setOpen: (v: boolean) => void
-  file?: File
+  file: File;
   onSelect: (file: File) => void
 }) {
   const [imgSrc, setImgSrc] = useState("")
   const previewCanvasRef = useRef<HTMLCanvasElement>(null)
-  const imgRef = useRef<HTMLImageElement>(null)
-  const hiddenAnchorRef = useRef<HTMLAnchorElement>(null)
-  const [crop, setCrop] = useState<Crop>()
-  const [completedCrop, setCompletedCrop] = useState<PixelCrop>()
-
-  function onImageLoad(e: React.SyntheticEvent<HTMLImageElement>) {
-    const { width, height } = e.currentTarget
-    setCrop(centerAspectCrop(width, height, 1))
-  }
-
-  async function onDownloadCropClick() {
-    const image = imgRef.current
-    const previewCanvas = previewCanvasRef.current
-    if (!image || !previewCanvas || !completedCrop) {
-      throw new Error("Crop canvas does not exist")
-    }
-
-    const scaleX = image.naturalWidth / image.width
-    const scaleY = image.naturalHeight / image.height
-
-    const offscreen = new OffscreenCanvas(
-      completedCrop.width * scaleX,
-      completedCrop.height * scaleY
-    )
-    const ctx = offscreen.getContext("2d")
-    if (!ctx) {
-      throw new Error("No 2d context")
-    }
-
-    ctx.drawImage(
-      previewCanvas,
-      0,
-      0,
-      previewCanvas.width,
-      previewCanvas.height,
-      0,
-      0,
-      offscreen.width,
-      offscreen.height
-    )
-    // You might want { type: "image/jpeg", quality: <0 to 1> } to
-    // reduce image size
-    const blob = await offscreen.convertToBlob({
-      type: "image/png",
-    })
-    const file = new File([blob], "avatar.png", {
-      type: "image/png",
-    })
-    onSelect(file)
-    setOpen(false)
-  }
-
-  useDebounceEffect(
-    async () => {
-      if (
-        completedCrop?.width &&
-        completedCrop?.height &&
-        imgRef.current &&
-        previewCanvasRef.current
-      ) {
-        canvasPreview(imgRef.current, previewCanvasRef.current, completedCrop)
-      }
-    },
-    100,
-    [completedCrop]
-  )
-
-  if (!file) return
+  const [cropData, setCropData] = React.useState<Area | null>(null)
 
   const reader = new FileReader()
   reader.addEventListener("load", () =>
@@ -127,34 +29,55 @@ export function CropImage({
   )
   reader.readAsDataURL(file)
 
+  const handleCrop = async () => {
+    if (!cropData) {
+      console.error("No crop area selected.")
+      return
+    }
+
+    try {
+      const croppedBlob = await getCroppedImg(
+        imgSrc,
+        cropData
+      )
+      if (!croppedBlob) {
+        throw new Error("Failed to generate cropped image blob.")
+      }
+
+      onSelect(new File([croppedBlob], "avatar.png", { type: "image/png" }))
+      setOpen(false)
+    } catch (error) {
+      console.error("Error during cropping:", error)
+    }
+  }
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
+        <DialogHeader>
+          <DialogTitle>
+            Выберите часть аватара
+          </DialogTitle>
+        </DialogHeader>
         {/* <div>
           <input type="file" accept="image/*" onChange={onSelectFile} />
         </div> */}
         {!!imgSrc && (
           <div data-vaul-no-drag>
-            <ReactCrop
-              crop={crop}
-              onChange={(_, percentCrop) => setCrop(percentCrop)}
-              onComplete={(c) => setCompletedCrop(c)}
-              aspect={1}
-              circularCrop
+            <Cropper
+              className="h-80"
+              image={imgSrc}
+              maxZoom={10}
+              onCropChange={setCropData}
             >
-              <Image
-                ref={imgRef}
-                alt="Crop me"
-                src={imgSrc}
-                onLoad={onImageLoad}
-                width={500}
-                height={500}
-                className="rounded-xl"
-              />
-            </ReactCrop>
+              <CropperDescription />
+              <CropperImage />
+              <CropperCropArea className="rounded-full" />
+            </Cropper>
           </div>
         )}
-        {!!completedCrop && (
+        <Button onClick={handleCrop}>Сохранить</Button>
+        {/* {!!completedCrop && (
           <>
             <div>
               <canvas ref={previewCanvasRef} className="hidden" />
@@ -175,7 +98,7 @@ export function CropImage({
               </a>
             </div>
           </>
-        )}
+        )} */}
       </DialogContent>
     </Dialog>
   )

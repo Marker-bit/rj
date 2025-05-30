@@ -5,8 +5,9 @@ import { NextRequest, NextResponse } from "next/server"
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { groupId: string; memberId: string } }
+  props: { params: Promise<{ groupId: string; memberId: string }> }
 ) {
+  const params = await props.params;
   const { user } = await validateRequest()
 
   if (!user) {
@@ -89,8 +90,9 @@ export async function PATCH(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { groupId: string; memberId: string } }
+  props: { params: Promise<{ groupId: string; memberId: string }> }
 ) {
+  const params = await props.params;
   const { user } = await validateRequest()
 
   if (!user) {

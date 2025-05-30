@@ -35,12 +35,12 @@ export default function BadgeCheckButton({
   }
   return isVerified ? (
     <Button disabled={loading} onClick={changeVerification}>
-      <BadgeCheck className="mr-2 size-4" />
+      <BadgeCheck />
       Снять подтверждение
     </Button>
   ) : (
     <Button disabled={loading} onClick={changeVerification}>
-      <BadgeCheck className="mr-2 size-4" />
+      <BadgeCheck />
       Подтвердить
     </Button>
   )

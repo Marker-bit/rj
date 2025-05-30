@@ -78,7 +78,7 @@ export function DateDoneModal({
         {readDoneMutation.isPending ? (
           <Loader invert className="mr-2 size-4" />
         ) : (
-          <Save className="mr-2 size-4" />
+          <Save />
         )}
         Отметить
       </Button>

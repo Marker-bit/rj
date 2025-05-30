@@ -256,7 +256,7 @@ export function EditBookModal({
               className="mt-2"
               onClick={() => append({ title: "", value: "" })}
             >
-              <Plus className="mr-2 size-4" />
+              <Plus />
               Добавить поле
             </Button>
           </div>

@@ -13,8 +13,6 @@ import FirstSteps from "@/components/main/first-steps"
 import Notifications from "@/components/notifications"
 import OldUsers from "./old-users"
 
-export const dynamic = "force-dynamic"
-
 export default function Home() {
   return (
     <div className="mb-[15vh]">

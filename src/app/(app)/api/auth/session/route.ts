@@ -3,7 +3,7 @@ import { lucia } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
-  const sessionId = cookies().get(lucia.sessionCookieName)?.value ?? null;
+  const sessionId = (await cookies()).get(lucia.sessionCookieName)?.value ?? null;
 		if (!sessionId) {
 			return NextResponse.json({
 				user: null,
@@ -16,11 +16,11 @@ export async function GET(req: NextRequest) {
 		try {
 			if (result.session && result.session.fresh) {
 				const sessionCookie = lucia.createSessionCookie(result.session.id);
-				cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+				(await cookies()).set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
 			}
 			if (!result.session) {
 				const sessionCookie = lucia.createBlankSessionCookie();
-				cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+				(await cookies()).set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
 			}
 		} catch {}
 		return NextResponse.json(result);

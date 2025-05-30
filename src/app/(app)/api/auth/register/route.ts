@@ -2,7 +2,7 @@ import { lucia } from "@/lib/auth"
 import { db } from "@/lib/db"
 import { cookies } from "next/headers"
 import { NextRequest, NextResponse } from "next/server"
-import { Argon2id } from "oslo/password"
+import { hash } from "@node-rs/argon2";
 import {
   USERNAME_REGEX,
   USERNAME_MESSAGE,
@@ -11,13 +11,12 @@ import {
 } from "@/lib/api-validate"
 import { createAvatar } from "@dicebear/core"
 import { shapes } from "@dicebear/collection"
-import { utapi } from "../../uploadthing/core"
 
 export async function POST(request: NextRequest) {
   const data = await request.json()
   const username = data.username
   const password = data.password
-  const hashedPassword = await new Argon2id().hash(password)
+  const hashedPassword = await hash(password)
 
   const user = await db.user.findFirst({
     where: {
@@ -65,13 +64,13 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  const avatar = createAvatar(shapes, {
-    seed: username,
-    size: 100,
-  })
+  // const avatar = createAvatar(shapes, {
+  //   seed: username,
+  //   size: 100,
+  // })
 
-  const png = await avatar.png()
-  const buffer = await png.toArrayBuffer()
+  // const png = avatar.png()
+  // const buffer = await png.toArrayBuffer()
 
   // const resp = await fetch("/api/uploadthing/uploadFiles", {
   //   method: "POST",
@@ -99,9 +98,9 @@ export async function POST(request: NextRequest) {
     },
   })
 
-  const session = await lucia.createSession(createdUser.id, {})
-  const sessionCookie = lucia.createSessionCookie(session.id)
-  cookies().set(
+  const session = await lucia.createSession(createdUser.id, {});
+  const sessionCookie = lucia.createSessionCookie(session.id);
+  (await cookies()).set(
     sessionCookie.name,
     sessionCookie.value,
     sessionCookie.attributes

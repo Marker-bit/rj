@@ -30,7 +30,7 @@ import { useState } from "react";
 const chartConfig = {
   desktop: {
     label: "Страниц",
-    color: "hsl(var(--chart-1))",
+    color: "var(--chart-1)",
   },
 } satisfies ChartConfig
 
@@ -88,7 +88,7 @@ export default function MainChart({
   return (
     <Card className="m-2">
       <Tabs defaultValue="area">
-        <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
+        <CardHeader className="flex items-center gap-2 space-y-0 border-b sm:flex-row">
           <div className="grid flex-1 gap-1 text-center sm:text-left">
             <CardTitle>Статистика</CardTitle>
             <CardDescription>
@@ -189,12 +189,7 @@ export default function MainChart({
               className="aspect-auto h-[250px] w-full"
             >
               <BarChart
-                accessibilityLayer
                 data={filteredData}
-                margin={{
-                  left: 12,
-                  right: 12,
-                }}
               >
                 <CartesianGrid vertical={false} />
                 <XAxis

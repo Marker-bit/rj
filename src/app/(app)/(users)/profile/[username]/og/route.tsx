@@ -2,10 +2,8 @@ import { db } from "@/lib/db"
 import { ImageResponse } from "@vercel/og"
 import { NextRequest } from "next/server"
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { username: string } }
-) {
+export async function GET(req: NextRequest, props: { params: Promise<{ username: string }> }) {
+  const params = await props.params;
   const { username } = params
 
   const user = await db.user.findUnique({

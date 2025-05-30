@@ -6,11 +6,12 @@ import { declOfNum } from "@/lib/utils"
 
 export const dynamic = "force-dynamic"
 
-export default async function Page({
-  params,
-}: {
-  params: { collectionId: string }
-}) {
+export default async function Page(
+  props: {
+    params: Promise<{ collectionId: string }>
+  }
+) {
+  const params = await props.params;
   const { user } = await validateRequest()
   const books = await db.book.findMany({
     where: {

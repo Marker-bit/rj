@@ -87,7 +87,7 @@ export function FriendView({
                 evt.preventDefault()
               }}
               disabled={loading}
-              variant={followingRes === true ? "outline" : "default"}
+              variant={followingRes === true ? "outline-solid" : "default"}
             >
               {followingRes === false ? (
                 <>

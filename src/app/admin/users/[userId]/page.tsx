@@ -5,7 +5,8 @@ import { notFound } from "next/navigation"
 import BadgeCheckButton from "./badge-check-button";
 import PasswordUpdateButton from "./password-update";
 
-export default async function Page({ params }: { params: { userId: string } }) {
+export default async function Page(props: { params: Promise<{ userId: string }> }) {
+  const params = await props.params;
   const user = await db.user.findFirst({
     where: {
       id: params.userId,
@@ -25,7 +26,7 @@ export default async function Page({ params }: { params: { userId: string } }) {
       <div className="flex flex-wrap gap-2">
         <BadgeCheckButton isVerified={user.verified} userId={user.id} />
         <Button variant="outline">
-          <Ban className="mr-2 size-4" />
+          <Ban />
           Удалить аккаунт
         </Button>
         <PasswordUpdateButton userId={user.id} />

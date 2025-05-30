@@ -163,8 +163,8 @@ export function BookView({ book }: { book: Book }) {
   return (
     <div
       className={cn(
-        "group relative flex gap-2 rounded-md border p-2 transition-shadow hover:shadow overflow-hidden",
-        book.background !== BackgroundColor.NONE && "outline outline-8 my-2",
+        "group relative flex gap-2 rounded-md border p-2 transition-shadow hover:shadow-sm overflow-hidden",
+        book.background !== BackgroundColor.NONE && "outline-solid outline-8 my-2",
         color && color.outline
       )}
       id={`book-${book.id}`}
@@ -263,16 +263,16 @@ export function BookView({ book }: { book: Book }) {
           {book.readEvents.length === 0 ? (
             <>
               <Badge>
-                <CalendarDays className="mr-2 size-4" /> Запланирована
+                <CalendarDays /> Запланирована
               </Badge>
               <Badge variant="secondary">
-                <BookOpen className="mr-2 size-4" /> {book.pages} страниц всего
+                <BookOpen /> {book.pages} страниц всего
               </Badge>
             </>
           ) : lastEvent.pagesRead === book.pages ? (
             <>
               <Badge>
-                <BookOpenCheck className="mr-2 size-4" /> Прочитана
+                <BookOpenCheck /> Прочитана
               </Badge>
               <Button
                 variant="outline"
@@ -288,22 +288,22 @@ export function BookView({ book }: { book: Book }) {
                 )}
               </Button>
               <Badge variant="secondary">
-                <BookOpen className="mr-2 size-4" /> {book.pages}{" "}
+                <BookOpen /> {book.pages}{" "}
                 {declOfNum(book.pages, ["страница", "страницы", "страниц"])}{" "}
                 всего
               </Badge>
               <Badge variant="outline">
-                <CalendarDays className="mr-2 size-4" />
+                <CalendarDays />
                 {dateToString(new Date(lastEvent.readAt))}
               </Badge>
             </>
           ) : (
             <>
               <Badge>
-                <BookIcon className="mr-2 size-4" /> Читается
+                <BookIcon /> Читается
               </Badge>
               <Badge variant="secondary">
-                <BookOpen className="mr-2 size-4" /> {lastEvent.pagesRead}{" "}
+                <BookOpen /> {lastEvent.pagesRead}{" "}
                 {declOfNum(lastEvent.pagesRead, [
                   "страница",
                   "страницы",
@@ -314,7 +314,7 @@ export function BookView({ book }: { book: Book }) {
                 {((lastEvent.pagesRead / book.pages) * 100).toFixed(1)}%)
               </Badge>
               <Badge variant="outline">
-                <CalendarDays className="mr-2 size-4" />
+                <CalendarDays />
                 {dateToString(new Date(lastEvent.readAt))}
               </Badge>
               <Button
@@ -337,7 +337,7 @@ export function BookView({ book }: { book: Book }) {
               <TooltipTrigger asChild>
                 <Link href={`/groups/${book.groupBook.group.id}`}>
                   <Badge variant="outline">
-                    <Users className="mr-2 size-4" />{" "}
+                    <Users />{" "}
                     {book.groupBook.group.title}
                   </Badge>
                 </Link>
@@ -354,7 +354,7 @@ export function BookView({ book }: { book: Book }) {
               onClick={() => setShareBookOpen(true)}
               className="cursor-pointer"
             >
-              <Link2 className="mr-2 size-4" /> {book.links.length}{" "}
+              <Link2 /> {book.links.length}{" "}
               {declOfNum(book.links.length, ["ссылка", "ссылки", "ссылок"])}
             </Badge>
           )}

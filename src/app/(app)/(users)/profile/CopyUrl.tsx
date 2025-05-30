@@ -10,5 +10,5 @@ export function CopyUrl({ username }: { username: string }) {
     setUrl(window.location.origin)
   }, [])
 
-  return url ? <Copy text={`${url}/profile/${username}`} /> : <></>
+  return url ? <Copy label="Ссылка на профиль" className="w-80" text={`${url}/profile/${username}`} /> : <></>
 }

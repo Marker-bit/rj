@@ -28,7 +28,7 @@ export default function QuestionAnswer({
   }
   return (
     <div
-      className="flex flex-col gap-2 rounded-xl border p-2 hover:shadow-sm"
+      className="flex flex-col gap-2 rounded-xl border p-2 hover:shadow-xs"
       key={answer.id}
     >
       <div className="flex items-center gap-2">

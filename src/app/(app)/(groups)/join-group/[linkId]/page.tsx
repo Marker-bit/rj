@@ -9,7 +9,8 @@ import { redirect } from "next/navigation"
 import Link from "next/link"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
-export default async function Page({ params }: { params: { linkId: string } }) {
+export default async function Page(props: { params: Promise<{ linkId: string }> }) {
+  const params = await props.params;
   const { user } = await validateRequest()
   if (!user) return null
 

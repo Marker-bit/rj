@@ -28,7 +28,7 @@ export default function ChangedInfo({
         <Popover>
           <PopoverTrigger asChild>
             <Button variant="outline" size="sm" className="w-fit">
-              <Text className="mr-2 size-4" />
+              <Text />
               Описание
             </Button>
           </PopoverTrigger>

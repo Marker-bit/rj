@@ -35,15 +35,15 @@ export function AddBookButton({ groupId }: { groupId: string }) {
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem onClick={() => setModeOpen("create")}>
-            <Book className="mr-2 size-4" />
+            <Book />
             Добавить книгу
           </DropdownMenuItem>
           <DropdownMenuItem disabled>
-            <BookCopy className="mr-2 size-4" />
+            <BookCopy />
             Добавить из коллекции
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setModeOpen("add-own")}>
-            <BookDashed className="mr-2 size-4" />
+            <BookDashed />
             Добавить из моих книг
           </DropdownMenuItem>
         </DropdownMenuContent>
