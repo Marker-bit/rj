@@ -22,6 +22,7 @@
     "@node-rs/argon2": "^2.0.2",
     "@node-rs/argon2-win32-x64-msvc": "^2.0.2",
     "@node-rs/bcrypt": "^1.10.7",
+    "@origin-space/image-cropper": "^0.1.9",
     "@prisma/client": "^6.8.2",
     "@radix-ui/react-accordion": "^1.2.11",
     "@radix-ui/react-alert-dialog": "^1.1.14",

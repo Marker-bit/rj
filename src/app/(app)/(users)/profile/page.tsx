@@ -1,4 +1,4 @@
-import { ChevronLeft, Edit, Users2 } from "lucide-react"
+import { ChevronLeft, Edit, Settings, Users2 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { Stats } from "@/components/users/stats"
@@ -59,9 +59,9 @@ export default async function ProfilePage() {
         </Button>
         Профиль
         <div className="ml-auto">
-          <Button variant="ghost" size="icon" asChild>
+          <Button asChild variant="secondary" size="icon" className="size-8">
             <Link href="/profile/settings">
-              <Edit className="size-6" />
+              <Settings />
             </Link>
           </Button>
         </div>

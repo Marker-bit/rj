@@ -31,7 +31,7 @@ import { cn } from "@/lib/utils"
 import { useMutation } from "@tanstack/react-query"
 import { useDropzone } from "@uploadthing/react"
 import Image from "next/image"
-import { generateClientDropzoneAccept } from "uploadthing/client"
+import { generateClientDropzoneAccept, generatePermittedFileTypes } from "uploadthing/client"
 import { toast } from "sonner"
 import { User as LuciaUser } from "lucia"
 import { SharePeople } from "@prisma/client"
@@ -121,9 +121,9 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
     }
   }, [])
 
-  const { startUpload, permittedFileInfo } = useUploadThing("avatar", {
+  const { startUpload, routeConfig } = useUploadThing("avatar", {
     onClientUploadComplete: (res) => {
-      form.setValue("avatarUrl", res[0].url)
+      form.setValue("avatarUrl", res[0].ufsUrl)
       setUploadProgress(null)
     },
     onUploadError: (err) => {
@@ -138,14 +138,12 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
     },
   })
 
-  const fileTypes = permittedFileInfo?.config
-    ? Object.keys(permittedFileInfo?.config)
-    : []
-
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
-    accept: fileTypes ? generateClientDropzoneAccept(fileTypes) : undefined,
-  })
+    accept: generateClientDropzoneAccept(
+      generatePermittedFileTypes(routeConfig).fileTypes,
+    ),
+  });
 
   return (
     <Form {...form}>
@@ -172,10 +170,10 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
                             height={80}
                             alt="avatar"
                           />
-                          <input {...getInputProps()} />
+                          <input disabled={uploadProgress !== null} {...getInputProps()} />
                           <div
                             className={cn(
-                              "absolute top-0 left-0 pointer-events-none w-full h-full bg-white/80 flex flex-col items-center justify-center opacity-0 transition-opacity",
+                              "absolute top-0 left-0 pointer-events-none w-full h-full bg-black/80 flex flex-col items-center justify-center opacity-0 text-white transition-opacity",
                               uploadProgress !== null && "opacity-100"
                             )}
                           >
@@ -191,7 +189,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
                           {...getRootProps()}
                         >
                           <Plus className="size-4 text-zinc-500" />
-                          <input {...getInputProps()} />
+                          <input disabled={uploadProgress !== null} {...getInputProps()} />
                         </div>
                       )}
                       {files.length > 0 && (
@@ -381,22 +379,21 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
           </div>
         </div>
         <div className="flex justify-center gap-2">
-          <Button type="submit" className="items-center gap-2">
+          <Button type="submit">
             {userMutation.isPending ? (
               <>
-                <Loader invert className="size-6" />
+                <Loader invert className="mr-2 size-6" />
                 Сохранение...
               </>
             ) : (
               <>
-                <Check className="size-6" />
+                <Check />
                 Сохранить
               </>
             )}
           </Button>
           <Button
             variant="outline"
-            className="items-center gap-2"
             onClick={() => {
               setLogOutLoading(true)
               fetch("/api/auth/", {
@@ -409,9 +406,9 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
             disabled={logOutLoading}
           >
             {logOutLoading ? (
-              <Loader className="size-4" />
+              <Loader className="mr-2 size-4" />
             ) : (
-              <LogOut className="size-4" />
+              <LogOut />
             )}
             Выйти из аккаунта
           </Button>

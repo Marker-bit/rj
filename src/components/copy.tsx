@@ -70,7 +70,7 @@ export function Copy({ text, className, label }: { text: string; className?: str
               </button>
             </TooltipTrigger>
             <TooltipContent className="px-2 py-1 text-xs">
-              Copy to clipboard
+              Скопировать
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
