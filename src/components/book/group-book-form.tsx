@@ -116,14 +116,12 @@ export function GroupBookForm({
                         allowedContent: "Картинка (до 8МБ)",
                       }}
                       onClientUploadComplete={(res) => {
-                        field.onChange(res[0].url)
+                        field.onChange(res[0].ufsUrl)
                       }}
                       onUploadError={(error: Error) => {
-                        alert(`ERROR! ${error.message}`)
+                        console.error(error)
                       }}
-                      appearance={{
-                        allowedContent: "text-black/70 dark:text-white/70",
-                      }}
+                      className="ut-button:bg-blue-500 ut-button:px-4"
                     />
                   </div>
                 )}

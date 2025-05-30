@@ -48,6 +48,14 @@ const bookSchema = z.object({
 export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
   const form = useForm<z.infer<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
+    defaultValues: {
+      title: "",
+      author: "",
+      pages: 0,
+      coverUrl: "",
+      description: "",
+      fields: [],
+    }
   })
   const [search, setSearch] = useState("")
   const [searchLoading, setSearchLoading] = useState(false)
@@ -75,7 +83,7 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
     form.reset({
       title: "",
       author: "",
-      pages: NaN,
+      pages: 0,
       coverUrl: "",
       description: "",
       fields: [],
@@ -173,13 +181,14 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
                 ) : (
                   <div className="flex items-center gap-2">
                     <UploadButton
+                      disabled={fileUploading}
                       endpoint="bookCover"
                       content={{
                         button: "Обложка",
                         allowedContent: "Картинка (до 8МБ)",
                       }}
                       onClientUploadComplete={(res) => {
-                        field.onChange(res[0].url)
+                        field.onChange(res[0].ufsUrl)
                         setFileUploading(false)
                       }}
                       onUploadError={(error: Error) => {
@@ -190,12 +199,11 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
                       onUploadBegin={(fileName) => {
                         setFileUploading(true)
                       }}
-                      appearance={{
-                        allowedContent: "text-black/70 dark:text-white/70",
-                      }}
+                      className="ut-button:bg-blue-500 ut-button:px-4"
                     />
                   </div>
                 )}
+                {fileUploading && <span>Загрузка файла...</span>}
                 <FormMessage />
               </FormItem>
             )}

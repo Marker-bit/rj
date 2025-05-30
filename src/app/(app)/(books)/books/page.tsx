@@ -48,7 +48,7 @@ export default async function BooksPage(
       ) : (
         <>
           <AddBookButton />
-          <Button
+          {/* <Button
             variant="outline"
             asChild
             className="m-2 flex items-start gap-2 sm:w-full md:w-1/2 lg:w-[30%]"
@@ -69,7 +69,7 @@ export default async function BooksPage(
                 <ChevronRight className="size-4" />
               </div>
             </Link>
-          </Button>
+          </Button> */}
           <BookList books={books.filter((b) => !b.isHidden)} />
           {books.filter((b) => b.isHidden).length > 0 && (
             <div className="m-2">

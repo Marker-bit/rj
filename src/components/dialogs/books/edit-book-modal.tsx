@@ -141,12 +141,13 @@ export function EditBookModal({
                         button: "Обложка",
                         allowedContent: "Картинка (до 8МБ)",
                       }}
-                      onClientUploadComplete={(res: any) => {
-                        field.onChange(res[0].url)
+                      onClientUploadComplete={(res) => {
+                        field.onChange(res[0].ufsUrl)
                       }}
                       onUploadError={(error: Error) => {
-                        alert(`ERROR! ${error.message}`)
+                        console.error(error)
                       }}
+                      className="ut-button:bg-blue-500 ut-button:px-4"
                     />
                   </div>
                 )}

@@ -121,12 +121,7 @@ export function RegisterForm() {
 
                   {usernameFound === true && (
                     <div className="text-xs">
-                      Пользователь с таким именем существует
-                    </div>
-                  )}
-                  {usernameFound === false && (
-                    <div className="text-xs">
-                      Пользователя с таким именем не существует
+                      Пользователь с таким именем уже существует, выберите другое
                     </div>
                   )}
                 </div>

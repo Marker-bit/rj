@@ -92,6 +92,7 @@ export function BookList({ books }: { books: Book[] }) {
             <Checkbox
               id="readBooks"
               aria-describedby="readBooks-description"
+              checked={readBooks}
               onCheckedChange={setReadBooks}
             />
             <div className="grid grow gap-2">
@@ -107,6 +108,7 @@ export function BookList({ books }: { books: Book[] }) {
             <Checkbox
               id="notStarted"
               aria-describedby="notStarted-description"
+              checked={notStarted}
               onCheckedChange={setNotStarted}
             />
             <div className="grid grow gap-2">
@@ -119,14 +121,6 @@ export function BookList({ books }: { books: Book[] }) {
             </div>
           </div>
         </div>
-        {books.length === 0 && (
-          <div className="flex items-center gap-2 rounded-xl border p-2 text-xl">
-            <BookMinus className="size-10" />
-            <div className="flex flex-col">
-              <div>Нет книг</div>
-            </div>
-          </div>
-        )}
         <form className="flex gap-2" onSubmit={search}>
           <Input
             placeholder="Поиск"
@@ -148,6 +142,14 @@ export function BookList({ books }: { books: Book[] }) {
           >
             Сбросить поиск
           </Button>
+        )}
+        {books.length === 0 && (
+          <div className="flex items-center gap-2 rounded-xl border p-2 text-xl">
+            <BookMinus className="size-10" />
+            <div className="flex flex-col">
+              <div>Нет книг</div>
+            </div>
+          </div>
         )}
         {searchResults ? (
           searchResults.map((book: Book) => (
