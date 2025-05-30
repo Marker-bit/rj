@@ -83,7 +83,7 @@ export function BottomBar() {
           </div>
         </div>
       </div>
-      {/* <div className="pointer-events-none fixed bottom-2 left-0 z-50 flex w-full items-center justify-center md:hidden">
+      <div className="pointer-events-none fixed bottom-2 left-0 z-50 flex w-full items-center justify-center md:hidden">
         <div className="pointer-events-auto mx-2 flex w-fit max-w-full content-center items-center gap-1 overflow-auto rounded-xl border bg-white/70 p-2 backdrop-blur-lg dark:bg-black/70">
           {urls.map((url) => (
             <BottomLinkMobile href={`/${url.href}`} key={url.href}>
@@ -94,7 +94,7 @@ export function BottomBar() {
             </BottomLinkMobile>
           ))}
         </div>
-      </div> */}
+      </div>
     </>
   )
 }

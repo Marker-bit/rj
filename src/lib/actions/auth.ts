@@ -6,6 +6,7 @@ import { NextResponse } from "next/server"
 import { lucia } from "../auth"
 import { cookies } from "next/headers"
 import { hash } from "@node-rs/argon2"
+import { redirect } from "next/navigation"
 
 export async function resetPassword(data: {
   username: string
@@ -106,7 +107,7 @@ export async function logOut() {
   if (!session) {
     return NextResponse.json({
       error: "Unauthorized",
-    })
+    }, {status: 401})
   }
 
   await lucia.invalidateSession(session.id)
@@ -117,5 +118,4 @@ export async function logOut() {
     sessionCookie.value,
     sessionCookie.attributes
   )
-  return new NextResponse()
 }

@@ -21,16 +21,17 @@ export function Landing({ loggedIn }: { loggedIn: boolean }) {
           </Link>
         </Button>
       </div>
-      <ContainerScroll titleComponent={<></>}>
+      <div className="px-5 mt-4 w-full">
+        <p className="text-center text-xl">Интерфейс сайта:</p>
         <Image
           src={`/rjrj.png`}
           alt="hero"
           height={910}
           width={1900}
-          className="mx-auto h-full rounded-2xl object-cover object-top-left"
+          className="mx-auto w-full mt-5 rounded-2xl block border relative"
           draggable={false}
         />
-      </ContainerScroll>
+      </div>
     </div>
   )
 }

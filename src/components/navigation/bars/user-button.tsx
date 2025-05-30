@@ -1,35 +1,24 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import { logOut } from "@/lib/actions/auth";
-import { User } from "lucia"
-import { ChevronsUpDown, LockKeyhole, LogOut, Settings, UserIcon } from "lucide-react"
-import Image from "next/image"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { toast } from "sonner"
+import { User } from "lucia";
+import { ChevronsUpDown, LockKeyhole, LogOut, Settings, UserIcon } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export function UserButton({ user }: { user: User }) {
   const router = useRouter()
-
-  const logOutClick = () => {
-    toast.promise(
-      async () => {
-        await logOut()
-        router.push("/")
-      },
-      {
-        loading: "Выход...",
-        success: "Вы вышли из аккаунта",
-        error: (error) => `Возникла проблема при выходе: ${error.message}`,
-      }
-    )
+  const logOutClick = async () => {
+    await logOut()
+    router.replace("/")
   }
 
   return (
