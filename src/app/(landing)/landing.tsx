@@ -22,7 +22,7 @@ export function Landing({ loggedIn }: { loggedIn: boolean }) {
         </Button>
       </div>
       <div className="px-5 mt-4 w-full">
-        <p className="text-center text-xl">Интерфейс сайта:</p>
+        <p className="text-center text-xl">Как всё будет:</p>
         <Image
           src={`/rjrj.png`}
           alt="hero"
