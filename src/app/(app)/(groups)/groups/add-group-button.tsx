@@ -12,11 +12,6 @@ export function AddGroupButton() {
   const [open, setOpen] = useState(false)
   const router = useRouter()
 
-  function onDone() {
-    setOpen(false)
-    router.refresh()
-  }
-
   return (
     <>
       <DrawerDialog open={open} onOpenChange={setOpen} className="min-w-[50vw]">
@@ -24,12 +19,10 @@ export function AddGroupButton() {
         <CreateGroupForm />
       </DrawerDialog>
       <Button
-        variant="ghost"
-        className="gap-1 max-sm:size-fit max-sm:p-2"
         onClick={() => setOpen(true)}
       >
-        <PlusIcon className="size-6" />
-        <div className="max-sm:hidden">Добавить</div>
+        <PlusIcon />
+        <div>Добавить</div>
       </Button>
     </>
   )

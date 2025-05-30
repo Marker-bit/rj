@@ -206,7 +206,7 @@ export default async function Page(
           {group.members.find((m) => m.userId === user.id)?.role ===
             GroupMemberRole.CREATOR && (
             <Tooltip>
-              <TooltipTrigger>
+              <TooltipTrigger asChild>
                 <DeleteGroupButton groupId={group.id} />
               </TooltipTrigger>
               <TooltipContent>Удалить группу</TooltipContent>
