@@ -46,6 +46,7 @@ import { Book } from "@/lib/api-types"
 import Palette from "./palette"
 import { backgroundColors } from "@/lib/colors"
 import { BackgroundColor } from "@prisma/client"
+import { HelpButton } from "../ui/help-button"
 
 export const dynamic = "force-dynamic"
 
@@ -346,48 +347,53 @@ export function BookView({ book }: { book: Book }) {
           </SimpleTooltip>
         </div>
         <div className="mt-1 flex flex-wrap gap-2">
-          <Button
+          <HelpButton
             className="gap-2"
             variant="outline"
             size="icon"
             onClick={() => setActionsDrawerOpen(true)}
+            helpText="Больше информации об этой книге"
           >
             <Info className="size-4" />
-          </Button>
+          </HelpButton>
           {lastEvent?.pagesRead !== book.pages && (
             <>
-              <Button
+              <HelpButton
                 className="gap-2"
                 variant="outline"
                 onClick={() => setDoneOpen(true)}
+                helpText="Отметить книгу прочитанной в определённую дату"
               >
                 <BookOpenCheck className="size-4" />
                 <div className="max-sm:hidden">Прочитана</div>
-              </Button>
-              <Button
+              </HelpButton>
+              <HelpButton
                 className="gap-2"
                 variant="outline"
                 onClick={() => setDateOpen(true)}
+                helpText="Отметить прочтение определённого количества страниц книги в некоторую дату"
               >
                 <BookOpenTextIcon className="size-4" />
                 <div className="max-sm:hidden">Отметить прочтение</div>
-              </Button>
+              </HelpButton>
             </>
           )}
-          <Button
+          <HelpButton
             className="gap-2"
             variant="outline"
             onClick={() => setShareBookOpen(true)}
+            helpText="Создайте ссылки на книгу, чтобы другие могли скопировать её себе"
           >
             <Share className="size-4" />
             <div className="max-sm:hidden">Поделиться</div>
-          </Button>
+          </HelpButton>
           {book.isHidden ? (
-            <Button
+            <HelpButton
               className="gap-2"
               variant="outline"
               onClick={() => hideMutation.mutate()}
               disabled={hideMutation.isPending}
+              helpText="Переместить эту книгу в обычный список книг"
             >
               {hideMutation.isPending ? (
                 <Loader className="size-4" />
@@ -395,13 +401,14 @@ export function BookView({ book }: { book: Book }) {
                 <Eye className="size-4" />
               )}
               <div className="max-sm:hidden">Показать</div>
-            </Button>
+            </HelpButton>
           ) : (
-            <Button
+            <HelpButton
               className="gap-2"
               variant="outline"
               onClick={() => hideMutation.mutate()}
               disabled={hideMutation.isPending}
+              helpText="Переместить эту книгу в самый низ, например, чтобы отложить её чтение на будущее"
             >
               {hideMutation.isPending ? (
                 <Loader className="size-4" />
@@ -409,27 +416,30 @@ export function BookView({ book }: { book: Book }) {
                 <EyeOff className="size-4" />
               )}
               <div className="max-sm:hidden">Скрыть</div>
-            </Button>
+            </HelpButton>
           )}
           <Palette background={book.background} bookId={book.id} />
           <div className="absolute right-0 top-0 m-2 flex scale-0 gap-2 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
-            <Button
-              size="icon"
-              variant="outline"
-              className="size-fit p-1"
-              onClick={() => setEditOpen(true)}
-            // disabled={book.groupBookId !== null}
-            >
-              <Edit className="size-4" />
-            </Button>
-            <Button
-              size="icon"
-              variant="outline"
-              className="size-fit p-1"
-              onClick={() => setDeleteDialogOpen(true)}
-            >
-              <Trash className="size-4" />
-            </Button>
+            <SimpleTooltip text="Отредактировать книгу">
+              <Button
+                size="icon"
+                variant="outline"
+                className="size-fit p-1"
+                onClick={() => setEditOpen(true)}
+              >
+                <Edit className="size-4" />
+              </Button>
+            </SimpleTooltip>
+            <SimpleTooltip text="Удалить книгу">
+              <Button
+                size="icon"
+                variant="outline"
+                className="size-fit p-1"
+                onClick={() => setDeleteDialogOpen(true)}
+              >
+                <Trash className="size-4" />
+              </Button>
+            </SimpleTooltip>
           </div>
         </div>
         {book.description && (

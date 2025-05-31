@@ -58,13 +58,13 @@ function TooltipContent({
   )
 }
 
-function SimpleTooltip({ text, children, asChild, ...props }: React.ComponentProps<typeof TooltipContent> & { text: string; asChild?: boolean }) {
+function SimpleTooltip({ text, children, asChild = true, ...props }: React.ComponentProps<typeof TooltipContent> & { text: string; asChild?: boolean }) {
   return (
     <Tooltip>
-      <TooltipTrigger asChild={asChild === undefined ? true : asChild}>
+      <TooltipTrigger asChild={asChild}>
         {children}
       </TooltipTrigger>
-      <TooltipContent>
+      <TooltipContent {...props}>
         <p>{text}</p>
       </TooltipContent>
     </Tooltip>

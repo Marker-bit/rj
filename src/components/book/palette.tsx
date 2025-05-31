@@ -101,6 +101,7 @@ export default function Palette({
             </motion.div>
           )}
         </AnimatePresence>
+        <p className="text-xs text-muted-foreground mt-2">Изменить цвет этой книги (цветные книги будут показываться в самом верху списка)</p>
       </PopoverContent>
     </Popover>
   )
