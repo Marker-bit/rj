@@ -5,7 +5,7 @@ import { BookInfoModal } from "@/components/dialogs/books/book-info-modal"
 import { DateReadModal } from "@/components/dialogs/books/date-read-modal"
 import { EditBookModal } from "@/components/dialogs/books/edit-book-modal"
 import { DrawerDialog } from "@/components/ui/drawer-dialog"
-import { Badge } from "@/components/ui/badge"
+import { Badge, IconBadge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
   DialogDescription,
@@ -37,7 +37,7 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { useMediaQuery } from "usehooks-ts"
 import { ShareBookModal } from "../dialogs/books/share-book-modal"
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip"
+import { SimpleTooltip, Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip"
 import Link from "next/link"
 import { toast } from "sonner"
 import { Loader } from "../ui/loader"
@@ -157,8 +157,8 @@ export function BookView({ book }: { book: Book }) {
     typeof book.fields === "string"
       ? JSON.parse(book.fields)
       : Array.isArray(book.fields)
-      ? book.fields
-      : []
+        ? book.fields
+        : []
 
   return (
     <div
@@ -262,18 +262,12 @@ export function BookView({ book }: { book: Book }) {
         <div className="my-2 flex flex-wrap items-center gap-2">
           {book.readEvents.length === 0 ? (
             <>
-              <Badge>
-                <CalendarDays /> Запланирована
-              </Badge>
-              <Badge variant="secondary">
-                <BookOpen /> {book.pages} страниц всего
-              </Badge>
+              <IconBadge icon={CalendarDays}>Запланирована</IconBadge>
+              <IconBadge variant="secondary" icon={BookOpen}>{book.pages} страниц всего</IconBadge>
             </>
           ) : lastEvent.pagesRead === book.pages ? (
             <>
-              <Badge>
-                <BookOpenCheck /> Прочитана
-              </Badge>
+              <IconBadge icon={BookOpenCheck}>Прочитана</IconBadge>
               <Button
                 variant="outline"
                 size="icon"
@@ -287,122 +281,97 @@ export function BookView({ book }: { book: Book }) {
                   <Undo className="size-4" />
                 )}
               </Button>
-              <Badge variant="secondary">
-                <BookOpen /> {book.pages}{" "}
-                {declOfNum(book.pages, ["страница", "страницы", "страниц"])}{" "}
-                всего
-              </Badge>
-              <Badge variant="outline">
-                <CalendarDays />
-                {dateToString(new Date(lastEvent.readAt))}
-              </Badge>
+              <IconBadge variant="secondary" icon={BookOpen}>
+                {book.pages} {declOfNum(book.pages, ["страница", "страницы", "страниц"])} всего
+              </IconBadge>
+              <IconBadge variant="outline" icon={CalendarDays}>{dateToString(new Date(lastEvent.readAt))}</IconBadge>
             </>
           ) : (
             <>
-              <Badge>
-                <BookIcon /> Читается
-              </Badge>
-              <Badge variant="secondary">
-                <BookOpen /> {lastEvent.pagesRead}{" "}
-                {declOfNum(lastEvent.pagesRead, [
-                  "страница",
-                  "страницы",
-                  "страниц",
-                ])}{" "}
-                из {book.pages}{" "}
-                {declOfNum(book.pages, ["страницы", "страниц", "страниц"])} (
-                {((lastEvent.pagesRead / book.pages) * 100).toFixed(1)}%)
-              </Badge>
-              <Badge variant="outline">
-                <CalendarDays />
+              <IconBadge icon={BookIcon}>Читается</IconBadge>
+              <IconBadge variant="secondary" icon={BookOpen}>
+                {lastEvent.pagesRead}/{book.pages}{" "}
+                {declOfNum(book.pages, ["страницы", "страниц", "страниц"])} ({((lastEvent.pagesRead / book.pages) * 100).toFixed(1)}%)
+              </IconBadge>
+              <IconBadge variant="outline" icon={CalendarDays}>
                 {dateToString(new Date(lastEvent.readAt))}
-              </Badge>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => undoEventMutation.mutate()}
-                disabled={undoEventMutation.isPending}
-                className="size-fit p-1"
-              >
-                {undoEventMutation.isPending ? (
-                  <Loader className="size-4" />
-                ) : (
-                  <Undo className="size-4" />
-                )}
-              </Button>
+                <SimpleTooltip text="Отменить событие">
+                  <button
+                    onClick={() => undoEventMutation.mutate()}
+                    disabled={undoEventMutation.isPending}
+                    className="ml-1">
+                    {undoEventMutation.isPending ? (
+                      <Loader className="size-3" />
+                    ) : (
+                      <Undo className="size-3" />
+                    )}
+                  </button>
+                </SimpleTooltip>
+              </IconBadge>
             </>
           )}
           {book.groupBook && (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Link href={`/groups/${book.groupBook.group.id}`}>
-                  <Badge variant="outline">
-                    <Users />{" "}
-                    {book.groupBook.group.title}
-                  </Badge>
-                </Link>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Группа</p>
-              </TooltipContent>
-            </Tooltip>
+            <SimpleTooltip text="Группа, в которой находится книга">
+              <Link href={`/groups/${book.groupBook.group.id}`}>
+                <IconBadge variant="outline" icon={Users}>{book.groupBook.group.title}</IconBadge>
+              </Link>
+            </SimpleTooltip>
           )}
 
           {book.links.length !== 0 && (
-            <Badge
+            <IconBadge
               variant="outline"
               onClick={() => setShareBookOpen(true)}
-              className="cursor-pointer"
+              className="cursor-pointer" icon={Link2}
             >
-              <Link2 /> {book.links.length}{" "}
+              {book.links.length}{" "}
               {declOfNum(book.links.length, ["ссылка", "ссылки", "ссылок"])}
-            </Badge>
+            </IconBadge>
           )}
         </div>
         <div className="flex flex-wrap gap-1">
-          {book.collections.map((collection: any) => (
+          {book.collections.map((collection) => (
             <Badge key={collection.id} variant="outline">
               {collection.name}
             </Badge>
           ))}
-          <Button
-            variant="outline"
-            size="icon"
-            className="size-fit rounded-full p-1"
-            onClick={() => setCollectionsOpen(true)}
-          >
-            <Plus className="size-4" />
-          </Button>
+          <SimpleTooltip text="Добавить в коллекцию">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setCollectionsOpen(true)}
+            >
+              <Plus className="size-4" />
+            </Button>
+          </SimpleTooltip>
         </div>
         <div className="mt-1 flex flex-wrap gap-2">
           <Button
             className="gap-2"
             variant="outline"
+            size="icon"
             onClick={() => setActionsDrawerOpen(true)}
           >
             <Info className="size-4" />
           </Button>
-          {!(lastEvent?.pagesRead === book.pages) && (
+          {lastEvent?.pagesRead !== book.pages && (
             <>
-              <>
-                <Button
-                  className="gap-2"
-                  variant="outline"
-                  onClick={() => setDoneOpen(true)}
-                  // disabled={doneMutation.isPending}
-                >
-                  <BookOpenCheck className="size-4" />
-                  <div className="max-sm:hidden">Прочитана</div>
-                </Button>
-                <Button
-                  className="gap-2"
-                  variant="outline"
-                  onClick={() => setDateOpen(true)}
-                >
-                  <BookOpenTextIcon className="size-4" />
-                  <div className="max-sm:hidden">Отметить прочтение</div>
-                </Button>
-              </>
+              <Button
+                className="gap-2"
+                variant="outline"
+                onClick={() => setDoneOpen(true)}
+              >
+                <BookOpenCheck className="size-4" />
+                <div className="max-sm:hidden">Прочитана</div>
+              </Button>
+              <Button
+                className="gap-2"
+                variant="outline"
+                onClick={() => setDateOpen(true)}
+              >
+                <BookOpenTextIcon className="size-4" />
+                <div className="max-sm:hidden">Отметить прочтение</div>
+              </Button>
             </>
           )}
           <Button
@@ -449,7 +418,7 @@ export function BookView({ book }: { book: Book }) {
               variant="outline"
               className="size-fit p-1"
               onClick={() => setEditOpen(true)}
-              // disabled={book.groupBookId !== null}
+            // disabled={book.groupBookId !== null}
             >
               <Edit className="size-4" />
             </Button>

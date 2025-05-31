@@ -39,8 +39,9 @@ export default function Palette({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button className="gap-2" variant="outline">
+        <Button variant="outline">
           <PaletteIcon className="size-4" />
+          <div className="max-sm:hidden">Цвет</div>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="overflow-hidden">
@@ -50,7 +51,7 @@ export default function Palette({
             onClick={() => setColor(BackgroundColor.NONE)}
           >
             <div className="size-8 rounded-lg bg-zinc-200 dark:bg-zinc-800" />
-            <AnimatePresence>
+            <AnimatePresence initial={false}>
               {chosenBackground === BackgroundColor.NONE && (
                 <motion.div
                   initial={{ width: 0, opacity: 0 }}

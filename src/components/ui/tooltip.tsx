@@ -58,4 +58,17 @@ function TooltipContent({
   )
 }
 
-export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider }
+function SimpleTooltip({ text, children, asChild, ...props }: React.ComponentProps<typeof TooltipContent> & { text: string; asChild?: boolean }) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild={asChild === undefined ? true : asChild}>
+        {children}
+      </TooltipTrigger>
+      <TooltipContent>
+        <p>{text}</p>
+      </TooltipContent>
+    </Tooltip>
+  )
+}
+
+export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider, SimpleTooltip }

@@ -1,14 +1,14 @@
 "use client"
 
-import { ru } from "date-fns/locale"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Calendar } from "@/components/ui/calendar"
-import { DrawerDialog } from "@/components/ui/drawer-dialog"
-import { useRef, useState } from "react"
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { DrawerDialog } from "@/components/ui/drawer-dialog"
+import { Input } from "@/components/ui/input"
+import { startOfDay } from "date-fns"
+import { ru } from "date-fns/locale"
 import { Loader, Save } from "lucide-react"
-import { addDays, startOfDay } from "date-fns"
+import { useMemo, useRef, useState } from "react"
 import { toast } from "sonner"
 
 export function DateReadModal({
@@ -24,21 +24,23 @@ export function DateReadModal({
   book: { readEvents: { readAt: Date }[] }
   lastEvent: { pagesRead: number }
 }) {
-  const tomorrow = addDays(new Date(), 1)
+  const today = new Date()
   const [date, setDate] = useState<Date | undefined>(new Date())
   const [changePages, setChangePages] = useState<string>(
     lastEvent?.pagesRead.toString() || ""
   )
   const input = useRef<HTMLInputElement>(null)
 
-  const days: Date[] = []
-
-  for (const event of book.readEvents) {
-    const date = startOfDay(event.readAt)
-    if (!days.includes(date)) {
-      days.push(date)
+  const days = useMemo(() => {
+    const days: Date[] = []
+    for (const event of book.readEvents) {
+      const date = startOfDay(event.readAt)
+      if (!days.includes(date)) {
+        days.push(date)
+      }
     }
-  }
+    return days
+  }, [book])
 
   const handleClose = (b: boolean) => {
     if (b) {
@@ -60,12 +62,16 @@ export function DateReadModal({
         <Calendar
           mode="single"
           selected={date}
-          onSelect={setDate}
+          onSelect={(newDate) => {
+            if (newDate) {
+              setDate(newDate)
+            }
+          }}
           className="w-fit rounded-md border max-sm:w-full"
-          disabled={[{ from: tomorrow, to: new Date(3000, 1) }]}
+          disabled={[{ after: today }]}
           weekStartsOn={1}
           locale={ru}
-          fixedWeeks
+          toDate={new Date()}
           modifiers={{ events: days }}
           modifiersClassNames={{ events: "bg-green-100 dark:bg-green-800" }}
         />
@@ -113,8 +119,7 @@ export function DateReadModal({
             <p className="mt-2 text-sm text-muted-foreground">
               {!isNaN(parseInt(changePages)) &&
                 lastEvent &&
-                `Относительно прошлого: ${
-                  parseInt(changePages) - lastEvent.pagesRead
+                `Относительно прошлого: ${parseInt(changePages) - lastEvent.pagesRead
                 }`}
             </p>
           </div>

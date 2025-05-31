@@ -43,7 +43,7 @@ export function BookInfoModal({
 
   return (
     <DrawerDialog open={open} onOpenChange={setOpen} className="min-w-[50vw]">
-        <DialogTitle className="hidden">{book.title}</DialogTitle>
+      <DialogTitle className="hidden">{book.title}</DialogTitle>
       <div className="mt-2 flex flex-col gap-2">
         <div className="flex">
           {book.coverUrl && (
@@ -126,51 +126,52 @@ export function BookInfoModal({
             <Pencil /> Редактировать коллекции
           </Button>
         </div>
-        <Button
-          className="gap-2"
-          variant="outline"
-          onClick={() => setShareOpen(true)}
-        >
-          <Share className="size-4" />
-          Поделиться
-        </Button>
-        <Button
-          className="gap-2"
-          variant="outline"
-          onClick={() => setEditOpen(true)}
+        <div className="grid lg:grid-cols-2 gap-2">
+          <Button
+            className="gap-2"
+            variant="outline"
+            onClick={() => setShareOpen(true)}
+          >
+            <Share />
+            Поделиться
+          </Button>
+          <Button
+            className="gap-2"
+            variant="outline"
+            onClick={() => setEditOpen(true)}
           // disabled={book.groupBookId}
-        >
-          <Edit className="size-4" />
-          Редактировать
-        </Button>
-        <Button
-          className="gap-2 text-red-500 hover:text-red-700"
-          variant="outline"
-          onClick={() => setDeleteDialogOpen(true)}
-        >
-          <Trash className="size-4" />
-          Удалить
-        </Button>
-        {lastEvent?.pagesRead !== book.pages && (
-          <>
-            <Button
-              className="gap-2"
-              variant="outline"
-              onClick={() => setDoneOpen(true)}
-            >
-              <BookOpenCheck className="size-4" />
-              Прочитана
-            </Button>
-            <Button
-              className="gap-2"
-              variant="outline"
-              onClick={() => setDateOpen(true)}
-            >
-              <BookOpenTextIcon className="size-4" />
-              Отметить прочтение
-            </Button>
-          </>
-        )}
+          >
+            <Edit />
+            Редактировать
+          </Button>
+          <Button
+            variant="destructive"
+            onClick={() => setDeleteDialogOpen(true)}
+          >
+            <Trash />
+            Удалить
+          </Button>
+          {lastEvent?.pagesRead !== book.pages && (
+            <>
+              <Button
+                className="gap-2"
+                variant="outline"
+                onClick={() => setDoneOpen(true)}
+              >
+                <BookOpenCheck />
+                Прочитана
+              </Button>
+              <Button
+                className="gap-2"
+                variant="outline"
+                onClick={() => setDateOpen(true)}
+              >
+                <BookOpenTextIcon />
+                Отметить прочтение
+              </Button>
+            </>
+          )}
+        </div>
       </div>
     </DrawerDialog>
   )

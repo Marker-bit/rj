@@ -1,14 +1,13 @@
 "use client"
 
-import { ru } from "date-fns/locale"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Calendar } from "@/components/ui/calendar"
-import { DrawerDialog } from "@/components/ui/drawer-dialog"
-import { useRef, useState } from "react"
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { DrawerDialog } from "@/components/ui/drawer-dialog"
+import { startOfDay } from "date-fns"
+import { ru } from "date-fns/locale"
 import { Save } from "lucide-react"
-import { addDays, getDate, startOfDay, subYears } from "date-fns"
+import { useState } from "react"
 import { toast } from "sonner"
 import { Loader } from "../../ui/loader"
 
@@ -23,8 +22,8 @@ export function DateDoneModal({
   readDoneMutation: any
   book: { readEvents: { readAt: Date }[] }
 }) {
-  const tomorrow = addDays(new Date(), 1)
-  const [date, setDate] = useState<Date | undefined>(new Date())
+  const today = new Date()
+  const [date, setDate] = useState<Date | undefined>(today)
 
   const days: Date[] = []
 
@@ -47,18 +46,21 @@ export function DateDoneModal({
   return (
     <DrawerDialog open={isOpen} onOpenChange={handleClose}>
       <DialogHeader className="mb-2">
-        <DialogTitle>Отметить прочитанную книгу</DialogTitle>
+        <DialogTitle>Отметить книгу прочитанной</DialogTitle>
       </DialogHeader>
       <div className="flex flex-col gap-2">
         <Calendar
           mode="single"
           selected={date}
-          onSelect={setDate}
+          onSelect={(newDate) => {
+            if (newDate) {
+              setDate(newDate)
+            }
+          }}
           className="w-fit rounded-md border max-sm:w-full"
-          disabled={[{ from: tomorrow, to: new Date(3000, 1) }]}
+          disabled={[{ after: today }]}
           weekStartsOn={1}
           locale={ru}
-          fixedWeeks
           toDate={new Date()}
           modifiers={{ events: days }}
           modifiersClassNames={{ events: "bg-green-100 dark:bg-green-800" }}
