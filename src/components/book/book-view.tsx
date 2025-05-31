@@ -22,6 +22,7 @@ import {
   BookOpenTextIcon,
   CalendarDays,
   Edit,
+  Edit2,
   Eye,
   EyeOff,
   Info,
@@ -342,7 +343,7 @@ export function BookView({ book }: { book: Book }) {
               size="icon"
               onClick={() => setCollectionsOpen(true)}
             >
-              <Plus className="size-4" />
+              <Edit2 className="size-4" />
             </Button>
           </SimpleTooltip>
         </div>

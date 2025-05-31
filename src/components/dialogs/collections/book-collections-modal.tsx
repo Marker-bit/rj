@@ -10,6 +10,7 @@ import { Button } from "../../ui/button"
 import { cn, declOfNum } from "@/lib/utils"
 import { useRouter } from "next/navigation"
 import type { Book } from "@/lib/api-types"
+import { Label } from "@/components/ui/label"
 
 export function BookCollectionsModal({
   open,
@@ -58,7 +59,7 @@ export function BookCollectionsModal({
           </div>
         )}
         <div className="flex flex-col gap-2">
-          {collectionsQuery.data &&
+          {/* {collectionsQuery.data &&
             collectionsQuery.data.map(
               (collection: { id: string; name: string; books: Book[] }) => (
                 <div
@@ -98,6 +99,47 @@ export function BookCollectionsModal({
                         "книг",
                       ])}
                     </div>
+                  </div>
+                </div>
+              )
+            )} */}
+          {collectionsQuery.data &&
+            collectionsQuery.data.map(
+              (collection: { id: string; name: string; books: Book[] }) => (
+                <div className="border-input has-data-[state=checked]:border-primary/50 relative flex w-full items-start gap-2 rounded-md border p-4 shadow-xs outline-none" key={collection.id}
+                  onClick={() =>
+                    setSelectedCollections(
+                      selectedCollections.includes(collection.id)
+                        ? selectedCollections.filter((c) => c !== collection.id)
+                        : [...selectedCollections, collection.id]
+                    )
+                  }>
+                  <Checkbox
+                    id={collection.id}
+                    aria-describedby={`${collection.id}-description`}
+                    checked={selectedCollections.includes(collection.id)}
+                    onCheckedChange={() =>
+                      setSelectedCollections(
+                        selectedCollections.includes(collection.id)
+                          ? selectedCollections.filter(
+                            (c) => c !== collection.id
+                          )
+                          : [...selectedCollections, collection.id]
+                      )
+                    }
+                  />
+                  <div className="grid grow gap-2">
+                    <Label>
+                      {collection.name}
+                    </Label>
+                    <p id={`${collection.id}-description`} className="text-muted-foreground text-xs">
+                      {collection.books.length}{" "}
+                      {declOfNum(collection.books.length, [
+                        "книга",
+                        "книги",
+                        "книг",
+                      ])}
+                    </p>
                   </div>
                 </div>
               )
