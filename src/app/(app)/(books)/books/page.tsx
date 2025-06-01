@@ -5,7 +5,7 @@ import { validateRequest } from "@/lib/server-validate-request"
 import { ChevronLeft, ChevronRight, HistoryIcon } from "lucide-react"
 import Link from "next/link"
 import { BookList } from "./book-list"
-import { AddBookButton } from "@/components/book/book-form"
+import AddBookButton from "./button"
 
 export default async function BooksPage(
   props: {

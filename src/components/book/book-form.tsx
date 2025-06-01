@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -9,24 +9,23 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { UploadButton } from "@/components/uploadthing"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Plus, Trash, X } from "lucide-react"
-import Image from "next/image"
-import { useState } from "react"
-import { useFieldArray, useForm } from "react-hook-form"
-import { z } from "zod"
-import { DrawerDialog } from "../ui/drawer-dialog"
-import { DialogHeader, DialogTitle } from "../ui/dialog"
-import { Loader } from "../ui/loader"
-import { useRouter } from "next/navigation"
-import { toast } from "sonner"
-import { createBook } from "@/lib/actions/books"
-import { cn } from "@/lib/utils"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { UploadButton } from "@/components/uploadthing";
+import { createBook } from "@/lib/actions/books";
+import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Plus, Trash, X } from "lucide-react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
+import { DialogHeader, DialogTitle } from "../ui/dialog";
+import { DrawerDialog } from "../ui/drawer-dialog";
+import { Loader } from "../ui/loader";
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -34,16 +33,15 @@ const bookSchema = z.object({
   pages: z.coerce.number().min(1),
   description: z.string().optional(),
   coverUrl: z.string().optional(),
-  fields: z
-    .array(
-      z.object({
-        title: z.string({ required_error: "Название поля обязательно" }),
-        value: z.string({
-          required_error: "Значение поля обязательно",
-        }),
-      })
-    ),
-})
+  fields: z.array(
+    z.object({
+      title: z.string({ required_error: "Название поля обязательно" }),
+      value: z.string({
+        required_error: "Значение поля обязательно",
+      }),
+    })
+  ),
+});
 
 export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
   const form = useForm<z.infer<typeof bookSchema>>({
@@ -55,31 +53,31 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
       coverUrl: "",
       description: "",
       fields: [],
-    }
-  })
-  const [search, setSearch] = useState("")
-  const [searchLoading, setSearchLoading] = useState(false)
+    },
+  });
+  const [search, setSearch] = useState("");
+  const [searchLoading, setSearchLoading] = useState(false);
   const [searchResults, setSearchResults] = useState<
     {
-      title: string
-      authors: string
-      imageUrl: string | null
+      title: string;
+      authors: string;
+      imageUrl: string | null;
     }[]
-  >()
-  const [fileUploading, setFileUploading] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const router = useRouter()
+  >();
+  const [fileUploading, setFileUploading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const { fields, append, remove } = useFieldArray({
     name: "fields",
     control: form.control,
-  })
+  });
 
   async function onSubmit(values: z.infer<typeof bookSchema>) {
-    setLoading(true)
-    await createBook(values)
-    setLoading(false)
-    router.refresh()
+    setLoading(true);
+    await createBook(values);
+    setLoading(false);
+    router.refresh();
     form.reset({
       title: "",
       author: "",
@@ -87,8 +85,8 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
       coverUrl: "",
       description: "",
       fields: [],
-    })
-    if (onSuccess) onSuccess()
+    });
+    if (onSuccess) onSuccess();
   }
 
   return (
@@ -127,8 +125,8 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
                     title: book.title,
                     author: book.authors,
                     coverUrl: book.imageUrl ?? undefined,
-                  })
-                  setSearchResults(undefined)
+                  });
+                  setSearchResults(undefined);
                 }}
               >
                 {book.imageUrl && (
@@ -188,16 +186,16 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
                         allowedContent: "Картинка (до 8МБ)",
                       }}
                       onClientUploadComplete={(res) => {
-                        field.onChange(res[0].ufsUrl)
-                        setFileUploading(false)
+                        field.onChange(res[0].ufsUrl);
+                        setFileUploading(false);
                       }}
                       onUploadError={(error: Error) => {
                         toast.error("Ошибка при загрузке обложки", {
                           description: error.message,
-                        })
+                        });
                       }}
                       onUploadBegin={(fileName) => {
-                        setFileUploading(true)
+                        setFileUploading(true);
                       }}
                       className="ut-button:bg-blue-500 ut-button:px-4"
                     />
@@ -315,30 +313,18 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
             </Button>
           </div>
           <Button type="submit" disabled={loading || fileUploading}>
-            {loading ? (
-              <Loader invert className="mr-2 size-4" />
-            ) : (
-              <Plus />
-            )}
+            {loading ? <Loader invert className="mr-2 size-4" /> : <Plus />}
             Создать
           </Button>
         </form>
       </Form>
     </>
-  )
+  );
 }
 
-export function AddBookButton() {
-  const [open, setOpen] = useState(false)
-  const router = useRouter()
-
+export function AddBookDialog({ open, setOpen }: { open: boolean; setOpen: (open: boolean) => void }) {
   return (
     <>
-      <div className="m-2 flex items-center">
-        <Button onClick={() => setOpen(true)}>
-          <Plus /> Добавить книгу
-        </Button>
-      </div>
       <DrawerDialog open={open} onOpenChange={setOpen} className="min-w-[50vw]">
         <DialogHeader>
           <DialogTitle>Добавить книгу</DialogTitle>
@@ -346,11 +332,11 @@ export function AddBookButton() {
         <div className="p-4">
           <BookForm
             onSuccess={() => {
-              setOpen(false)
+              setOpen(false);
             }}
           />
         </div>
       </DrawerDialog>
     </>
-  )
+  );
 }

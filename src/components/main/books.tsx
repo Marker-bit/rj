@@ -1,15 +1,21 @@
-import { fetchBooks } from "@/lib/books"
-import { validateRequest } from "@/lib/server-validate-request"
-import { Book, BookMinus, ChevronRight } from "lucide-react"
-import Link from "next/link"
-import { BookView } from "@/components/book/book-view"
+import { BookView } from "@/components/book/book-view";
+import { fetchBooks } from "@/lib/books";
+import { validateRequest } from "@/lib/server-validate-request";
+import { Book, BookMinus, ChevronRight } from "lucide-react";
+import Link from "next/link";
+import BooksCard from "./cards/books-card";
 
 export async function Books() {
-  const { user } = await validateRequest()
-  if (!user) return null
+  const { user } = await validateRequest();
+  if (!user) return null;
   const books = (await fetchBooks(user.id))
-    .filter((book) => book.readEvents[0]?.pagesRead !== book.pages && !book.isHidden)
-    .slice(0, 3)
+    .filter(
+      (book) => book.readEvents[0]?.pagesRead !== book.pages && !book.isHidden
+    )
+    .slice(0, 3);
+
+  return <BooksCard books={books} />;
+
   return (
     <div className="flex cursor-default flex-col gap-3 border-b p-3">
       <Link href="/books">
@@ -36,5 +42,5 @@ export async function Books() {
         </div>
       )}
     </div>
-  )
+  );
 }

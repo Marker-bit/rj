@@ -48,7 +48,7 @@ export default function Notifications() {
   ]
 
   return (
-    <div className="m-2 flex flex-col gap-2">
+    <div className="flex flex-col gap-2">
       {notifications.map((notification) => (
         <Notification key={notification.id} notification={notification} />
       ))}
