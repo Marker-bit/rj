@@ -1,17 +1,13 @@
 import { Books } from "@/components/main/books"
-import { Profile } from "@/components/main/profile"
+import FirstSteps from "@/components/main/first-steps"
 import { Stats } from "@/components/main/stats"
 import { StreakInfo } from "@/components/main/streak-info"
 import { ModeToggle } from "@/components/mode-toggle"
-import { Button } from "@/components/ui/button"
-import { Skeleton } from "@/components/ui/skeleton"
-import { MessageCircleQuestion } from "lucide-react"
-import Link from "next/link"
-import { Suspense } from "react"
-import SupportButton from "./support-button"
-import FirstSteps from "@/components/main/first-steps"
 import Notifications from "@/components/notifications"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Suspense } from "react"
 import OldUsers from "./old-users"
+import SupportButton from "./support-button"
 
 export default function Home() {
   return (

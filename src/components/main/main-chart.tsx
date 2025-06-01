@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { Area, AreaChart, Bar, BarChart, CartesianGrid, XAxis } from "recharts"
+import { Area, AreaChart, Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
 import {
   Card,
@@ -8,82 +8,82 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/chart";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { AreaChartIcon, BarChartIcon } from "lucide-react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
-import { addDays, isSameDay, subMonths } from "date-fns"
+} from "@/components/ui/select";
+import { AreaChartIcon, BarChartIcon } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { addDays, isSameDay, subMonths } from "date-fns";
 import { useState } from "react";
 
 const chartConfig = {
   desktop: {
     label: "Страниц",
-    color: "var(--chart-1)",
+    color: "var(--primary)",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 export default function MainChart({
   events,
   profile,
 }: {
-  events: any[]
-  profile: any
+  events: any[];
+  profile: any;
 }) {
-  const threeMonthsAgo = subMonths(new Date(), 3)
+  const threeMonthsAgo = subMonths(new Date(), 3);
   const threeMonthsEvents = events.filter((event) => {
-    return event.readAt > threeMonthsAgo
-  })
-  const chartData = []
-  let day = threeMonthsAgo
+    return event.readAt > threeMonthsAgo;
+  });
+  const chartData = [];
+  let day = threeMonthsAgo;
   while (day <= new Date()) {
-    let result = 0
+    let result = 0;
     const todayEvents = threeMonthsEvents.filter((e) => {
-      return isSameDay(e.readAt, day)
-    })
+      return isSameDay(e.readAt, day);
+    });
     todayEvents.forEach((event) => {
       const bookEvents = threeMonthsEvents.filter((e) => {
-        return event.bookId === e.book.id
-      })
+        return event.bookId === e.book.id;
+      });
       if (bookEvents.length === 1 || bookEvents.indexOf(event) === 0) {
-        result += event.pagesRead
+        result += event.pagesRead;
       } else {
-        const previousEventIndex = bookEvents.indexOf(event) - 1
-        const previousEvent = bookEvents[previousEventIndex]
-        result += event.pagesRead - previousEvent.pagesRead
+        const previousEventIndex = bookEvents.indexOf(event) - 1;
+        const previousEvent = bookEvents[previousEventIndex];
+        result += event.pagesRead - previousEvent.pagesRead;
       }
-    })
+    });
     chartData.push({
       date: day.toISOString().split("T")[0],
       desktop: result,
-    })
-    day = addDays(day, 1)
+    });
+    day = addDays(day, 1);
   }
-  const [timeRange, setTimeRange] = useState("90d")
+  const [timeRange, setTimeRange] = useState("90d");
 
   const filteredData = chartData.filter((item) => {
-    const date = new Date(item.date)
-    const now = new Date()
-    let daysToSubtract = 90
+    const date = new Date(item.date);
+    const now = new Date();
+    let daysToSubtract = 90;
     if (timeRange === "30d") {
-      daysToSubtract = 30
+      daysToSubtract = 30;
     } else if (timeRange === "7d") {
-      daysToSubtract = 7
+      daysToSubtract = 7;
     }
-    now.setDate(now.getDate() - daysToSubtract)
-    return date >= now
-  })
+    now.setDate(now.getDate() - daysToSubtract);
+    return date >= now;
+  });
 
   return (
     <Card className="m-2">
@@ -152,11 +152,11 @@ export default function MainChart({
                   tickMargin={8}
                   minTickGap={32}
                   tickFormatter={(value) => {
-                    const date = new Date(value)
+                    const date = new Date(value);
                     return date.toLocaleDateString("ru-RU", {
                       month: "short",
                       day: "numeric",
-                    })
+                    });
                   }}
                 />
                 <ChartTooltip
@@ -167,7 +167,7 @@ export default function MainChart({
                         return new Date(value).toLocaleDateString("ru-RU", {
                           month: "short",
                           day: "numeric",
-                        })
+                        });
                       }}
                       indicator="line"
                     />
@@ -175,10 +175,11 @@ export default function MainChart({
                 />
                 <Area
                   dataKey="desktop"
-                  type="monotone"
-                  fill="url(#fillDesktop)"
+                  fill="var(--color-desktop)"
+                  fillOpacity={0.05}
                   stroke="var(--color-desktop)"
-                  stackId="a"
+                  strokeWidth={2}
+                  type="monotone"
                 />
               </AreaChart>
             </ChartContainer>
@@ -188,9 +189,7 @@ export default function MainChart({
               config={chartConfig}
               className="aspect-auto h-[250px] w-full"
             >
-              <BarChart
-                data={filteredData}
-              >
+              <BarChart data={filteredData}>
                 <CartesianGrid vertical={false} />
                 <XAxis
                   dataKey="date"
@@ -199,11 +198,11 @@ export default function MainChart({
                   tickMargin={8}
                   minTickGap={32}
                   tickFormatter={(value) => {
-                    const date = new Date(value)
+                    const date = new Date(value);
                     return date.toLocaleDateString("ru-RU", {
                       month: "short",
                       day: "numeric",
-                    })
+                    });
                   }}
                 />
                 <ChartTooltip
@@ -213,7 +212,7 @@ export default function MainChart({
                         return new Date(value).toLocaleDateString("ru-RU", {
                           month: "short",
                           day: "numeric",
-                        })
+                        });
                       }}
                       indicator="line"
                     />
@@ -226,5 +225,5 @@ export default function MainChart({
         </CardContent>
       </Tabs>
     </Card>
-  )
+  );
 }

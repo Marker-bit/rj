@@ -24,11 +24,11 @@ export default async function SupportButton() {
     <Button variant="ghost" size="icon" asChild>
       <Link href="/support">
         {unread > 0 ? (
-          <div className="flex size-6 items-center justify-center rounded-full bg-black text-white dark:bg-white dark:text-black">
+          <div className="flex size-[1.2rem] items-center justify-center rounded-full bg-black text-white dark:bg-white dark:text-black">
             {unread}
           </div>
         ) : (
-          <MessageCircleQuestion className="size-6" />
+          <MessageCircleQuestion className="size-[1.2rem]" />
         )}
       </Link>
     </Button>

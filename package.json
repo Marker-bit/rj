@@ -91,20 +91,20 @@
     "react-spinners": "^0.17.0",
     "recharts": "2.15.3",
     "sharp": "^0.34.2",
-    "sonner": "^2.0.3",
+    "sonner": "^2.0.4",
     "tailwind-merge": "^3.3.0",
     "uploadthing": "^7.7.2",
     "usehooks-ts": "^3.1.1",
     "vaul": "^1.1.2",
-    "zod": "^3.25.36",
+    "zod": "^3.25.45",
     "zustand": "^5.0.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.8",
-    "@types/node": "^22.15.24",
+    "@types/node": "^22.15.29",
     "@types/react": "19.1.6",
     "@types/react-dom": "19.1.5",
-    "eslint": "^9.27.0",
+    "eslint": "^9.28.0",
     "eslint-config-next": "15.3.2",
     "eslint-plugin-tailwindcss": "^3.18.0",
     "postcss": "^8.5.4",
@@ -125,6 +125,7 @@
       "@vercel/speed-insights",
       "msgpackr-extract",
       "prisma",
+      "sharp",
       "unrs-resolver"
     ]
   },

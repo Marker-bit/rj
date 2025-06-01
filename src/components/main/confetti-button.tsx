@@ -35,7 +35,7 @@ export function ConfettiButton() {
   }
 
   return (
-    <Button onClick={handleClick} className="size-fit p-2" variant="ghost">
+    <Button onClick={handleClick} className="active:scale-90" size="icon" variant="ghost">
       <PartyPopper className="size-4" />
     </Button>
   )
