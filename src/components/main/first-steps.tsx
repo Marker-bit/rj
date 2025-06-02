@@ -99,10 +99,4 @@ export default async function FirstSteps() {
       </CardContent>
     </Card>
   );
-
-  return (
-    <div className="flex flex-col gap-2 rounded-xl bg-secondary p-4">
-      <h2 className="text-xl font-bold">Первые шаги</h2>
-    </div>
-  );
 }

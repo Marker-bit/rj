@@ -26,8 +26,6 @@ export async function StreakInfo() {
     },
   })
 
-  if (events.length === 0) return null
-
   return <StreakBlock events={events} user={user} />;
 
   // return (
