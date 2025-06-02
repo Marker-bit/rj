@@ -6,14 +6,14 @@ import { db } from "../db"
 import { validateRequest } from "../server-validate-request"
 import { z } from "zod";
 
-export async function getBooks() {
+export async function getBooks(orderBy: "percent" | "activity" = "percent") {
   const { user } = await validateRequest()
 
   if (!user) {
     return []
   }
 
-  const books = await fetchBooks(user.id)
+  const books = await fetchBooks(user.id, orderBy)
   return books
 }
 

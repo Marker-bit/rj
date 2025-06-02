@@ -1,10 +1,9 @@
 "use client";
 
-import { BookCollectionsModal } from "@/components/dialogs/collections/book-collections-modal";
 import { BookInfoModal } from "@/components/dialogs/books/book-info-modal";
 import { DateReadModal } from "@/components/dialogs/books/date-read-modal";
 import { EditBookModal } from "@/components/dialogs/books/edit-book-modal";
-import { DrawerDialog } from "@/components/ui/drawer-dialog";
+import { BookCollectionsModal } from "@/components/dialogs/collections/book-collections-modal";
 import { Badge, IconBadge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,8 +11,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { DrawerDialog } from "@/components/ui/drawer-dialog";
+import { Book } from "@/lib/api-types";
+import { backgroundColors } from "@/lib/colors";
 import { cn, dateToString, declOfNum } from "@/lib/utils";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { BackgroundColor } from "@prisma/client";
+import { useMutation } from "@tanstack/react-query";
 import { isSameDay } from "date-fns";
 import {
   BookIcon,
@@ -27,36 +30,28 @@ import {
   EyeOff,
   Info,
   Link2,
-  Plus,
   Share,
   Trash,
   Undo,
-  Users,
+  Users
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useMediaQuery } from "usehooks-ts";
-import { ShareBookModal } from "../dialogs/books/share-book-modal";
-import {
-  SimpleTooltip,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "../ui/tooltip";
-import Link from "next/link";
 import { toast } from "sonner";
-import { Loader } from "../ui/loader";
 import { DateDoneModal } from "../dialogs/books/date-done-modal";
-import { Book } from "@/lib/api-types";
-import Palette from "./palette";
-import { backgroundColors } from "@/lib/colors";
-import { BackgroundColor } from "@prisma/client";
+import { ShareBookModal } from "../dialogs/books/share-book-modal";
 import { HelpButton } from "../ui/help-button";
+import { Loader } from "../ui/loader";
+import {
+  SimpleTooltip
+} from "../ui/tooltip";
+import Palette from "./palette";
 
 export const dynamic = "force-dynamic";
 
-export function BookView({ book }: { book: Book }) {
+export function BookView({ book, onUpdate }: { book: Book, onUpdate?: () => void }) {
   const [editOpen, setEditOpen] = useState(false);
   const [dateOpen, setDateOpen] = useState(false);
   const [doneOpen, setDoneOpen] = useState(false);
@@ -65,7 +60,6 @@ export function BookView({ book }: { book: Book }) {
   const [descriptionDrawerOpen, setDescriptionDrawerOpen] = useState(false);
   const [collectionsOpen, setCollectionsOpen] = useState(false);
   const [shareBookOpen, setShareBookOpen] = useState(false);
-  const isMobile = useMediaQuery("(max-width: 768px)");
   const router = useRouter();
 
   const undoEventMutation = useMutation({
@@ -75,6 +69,7 @@ export function BookView({ book }: { book: Book }) {
       }),
     onSuccess: () => {
       toast.success("Событие отменено");
+      onUpdate?.();
       router.refresh();
       // router.push(`/books?bookId=${book.id}`)
       // router.refresh()
@@ -95,6 +90,7 @@ export function BookView({ book }: { book: Book }) {
       toast.success("Книга отмечена как прочитанная");
       setDoneOpen(false);
       setActionsDrawerOpen(false);
+      onUpdate?.();
       router.refresh();
       // router.push(`/books?bookId=${book.id}`)
       // router.refresh()
@@ -114,9 +110,8 @@ export function BookView({ book }: { book: Book }) {
       setDateOpen(false);
       toast.success("Событие сохранено");
       setActionsDrawerOpen(false);
+      onUpdate?.();
       router.refresh();
-      // router.push(`/books?bookId=${book.id}`)
-      // router.refresh()
     },
   });
 
@@ -129,6 +124,7 @@ export function BookView({ book }: { book: Book }) {
       setDeleteDialogOpen(false);
       setActionsDrawerOpen(false);
       toast.success("Книга удалена");
+      onUpdate?.();
       router.refresh();
     },
   });
@@ -138,6 +134,7 @@ export function BookView({ book }: { book: Book }) {
     onSuccess: () => {
       setActionsDrawerOpen(false);
       toast.success("Книга скрыта");
+      onUpdate?.();
       router.refresh();
     },
   });

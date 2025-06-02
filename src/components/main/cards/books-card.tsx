@@ -14,26 +14,70 @@ import {
 import { fetchBooks } from "@/lib/books";
 import { ArrowRightIcon, TriangleAlert } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState, useTransition } from "react";
+import { useLocalStorage } from "usehooks-ts";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { getBooks } from "@/lib/actions/books";
+import { Skeleton } from "@/components/ui/skeleton";
 
-export default function BooksCard({
-  books,
-}: {
-  books: Awaited<ReturnType<typeof fetchBooks>>;
-}) {
+export default function BooksCard() {
   const [open, setOpen] = useState(false);
+  const [orderBy, setOrderBy] = useLocalStorage<"percent" | "activity">(
+    "orderBy",
+    "percent"
+  );
+  const [isPending, startTransition] = useTransition();
+  const [pageLoading, setPageLoading] = useState(true);
+  const [books, setBooks] = useState<Awaited<ReturnType<typeof fetchBooks>>>(
+    []
+  );
+
+  const updateBooks = (orderBy: "percent" | "activity") => {
+    startTransition(async () => {
+      const books = await getBooks(orderBy);
+      setBooks(books);
+    });
+  };
+
+  const refetchBooks = () => {
+    updateBooks(orderBy);
+  };
+
+  useEffect(() => {
+    updateBooks(orderBy);
+  }, [orderBy]);
+
+  useEffect(() => {
+    setPageLoading(false);
+  }, []);
+
   return (
     <>
-      {/* <div className="m-2 flex items-center">
-        <Button onClick={() => setOpen(true)}>
-          <Plus /> Добавить книгу
-        </Button>
-      </div> */}
       <Card>
         <CardHeader>
           <CardTitle>Книги</CardTitle>
-          <CardDescription>
-            3 книги с наибольшим прогрессом чтения
+          <CardDescription className="flex gap-2 items-center">
+            3 книги{" "}
+            <Select
+              value={orderBy}
+              onValueChange={(a) => setOrderBy(a as "percent" | "activity")}
+            >
+              <SelectTrigger className="bg-transparent! border-0 p-0 focus-visible:ring-0 h-fit!">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="percent">
+                  с наибольшим прогрессом чтения
+                </SelectItem>
+                <SelectItem value="activity">с недавней активностью</SelectItem>
+              </SelectContent>
+            </Select>
           </CardDescription>
           <CardAction className="flex gap-2">
             <Button variant="outline" asChild>
@@ -43,31 +87,41 @@ export default function BooksCard({
           </CardAction>
         </CardHeader>
         <CardContent>
-          {books.map((book) => (
-            <BookView book={book} key={book.id} />
-          ))}
-          {books.length === 0 && (
-            <div className="rounded-md border px-4 py-3">
-              <div className="flex gap-3">
-                <TriangleAlert
-                  className="hrink-0 mt-0.5 text-amber-500"
-                  size={16}
-                  aria-hidden="true"
+          {(isPending || pageLoading) ? (
+            <Skeleton className="h-36 w-full" />
+          ) : (
+            <div className="flex flex-col gap-2">
+              {books.map((book) => (
+                <BookView
+                  book={book}
+                  key={book.id}
+                  onUpdate={refetchBooks}
                 />
-                <div className="flex grow justify-between gap-3">
-                  <p className="text-sm">Книг ещё нет</p>
-                  <button
-                    className="group text-sm font-medium whitespace-nowrap cursor-pointer"
-                    onClick={() => setOpen(true)}
-                  >
-                    Добавить
-                    <ArrowRightIcon
-                      className="ms-1 -mt-0.5 inline-flex opacity-60 transition-transform group-hover:translate-x-0.5 size-4"
+              ))}
+              {books.length === 0 && (
+                <div className="rounded-md border px-4 py-3">
+                  <div className="flex gap-3">
+                    <TriangleAlert
+                      className="hrink-0 mt-0.5 text-amber-500"
+                      size={16}
                       aria-hidden="true"
                     />
-                  </button>
+                    <div className="flex grow justify-between gap-3">
+                      <p className="text-sm">Книг ещё нет</p>
+                      <button
+                        className="group text-sm font-medium whitespace-nowrap cursor-pointer"
+                        onClick={() => setOpen(true)}
+                      >
+                        Добавить
+                        <ArrowRightIcon
+                          className="ms-1 -mt-0.5 inline-flex opacity-60 transition-transform group-hover:translate-x-0.5 size-4"
+                          aria-hidden="true"
+                        />
+                      </button>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           )}
         </CardContent>
