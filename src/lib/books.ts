@@ -42,8 +42,8 @@ export async function fetchBooks(userId: string, orderBy: "percent" | "activity"
     let bTime = b.readEvents[0]?.readAt.getTime()
 
     if (aTime === undefined && bTime === undefined) return 0;
-    if (aTime === undefined) return -1;
-    if (bTime === undefined) return 1;
+    if (aTime === undefined) return 1;
+    if (bTime === undefined) return -1;
 
     return bTime - aTime;
   }

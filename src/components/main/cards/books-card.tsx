@@ -41,7 +41,14 @@ export default function BooksCard() {
   const updateBooks = (orderBy: "percent" | "activity") => {
     startTransition(async () => {
       const books = await getBooks(orderBy);
-      setBooks(books);
+      setBooks(
+        books
+          .filter(
+            (book) =>
+              book.readEvents[0]?.pagesRead !== book.pages && !book.isHidden
+          )
+          .slice(0, 3)
+      );
     });
   };
 
@@ -87,16 +94,12 @@ export default function BooksCard() {
           </CardAction>
         </CardHeader>
         <CardContent>
-          {(isPending || pageLoading) ? (
+          {isPending || pageLoading ? (
             <Skeleton className="h-36 w-full" />
           ) : (
             <div className="flex flex-col gap-2">
               {books.map((book) => (
-                <BookView
-                  book={book}
-                  key={book.id}
-                  onUpdate={refetchBooks}
-                />
+                <BookView book={book} key={book.id} onUpdate={refetchBooks} />
               ))}
               {books.length === 0 && (
                 <div className="rounded-md border px-4 py-3">
