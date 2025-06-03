@@ -2743,8 +2743,8 @@ packages:
   effect@3.14.21:
     resolution: {integrity: sha512-TKR7zfWcuZgEdWd+oIGA8LdREj/c+1Q0wz4pWqQtYT7VHnkW/QQEYCXgrDI5dT6lJgRTgyQAC1bAnpAf6MdjIA==, tarball: https://registry.npmjs.org/effect/-/effect-3.14.21.tgz}
 
-  electron-to-chromium@1.5.161:
-    resolution: {integrity: sha512-hwtetwfKNZo/UlwHIVBlKZVdy7o8bIZxxKs0Mv/ROPiQQQmDgdm5a+KvKtBsxM8ZjFzTaCeLoodZ8jiBE3o9rA==, tarball: https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.5.161.tgz}
+  electron-to-chromium@1.5.162:
+    resolution: {integrity: sha512-hQA+Zb5QQwoSaXJWEAGEw1zhk//O7qDzib05Z4qTqZfNju/FAkrm5ZInp0JbTp4Z18A6bilopdZWEYrFSsfllA==, tarball: https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.5.162.tgz}
 
   embla-carousel-react@8.6.0:
     resolution: {integrity: sha512-0/PjqU7geVmo6F734pmPqpyHqiM99olvyecY7zdweCw+6tKEXnrE90pBiBbMMU8s5tICemzpQ3hi5EpxzGW+JA==, tarball: https://registry.npmjs.org/embla-carousel-react/-/embla-carousel-react-8.6.0.tgz}
@@ -4479,8 +4479,8 @@ packages:
     resolution: {integrity: sha512-c5EGNOiyxxV5qmTtAB7rbiXxi1ooX1pQKMLX/MIabJjRA0SJBQOjKF+KSVfHkr9U1cADPon0mRiVe/riyaiDUA==, tarball: https://registry.npmjs.org/watchpack/-/watchpack-2.4.4.tgz}
     engines: {node: '>=10.13.0'}
 
-  webpack-sources@3.3.0:
-    resolution: {integrity: sha512-77R0RDmJfj9dyv5p3bM5pOHa+X8/ZkO9c7kpDstigkC4nIDobadsfSGCwB4bKhMVxqAok8tajaoR8rirM7+VFQ==, tarball: https://registry.npmjs.org/webpack-sources/-/webpack-sources-3.3.0.tgz}
+  webpack-sources@3.3.2:
+    resolution: {integrity: sha512-ykKKus8lqlgXX/1WjudpIEjqsafjOTcOJqxnAbMLAu/KCsDCJ6GBtvscewvTkrn24HsnvFwrSCbenFrhtcCsAA==, tarball: https://registry.npmjs.org/webpack-sources/-/webpack-sources-3.3.2.tgz}
     engines: {node: '>=10.13.0'}
 
   webpack@5.94.0:
@@ -6611,7 +6611,7 @@ snapshots:
   browserslist@4.25.0:
     dependencies:
       caniuse-lite: 1.0.30001720
-      electron-to-chromium: 1.5.161
+      electron-to-chromium: 1.5.162
       node-releases: 2.0.19
       update-browserslist-db: 1.1.3(browserslist@4.25.0)
     optional: true
@@ -6920,7 +6920,7 @@ snapshots:
       '@standard-schema/spec': 1.0.0
       fast-check: 3.23.2
 
-  electron-to-chromium@1.5.161:
+  electron-to-chromium@1.5.162:
     optional: true
 
   embla-carousel-react@8.6.0(react@19.1.0):
@@ -9206,7 +9206,7 @@ snapshots:
       graceful-fs: 4.2.11
     optional: true
 
-  webpack-sources@3.3.0:
+  webpack-sources@3.3.2:
     optional: true
 
   webpack@5.94.0:
@@ -9233,7 +9233,7 @@ snapshots:
       tapable: 2.2.2
       terser-webpack-plugin: 5.3.14(webpack@5.94.0)
       watchpack: 2.4.4
-      webpack-sources: 3.3.0
+      webpack-sources: 3.3.2
     transitivePeerDependencies:
       - '@swc/core'
       - esbuild
