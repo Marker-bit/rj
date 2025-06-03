@@ -1,11 +1,8 @@
-"use client"
+"use client";
 
-import { DialogHeader } from "@/components/ui/dialog"
-import { DrawerDialog } from "@/components/ui/drawer-dialog"
-import { DialogTitle } from "@radix-ui/react-dialog"
-import { z } from "zod"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { Button } from "@/components/ui/button";
+import { DialogHeader } from "@/components/ui/dialog";
+import { DrawerDialog } from "@/components/ui/drawer-dialog";
 import {
   Form,
   FormControl,
@@ -13,51 +10,55 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
-import { useMutation } from "@tanstack/react-query"
-import { useRouter } from "next/navigation"
-import { Loader } from "@/components/ui/loader"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Loader } from "@/components/ui/loader";
+import { createCollection } from "@/lib/actions/collections";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { DialogTitle } from "@radix-ui/react-dialog";
+import { Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Поле обязательно для заполнения" }),
-})
+});
 
 export function CreateCollection() {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
     },
-  })
+  });
 
-  const router = useRouter()
+  const router = useRouter();
 
-  const collectionMutation = useMutation({
-    mutationFn: (values: z.infer<typeof formSchema>) => {
-      return fetch("/api/collections", {
-        method: "POST",
-        body: JSON.stringify(values),
-      })
-    },
-    onSuccess: () => {
-      router.refresh()
+  async function onSubmit({ name }: z.infer<typeof formSchema>) {
+    setLoading(true);
+    const res = await createCollection(name);
+    setLoading(false);
+    if (res.error) {
+      toast.error("Произошла ошибка при создании коллекции", {
+        description: res.error,
+      });
+    }
+    if (res.message && res.collection) {
+      toast.success(res.message);
+      router.refresh();
       handleClose(false)
-    },
-  })
-
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    collectionMutation.mutate(values)
+    }
   }
 
   function handleClose(b: boolean) {
-    setOpen(b)
+    setOpen(b);
     if (!b) {
-      form.reset()
+      form.reset();
     }
   }
 
@@ -96,10 +97,10 @@ export function CreateCollection() {
             <Button
               type="submit"
               className="ml-auto mt-2 gap-2"
-              disabled={collectionMutation.isPending}
+              disabled={loading}
             >
-              {collectionMutation.isPending ? (
-                <Loader className="size-4" />
+              {loading ? (
+                <Loader invert className="size-4" />
               ) : (
                 <Plus className="size-4" />
               )}
@@ -109,5 +110,5 @@ export function CreateCollection() {
         </Form>
       </DrawerDialog>
     </>
-  )
+  );
 }

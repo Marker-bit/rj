@@ -1,39 +1,45 @@
-"use client"
+"use client";
 
-import { DrawerDialog } from "@/components/ui/drawer-dialog"
-import { Book, Collection } from "@prisma/client"
-import { DialogDescription, DialogHeader, DialogTitle } from "../../ui/dialog"
-import { Button } from "../../ui/button"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Loader, Router } from "lucide-react"
-import { declOfNum } from "@/lib/utils"
-import { useRouter } from "next/navigation"
+import { DrawerDialog } from "@/components/ui/drawer-dialog";
+import { deleteCollection } from "@/lib/actions/collections";
+import { declOfNum } from "@/lib/utils";
+import { Book, Collection } from "@prisma/client";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
+import { Button } from "../../ui/button";
+import { DialogDescription, DialogHeader, DialogTitle } from "../../ui/dialog";
+import { Loader } from "@/components/ui/loader";
+import { Trash } from "lucide-react";
 
 export function DeleteCollectionModal({
   open,
   setOpen,
   collection,
 }: {
-  open: boolean
-  setOpen: (v: boolean) => void
-  collection: Collection & { books: Book[] }
+  open: boolean;
+  setOpen: (v: boolean) => void;
+  collection: Collection & { books: Book[] };
 }) {
-  const router = useRouter()
-  const queryClient = useQueryClient()
-  const deleteMutation = useMutation({
-    mutationFn: () =>
-      fetch(`/api/collections/${collection.id}`, { method: "DELETE" }),
-    onSuccess: () => {
-      setOpen(false)
-      router.refresh()
-      queryClient.invalidateQueries({
-        queryKey: ["collections"],
-      })
-      queryClient.invalidateQueries({
-        queryKey: ["books"],
-      })
-    },
-  })
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
+  const runAction = async () => {
+    setLoading(true);
+    const res = await deleteCollection(collection.id);
+    setLoading(false);
+    if (res.error) {
+      toast.error("Возникла проблема при удалении коллекции", {
+        description: res.error,
+      });
+    }
+    if (res.message) {
+      toast.success(res.message);
+      setOpen(false);
+      router.refresh();
+    }
+  };
+
   return (
     <DrawerDialog open={open} onOpenChange={setOpen}>
       <DialogHeader>
@@ -52,15 +58,17 @@ export function DeleteCollectionModal({
         <Button
           variant="destructive"
           className="gap-2"
-          onClick={() => deleteMutation.mutate()}
-          disabled={deleteMutation.isPending}
+          onClick={() => runAction()}
+          disabled={loading}
         >
-          {deleteMutation.isPending && (
-            <Loader className="size-4 animate-spin" />
+          {loading ? (
+            <Loader className="size-4" />
+          ) : (
+            <Trash />
           )}
           Удалить
         </Button>
       </div>
     </DrawerDialog>
-  )
+  );
 }

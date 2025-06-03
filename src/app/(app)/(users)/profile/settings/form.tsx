@@ -38,9 +38,9 @@ import { SharePeople } from "@prisma/client"
 import { Switch } from "@/components/ui/switch"
 
 const formSchema = z.object({
-  username: z.string().min(2).max(50),
+  username: z.string().min(2, "Минимум 2 символа").max(50, "Максимум 50 символов"),
   firstName: z.string().min(1, "Требуется имя").max(50),
-  lastName: z.string().min(1, "Требуется фамилия").max(50),
+  lastName: z.string().max(50, "Максимум 50 символов").optional(),
   avatarUrl: z.string().optional(),
   shareSubscriptions: z
     .enum(["ALL", "SUBS", "NONE"])
