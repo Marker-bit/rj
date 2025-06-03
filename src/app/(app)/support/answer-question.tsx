@@ -1,27 +1,22 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { DrawerDialog } from "@/components/ui/drawer-dialog"
-import { MessageCircleQuestion } from "lucide-react"
-import { useState } from "react"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
-  FormMessage,
+  FormMessage
 } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { Textarea } from "@/components/ui/textarea"
-import { toast } from "sonner"
 import { Loader } from "@/components/ui/loader"
+import { Textarea } from "@/components/ui/textarea"
+import { answerQuestion } from "@/lib/actions/support"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { toast } from "sonner"
+import { z } from "zod"
 
 const formSchema = z.object({
   content: z
@@ -40,13 +35,9 @@ export default function AnswerQuestion({questionId}: {questionId: string}) {
 
   const router = useRouter()
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit({content}: z.infer<typeof formSchema>) {
     setLoading(true)
-    const resp = await fetch(`/api/support/${questionId}`, {
-      method: "POST",
-      body: JSON.stringify(values),
-    })
-    const res = await resp.json()
+    const res = await answerQuestion(questionId, content)
     setLoading(false)
     if (res.error) {
       toast.error("Проблема при отправке вопроса", {

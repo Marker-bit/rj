@@ -1,11 +1,12 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import { Loader } from "@/components/ui/loader";
-import { Router } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { toast } from "sonner"
+import { markAsRead } from "@/lib/actions/support";
+import { CheckCheck } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export default function ReadButton({
   answerId,
@@ -23,18 +24,20 @@ export default function ReadButton({
       disabled={loading}
       onClick={async () => {
         setLoading(true)
-        const res = await fetch(`/api/support/answer/${answerId}/read`, {
-          method: "POST",
-        })
+        const res = await markAsRead(answerId)
         setLoading(false)
-        if (!res.ok) {
-          toast.error("Что-то пошло не так")
+        if (res.error) {
+          toast.error("Что-то пошло не так", {
+            description: res.error,
+          })
+        } else {
+          toast.success(res.message)
         }
         router.refresh()
       }}
       className="w-fit"
     >
-      {loading && <Loader className="mr-2 size-4" />}
+      {loading ? <Loader className="size-4" /> : <CheckCheck className="size-4" />}
       {read ? "Отметить как непрочитанное" : "Отметить как прочитанное"}
     </Button>
   )

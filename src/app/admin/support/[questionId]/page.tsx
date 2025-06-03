@@ -1,38 +1,38 @@
-import { Button } from "@/components/ui/button"
-import { db } from "@/lib/db"
-import Image from "next/image"
-import ReadButton from "./read-button"
-import AnswerQuestion from "@/app/(app)/support/answer-question"
-import { validateRequest } from "@/lib/server-validate-request"
-import QuestionButtons from "./question-buttons"
+import { Button } from "@/components/ui/button";
+import { db } from "@/lib/db";
+import Image from "next/image";
+import ReadButton from "./read-button";
+import AnswerQuestion from "@/app/(app)/support/answer-question";
+import { validateRequest } from "@/lib/server-validate-request";
+import QuestionButtons from "./question-buttons";
 import { notFound } from "next/navigation";
 
-export default async function Page(
-  props: {
-    params: Promise<{ questionId: string }>
-  }
-) {
+export default async function Page(props: {
+  params: Promise<{ questionId: string }>;
+}) {
   const params = await props.params;
-  const { user } = await validateRequest()
-  if (!user || !user.admin) return null
+  const { user } = await validateRequest();
+  if (!user || !user.admin) return null;
   const question = await db.supportQuestion.findUnique({
     where: { id: params.questionId },
     include: {
       answers: { include: { fromUser: true, read: true } },
       fromUser: true,
     },
-  })
-  if (!question) return notFound()
+  });
+  if (!question) return notFound();
   return (
     <div className="m-2 flex flex-col gap-2">
       <div className="flex items-center gap-2">
-        <Image
-          src={question.fromUser.avatarUrl}
-          alt={"avatar"}
-          width={48}
-          height={48}
-          className="size-10 rounded-full"
-        />
+        {question.fromUser.avatarUrl && (
+          <Image
+            src={question.fromUser.avatarUrl}
+            alt={"avatar"}
+            width={48}
+            height={48}
+            className="size-10 rounded-full"
+          />
+        )}
         <div className="flex flex-col">
           <div>
             {question.fromUser.firstName} {question.fromUser.lastName}
@@ -50,13 +50,15 @@ export default async function Page(
         {question.answers.map((answer) => (
           <div key={answer.id} className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
-              <Image
-                src={answer.fromUser.avatarUrl}
-                alt={"avatar"}
-                width={48}
-                height={48}
-                className="size-10 rounded-full"
-              />
+              {answer.fromUser.avatarUrl && (
+                <Image
+                  src={answer.fromUser.avatarUrl}
+                  alt={"avatar"}
+                  width={48}
+                  height={48}
+                  className="size-10 rounded-full"
+                />
+              )}
               <div className="flex flex-col">
                 <div>
                   {answer.fromUser.firstName} {answer.fromUser.lastName}
@@ -76,5 +78,5 @@ export default async function Page(
         <AnswerQuestion questionId={question.id} />
       </div>
     </div>
-  )
+  );
 }

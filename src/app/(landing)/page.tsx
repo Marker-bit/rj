@@ -1,11 +1,13 @@
 import Image from "next/image";
 import { LoginButton } from "./login-button";
+import { use } from "react";
 
-type SearchParams = { [key: string]: string | string[] | undefined }
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
 
 export default function LandingPage({searchParams}: {
   searchParams: SearchParams
 }) {
+  const { noRedirect } = use(searchParams)
 
   return (
     <div className="flex flex-col items-center overflow-hidden py-10">
@@ -14,7 +16,7 @@ export default function LandingPage({searchParams}: {
           Читательский дневник
         </h1>
 
-        <LoginButton noRedirect={searchParams.noRedirect !== undefined} />
+        <LoginButton noRedirect={noRedirect !== undefined} />
       </div>
       <div className="px-5 mt-4 w-full">
         <p className="text-center text-xl">Как всё будет:</p>

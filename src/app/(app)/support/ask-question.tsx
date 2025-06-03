@@ -1,27 +1,27 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { DrawerDialog } from "@/components/ui/drawer-dialog"
-import { MessageCircleQuestion } from "lucide-react"
-import { useState } from "react"
+import { Button } from "@/components/ui/button";
+import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { DrawerDialog } from "@/components/ui/drawer-dialog";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { Textarea } from "@/components/ui/textarea"
-import { toast } from "sonner"
-import { Loader } from "@/components/ui/loader"
-import { useRouter } from "next/navigation"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Loader } from "@/components/ui/loader";
+import { Textarea } from "@/components/ui/textarea";
+import { createQuestion } from "@/lib/actions/support";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { MessageCircleQuestion } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 
 const formSchema = z.object({
   title: z
@@ -30,34 +30,34 @@ const formSchema = z.object({
   content: z
     .string({ required_error: "Поле обязательно для заполнения" })
     .min(1, "Поле обязательно для заполнения"),
-})
+});
 
 export default function AskQuestion() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-  })
-  const [open, setOpen] = useState(false)
-  const [loading, setLoading] = useState(false)
+    defaultValues: {
+      title: "",
+      content: "",
+    }
+  });
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const router = useRouter()
+  const router = useRouter();
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    setLoading(true)
-    const resp = await fetch("/api/support", {
-      method: "POST",
-      body: JSON.stringify(values),
-    })
-    const res = await resp.json()
-    setLoading(false)
+  async function onSubmit({ title, content }: z.infer<typeof formSchema>) {
+    setLoading(true);
+    const res = await createQuestion(title, content);
+    setLoading(false);
     if (res.error) {
       toast.error("Проблема при отправке вопроса", {
         description: res.error,
-      })
+      });
     } else {
-      toast.success(res.message)
-      form.reset()
-      setOpen(false)
-      router.refresh()
+      toast.success(res.message);
+      form.reset();
+      setOpen(false);
+      router.refresh();
     }
   }
 
@@ -110,5 +110,5 @@ export default function AskQuestion() {
         </Form>
       </DrawerDialog>
     </>
-  )
+  );
 }

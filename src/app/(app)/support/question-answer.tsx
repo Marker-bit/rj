@@ -1,44 +1,46 @@
-import { Button } from "@/components/ui/button"
-import { Loader } from "@/components/ui/loader"
-import { AnswerRead, SupportAnswer, User } from "@prisma/client"
-import { CheckCheck } from "lucide-react"
-import Image from "next/image"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { Button } from "@/components/ui/button";
+import { Loader } from "@/components/ui/loader";
+import { markAsRead } from "@/lib/actions/support";
+import { AnswerRead, SupportAnswer, User } from "@prisma/client";
+import { CheckCheck } from "lucide-react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function QuestionAnswer({
   answer,
-  currentUserId
+  currentUserId,
 }: {
   answer: SupportAnswer & {
-    fromUser: User,
-    read: AnswerRead[]
-  },
-  currentUserId: string
+    fromUser: User;
+    read: AnswerRead[];
+  };
+  currentUserId: string;
 }) {
-  const [readLoading, setReadLoading] = useState(false)
-  const router = useRouter()
+  const [readLoading, setReadLoading] = useState(false);
+  const router = useRouter();
   const read = async () => {
-    setReadLoading(true)
-    await fetch(`/api/support/answer/${answer.id}/read`, {
-      method: "POST",
-    })
-    setReadLoading(false)
-    router.refresh()
-  }
+    setReadLoading(true);
+    await markAsRead(answer.id);
+    setReadLoading(false);
+    router.refresh();
+  };
   return (
     <div
       className="flex flex-col gap-2 rounded-xl border p-2 hover:shadow-xs"
       key={answer.id}
     >
       <div className="flex items-center gap-2">
-        <Image
-          src={answer.fromUser.avatarUrl}
-          alt="avatar"
-          width={30}
-          height={30}
-          className="rounded-full"
-        />
+        {answer.fromUser.avatarUrl && (
+          <Image
+            src={answer.fromUser.avatarUrl}
+            alt="avatar"
+            width={30}
+            height={30}
+            className="rounded-full"
+          />
+        )}
+
         <div className="flex flex-col">
           <div className="font-bold">
             {answer.fromUser.firstName} {answer.fromUser.lastName}
@@ -60,8 +62,10 @@ export default function QuestionAnswer({
         ) : (
           <CheckCheck className="size-4" />
         )}
-        {answer.read.find((r) => r.userId === currentUserId) ? "Не прочитан" : "Прочитан"}
+        {answer.read.find((r) => r.userId === currentUserId)
+          ? "Не прочитан"
+          : "Прочитан"}
       </Button>
     </div>
-  )
+  );
 }
