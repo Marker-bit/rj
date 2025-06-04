@@ -1,20 +1,20 @@
-"use server"
+"use server";
 
-import { BackgroundColor } from "@prisma/client"
-import { fetchBooks } from "../books"
-import { db } from "../db"
-import { validateRequest } from "../server-validate-request"
+import { BackgroundColor } from "@prisma/client";
+import { fetchBooks } from "../books";
+import { db } from "../db";
+import { validateRequest } from "../server-validate-request";
 import { z } from "zod";
 
 export async function getBooks(orderBy: "percent" | "activity" = "percent") {
-  const { user } = await validateRequest()
+  const { user } = await validateRequest();
 
   if (!user) {
-    return []
+    return [];
   }
 
-  const books = await fetchBooks(user.id, orderBy)
-  return books
+  const books = await fetchBooks(user.id, orderBy);
+  return books;
 }
 
 const bookSchema = z.object({
@@ -23,39 +23,37 @@ const bookSchema = z.object({
   pages: z.coerce.number().min(1),
   description: z.string().optional(),
   coverUrl: z.string().optional(),
-  fields: z
-    .array(
-      z.object({
-        title: z.string({ required_error: "Название поля обязательно" }),
-        value: z.string({
-          required_error: "Значение поля обязательно",
-        }),
-      })
-    ),
-})
+  fields: z.array(
+    z.object({
+      title: z.string({ required_error: "Название поля обязательно" }),
+      value: z.string({
+        required_error: "Значение поля обязательно",
+      }),
+    }),
+  ),
+});
 
 export async function createBook(book: {
-  title: string
-  pages: number
-  author: string
-  coverUrl?: string
-  description?: string,
+  title: string;
+  pages: number;
+  author: string;
+  coverUrl?: string;
+  description?: string;
   fields: {
     title: string;
-    value: string;}[]
+    value: string;
+  }[];
 }) {
-  const { user } = await validateRequest()
+  const { user } = await validateRequest();
 
   if (!user) {
-    throw new Error("Unauthorized")
+    throw new Error("Unauthorized");
   }
 
-  const data = bookSchema.safeParse(book)
+  const data = bookSchema.safeParse(book);
   if (!data.success) {
-    throw new Error(data.error.errors.map((e) => e.message).join("\n"))
+    throw new Error(data.error.errors.map((e) => e.message).join("\n"));
   }
-
-
 
   const newBook = await db.book.create({
     data: {
@@ -67,43 +65,45 @@ export async function createBook(book: {
       userId: user.id,
       fields: JSON.stringify(book.fields),
     },
-  })
-  return newBook
+  });
+  return newBook;
 }
 
 export async function deleteBook(bookId: string) {
-  const { user } = await validateRequest()
+  const { user } = await validateRequest();
 
   if (!user) {
-    throw new Error("Unauthorized")
+    throw new Error("Unauthorized");
   }
 
-  await db.book.delete({ where: { id: bookId, userId: user.id } })
+  await db.book.delete({ where: { id: bookId, userId: user.id } });
 }
 
 export async function setBookColor(bookId: string, color: BackgroundColor) {
-  const { user } = await validateRequest()
+  const { user } = await validateRequest();
 
   if (!user) {
-    throw new Error("Unauthorized")
+    throw new Error("Unauthorized");
   }
 
   await db.book.update({
     where: { id: bookId, userId: user.id },
     data: { background: color },
-  })
+  });
 }
 
 export async function deleteBookLink(linkId: string) {
-  const { user } = await validateRequest()
+  const { user } = await validateRequest();
 
   if (!user) {
-    throw new Error("Unauthorized")
+    throw new Error("Unauthorized");
   }
 
-  await db.bookLink.delete({ where: { id: linkId, book: { userId: user.id } } })
+  await db.bookLink.delete({
+    where: { id: linkId, book: { userId: user.id } },
+  });
 
   return {
-    error: false
-  }
+    error: false,
+  };
 }

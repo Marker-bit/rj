@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
       role: GroupMemberRole.CREATOR,
       userId: user.id,
       groupId: group.id,
-    }
-  })
+    },
+  });
   return NextResponse.json(group);
 }

@@ -1,23 +1,21 @@
-import { Button } from "@/components/ui/button"
-import { Progress } from "@/components/ui/progress"
-import { db } from "@/lib/db"
-import { validateRequest } from "@/lib/server-validate-request"
-import { BarChartHorizontalBig, ChevronLeft } from "lucide-react"
-import Image from "next/image"
-import Link from "next/link"
-import { MemberInfo } from "./member"
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { db } from "@/lib/db";
+import { validateRequest } from "@/lib/server-validate-request";
+import { BarChartHorizontalBig, ChevronLeft } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { MemberInfo } from "./member";
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
-export default async function Page(
-  props: {
-    params: Promise<{ groupId: string; bookId: string }>
-  }
-) {
+export default async function Page(props: {
+  params: Promise<{ groupId: string; bookId: string }>;
+}) {
   const params = await props.params;
-  const { user } = await validateRequest()
+  const { user } = await validateRequest();
   if (!user) {
-    return null
+    return null;
   }
 
   const group = await db.group.findUnique({
@@ -40,9 +38,9 @@ export default async function Page(
         },
       },
     },
-  })
+  });
   if (!group) {
-    return null
+    return null;
   }
 
   const groupBook = await db.groupBook.findUnique({
@@ -58,9 +56,9 @@ export default async function Page(
         },
       },
     },
-  })
+  });
   if (!groupBook) {
-    return null
+    return null;
   }
 
   const stats = [
@@ -70,30 +68,30 @@ export default async function Page(
       value: groupBook.book.length,
       max: group.members.length,
     },
-  ]
+  ];
 
-  let ratingDict: Record<string, number | null> = {}
+  let ratingDict: Record<string, number | null> = {};
 
   group.members.forEach((m) => {
-    const book = groupBook.book.find((b) => b.userId === m.userId)
+    const book = groupBook.book.find((b) => b.userId === m.userId);
 
     ratingDict[m.userId] =
       book === undefined
         ? null
         : book.readEvents.length === 0
-        ? 0
-        : book.readEvents[0].pagesRead
-  })
+          ? 0
+          : book.readEvents[0].pagesRead;
+  });
 
-  const ratingKeys = new Array(...Object.keys(ratingDict))
+  const ratingKeys = new Array(...Object.keys(ratingDict));
 
-  ratingKeys.sort((a, b) => (ratingDict[b] || 0) - (ratingDict[a] || 0))
+  ratingKeys.sort((a, b) => (ratingDict[b] || 0) - (ratingDict[a] || 0));
 
   const rating = ratingKeys.map(
-    (key) => group.members.find((m) => m.userId === key)!
-  )
+    (key) => group.members.find((m) => m.userId === key)!,
+  );
 
-  const currentMember = group.members.find((m) => m.userId === user.id)
+  const currentMember = group.members.find((m) => m.userId === user.id);
 
   return (
     <div className="flex flex-col p-8 max-sm:mb-24">
@@ -171,7 +169,7 @@ export default async function Page(
                   (group.members.length === 0
                     ? 0
                     : groupBook.book.filter(
-                        (book) => book.readEvents[0]?.pagesRead === book.pages
+                        (book) => book.readEvents[0]?.pagesRead === book.pages,
                       ).length / group.members.length) * 100
                 ).toFixed(1)}
                 %
@@ -179,7 +177,7 @@ export default async function Page(
               <div className="text-sm text-muted-foreground/70">
                 {
                   groupBook.book.filter(
-                    (book) => book.readEvents[0]?.pagesRead === book.pages
+                    (book) => book.readEvents[0]?.pagesRead === book.pages,
                   ).length
                 }
                 /{group.members.length}
@@ -189,7 +187,7 @@ export default async function Page(
           <Progress
             value={
               (groupBook.book.filter(
-                (book) => book.readEvents[0]?.pagesRead === book.pages
+                (book) => book.readEvents[0]?.pagesRead === book.pages,
               ).length /
                 group.members.length) *
               100
@@ -214,5 +212,5 @@ export default async function Page(
         </div>
       </div>
     </div>
-  )
+  );
 }

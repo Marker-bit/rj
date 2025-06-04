@@ -7,7 +7,9 @@ export async function GET(req: NextRequest) {
   if (!q) return new NextResponse(null);
   const query = encodeURI(q);
   // const resp = await fetch(`https://www.labirint.ru/search/${query}/`);
-  const resp = await fetch(`https://www.ozon.com/category/knigi-16500/?text=${q}`);
+  const resp = await fetch(
+    `https://www.ozon.com/category/knigi-16500/?text=${q}`,
+  );
   const html = await resp.text();
   const $ = cheerio.load(html);
   // const res = $(".product-card")
@@ -15,9 +17,7 @@ export async function GET(req: NextRequest) {
     .toArray()
     .map(function (el) {
       const title = $(el).find(".tsBody500Medium").text().trim();
-      const imageUrl = $(el)
-        .find(".r9i")
-        .attr("src");
+      const imageUrl = $(el).find(".r9i").attr("src");
       const authors = $(el).find(".product-card__author").text().trim();
       return {
         title,

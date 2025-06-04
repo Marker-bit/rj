@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -9,16 +9,16 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Loader } from "@/components/ui/loader"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Loader } from "@/components/ui/loader";
 import { resetPassword } from "@/lib/actions/auth";
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod"
+import { z } from "zod";
 
 const formSchema = z.object({
   username: z
@@ -69,7 +69,7 @@ const formSchema = z.object({
   password: z
     .string({ required_error: "Поле обязательно для заполнения" })
     .min(1, "Поле обязательно для заполнения"),
-})
+});
 
 export default function ResetPasswordForm() {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -93,19 +93,19 @@ export default function ResetPasswordForm() {
         pages: undefined,
       },
     },
-  })
-  const router = useRouter()
-  const [loading, setLoading] = useState(false)
+  });
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setLoading(true)
-    const res = await resetPassword(values)
-    setLoading(false)
+    setLoading(true);
+    const res = await resetPassword(values);
+    setLoading(false);
     if (res.error) {
-      toast.error(res.message)
+      toast.error(res.message);
     } else {
-      toast.success("Пароль успешно изменен!")
-      router.push("/auth/login")
+      toast.success("Пароль успешно изменен!");
+      router.push("/auth/login");
     }
   }
 
@@ -233,5 +233,5 @@ export default function ResetPasswordForm() {
         </Button>
       </form>
     </Form>
-  )
+  );
 }

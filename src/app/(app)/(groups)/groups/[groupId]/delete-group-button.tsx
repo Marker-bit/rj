@@ -1,40 +1,40 @@
-"use client"
+"use client";
 
-import { DrawerDialog } from "@/components/ui/drawer-dialog"
-import { Button } from "@/components/ui/button"
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Loader } from "@/components/ui/loader"
-import { Trash } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { toast } from "sonner"
+import { DrawerDialog } from "@/components/ui/drawer-dialog";
+import { Button } from "@/components/ui/button";
+import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Loader } from "@/components/ui/loader";
+import { Trash } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export function DeleteGroupButton({ groupId }: { groupId: string }) {
-  const [loading, setLoading] = useState(false)
-  const [confirmOpen, setConfirmOpen] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
-  const router = useRouter()
+  const router = useRouter();
 
   const deleteGroup = () => {
-    setLoading(true)
+    setLoading(true);
 
     fetch(`/api/groups/${groupId}`, {
       method: "DELETE",
     })
       .then((res) => res.json())
       .then((res) => {
-        setLoading(false)
+        setLoading(false);
         if (res.error) {
           toast.error("Возникла проблема при удалении группы", {
             description: res.error,
-          })
+          });
         } else {
-          toast.success(res.message)
-          setConfirmOpen(false)
-          router.push("/")
+          toast.success(res.message);
+          setConfirmOpen(false);
+          router.push("/");
         }
-      })
-  }
+      });
+  };
 
   return (
     <>
@@ -79,5 +79,5 @@ export function DeleteGroupButton({ groupId }: { groupId: string }) {
         <p className="max-sm:hidden">Удалить</p>
       </Button>
     </>
-  )
+  );
 }

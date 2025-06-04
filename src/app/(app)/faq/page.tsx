@@ -3,8 +3,8 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"
-import faq from "@/lib/data/faq"
+} from "@/components/ui/accordion";
+import faq from "@/lib/data/faq";
 
 export default function Page() {
   return (
@@ -23,5 +23,5 @@ export default function Page() {
         ))}
       </Accordion>
     </div>
-  )
+  );
 }

@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { getStreak, goodNumbers } from "@/lib/stats"
-import { declOfNum } from "@/lib/utils"
-import { ReadEvent } from "@prisma/client"
-import { User } from "lucia"
-import { Flame, PartyPopper } from "lucide-react"
-import { useEffect, useState } from "react"
+import { getStreak, goodNumbers } from "@/lib/stats";
+import { declOfNum } from "@/lib/utils";
+import { ReadEvent } from "@prisma/client";
+import { User } from "lucia";
+import { Flame, PartyPopper } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const happyWords = [
   "Так держать!",
@@ -15,25 +15,25 @@ const happyWords = [
   "Восхитительно!",
   "Супер!",
   "Вот это сила воли!",
-]
+];
 
 export default function StreakNotification({
   events,
 }: {
-  events: ReadEvent[]
-  user: User
+  events: ReadEvent[];
+  user: User;
 }) {
-  const [isClient, setIsClient] = useState(false)
-  const {streak} = getStreak(events)
-  const randomWordIndex = Math.floor(Math.random() * happyWords.length)
-  const randomWord = happyWords[randomWordIndex]
+  const [isClient, setIsClient] = useState(false);
+  const { streak } = getStreak(events);
+  const randomWordIndex = Math.floor(Math.random() * happyWords.length);
+  const randomWord = happyWords[randomWordIndex];
 
   useEffect(() => {
-    setIsClient(true)
-  }, [])
+    setIsClient(true);
+  }, []);
 
-  if (!isClient) return null
-  if (!goodNumbers.includes(streak)) return null
+  if (!isClient) return null;
+  if (!goodNumbers.includes(streak)) return null;
 
   return (
     <div className="m-2 flex flex-col rounded-xl bg-orange-500 p-2 text-white">
@@ -54,5 +54,5 @@ export default function StreakNotification({
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { DrawerDialog } from "@/components/ui/drawer-dialog"
-import { Input } from "@/components/ui/input"
-import { startOfDay } from "date-fns"
-import { ru } from "date-fns/locale"
-import { Loader, Save } from "lucide-react"
-import { useMemo, useRef, useState } from "react"
-import { toast } from "sonner"
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { DrawerDialog } from "@/components/ui/drawer-dialog";
+import { Input } from "@/components/ui/input";
+import { startOfDay } from "date-fns";
+import { ru } from "date-fns/locale";
+import { Loader, Save } from "lucide-react";
+import { useMemo, useRef, useState } from "react";
+import { toast } from "sonner";
 
 export function DateReadModal({
   isOpen,
@@ -18,40 +18,40 @@ export function DateReadModal({
   book,
   lastEvent,
 }: {
-  isOpen: boolean
-  setIsOpen: (open: boolean) => void
-  readDateMutation: any
-  book: { readEvents: { readAt: Date }[] }
-  lastEvent: { pagesRead: number }
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+  readDateMutation: any;
+  book: { readEvents: { readAt: Date }[] };
+  lastEvent: { pagesRead: number };
 }) {
-  const today = new Date()
-  const [date, setDate] = useState<Date | undefined>(new Date())
+  const today = new Date();
+  const [date, setDate] = useState<Date | undefined>(new Date());
   const [changePages, setChangePages] = useState<string>(
-    lastEvent?.pagesRead.toString() || ""
-  )
-  const input = useRef<HTMLInputElement>(null)
+    lastEvent?.pagesRead.toString() || "",
+  );
+  const input = useRef<HTMLInputElement>(null);
 
   const days = useMemo(() => {
-    const days: Date[] = []
+    const days: Date[] = [];
     for (const event of book.readEvents) {
-      const date = startOfDay(event.readAt)
+      const date = startOfDay(event.readAt);
       if (!days.includes(date)) {
-        days.push(date)
+        days.push(date);
       }
     }
-    return days
-  }, [book])
+    return days;
+  }, [book]);
 
   const handleClose = (b: boolean) => {
     if (b) {
-      input.current?.focus()
-      setIsOpen(true)
-      return
+      input.current?.focus();
+      setIsOpen(true);
+      return;
     }
-    setDate(new Date())
-    setChangePages(lastEvent?.pagesRead.toString() || "")
-    setIsOpen(false)
-  }
+    setDate(new Date());
+    setChangePages(lastEvent?.pagesRead.toString() || "");
+    setIsOpen(false);
+  };
 
   return (
     <DrawerDialog open={isOpen} onOpenChange={handleClose}>
@@ -64,7 +64,7 @@ export function DateReadModal({
           selected={date}
           onSelect={(newDate) => {
             if (newDate) {
-              setDate(newDate)
+              setDate(newDate);
             }
           }}
           className="w-fit rounded-md border max-sm:w-full"
@@ -78,24 +78,24 @@ export function DateReadModal({
         {/* добавить captionLayout? */}
         <form
           onSubmit={(evt) => {
-            evt.preventDefault()
+            evt.preventDefault();
             if (!date) {
-              toast.error("Выберите дату")
-              return
+              toast.error("Выберите дату");
+              return;
             }
             if (!changePages) {
-              toast.error("Укажите количество страниц")
-              return
+              toast.error("Укажите количество страниц");
+              return;
             }
             if (parseInt(changePages) < 1) {
-              toast.error("Количество страниц должно быть больше 0")
-              return
+              toast.error("Количество страниц должно быть больше 0");
+              return;
             }
             if (isNaN(parseInt(changePages))) {
-              toast.error("Количество страниц должно быть числом")
-              return
+              toast.error("Количество страниц должно быть числом");
+              return;
             }
-            readDateMutation.mutate({ date, pages: parseInt(changePages) })
+            readDateMutation.mutate({ date, pages: parseInt(changePages) });
           }}
         >
           <div className="flex flex-col items-center">
@@ -119,12 +119,13 @@ export function DateReadModal({
             <p className="mt-2 text-sm text-muted-foreground">
               {!isNaN(parseInt(changePages)) &&
                 lastEvent &&
-                `Относительно прошлого: ${parseInt(changePages) - lastEvent.pagesRead
+                `Относительно прошлого: ${
+                  parseInt(changePages) - lastEvent.pagesRead
                 }`}
             </p>
           </div>
         </form>
       </div>
     </DrawerDialog>
-  )
+  );
 }

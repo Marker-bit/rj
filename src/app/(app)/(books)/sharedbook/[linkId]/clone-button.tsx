@@ -1,28 +1,28 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Loader } from "@/components/ui/loader"
-import { Copy } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { toast } from "sonner"
+import { Button } from "@/components/ui/button";
+import { Loader } from "@/components/ui/loader";
+import { Copy } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export function CloneButton({ linkId }: { linkId: string }) {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
-  const router = useRouter()
+  const router = useRouter();
 
   const cloneBook = async () => {
-    setLoading(true)
+    setLoading(true);
     const res = await fetch(`/api/links/${linkId}/clone`, {
       method: "POST",
-    })
-    const data = await res.json()
+    });
+    const data = await res.json();
 
     if (data.error) {
       toast.error("Что-то пошло не так", {
         description: data.error,
-      })
+      });
     } else {
       toast.success("Книга скопирована", {
         description: "Теперь вы можете её читать",
@@ -30,20 +30,20 @@ export function CloneButton({ linkId }: { linkId: string }) {
           label: "Перейти",
           onClick: () => router.push(`/books?bookId=${data.bookId}`),
         },
-      })
-      router.refresh()
+      });
+      router.refresh();
     }
-    setLoading(false)
-  }
+    setLoading(false);
+  };
 
   return (
-    <Button variant="ghost" onClick={cloneBook} className="flex items-center gap-2">
-      {loading ? (
-        <Loader className="size-4" />
-      ) : (
-        <Copy className="size-4" />
-      )}
+    <Button
+      variant="ghost"
+      onClick={cloneBook}
+      className="flex items-center gap-2"
+    >
+      {loading ? <Loader className="size-4" /> : <Copy className="size-4" />}
       Копировать книгу
     </Button>
-  )
+  );
 }

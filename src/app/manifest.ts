@@ -1,14 +1,14 @@
-import type { MetadataRoute } from 'next'
- 
+import type { MetadataRoute } from "next";
+
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Читательский дневник',
-    short_name: 'RJ',
-    description: 'Читательский дневник - социальная сеть для читателей',
-    start_url: '/home',
-    display: 'standalone',
-    background_color: '#ffffff',
-    theme_color: '#000000',
+    name: "Читательский дневник",
+    short_name: "RJ",
+    description: "Читательский дневник - социальная сеть для читателей",
+    start_url: "/home",
+    display: "standalone",
+    background_color: "#ffffff",
+    theme_color: "#000000",
     icons: [
       {
         src: "/images/icons/icon-72x72.png",
@@ -51,5 +51,5 @@ export default function manifest(): MetadataRoute.Manifest {
         type: "image/png",
       },
     ],
-  }
+  };
 }

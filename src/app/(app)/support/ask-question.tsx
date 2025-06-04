@@ -38,7 +38,7 @@ export default function AskQuestion() {
     defaultValues: {
       title: "",
       content: "",
-    }
+    },
   });
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);

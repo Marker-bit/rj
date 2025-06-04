@@ -4,5 +4,5 @@ export const USERNAME_MESSAGE =
 
 export const PASSWORD_REGEX =
   /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&.*-]).{8,}$/;
-  export const PASSWORD_MESSAGE =
+export const PASSWORD_MESSAGE =
   "Пароль должен содержать минимум 8 символов, по крайней мере, одну заглавную английскую букву, одну строчную английскую букву, одну цифру и один специальный символ";

@@ -1,19 +1,19 @@
-import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { validateRequest } from "@/lib/server-validate-request"
-import { BookOpen, Menu } from "lucide-react"
-import Link from "next/link"
-import UserMenu from "./user-menu"
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { validateRequest } from "@/lib/server-validate-request";
+import { BookOpen, Menu } from "lucide-react";
+import Link from "next/link";
+import UserMenu from "./user-menu";
 
 export default async function Layout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
-  const { user } = await validateRequest()
+  const { user } = await validateRequest();
 
-  if (!user) return null
-  if (!user.admin) return null
+  if (!user) return null;
+  if (!user.admin) return null;
   return (
     <div className="flex min-h-screen w-full flex-col">
       <header className="sticky top-0 z-50 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
@@ -112,5 +112,5 @@ export default async function Layout({
       </header>
       {children}
     </div>
-  )
+  );
 }

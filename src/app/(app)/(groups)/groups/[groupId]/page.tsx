@@ -1,14 +1,14 @@
-import { Progress } from "@/components/ui/progress"
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
+import { Progress } from "@/components/ui/progress";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { db } from "@/lib/db"
-import { validateRequest } from "@/lib/server-validate-request"
-import { declOfNum } from "@/lib/utils"
-import { GroupMemberRole } from "@prisma/client"
+} from "@/components/ui/tooltip";
+import { db } from "@/lib/db";
+import { validateRequest } from "@/lib/server-validate-request";
+import { declOfNum } from "@/lib/utils";
+import { GroupMemberRole } from "@prisma/client";
 import {
   BadgeCheck,
   BarChart2,
@@ -18,31 +18,29 @@ import {
   Shield,
   User,
   Users,
-} from "lucide-react"
-import Image from "next/image"
-import Link from "next/link"
-import { AddBookButton } from "./add-book-button"
-import { AddMemberButton } from "./add-member-button"
-import { GroupBookView } from "./book-view"
-import { DeleteGroupButton } from "./delete-group-button"
-import { LeaveGroupButton } from "./leave-group-button"
-import { LinkMemberButton } from "./link-member-button"
-import { MemberActions } from "./member-actions"
-import { AddGroupButton } from "../add-group-button"
-import Books from "./books"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { AddBookButton } from "./add-book-button";
+import { AddMemberButton } from "./add-member-button";
+import { GroupBookView } from "./book-view";
+import { DeleteGroupButton } from "./delete-group-button";
+import { LeaveGroupButton } from "./leave-group-button";
+import { LinkMemberButton } from "./link-member-button";
+import { MemberActions } from "./member-actions";
+import { AddGroupButton } from "../add-group-button";
+import Books from "./books";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
-export default async function Page(
-  props: {
-    params: Promise<{ groupId: string }>
-  }
-) {
+export default async function Page(props: {
+  params: Promise<{ groupId: string }>;
+}) {
   const params = await props.params;
-  const { user } = await validateRequest()
+  const { user } = await validateRequest();
   if (!user) {
-    return null
+    return null;
   }
   const group = await db.group.findUnique({
     where: { id: params.groupId, members: { some: { userId: user.id } } },
@@ -75,18 +73,18 @@ export default async function Page(
       suggestions: true,
       inviteLinks: true,
     },
-  })
+  });
   if (!group) {
     return (
       <div className="flex flex-col items-center p-4">
         <p className="text-6xl font-black">404</p>
         <p>Группа не найдена, или вы не состоите в ней.</p>
       </div>
-    )
+    );
   }
   const allGroups = await db.group.findMany({
     where: { members: { some: { userId: user.id } } },
-  })
+  });
   const myBooksFromGroup = await db.book.findMany({
     where: {
       userId: user?.id,
@@ -99,20 +97,20 @@ export default async function Page(
         orderBy: { readAt: "desc" },
       },
     },
-  })
+  });
 
   const isMember = group.members.some(
-    (m) => m.userId === user?.id && m.role === GroupMemberRole.MEMBER
-  )
+    (m) => m.userId === user?.id && m.role === GroupMemberRole.MEMBER,
+  );
 
   const activeMembers = group.members.filter(
     (m) =>
-      m.user.books.filter((b) => b.groupBook?.groupId === group.id).length > 0
-  )
+      m.user.books.filter((b) => b.groupBook?.groupId === group.id).length > 0,
+  );
 
   const activeBooks = group.groupBooks.filter(
-    (b) => b.book.length === group.members.length
-  )
+    (b) => b.book.length === group.members.length,
+  );
 
   const stats = [
     {
@@ -127,33 +125,33 @@ export default async function Page(
       value: activeBooks.length,
       max: group.groupBooks.length,
     },
-  ]
+  ];
 
-  const allBooks = group.groupBooks.map((b) => b.book).flat()
+  const allBooks = group.groupBooks.map((b) => b.book).flat();
 
-  let ratingDict: { [key: string]: number } = {}
+  let ratingDict: { [key: string]: number } = {};
 
   group.members.forEach(
     (m) =>
       (ratingDict[m.user.id] = allBooks
         .filter((b) => b.userId === m.user.id)
         .map((book) => book.readEvents[0]?.pagesRead || 0)
-        .reduce((a, b) => a + b, 0))
-  )
+        .reduce((a, b) => a + b, 0)),
+  );
 
-  const ratingKeys = new Array(...Object.keys(ratingDict))
+  const ratingKeys = new Array(...Object.keys(ratingDict));
 
-  ratingKeys.sort((a, b) => ratingDict[b] - ratingDict[a])
+  ratingKeys.sort((a, b) => ratingDict[b] - ratingDict[a]);
 
   const rating = ratingKeys.map(
-    (key) => group.members.find((m) => m.user.id === key)!
-  )
+    (key) => group.members.find((m) => m.user.id === key)!,
+  );
 
-  const currentMember = group.members.find((m) => m.userId === user?.id)
+  const currentMember = group.members.find((m) => m.userId === user?.id);
 
   const fullyReadBooks = myBooksFromGroup.filter((b) =>
-    b.readEvents.find((r) => r.pagesRead === b.pages)
-  )
+    b.readEvents.find((r) => r.pagesRead === b.pages),
+  );
 
   return (
     <div className="p-2 max-sm:mb-[15vh]">
@@ -354,8 +352,8 @@ export default async function Page(
                           groupBook.book.find(
                             (book) =>
                               book.userId === member.userId &&
-                              book.readEvents[0]?.pagesRead === book.pages
-                          )
+                              book.readEvents[0]?.pagesRead === book.pages,
+                          ),
                         ).length
                       }{" "}
                       / {group.groupBooks.length}
@@ -368,5 +366,5 @@ export default async function Page(
         </div>
       </div>
     </div>
-  )
+  );
 }

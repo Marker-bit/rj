@@ -1,59 +1,59 @@
-"use client"
+"use client";
 
-import { DrawerDialog } from "@/components/ui/drawer-dialog"
-import { Button } from "@/components/ui/button"
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { DrawerDialog } from "@/components/ui/drawer-dialog";
+import { Button } from "@/components/ui/button";
+import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Loader } from "@/components/ui/loader"
-import { GroupMemberRole } from "@prisma/client"
+} from "@/components/ui/dropdown-menu";
+import { Loader } from "@/components/ui/loader";
+import { GroupMemberRole } from "@prisma/client";
 import {
   BarChart2,
   MoreVertical,
   ShieldMinus,
   ShieldPlus,
   UserX,
-} from "lucide-react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { toast } from "sonner"
+} from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export function MemberActions({
   member,
   groupId,
   role,
 }: {
-  member: { id: string; role: GroupMemberRole; user: { username: string } }
-  groupId: string
-  role: GroupMemberRole
+  member: { id: string; role: GroupMemberRole; user: { username: string } };
+  groupId: string;
+  role: GroupMemberRole;
 }) {
-  const [loading, setLoading] = useState(false)
-  const [kickOpen, setKickOpen] = useState(false)
-  const router = useRouter()
+  const [loading, setLoading] = useState(false);
+  const [kickOpen, setKickOpen] = useState(false);
+  const router = useRouter();
 
   const kickMember = async () => {
-    setLoading(true)
+    setLoading(true);
     const resp = await fetch(`/api/groups/${groupId}/member/${member.id}`, {
       method: "DELETE",
-    })
-    const res = await resp.json()
-    setLoading(false)
+    });
+    const res = await resp.json();
+    setLoading(false);
     if (res.error) {
       toast.error("Возникла проблема при исключении участника", {
         description: res.error,
-      })
-      setKickOpen(false)
+      });
+      setKickOpen(false);
     } else {
-      setKickOpen(false)
-      toast.success(res.message)
-      router.refresh()
+      setKickOpen(false);
+      toast.success(res.message);
+      router.refresh();
     }
-  }
+  };
 
   // const changeRole = async (role: GroupMemberRole) => {
   //   setLoading(true)
@@ -85,13 +85,13 @@ export function MemberActions({
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ role }),
-        })
-        const res = await resp.json()
+        });
+        const res = await resp.json();
         if (res.error) {
-          throw new Error(res.error)
+          throw new Error(res.error);
         } else {
-          router.refresh()
-          return res
+          router.refresh();
+          return res;
         }
       },
       {
@@ -99,8 +99,8 @@ export function MemberActions({
         success: "Роль участника изменена",
         error: (error) =>
           `Возникла проблема при изменении роли участника: ${error.message}`,
-      }
-    )
+      },
+    );
     // setLoading(true)
     // const resp = await fetch(`/api/groups/${groupId}/member/${member.id}`, {
     //   method: "PATCH",
@@ -119,7 +119,7 @@ export function MemberActions({
     //   toast.success(res.message)
     //   router.refresh()
     // }
-  }
+  };
 
   return (
     <>
@@ -201,5 +201,5 @@ export function MemberActions({
         </DropdownMenuContent>
       </DropdownMenu>
     </>
-  )
+  );
 }

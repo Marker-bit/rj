@@ -1,27 +1,27 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
+} from "@/components/ui/tooltip";
 import {
   Book,
   GroupBook,
   GroupMember,
   GroupMemberRole,
   User,
-} from "@prisma/client"
-import { BadgeCheck, Check, UserSquare2, X } from "lucide-react"
-import Image from "next/image"
-import Link from "next/link"
-import ChangedInfo from "../../_components/changed-info"
+} from "@prisma/client";
+import { BadgeCheck, Check, UserSquare2, X } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import ChangedInfo from "../../_components/changed-info";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function MemberInfo({
@@ -34,14 +34,14 @@ export function MemberInfo({
   currentMember,
 }: {
   member: GroupMember & {
-    user: User
-  }
-  currentMember: GroupMember
-  group: { id: string }
-  i: number
-  savedBook?: Book
-  groupBook: GroupBook
-  pages: number | null
+    user: User;
+  };
+  currentMember: GroupMember;
+  group: { id: string };
+  i: number;
+  savedBook?: Book;
+  groupBook: GroupBook;
+  pages: number | null;
 }) {
   return (
     <div className="flex items-center gap-2 rounded-md p-2 transition-all">
@@ -104,5 +104,5 @@ export function MemberInfo({
         </Link>
       </div>
     </div>
-  )
+  );
 }

@@ -1,33 +1,33 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Book, Collection } from "@prisma/client"
-import { useMutation } from "@tanstack/react-query"
-import { Loader, Minus, Plus } from "lucide-react"
-import Image from "next/image"
-import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button";
+import { Book, Collection } from "@prisma/client";
+import { useMutation } from "@tanstack/react-query";
+import { Loader, Minus, Plus } from "lucide-react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export function RemoveBook({
   book,
   collection,
 }: {
-  book: Book
+  book: Book;
   collection: Collection & {
-    books: Book[]
-  }
+    books: Book[];
+  };
 }) {
-  const router = useRouter()
+  const router = useRouter();
   const removeMutation = useMutation({
     mutationFn: () => {
       return fetch(`/api/collections/${collection.id}/remove-books`, {
         method: "POST",
         body: JSON.stringify([book.id]),
-      })
+      });
     },
     onSuccess: () => {
-      router.refresh()
+      router.refresh();
     },
-  })
+  });
   return (
     <div className="flex items-center rounded-xl border p-2">
       {book.coverUrl && (
@@ -57,5 +57,5 @@ export function RemoveBook({
         )}
       </Button>
     </div>
-  )
+  );
 }

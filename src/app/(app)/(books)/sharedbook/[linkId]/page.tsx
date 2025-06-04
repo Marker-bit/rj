@@ -1,24 +1,26 @@
-import { Badge } from "@/components/ui/badge"
-import { db } from "@/lib/db"
-import { validateRequest } from "@/lib/server-validate-request"
-import { declOfNum } from "@/lib/utils"
-import Image from "next/image"
-import Link from "next/link"
-import { CloneButton } from "./clone-button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge";
+import { db } from "@/lib/db";
+import { validateRequest } from "@/lib/server-validate-request";
+import { declOfNum } from "@/lib/utils";
+import Image from "next/image";
+import Link from "next/link";
+import { CloneButton } from "./clone-button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-export default async function Page(props: { params: Promise<{ linkId: string }> }) {
+export default async function Page(props: {
+  params: Promise<{ linkId: string }>;
+}) {
   const params = await props.params;
-  const { user } = await validateRequest()
+  const { user } = await validateRequest();
   const book = await db.book.findFirst({
     where: { links: { some: { id: params.linkId } } },
     include: {
       readEvents: { orderBy: [{ pagesRead: "desc" }, { readAt: "desc" }] },
       user: true,
     },
-  })
+  });
   if (!book) {
-    return null
+    return null;
   }
   return (
     <div className="p-2 max-sm:mb-[15vh]">
@@ -89,5 +91,5 @@ export default async function Page(props: { params: Promise<{ linkId: string }> 
         </div>
       </div>
     </div>
-  )
+  );
 }

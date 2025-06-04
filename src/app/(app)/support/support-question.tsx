@@ -1,35 +1,35 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { cn, declOfNum } from "@/lib/utils"
+import { Button } from "@/components/ui/button";
+import { cn, declOfNum } from "@/lib/utils";
 import {
   AnswerRead,
   SupportAnswer,
   SupportQuestion,
   User,
-} from "@prisma/client"
-import { User as LuciaUser } from "lucia"
-import { CheckCheck, ChevronDown } from "lucide-react"
-import Image from "next/image"
-import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import AnswerQuestion from "./answer-question"
-import QuestionAnswer from "./question-answer"
-import { Badge } from "@/components/ui/badge"
+} from "@prisma/client";
+import { User as LuciaUser } from "lucia";
+import { CheckCheck, ChevronDown } from "lucide-react";
+import Image from "next/image";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import AnswerQuestion from "./answer-question";
+import QuestionAnswer from "./question-answer";
+import { Badge } from "@/components/ui/badge";
 
 export default function SupportQuestionCard({
   question,
   currentUser,
 }: {
   question: SupportQuestion & {
-    answers: (SupportAnswer & { fromUser: User; read: AnswerRead[] })[]
-  }
-  currentUser: LuciaUser
+    answers: (SupportAnswer & { fromUser: User; read: AnswerRead[] })[];
+  };
+  currentUser: LuciaUser;
 }) {
-  const [isExpanded, setIsExpanded] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(false);
   const unreadAnswers = question.answers.filter(
-    (a) => !a.read.find((r) => r.userId === currentUser.id)
-  )
+    (a) => !a.read.find((r) => r.userId === currentUser.id),
+  );
 
   return (
     <div className="group relative flex w-full flex-col overflow-hidden rounded-xl border p-4">
@@ -94,5 +94,5 @@ export default function SupportQuestionCard({
         )}
       </AnimatePresence>
     </div>
-  )
+  );
 }

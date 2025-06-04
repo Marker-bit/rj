@@ -1,11 +1,11 @@
-"use server"
+"use server";
 
 import { hash } from "@node-rs/argon2";
 import { db } from "../db";
 import { validateRequest } from "../server-validate-request";
 
 export async function setVerification(userId: string, verified: boolean) {
-  const {user: currentUser} = await validateRequest();
+  const { user: currentUser } = await validateRequest();
   if (!currentUser) {
     throw new Error("Unauthorized");
   }
@@ -14,18 +14,18 @@ export async function setVerification(userId: string, verified: boolean) {
   }
   const user = await db.user.update({
     where: {
-      id: userId
+      id: userId,
     },
     data: {
-      verified
-    }
-  })
+      verified,
+    },
+  });
 
-  return user
+  return user;
 }
 
 export async function setPassword(userId: string, password: string) {
-  const {user: currentUser} = await validateRequest();
+  const { user: currentUser } = await validateRequest();
   if (!currentUser) {
     throw new Error("Unauthorized");
   }
@@ -35,12 +35,12 @@ export async function setPassword(userId: string, password: string) {
   const hashedPassword = await hash(password);
   const user = await db.user.update({
     where: {
-      id: userId
+      id: userId,
     },
     data: {
-      hashedPassword
-    }
-  })
+      hashedPassword,
+    },
+  });
 
-  return user
+  return user;
 }

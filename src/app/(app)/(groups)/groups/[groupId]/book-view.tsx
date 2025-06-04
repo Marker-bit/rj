@@ -1,38 +1,38 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Book, Group, GroupBook } from "@prisma/client"
-import { BookOpen, Minus, Plus } from "lucide-react"
-import { Loader } from "@/components/ui/loader"
-import Image from "next/image"
-import { MoreActions } from "./more-actions"
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { declOfNum } from "@/lib/utils"
-import Link from "next/link"
+import { Button } from "@/components/ui/button";
+import { Book, Group, GroupBook } from "@prisma/client";
+import { BookOpen, Minus, Plus } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
+import Image from "next/image";
+import { MoreActions } from "./more-actions";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { declOfNum } from "@/lib/utils";
+import Link from "next/link";
 import {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
-} from "@/components/ui/tooltip"
-import RemoveBookDialog from "./remove-book-dialog"
-import { toast } from "sonner"
+} from "@/components/ui/tooltip";
+import RemoveBookDialog from "./remove-book-dialog";
+import { toast } from "sonner";
 
 export function GroupBookView({
   groupBook,
   userId,
 }: {
   groupBook: GroupBook & {
-    group: Group
-    book: (Book & { readEvents: { pagesRead: number }[] })[]
-  }
-  userId: string
+    group: Group;
+    book: (Book & { readEvents: { pagesRead: number }[] })[];
+  };
+  userId: string;
 }) {
-  const [loading, setLoading] = useState(false)
-  const [removeDialogOpen, setRemoveDialogOpen] = useState(false)
-  const router = useRouter()
+  const [loading, setLoading] = useState(false);
+  const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
+  const router = useRouter();
 
-  const book = groupBook.book.find((b) => b.userId === userId)
+  const book = groupBook.book.find((b) => b.userId === userId);
 
   return (
     <div
@@ -88,28 +88,28 @@ export function GroupBookView({
                 variant="ghost"
                 className="size-fit p-1"
                 onClick={() => {
-                  setLoading(true)
+                  setLoading(true);
                   fetch(
                     `/api/groups/${groupBook.groupId}/books/${groupBook.id}/own`,
                     {
                       method: "POST",
-                    }
+                    },
                   )
                     .then((res) => res.json())
                     .then((res) => {
-                      setLoading(false)
-                      router.refresh()
+                      setLoading(false);
+                      router.refresh();
                       toast("Книга добавлена", {
                         description: "Теперь вы можете читать ее",
                         action: {
                           onClick: () => {
-                            router.push(`/books?bookId=${res.id}`)
-                            router.refresh()
+                            router.push(`/books?bookId=${res.id}`);
+                            router.refresh();
                           },
                           label: "Перейти",
                         },
-                      })
-                    })
+                      });
+                    });
                 }}
               >
                 {loading ? (
@@ -131,18 +131,18 @@ export function GroupBookView({
                   className="size-fit p-1"
                   onClick={() => {
                     if (book.readEvents.length === 0) {
-                      setLoading(true)
+                      setLoading(true);
                       fetch(
                         `/api/groups/${groupBook.groupId}/books/${groupBook.id}/own`,
                         {
                           method: "DELETE",
-                        }
+                        },
                       ).then(() => {
-                        setLoading(false)
-                        router.refresh()
-                      })
+                        setLoading(false);
+                        router.refresh();
+                      });
                     } else {
-                      setRemoveDialogOpen(true)
+                      setRemoveDialogOpen(true);
                     }
                   }}
                 >
@@ -166,5 +166,5 @@ export function GroupBookView({
         <MoreActions book={groupBook} addedBook={!!book} />
       </div>
     </div>
-  )
+  );
 }

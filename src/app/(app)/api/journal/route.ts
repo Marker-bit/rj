@@ -14,15 +14,15 @@ export async function GET(req: NextRequest) {
   const events = await db.readEvent.findMany({
     where: {
       book: {
-        userId: user.id
-      }
+        userId: user.id,
+      },
     },
     include: {
-      book: true
+      book: true,
     },
     orderBy: {
-      readAt: "desc"
-    }
+      readAt: "desc",
+    },
   });
 
   return NextResponse.json(events);

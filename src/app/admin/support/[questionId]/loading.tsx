@@ -11,5 +11,5 @@ export default function Loading() {
         <Skeleton className="h-32 w-full rounded-xl" key={`skeleton-${i}`} />
       ))}
     </div>
-  )
+  );
 }

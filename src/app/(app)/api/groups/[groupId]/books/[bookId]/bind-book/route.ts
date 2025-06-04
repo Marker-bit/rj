@@ -1,32 +1,32 @@
-import { db } from "@/lib/db"
-import { validateRequest } from "@/lib/server-validate-request"
-import { NextRequest, NextResponse } from "next/server"
+import { db } from "@/lib/db";
+import { validateRequest } from "@/lib/server-validate-request";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(
   req: NextRequest,
-  props: { params: Promise<{ groupId: string; bookId: string }> }
+  props: { params: Promise<{ groupId: string; bookId: string }> },
 ) {
   const params = await props.params;
-  const { user } = await validateRequest()
+  const { user } = await validateRequest();
 
   if (!user) {
     return new NextResponse("Unauthorized", {
       status: 401,
-    })
+    });
   }
 
-  const body = await req.json()
+  const body = await req.json();
 
   if (!body) {
     return new NextResponse("Bad request", {
       status: 400,
-    })
+    });
   }
 
   if (!body.bookId) {
     return new NextResponse("Bad request", {
       status: 400,
-    })
+    });
   }
 
   const groupBook = await db.groupBook.findFirstOrThrow({
@@ -44,13 +44,13 @@ export async function POST(
     include: {
       book: true,
     },
-  })
+  });
 
   if (groupBook.book.find((b) => b.userId === user.id)) {
     return NextResponse.json(
       { error: "Вы уже добавили себе эту книгу" },
-      { status: 400 }
-    )
+      { status: 400 },
+    );
   }
 
   await db.groupBook.update({
@@ -64,7 +64,7 @@ export async function POST(
         },
       },
     },
-  })
+  });
 
-  return NextResponse.json({ success: true }, { status: 200 })
+  return NextResponse.json({ success: true }, { status: 200 });
 }

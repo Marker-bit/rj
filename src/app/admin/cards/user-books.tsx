@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   Popover,
@@ -14,8 +14,8 @@ export default function UserBooks({
   user,
   books,
 }: {
-  user: User
-  books: (Book & { groupBook: (GroupBook & { group: Group }) | null })[]
+  user: User;
+  books: (Book & { groupBook: (GroupBook & { group: Group }) | null })[];
 }) {
   return (
     <>
@@ -69,5 +69,5 @@ export default function UserBooks({
         </PopoverContent>
       </Popover>
     </>
-  )
+  );
 }

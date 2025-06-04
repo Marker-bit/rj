@@ -1,12 +1,12 @@
-import { db } from "@/lib/db"
-import { validateRequest } from "@/lib/server-validate-request"
-import { declOfNum } from "@/lib/utils"
-import { Check } from "lucide-react"
-import Link from "next/link"
+import { db } from "@/lib/db";
+import { validateRequest } from "@/lib/server-validate-request";
+import { declOfNum } from "@/lib/utils";
+import { Check } from "lucide-react";
+import Link from "next/link";
 
 export default async function Support() {
-  const { user } = await validateRequest()
-  if (!user) return null
+  const { user } = await validateRequest();
+  if (!user) return null;
 
   const questions = await db.supportQuestion.findMany({
     include: {
@@ -17,8 +17,8 @@ export default async function Support() {
         },
       },
     },
-  })
-  questions.sort((a, b) => a.answers.length - b.answers.length)
+  });
+  questions.sort((a, b) => a.answers.length - b.answers.length);
   return (
     <div className="m-2 flex flex-col gap-4">
       <h1 className="text-3xl font-bold">Поддержка</h1>
@@ -29,9 +29,7 @@ export default async function Support() {
             <div className="flex h-full flex-col rounded-xl border p-4">
               <div className="text-2xl font-bold">{question.title}</div>
               <div className="flex items-center gap-2 text-sm text-black/50 dark:text-white/50">
-                {question.isDone && (
-                  <Check className="size-4" />
-                )}
+                {question.isDone && <Check className="size-4" />}
                 {question.answers.length}{" "}
                 {declOfNum(question.answers.length, [
                   "ответ",
@@ -44,5 +42,5 @@ export default async function Support() {
         ))}
       </div>
     </div>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-import { BackgroundColor } from "@prisma/client"
+import { BackgroundColor } from "@prisma/client";
 
 export const backgroundColors = [
   {
@@ -25,4 +25,4 @@ export const backgroundColors = [
     background: "bg-yellow-100/50 dark:bg-yellow-900/50",
     outline: "outline-yellow-200 dark:outline-yellow-800",
   },
-]
+];

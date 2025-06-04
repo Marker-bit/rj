@@ -1,47 +1,47 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Loader } from "@/components/ui/loader"
-import { Skeleton } from "@/components/ui/skeleton"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { UserPlus, UserX } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { Button } from "@/components/ui/button";
+import { Loader } from "@/components/ui/loader";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { UserPlus, UserX } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function FollowButton({
   username,
   following,
 }: {
-  username: string
-  following: boolean
+  username: string;
+  following: boolean;
 }) {
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
     fetch(`/api/profile/${username}`)
       .then((res) => res.json())
-      .then((res) => router.refresh())
+      .then((res) => router.refresh());
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [username])
+  }, [username]);
 
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   const followMutation = useMutation({
     mutationFn: async () => {
       return fetch(`/api/profile/${username}/follow`, {
         method: following ? "DELETE" : "POST",
-      })
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["user", username],
-      })
+      });
       queryClient.invalidateQueries({
         queryKey: ["friends"],
-      })
-      router.refresh()
+      });
+      router.refresh();
     },
-  })
+  });
 
   return following === undefined ? (
     <Skeleton className="h-10 w-48 rounded-md" />
@@ -72,5 +72,5 @@ export default function FollowButton({
       )}
       Добавить в друзья
     </Button>
-  )
+  );
 }

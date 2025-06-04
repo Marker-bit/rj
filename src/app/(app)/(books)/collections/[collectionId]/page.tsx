@@ -1,18 +1,16 @@
-import { db } from "@/lib/db"
-import { validateRequest } from "@/lib/server-validate-request"
-import { AddBook } from "./add-book"
-import { RemoveBook } from "./remove-book"
-import { declOfNum } from "@/lib/utils"
+import { db } from "@/lib/db";
+import { validateRequest } from "@/lib/server-validate-request";
+import { AddBook } from "./add-book";
+import { RemoveBook } from "./remove-book";
+import { declOfNum } from "@/lib/utils";
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
-export default async function Page(
-  props: {
-    params: Promise<{ collectionId: string }>
-  }
-) {
+export default async function Page(props: {
+  params: Promise<{ collectionId: string }>;
+}) {
   const params = await props.params;
-  const { user } = await validateRequest()
+  const { user } = await validateRequest();
   const books = await db.book.findMany({
     where: {
       userId: user?.id,
@@ -22,7 +20,7 @@ export default async function Page(
         },
       },
     },
-  })
+  });
   const collection = await db.collection.findUnique({
     where: {
       id: params.collectionId,
@@ -31,10 +29,10 @@ export default async function Page(
     include: {
       books: true,
     },
-  })
+  });
 
   if (!collection) {
-    return null
+    return null;
   }
 
   return (
@@ -63,5 +61,5 @@ export default async function Page(
         </div>
       )}
     </div>
-  )
+  );
 }

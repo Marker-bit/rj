@@ -1,18 +1,20 @@
-import { Button } from "@/components/ui/button"
-import { db } from "@/lib/db"
-import { validateRequest } from "@/lib/server-validate-request"
-import { declOfNum } from "@/lib/utils"
-import { BadgeCheck, Check, Home } from "lucide-react"
-import Image from "next/image"
-import { JoinGroupButton } from "./buttons"
-import { redirect } from "next/navigation"
-import Link from "next/link"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button";
+import { db } from "@/lib/db";
+import { validateRequest } from "@/lib/server-validate-request";
+import { declOfNum } from "@/lib/utils";
+import { BadgeCheck, Check, Home } from "lucide-react";
+import Image from "next/image";
+import { JoinGroupButton } from "./buttons";
+import { redirect } from "next/navigation";
+import Link from "next/link";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-export default async function Page(props: { params: Promise<{ linkId: string }> }) {
+export default async function Page(props: {
+  params: Promise<{ linkId: string }>;
+}) {
   const params = await props.params;
-  const { user } = await validateRequest()
-  if (!user) return null
+  const { user } = await validateRequest();
+  if (!user) return null;
 
   const link = await db.groupInviteLink.findUniqueOrThrow({
     where: {
@@ -31,10 +33,10 @@ export default async function Page(props: { params: Promise<{ linkId: string }> 
         },
       },
     },
-  })
+  });
 
   if (link.group.members.some((member) => member.userId === user.id)) {
-    return redirect(`/groups/${link.group.id}`)
+    return redirect(`/groups/${link.group.id}`);
   }
   return (
     <div className="flex flex-col p-4 max-sm:mb-[15vh] md:min-h-screen md:items-center md:justify-center">
@@ -95,5 +97,5 @@ export default async function Page(props: { params: Promise<{ linkId: string }> 
         )}
       </div>
     </div>
-  )
+  );
 }

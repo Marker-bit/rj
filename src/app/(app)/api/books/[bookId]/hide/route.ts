@@ -1,15 +1,18 @@
-import { db } from "@/lib/db"
-import { validateRequest } from "@/lib/server-validate-request"
-import { NextRequest, NextResponse } from "next/server"
+import { db } from "@/lib/db";
+import { validateRequest } from "@/lib/server-validate-request";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextRequest, props: { params: Promise<{ bookId: string }> }) {
+export async function POST(
+  req: NextRequest,
+  props: { params: Promise<{ bookId: string }> },
+) {
   const params = await props.params;
-  const { user } = await validateRequest()
+  const { user } = await validateRequest();
 
   if (!user) {
     return new NextResponse("Not Authorized", {
       status: 401,
-    })
+    });
   }
 
   const book = await db.book.findUniqueOrThrow({
@@ -21,12 +24,12 @@ export async function POST(req: NextRequest, props: { params: Promise<{ bookId: 
       id: true,
       isHidden: true,
     },
-  })
+  });
 
   if (!book) {
     return new NextResponse(null, {
       status: 400,
-    })
+    });
   }
 
   await db.book.update({
@@ -36,7 +39,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ bookId: 
     data: {
       isHidden: !book.isHidden,
     },
-  })
+  });
 
-  return NextResponse.json({ ok: true })
+  return NextResponse.json({ ok: true });
 }

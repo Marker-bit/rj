@@ -27,7 +27,9 @@ export default function StreakBlock({
   const { streak, breakDay, readToday } = getStreak(events);
   const days = getDays2(events);
   const pagesReadToday = days[days.length - 1].pagesRead;
-  const goodNumbers = [5, 10, 20, 50, 100, 200, 300, 365, 400, 500, 600, 730, 800, 900, 1000];
+  const goodNumbers = [
+    5, 10, 20, 50, 100, 200, 300, 365, 400, 500, 600, 730, 800, 900, 1000,
+  ];
   const hasntRead = events.length === 0;
 
   return (
@@ -40,7 +42,9 @@ export default function StreakBlock({
           {streak} {declOfNum(streak, ["день", "дня", "дней"])}
         </CardTitle>
         <CardDescription>
-          {hasntRead ? "Вы ещё ничего не прочитали" : streak > 0 ? (
+          {hasntRead ? (
+            "Вы ещё ничего не прочитали"
+          ) : streak > 0 ? (
             <>
               Вы читаете подряд уже{" "}
               <span className="font-bold">
@@ -79,7 +83,8 @@ export default function StreakBlock({
           )}
         </CardDescription>
         <CardAction>
-          {(goodNumbers.includes(streak) || (streak !== 0 && streak % 50 === 0)) && <ConfettiButton />}
+          {(goodNumbers.includes(streak) ||
+            (streak !== 0 && streak % 50 === 0)) && <ConfettiButton />}
         </CardAction>
       </CardHeader>
       <CardContent className="mt-auto max-h-[124px] flex-1 p-0">

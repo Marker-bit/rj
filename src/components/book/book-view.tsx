@@ -33,7 +33,7 @@ import {
   Share,
   Trash,
   Undo,
-  Users
+  Users,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -44,14 +44,18 @@ import { DateDoneModal } from "../dialogs/books/date-done-modal";
 import { ShareBookModal } from "../dialogs/books/share-book-modal";
 import { HelpButton } from "../ui/help-button";
 import { Loader } from "../ui/loader";
-import {
-  SimpleTooltip
-} from "../ui/tooltip";
+import { SimpleTooltip } from "../ui/tooltip";
 import Palette from "./palette";
 
 export const dynamic = "force-dynamic";
 
-export function BookView({ book, onUpdate }: { book: Book, onUpdate?: () => void }) {
+export function BookView({
+  book,
+  onUpdate,
+}: {
+  book: Book;
+  onUpdate?: () => void;
+}) {
   const [editOpen, setEditOpen] = useState(false);
   const [dateOpen, setDateOpen] = useState(false);
   const [doneOpen, setDoneOpen] = useState(false);
@@ -161,8 +165,8 @@ export function BookView({ book, onUpdate }: { book: Book, onUpdate?: () => void
     typeof book.fields === "string"
       ? JSON.parse(book.fields)
       : Array.isArray(book.fields)
-      ? book.fields
-      : [];
+        ? book.fields
+        : [];
 
   return (
     <>
@@ -195,7 +199,7 @@ export function BookView({ book, onUpdate }: { book: Book, onUpdate?: () => void
           "group relative flex gap-2 rounded-md border p-2 transition-shadow hover:shadow-sm overflow-hidden",
           book.background !== BackgroundColor.NONE &&
             "outline-solid outline-8 my-2",
-          color && color.outline
+          color && color.outline,
         )}
         id={`book-${book.id}`}
       >
@@ -204,7 +208,7 @@ export function BookView({ book, onUpdate }: { book: Book, onUpdate?: () => void
             "absolute left-0 top-0 -z-50 h-full",
             color
               ? color.background
-              : "bg-neutral-100/50 dark:bg-neutral-900/50"
+              : "bg-neutral-100/50 dark:bg-neutral-900/50",
           )}
           style={{
             width: `${((lastEvent?.pagesRead || 0) / book.pages) * 100}%`,

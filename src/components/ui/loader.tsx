@@ -1,14 +1,14 @@
-import { cn } from "@/lib/utils"
-import styles from "./loader.module.css"
+import { cn } from "@/lib/utils";
+import styles from "./loader.module.css";
 
 export function Loader({
   className,
   invert,
   white,
 }: {
-  className: string
-  invert?: boolean
-  white?: boolean
+  className: string;
+  invert?: boolean;
+  white?: boolean;
 }) {
   return (
     <div className={"like-svg " + className}>
@@ -22,13 +22,13 @@ export function Loader({
                 white
                   ? "bg-white"
                   : invert
-                  ? "bg-white dark:bg-black"
-                  : "bg-black dark:bg-white"
+                    ? "bg-white dark:bg-black"
+                    : "bg-black dark:bg-white",
               )}
               key={`spinner-bar-${i}`}
             />
           ))}
       </div>
     </div>
-  )
+  );
 }

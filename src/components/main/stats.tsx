@@ -1,12 +1,12 @@
-import { db } from "@/lib/db"
-import { validateRequest } from "@/lib/server-validate-request"
-import { BarChart } from "lucide-react"
-import MainChart from "./main-chart"
-import { addDays, isSameDay, subMonths } from "date-fns"
+import { db } from "@/lib/db";
+import { validateRequest } from "@/lib/server-validate-request";
+import { BarChart } from "lucide-react";
+import MainChart from "./main-chart";
+import { addDays, isSameDay, subMonths } from "date-fns";
 
 export async function Stats() {
-  const { user } = await validateRequest()
-  if (!user) return
+  const { user } = await validateRequest();
+  if (!user) return;
   const profile = await db.user.findUniqueOrThrow({
     where: {
       id: user.id,
@@ -15,7 +15,7 @@ export async function Stats() {
       follower: true,
       following: true,
     },
-  })
+  });
   const events = await db.readEvent.findMany({
     where: {
       book: {
@@ -28,6 +28,6 @@ export async function Stats() {
     orderBy: {
       readAt: "asc",
     },
-  })
-  return <MainChart events={events} profile={profile} />
+  });
+  return <MainChart events={events} profile={profile} />;
 }

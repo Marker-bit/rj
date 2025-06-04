@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { X } from "lucide-react"
-import Link from "next/link"
-import { ReactElement, useEffect, useState } from "react"
-import { useLocalStorage } from "usehooks-ts"
+import { X } from "lucide-react";
+import Link from "next/link";
+import { ReactElement, useEffect, useState } from "react";
+import { useLocalStorage } from "usehooks-ts";
 
 export default function Notifications() {
   const notifications = [
@@ -45,7 +45,7 @@ export default function Notifications() {
         </div>
       ),
     },
-  ]
+  ];
 
   return (
     <div className="flex flex-col gap-2">
@@ -53,32 +53,32 @@ export default function Notifications() {
         <Notification key={notification.id} notification={notification} />
       ))}
     </div>
-  )
+  );
 }
 
 function Notification({
   notification,
 }: {
-  notification: { id: string; title: string; body: ReactElement<any> }
+  notification: { id: string; title: string; body: ReactElement<any> };
 }) {
-  const [isClient, setIsClient] = useState(false)
+  const [isClient, setIsClient] = useState(false);
   const [notifications, setNotifications] = useLocalStorage<string[]>(
     "hiddenIds",
-    []
-  )
+    [],
+  );
   useEffect(() => {
-    setIsClient(true)
+    setIsClient(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, []);
 
   const hide = () => {
     if (!notifications.includes(notification.id)) {
-      setNotifications((notifications) => [...notifications, notification.id])
+      setNotifications((notifications) => [...notifications, notification.id]);
     }
-  }
-  if (!isClient) return null
-  const hidden = notifications.includes(notification.id)
-  if (hidden) return null
+  };
+  if (!isClient) return null;
+  const hidden = notifications.includes(notification.id);
+  if (hidden) return null;
 
   return (
     <div className="relative flex flex-col gap-4 rounded-xl border p-2">
@@ -91,5 +91,5 @@ function Notification({
         <X className="size-4" />
       </button>
     </div>
-  )
+  );
 }

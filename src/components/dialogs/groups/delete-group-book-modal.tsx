@@ -1,34 +1,34 @@
-"use client"
+"use client";
 
-import { DrawerDialog } from "@/components/ui/drawer-dialog"
-import { Book, Collection, Group, GroupBook } from "@prisma/client"
-import { DialogDescription, DialogHeader, DialogTitle } from "../../ui/dialog"
-import { Button } from "../../ui/button"
-import { Loader, Router } from "lucide-react"
-import { declOfNum } from "@/lib/utils"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { DrawerDialog } from "@/components/ui/drawer-dialog";
+import { Book, Collection, Group, GroupBook } from "@prisma/client";
+import { DialogDescription, DialogHeader, DialogTitle } from "../../ui/dialog";
+import { Button } from "../../ui/button";
+import { Loader, Router } from "lucide-react";
+import { declOfNum } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export function DeleteGroupBookModal({
   open,
   setOpen,
   book,
 }: {
-  open: boolean
-  setOpen: (v: boolean) => void
-  book: GroupBook & { group: Group }
+  open: boolean;
+  setOpen: (v: boolean) => void;
+  book: GroupBook & { group: Group };
 }) {
-  const router = useRouter()
-  const [loading, setLoading] = useState(false)
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   function deleteBook() {
-    setLoading(true)
+    setLoading(true);
     fetch(`/api/groups/${book.group.id}/books/${book.id}`, {
       method: "DELETE",
     }).then(() => {
-      setOpen(false)
-      router.refresh()
-    })
+      setOpen(false);
+      router.refresh();
+    });
   }
 
   return (
@@ -56,5 +56,5 @@ export function DeleteGroupBookModal({
         </Button>
       </div>
     </DrawerDialog>
-  )
+  );
 }

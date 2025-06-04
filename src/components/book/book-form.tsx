@@ -39,7 +39,7 @@ const bookSchema = z.object({
       value: z.string({
         required_error: "Значение поля обязательно",
       }),
-    })
+    }),
   ),
 });
 
@@ -322,7 +322,13 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
   );
 }
 
-export function AddBookDialog({ open, setOpen }: { open: boolean; setOpen: (open: boolean) => void }) {
+export function AddBookDialog({
+  open,
+  setOpen,
+}: {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+}) {
   return (
     <>
       <DrawerDialog open={open} onOpenChange={setOpen} className="min-w-[50vw]">

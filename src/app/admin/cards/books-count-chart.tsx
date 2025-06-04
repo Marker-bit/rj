@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { declOfNum } from "@/lib/utils"
-import { format } from "date-fns"
+import { declOfNum } from "@/lib/utils";
+import { format } from "date-fns";
 import {
   CartesianGrid,
   Line,
@@ -10,7 +10,7 @@ import {
   Tooltip,
   XAxis,
   YAxis,
-} from "recharts"
+} from "recharts";
 
 export default function BooksCountChart({ data }: { data: any[] }) {
   return (
@@ -68,5 +68,5 @@ export default function BooksCountChart({ data }: { data: any[] }) {
         />
       </LineChart>
     </ResponsiveContainer>
-  )
+  );
 }

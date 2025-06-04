@@ -1,19 +1,21 @@
-import { Button } from "@/components/ui/button"
-import { db } from "@/lib/db"
-import { BadgeCheck, Ban, KeyRound } from "lucide-react"
-import { notFound } from "next/navigation"
+import { Button } from "@/components/ui/button";
+import { db } from "@/lib/db";
+import { BadgeCheck, Ban, KeyRound } from "lucide-react";
+import { notFound } from "next/navigation";
 import BadgeCheckButton from "./badge-check-button";
 import PasswordUpdateButton from "./password-update";
 
-export default async function Page(props: { params: Promise<{ userId: string }> }) {
+export default async function Page(props: {
+  params: Promise<{ userId: string }>;
+}) {
   const params = await props.params;
   const user = await db.user.findFirst({
     where: {
       id: params.userId,
     },
-  })
+  });
   if (!user) {
-    return notFound()
+    return notFound();
   }
   return (
     <div className="m-2 flex flex-col gap-2">
@@ -32,5 +34,5 @@ export default async function Page(props: { params: Promise<{ userId: string }> 
         <PasswordUpdateButton userId={user.id} />
       </div>
     </div>
-  )
+  );
 }

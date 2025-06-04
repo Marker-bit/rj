@@ -1,25 +1,23 @@
-import { BookView } from "@/components/book/book-view"
-import { Button } from "@/components/ui/button"
-import { fetchBooks } from "@/lib/books"
-import { validateRequest } from "@/lib/server-validate-request"
-import { ChevronLeft, ChevronRight, HistoryIcon } from "lucide-react"
-import Link from "next/link"
-import { BookList } from "./book-list"
-import AddBookButton from "./button"
+import { BookView } from "@/components/book/book-view";
+import { Button } from "@/components/ui/button";
+import { fetchBooks } from "@/lib/books";
+import { validateRequest } from "@/lib/server-validate-request";
+import { ChevronLeft, ChevronRight, HistoryIcon } from "lucide-react";
+import Link from "next/link";
+import { BookList } from "./book-list";
+import AddBookButton from "./button";
 
-export default async function BooksPage(
-  props: {
-    searchParams: Promise<{ bookId: string | undefined }>
-  }
-) {
+export default async function BooksPage(props: {
+  searchParams: Promise<{ bookId: string | undefined }>;
+}) {
   const searchParams = await props.searchParams;
-  const { user } = await validateRequest()
-  if (!user) return null
+  const { user } = await validateRequest();
+  if (!user) return null;
 
-  const books = await fetchBooks(user.id)
-  let bookId = searchParams?.bookId
+  const books = await fetchBooks(user.id);
+  let bookId = searchParams?.bookId;
 
-  const foundBook = bookId ? books.find((b) => b.id === bookId) : undefined
+  const foundBook = bookId ? books.find((b) => b.id === bookId) : undefined;
 
   return (
     <div className="max-sm:mb-[15vh]">
@@ -89,5 +87,5 @@ export default async function BooksPage(
         </>
       )}
     </div>
-  )
+  );
 }

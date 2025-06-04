@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -9,17 +9,23 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { logOut } from "@/lib/actions/auth";
 import { User } from "lucia";
-import { ChevronsUpDown, LockKeyhole, LogOut, Settings, UserIcon } from "lucide-react";
+import {
+  ChevronsUpDown,
+  LockKeyhole,
+  LogOut,
+  Settings,
+  UserIcon,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export function UserButton({ user }: { user: User }) {
-  const router = useRouter()
+  const router = useRouter();
   const logOutClick = async () => {
-    await logOut()
-    router.replace("/")
-  }
+    await logOut();
+    router.replace("/");
+  };
 
   return (
     <DropdownMenu>
@@ -59,5 +65,5 @@ export function UserButton({ user }: { user: User }) {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

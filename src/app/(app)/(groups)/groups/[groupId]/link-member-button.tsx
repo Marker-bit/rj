@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
 import AddGroupLink from "@/components/dialogs/groups/add-group-link";
-import AddMember from "@/components/dialogs/groups/add-member"
-import { Button } from "@/components/ui/button"
-import { Link2 } from "lucide-react"
-import { useState } from "react"
+import AddMember from "@/components/dialogs/groups/add-member";
+import { Button } from "@/components/ui/button";
+import { Link2 } from "lucide-react";
+import { useState } from "react";
 
 export function LinkMemberButton({
   group,
   isMember,
 }: {
-  group: any
-  isMember: boolean
+  group: any;
+  isMember: boolean;
 }) {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
   return (
     <>
       {!isMember && (
@@ -28,5 +28,5 @@ export function LinkMemberButton({
       )}
       <AddGroupLink open={open} setOpen={setOpen} group={group} />
     </>
-  )
+  );
 }

@@ -1,24 +1,27 @@
-import Image from "next/image"
-import { db } from "@/lib/db"
-import { validateRequest } from "@/lib/server-validate-request"
-import FollowButton from "./follow-button"
-import { UserTabs } from "./user-tabs"
-import { redirect } from "next/navigation"
-import { Metadata, ResolvingMetadata } from "next"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import Image from "next/image";
+import { db } from "@/lib/db";
+import { validateRequest } from "@/lib/server-validate-request";
+import FollowButton from "./follow-button";
+import { UserTabs } from "./user-tabs";
+import { redirect } from "next/navigation";
+import { Metadata, ResolvingMetadata } from "next";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type Props = {
-  params: Promise<{ username: string }>
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
-}
+  params: Promise<{ username: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
 
-export async function generateMetadata(props: Props, parent: ResolvingMetadata): Promise<Metadata> {
+export async function generateMetadata(
+  props: Props,
+  parent: ResolvingMetadata,
+): Promise<Metadata> {
   const params = await props.params;
-  const username = params.username
-  const before = await parent
+  const username = params.username;
+  const before = await parent;
 
   // optionally access and extend (rather than replace) parent metadata
-  const _previousImages = before.openGraph?.images || []
+  const _previousImages = before.openGraph?.images || [];
 
   return {
     title: `@${username} на RJ`,
@@ -35,17 +38,15 @@ export async function generateMetadata(props: Props, parent: ResolvingMetadata):
     },
     creator: "Marker-bit",
     applicationName: "Читательский дневник",
-  }
+  };
 }
 
-export default async function Page(
-  props: {
-    params: Promise<{ username: string }>
-  }
-) {
+export default async function Page(props: {
+  params: Promise<{ username: string }>;
+}) {
   const params = await props.params;
-  const username = params.username
-  const { user: currentUser } = await validateRequest()
+  const username = params.username;
+  const { user: currentUser } = await validateRequest();
   const user = await db.user.findFirstOrThrow({
     where: {
       username: {
@@ -66,7 +67,7 @@ export default async function Page(
         },
       },
     },
-  })
+  });
   const events = await db.readEvent.findMany({
     where: {
       book: {
@@ -79,7 +80,7 @@ export default async function Page(
     orderBy: {
       readAt: "asc",
     },
-  })
+  });
   const books = await db.book.findMany({
     where: {
       userId: user.id,
@@ -91,8 +92,8 @@ export default async function Page(
         },
       },
     },
-  })
-  if (currentUser?.id === user.id) return redirect("/profile")
+  });
+  if (currentUser?.id === user.id) return redirect("/profile");
   return (
     <div className="m-3 mb-[15vh]">
       <div className="flex items-center gap-2 rounded-md border p-4">
@@ -123,5 +124,5 @@ export default async function Page(
         books={books}
       />
     </div>
-  )
+  );
 }

@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Pagination,
   PaginationContent,
@@ -9,27 +9,27 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination"
-import { ArrowLeft, ArrowRight } from "lucide-react"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
+} from "@/components/ui/pagination";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function BookPagination({
   currentPage,
   totalPages,
 }: {
-  currentPage: number
-  totalPages: number
+  currentPage: number;
+  totalPages: number;
 }) {
-  const searchParams = useSearchParams()
-  const pathname = usePathname()
-  const { replace } = useRouter()
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
 
   const getPageUrl = (page: number) => {
-    const params = new URLSearchParams(searchParams)
-    params.set("page", page.toString())
+    const params = new URLSearchParams(searchParams);
+    params.set("page", page.toString());
 
-    return `${pathname}?${params.toString()}`
-  }
+    return `${pathname}?${params.toString()}`;
+  };
 
   return (
     <div className="flex items-center justify-between">
@@ -86,5 +86,5 @@ export default function BookPagination({
         </PaginationContent>
       </Pagination>
     </div>
-  )
+  );
 }

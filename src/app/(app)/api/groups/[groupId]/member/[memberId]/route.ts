@@ -1,19 +1,19 @@
-import { db } from "@/lib/db"
-import { validateRequest } from "@/lib/server-validate-request"
-import { GroupMemberRole } from "@prisma/client"
-import { NextRequest, NextResponse } from "next/server"
+import { db } from "@/lib/db";
+import { validateRequest } from "@/lib/server-validate-request";
+import { GroupMemberRole } from "@prisma/client";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function PATCH(
   req: NextRequest,
-  props: { params: Promise<{ groupId: string; memberId: string }> }
+  props: { params: Promise<{ groupId: string; memberId: string }> },
 ) {
   const params = await props.params;
-  const { user } = await validateRequest()
+  const { user } = await validateRequest();
 
   if (!user) {
     return new NextResponse("Unauthorized", {
       status: 401,
-    })
+    });
   }
 
   const group = await db.group.findUniqueOrThrow({
@@ -31,7 +31,7 @@ export async function PATCH(
     include: {
       members: true,
     },
-  })
+  });
 
   if (!group) {
     return NextResponse.json(
@@ -39,21 +39,21 @@ export async function PATCH(
         error:
           "Не существует группы, вы не состоите в ней или вы не создатель и не модератор",
       },
-      { status: 404 }
-    )
+      { status: 404 },
+    );
   }
 
-  const userMember = group.members.find((member) => member.userId === user.id)
-  const member = group.members.find((member) => member.id === params.memberId)
-  const body = (await req.json()) as { role: GroupMemberRole }
+  const userMember = group.members.find((member) => member.userId === user.id);
+  const member = group.members.find((member) => member.id === params.memberId);
+  const body = (await req.json()) as { role: GroupMemberRole };
 
   if (userMember?.role !== GroupMemberRole.CREATOR) {
     return NextResponse.json(
       {
         error: "Вы не создатель группы",
       },
-      { status: 403 }
-    )
+      { status: 403 },
+    );
   }
 
   if (body.role === GroupMemberRole.CREATOR) {
@@ -61,8 +61,8 @@ export async function PATCH(
       {
         error: "Нельзя назначить создателя",
       },
-      { status: 400 }
-    )
+      { status: 400 },
+    );
   }
 
   if (!member) {
@@ -70,8 +70,8 @@ export async function PATCH(
       {
         error: "Не существует участника группы",
       },
-      { status: 404 }
-    )
+      { status: 404 },
+    );
   }
 
   const updatedMember = await db.groupMember.update({
@@ -81,24 +81,24 @@ export async function PATCH(
     data: {
       role: body.role,
     },
-  })
+  });
 
   return NextResponse.json({
     message: "Роль участника успешно изменена",
-  })
+  });
 }
 
 export async function DELETE(
   req: NextRequest,
-  props: { params: Promise<{ groupId: string; memberId: string }> }
+  props: { params: Promise<{ groupId: string; memberId: string }> },
 ) {
   const params = await props.params;
-  const { user } = await validateRequest()
+  const { user } = await validateRequest();
 
   if (!user) {
     return new NextResponse("Unauthorized", {
       status: 401,
-    })
+    });
   }
 
   const group = await db.group.findUniqueOrThrow({
@@ -116,7 +116,7 @@ export async function DELETE(
     include: {
       members: true,
     },
-  })
+  });
 
   if (!group) {
     return NextResponse.json(
@@ -124,12 +124,12 @@ export async function DELETE(
         error:
           "Не существует группы, вы не состоите в ней или вы не создатель и не модератор",
       },
-      { status: 404 }
-    )
+      { status: 404 },
+    );
   }
 
-  const userMember = group.members.find((member) => member.userId === user.id)
-  const member = group.members.find((member) => member.id === params.memberId)
+  const userMember = group.members.find((member) => member.userId === user.id);
+  const member = group.members.find((member) => member.id === params.memberId);
 
   if (
     userMember?.role === GroupMemberRole.MODERATOR &&
@@ -139,8 +139,8 @@ export async function DELETE(
       {
         error: "Модератор не может исключить модератора",
       },
-      { status: 400 }
-    )
+      { status: 400 },
+    );
   } else if (
     userMember?.role === GroupMemberRole.CREATOR &&
     member?.role === GroupMemberRole.CREATOR
@@ -149,8 +149,8 @@ export async function DELETE(
       {
         error: "Создатель не может исключить создателя",
       },
-      { status: 400 }
-    )
+      { status: 400 },
+    );
   } else if (
     userMember?.role === GroupMemberRole.MODERATOR &&
     member?.role === GroupMemberRole.CREATOR
@@ -159,15 +159,15 @@ export async function DELETE(
       {
         error: "Модератор не может исключить создателя",
       },
-      { status: 400 }
-    )
+      { status: 400 },
+    );
   }
 
   await db.groupMember.delete({
     where: {
       id: params.memberId,
     },
-  })
+  });
 
   await db.group.update({
     where: {
@@ -180,7 +180,7 @@ export async function DELETE(
         },
       },
     },
-  })
+  });
 
-  return NextResponse.json({ message: "Участник исключен" }, { status: 200 })
+  return NextResponse.json({ message: "Участник исключен" }, { status: 200 });
 }

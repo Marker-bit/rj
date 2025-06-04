@@ -1,18 +1,18 @@
-import { ChevronLeft, Edit, Settings, Users2 } from "lucide-react"
-import Image from "next/image"
-import Link from "next/link"
-import { Stats } from "@/components/users/stats"
-import { validateRequest } from "@/lib/server-validate-request"
-import { db } from "@/lib/db"
-import { CopyUrl } from "./CopyUrl"
-import { Suspense } from "react"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { ChevronLeft, Edit, Settings, Users2 } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { Stats } from "@/components/users/stats";
+import { validateRequest } from "@/lib/server-validate-request";
+import { db } from "@/lib/db";
+import { CopyUrl } from "./CopyUrl";
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default async function ProfilePage() {
-  const { user } = await validateRequest()
-  if (!user) return null
+  const { user } = await validateRequest();
+  if (!user) return null;
 
   const userData = await db.user.findUniqueOrThrow({
     where: {
@@ -22,7 +22,7 @@ export default async function ProfilePage() {
       follower: true,
       following: true,
     },
-  })
+  });
   const events = await db.readEvent.findMany({
     where: {
       book: {
@@ -35,7 +35,7 @@ export default async function ProfilePage() {
     orderBy: {
       readAt: "asc",
     },
-  })
+  });
   const books = await db.book.findMany({
     where: {
       userId: user.id,
@@ -47,7 +47,7 @@ export default async function ProfilePage() {
         },
       },
     },
-  })
+  });
 
   return (
     <div className="mb-[15vh]">
@@ -99,5 +99,5 @@ export default async function ProfilePage() {
         <Stats profile={userData} events={events} books={books} />
       </Suspense>
     </div>
-  )
+  );
 }

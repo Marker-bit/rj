@@ -1,19 +1,22 @@
-import { db } from "@/lib/db"
-import { ImageResponse } from "@vercel/og"
-import { NextRequest } from "next/server"
+import { db } from "@/lib/db";
+import { ImageResponse } from "@vercel/og";
+import { NextRequest } from "next/server";
 
-export async function GET(req: NextRequest, props: { params: Promise<{ username: string }> }) {
+export async function GET(
+  req: NextRequest,
+  props: { params: Promise<{ username: string }> },
+) {
   const params = await props.params;
-  const { username } = params
+  const { username } = params;
 
   const user = await db.user.findUnique({
     where: {
       username,
     },
-  })
+  });
 
   if (!user) {
-    return new Response(null, { status: 404 })
+    return new Response(null, { status: 404 });
   }
 
   return new ImageResponse(
@@ -53,6 +56,6 @@ export async function GET(req: NextRequest, props: { params: Promise<{ username:
     {
       width: 1200,
       height: 630,
-    }
-  )
+    },
+  );
 }

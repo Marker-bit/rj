@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function PATCH(
   req: NextRequest,
-  props: { params: Promise<{ groupId: string; bookId: string }> }
+  props: { params: Promise<{ groupId: string; bookId: string }> },
 ) {
   const params = await props.params;
   const { user } = await validateRequest();
@@ -31,11 +31,11 @@ export async function PATCH(
             },
           },
         },
-      }
+      },
     },
     data: {
       ...data,
-    }
+    },
   });
 
   return NextResponse.json({ success: true }, { status: 200 });
@@ -43,7 +43,7 @@ export async function PATCH(
 
 export async function DELETE(
   req: NextRequest,
-  props: { params: Promise<{ groupId: string; bookId: string }> }
+  props: { params: Promise<{ groupId: string; bookId: string }> },
 ) {
   const params = await props.params;
   const { user } = await validateRequest();
@@ -67,7 +67,7 @@ export async function DELETE(
             },
           },
         },
-      }
+      },
     },
   });
 

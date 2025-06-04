@@ -1,13 +1,13 @@
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { db } from "@/lib/db"
-import { validateRequest } from "@/lib/server-validate-request"
-import { MessageCircleQuestion } from "lucide-react"
-import Link from "next/link"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { db } from "@/lib/db";
+import { validateRequest } from "@/lib/server-validate-request";
+import { MessageCircleQuestion } from "lucide-react";
+import Link from "next/link";
 
 export default async function SupportButton() {
-  const { user } = await validateRequest()
-  if (!user) return null
+  const { user } = await validateRequest();
+  if (!user) return null;
   const unread = await db.supportAnswer.count({
     where: {
       read: {
@@ -19,7 +19,7 @@ export default async function SupportButton() {
         fromUserId: user?.id,
       },
     },
-  })
+  });
   return (
     <Button variant="ghost" size="icon" asChild>
       <Link href="/support">
@@ -32,5 +32,5 @@ export default async function SupportButton() {
         )}
       </Link>
     </Button>
-  )
+  );
 }

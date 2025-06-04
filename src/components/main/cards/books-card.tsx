@@ -30,12 +30,12 @@ export default function BooksCard() {
   const [open, setOpen] = useState(false);
   const [orderBy, setOrderBy] = useLocalStorage<"percent" | "activity">(
     "orderBy",
-    "percent"
+    "percent",
   );
   const [isPending, startTransition] = useTransition();
   const [pageLoading, setPageLoading] = useState(true);
   const [books, setBooks] = useState<Awaited<ReturnType<typeof fetchBooks>>>(
-    []
+    [],
   );
 
   const updateBooks = (orderBy: "percent" | "activity") => {
@@ -45,9 +45,9 @@ export default function BooksCard() {
         books
           .filter(
             (book) =>
-              book.readEvents[0]?.pagesRead !== book.pages && !book.isHidden
+              book.readEvents[0]?.pagesRead !== book.pages && !book.isHidden,
           )
-          .slice(0, 3)
+          .slice(0, 3),
       );
     });
   };

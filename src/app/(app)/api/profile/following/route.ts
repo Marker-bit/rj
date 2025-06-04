@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
           lastName: true,
           username: true,
           id: true,
-          avatarUrl: true
+          avatarUrl: true,
         },
       },
       first: {
@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
           lastName: true,
           username: true,
           id: true,
-          avatarUrl: true
+          avatarUrl: true,
         },
       },
     },

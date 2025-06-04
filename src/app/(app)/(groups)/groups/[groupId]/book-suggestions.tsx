@@ -1,26 +1,26 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { DrawerDialog } from "@/components/ui/drawer-dialog"
+import { Button } from "@/components/ui/button";
+import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { DrawerDialog } from "@/components/ui/drawer-dialog";
 import {
   GroupBookSuggestion,
   GroupMember,
   GroupMemberRole,
-} from "@prisma/client"
-import { BookUser } from "lucide-react"
-import { useState } from "react"
-import { Suggestion } from "./suggestion"
+} from "@prisma/client";
+import { BookUser } from "lucide-react";
+import { useState } from "react";
+import { Suggestion } from "./suggestion";
 import { SuggestBook } from "./suggest-book";
 
 export function BookSuggestions({
   suggestions,
   member,
 }: {
-  suggestions: GroupBookSuggestion[]
-  member: GroupMember
+  suggestions: GroupBookSuggestion[];
+  member: GroupMember;
 }) {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
   return (
     <>
@@ -44,7 +44,7 @@ export function BookSuggestions({
             .filter((s) =>
               member.role === GroupMemberRole.MEMBER
                 ? s.memberId === member.id
-                : true
+                : true,
             )
             .map((suggestion) => (
               <Suggestion
@@ -56,5 +56,5 @@ export function BookSuggestions({
         </div>
       </DrawerDialog>
     </>
-  )
+  );
 }

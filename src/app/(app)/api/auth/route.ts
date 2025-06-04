@@ -18,17 +18,14 @@ export async function POST(request: NextRequest) {
     },
   });
   if (user) {
-    const validPassword = await verify(
-      user.hashedPassword,
-      password
-    );
+    const validPassword = await verify(user.hashedPassword, password);
     if (validPassword) {
       const session = await lucia.createSession(user.id, {});
       const sessionCookie = lucia.createSessionCookie(session.id);
       (await cookies()).set(
         sessionCookie.name,
         sessionCookie.value,
-        sessionCookie.attributes
+        sessionCookie.attributes,
       );
       return NextResponse.json({
         status: "authorized",
@@ -40,7 +37,7 @@ export async function POST(request: NextRequest) {
         },
         {
           status: 400,
-        }
+        },
       );
     }
   }
@@ -57,7 +54,7 @@ export async function POST(request: NextRequest) {
   (await cookies()).set(
     sessionCookie.name,
     sessionCookie.value,
-    sessionCookie.attributes
+    sessionCookie.attributes,
   );
   return NextResponse.json({
     status: "created",
@@ -91,7 +88,7 @@ export async function PATCH(request: NextRequest) {
       {
         error: USERNAME_MESSAGE,
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -106,7 +103,7 @@ export async function PATCH(request: NextRequest) {
       {
         error: "Пользователь с таким именем уже существует",
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
   const updatedUser = await db.user.update({
@@ -143,7 +140,7 @@ export async function DELETE(request: NextRequest) {
   (await cookies()).set(
     sessionCookie.name,
     sessionCookie.value,
-    sessionCookie.attributes
+    sessionCookie.attributes,
   );
   return new NextResponse();
 }

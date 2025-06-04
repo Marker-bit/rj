@@ -1,18 +1,18 @@
-"use client"
+"use client";
 
-import AddMember from "@/components/dialogs/groups/add-member"
-import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
-import { useState } from "react"
+import AddMember from "@/components/dialogs/groups/add-member";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import { useState } from "react";
 
 export function AddMemberButton({
   group,
   isMember,
 }: {
-  group: any
-  isMember: boolean
+  group: any;
+  isMember: boolean;
 }) {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
   return (
     <>
       {!isMember && (
@@ -27,5 +27,5 @@ export function AddMemberButton({
       )}
       <AddMember open={open} setOpen={setOpen} group={group} />
     </>
-  )
+  );
 }

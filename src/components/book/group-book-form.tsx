@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -8,19 +8,19 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { UploadButton } from "@/components/uploadthing"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Loader, Plus, Trash } from "lucide-react"
-import Image from "next/image"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-import { DrawerDialog } from "../ui/drawer-dialog"
-import { DialogHeader, DialogTitle } from "../ui/dialog"
-import { useRouter } from "next/navigation"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { UploadButton } from "@/components/uploadthing";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Loader, Plus, Trash } from "lucide-react";
+import Image from "next/image";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { DrawerDialog } from "../ui/drawer-dialog";
+import { DialogHeader, DialogTitle } from "../ui/dialog";
+import { useRouter } from "next/navigation";
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -28,7 +28,7 @@ const bookSchema = z.object({
   pages: z.coerce.number().min(1),
   description: z.string().optional(),
   coverUrl: z.string().optional(),
-})
+});
 
 export function GroupBookForm({
   onSuccess,
@@ -36,16 +36,16 @@ export function GroupBookForm({
   open,
   setOpen,
 }: {
-  onSuccess?: () => void
-  groupId: string
-  open: boolean
-  setOpen: (open: boolean) => void
+  onSuccess?: () => void;
+  groupId: string;
+  open: boolean;
+  setOpen: (open: boolean) => void;
 }) {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const form = useForm<z.infer<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
-  })
-  const router = useRouter()
+  });
+  const router = useRouter();
 
   const bookMutation = useMutation({
     mutationFn: (values: z.infer<typeof bookSchema>) =>
@@ -56,22 +56,22 @@ export function GroupBookForm({
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["books"],
-      })
+      });
       form.reset({
         title: "",
         author: "",
         pages: NaN,
         coverUrl: "",
         description: "",
-      })
-      if (onSuccess) onSuccess()
-      setOpen(false)
-      router.refresh()
+      });
+      if (onSuccess) onSuccess();
+      setOpen(false);
+      router.refresh();
     },
-  })
+  });
 
   function onSubmit(values: z.infer<typeof bookSchema>) {
-    bookMutation.mutate(values)
+    bookMutation.mutate(values);
   }
 
   return (
@@ -116,10 +116,10 @@ export function GroupBookForm({
                         allowedContent: "Картинка (до 8МБ)",
                       }}
                       onClientUploadComplete={(res) => {
-                        field.onChange(res[0].ufsUrl)
+                        field.onChange(res[0].ufsUrl);
                       }}
                       onUploadError={(error: Error) => {
-                        console.error(error)
+                        console.error(error);
                       }}
                       className="ut-button:bg-blue-500 ut-button:px-4"
                     />
@@ -192,5 +192,5 @@ export function GroupBookForm({
         </form>
       </Form>
     </DrawerDialog>
-  )
+  );
 }

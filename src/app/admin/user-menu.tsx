@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,30 +8,30 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { CircleUser } from "lucide-react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { toast } from "sonner"
+} from "@/components/ui/dropdown-menu";
+import { CircleUser } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function UserMenu() {
-  const router = useRouter()
+  const router = useRouter();
 
   const logOut = () => {
     toast.promise(
       async () => {
         await fetch("/api/auth/", {
           method: "DELETE",
-        })
-        router.push("/")
+        });
+        router.push("/");
       },
       {
         loading: "Выход...",
         success: "Вы вышли из аккаунта",
         error: (error) => `Возникла проблема при выходе: ${error.message}`,
-      }
-    )
-  }
+      },
+    );
+  };
 
   return (
     <DropdownMenu>
@@ -58,5 +58,5 @@ export default function UserMenu() {
         <DropdownMenuItem onClick={logOut}>Выйти</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

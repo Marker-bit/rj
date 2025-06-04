@@ -2,7 +2,10 @@ import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextRequest, props: { params: Promise<{ collectionId: string }> }) {
+export async function POST(
+  req: NextRequest,
+  props: { params: Promise<{ collectionId: string }> },
+) {
   const params = await props.params;
   const { user } = await validateRequest();
   if (!user) {

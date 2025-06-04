@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Table,
   TableBody,
@@ -9,20 +9,20 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { dateToString, declOfNum } from "@/lib/utils"
-import { Book, Group, GroupBook, GroupMember, User } from "@prisma/client"
-import Link from "next/link"
+} from "@/components/ui/table";
+import { dateToString, declOfNum } from "@/lib/utils";
+import { Book, Group, GroupBook, GroupMember, User } from "@prisma/client";
+import Link from "next/link";
 
 export default function BookTable({
   books,
 }: {
   books: (Book & {
-    user: User
+    user: User;
     groupBook:
       | (GroupBook & { group: Group & { members: GroupMember[] } })
-      | null
-  })[]
+      | null;
+  })[];
 }) {
   return (
     <Table>
@@ -102,5 +102,5 @@ export default function BookTable({
         ))}
       </TableBody>
     </Table>
-  )
+  );
 }

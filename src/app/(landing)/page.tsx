@@ -2,12 +2,14 @@ import Image from "next/image";
 import { LoginButton } from "./login-button";
 import { use } from "react";
 
-type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
-export default function LandingPage({searchParams}: {
-  searchParams: SearchParams
+export default function LandingPage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
 }) {
-  const { noRedirect } = use(searchParams)
+  const { noRedirect } = use(searchParams);
 
   return (
     <div className="flex flex-col items-center overflow-hidden py-10">

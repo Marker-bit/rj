@@ -1,63 +1,63 @@
-"use client"
+"use client";
 
-import React, { useRef, useState } from "react"
+import React, { useRef, useState } from "react";
 
-import { Area, getCroppedImg } from "@/lib/crop/utils"
-import "react-image-crop/dist/ReactCrop.css"
-import { Button } from "./ui/button"
-import { Cropper, CropperCropArea, CropperDescription, CropperImage } from "./ui/cropper"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog"
+import { Area, getCroppedImg } from "@/lib/crop/utils";
+import "react-image-crop/dist/ReactCrop.css";
+import { Button } from "./ui/button";
+import {
+  Cropper,
+  CropperCropArea,
+  CropperDescription,
+  CropperImage,
+} from "./ui/cropper";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 
 export function CropImage({
   open,
   setOpen,
   file,
-  onSelect
+  onSelect,
 }: {
-  open: boolean
-  setOpen: (v: boolean) => void
+  open: boolean;
+  setOpen: (v: boolean) => void;
   file: File;
-  onSelect: (file: File) => void
+  onSelect: (file: File) => void;
 }) {
-  const [imgSrc, setImgSrc] = useState("")
-  const previewCanvasRef = useRef<HTMLCanvasElement>(null)
-  const [cropData, setCropData] = React.useState<Area | null>(null)
+  const [imgSrc, setImgSrc] = useState("");
+  const previewCanvasRef = useRef<HTMLCanvasElement>(null);
+  const [cropData, setCropData] = React.useState<Area | null>(null);
 
-  const reader = new FileReader()
+  const reader = new FileReader();
   reader.addEventListener("load", () =>
-    setImgSrc(reader.result?.toString() || "")
-  )
-  reader.readAsDataURL(file)
+    setImgSrc(reader.result?.toString() || ""),
+  );
+  reader.readAsDataURL(file);
 
   const handleCrop = async () => {
     if (!cropData) {
-      console.error("No crop area selected.")
-      return
+      console.error("No crop area selected.");
+      return;
     }
 
     try {
-      const croppedBlob = await getCroppedImg(
-        imgSrc,
-        cropData
-      )
+      const croppedBlob = await getCroppedImg(imgSrc, cropData);
       if (!croppedBlob) {
-        throw new Error("Failed to generate cropped image blob.")
+        throw new Error("Failed to generate cropped image blob.");
       }
 
-      onSelect(new File([croppedBlob], "avatar.png", { type: "image/png" }))
-      setOpen(false)
+      onSelect(new File([croppedBlob], "avatar.png", { type: "image/png" }));
+      setOpen(false);
     } catch (error) {
-      console.error("Error during cropping:", error)
+      console.error("Error during cropping:", error);
     }
-  }
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>
-            Выберите часть аватара
-          </DialogTitle>
+          <DialogTitle>Выберите часть аватара</DialogTitle>
         </DialogHeader>
         {/* <div>
           <input type="file" accept="image/*" onChange={onSelectFile} />
@@ -101,5 +101,5 @@ export function CropImage({
         )} */}
       </DialogContent>
     </Dialog>
-  )
+  );
 }

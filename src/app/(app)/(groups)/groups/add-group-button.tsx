@@ -1,16 +1,16 @@
-"use client"
+"use client";
 
-import { DrawerDialog } from "@/components/ui/drawer-dialog"
-import { Button } from "@/components/ui/button"
-import { PlusIcon } from "lucide-react"
-import { useState } from "react"
-import { CreateGroupForm } from "./create-group-form"
-import { useRouter } from "next/navigation"
-import { DialogTitle } from "@/components/ui/dialog"
+import { DrawerDialog } from "@/components/ui/drawer-dialog";
+import { Button } from "@/components/ui/button";
+import { PlusIcon } from "lucide-react";
+import { useState } from "react";
+import { CreateGroupForm } from "./create-group-form";
+import { useRouter } from "next/navigation";
+import { DialogTitle } from "@/components/ui/dialog";
 
 export function AddGroupButton() {
-  const [open, setOpen] = useState(false)
-  const router = useRouter()
+  const [open, setOpen] = useState(false);
+  const router = useRouter();
 
   return (
     <>
@@ -18,12 +18,10 @@ export function AddGroupButton() {
         <DialogTitle className="hidden">Создать группу</DialogTitle>
         <CreateGroupForm />
       </DrawerDialog>
-      <Button
-        onClick={() => setOpen(true)}
-      >
+      <Button onClick={() => setOpen(true)}>
         <PlusIcon />
         <div>Добавить</div>
       </Button>
     </>
-  )
+  );
 }

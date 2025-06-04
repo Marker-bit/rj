@@ -1,20 +1,20 @@
-"use client"
+"use client";
 
-import { cn, declOfNum } from "@/lib/utils"
-import { Book, ReadEvent, User } from "@prisma/client"
-import { ChevronDown, ChevronsUpDown } from "lucide-react"
-import Event from "./event"
-import { useState } from "react"
-import { AnimatePresence, motion } from "framer-motion"
+import { cn, declOfNum } from "@/lib/utils";
+import { Book, ReadEvent, User } from "@prisma/client";
+import { ChevronDown, ChevronsUpDown } from "lucide-react";
+import Event from "./event";
+import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function EventRepeat({
   events,
 }: {
-  events: (ReadEvent & { book: Book & { user: User } })[]
+  events: (ReadEvent & { book: Book & { user: User } })[];
 }) {
-  const fromPage = events[events.length - 1].pagesRead
-  const toPage = events[0].pagesRead
-  const [open, setOpen] = useState(false)
+  const fromPage = events[events.length - 1].pagesRead;
+  const toPage = events[0].pagesRead;
+  const [open, setOpen] = useState(false);
 
   return (
     <>
@@ -22,12 +22,15 @@ export default function EventRepeat({
       <div className="flex items-center gap-2 rounded-xl border p-2">
         <button
           className={cn(
-            "flex size-12 p-2 items-center justify-center rounded-full border text-zinc-400 dark:text-zinc-600"
+            "flex size-12 p-2 items-center justify-center rounded-full border text-zinc-400 dark:text-zinc-600",
           )}
           onClick={() => setOpen(!open)}
         >
           <ChevronDown
-            className={cn("size-5 transition duration-300", open && "rotate-180")}
+            className={cn(
+              "size-5 transition duration-300",
+              open && "rotate-180",
+            )}
           />
         </button>
         <div className="flex flex-col">
@@ -60,5 +63,5 @@ export default function EventRepeat({
         )}
       </AnimatePresence>
     </>
-  )
+  );
 }

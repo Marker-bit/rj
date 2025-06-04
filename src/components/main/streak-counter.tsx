@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { getDays, getStreak, goodNumbers } from "@/lib/stats";
 import { capitalizeFirstLetter, cn, declOfNum } from "@/lib/utils";
@@ -6,21 +6,25 @@ import { ReadEvent } from "@prisma/client";
 import { addDays, differenceInDays, format, startOfWeek } from "date-fns";
 import { ru } from "date-fns/locale";
 import { User } from "lucia";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "../ui/hover-card";
 
 export function StreakCounter({
   events,
   user,
 }: {
-  events: ReadEvent[]
-  user: User
+  events: ReadEvent[];
+  user: User;
 }) {
-  const {streak} = getStreak(events)
-  const days = getDays(events)
+  const { streak } = getStreak(events);
+  const days = getDays(events);
   const nowDay = differenceInDays(
     new Date(),
-    startOfWeek(new Date(), { weekStartsOn: 1 })
-  )
+    startOfWeek(new Date(), { weekStartsOn: 1 }),
+  );
 
   // if (
   //   (streak % 50 !== 0 && user.id !== "clsqfrmec000013rgpmmb8eok") ||
@@ -52,7 +56,7 @@ export function StreakCounter({
                       days[i] === 0
                         ? "bg-zinc-300 dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-700"
                         : "bg-green-300 dark:bg-green-700 border border-green-500",
-                      nowDay === i && "border-4 border-black dark:border-white"
+                      nowDay === i && "border-4 border-black dark:border-white",
                     )}
                   />
 
@@ -60,7 +64,7 @@ export function StreakCounter({
                     {format(
                       addDays(startOfWeek(new Date(), { weekStartsOn: 1 }), i),
                       "EEE",
-                      { locale: ru }
+                      { locale: ru },
                     ).slice(0, 2)}
                   </p>
                   <p className="text-xs md:hidden">{days[i]}</p>
@@ -76,8 +80,8 @@ export function StreakCounter({
                     format(
                       addDays(startOfWeek(new Date(), { weekStartsOn: 1 }), i),
                       "EEEE",
-                      { locale: ru }
-                    )
+                      { locale: ru },
+                    ),
                   )}
                 </div>
               </HoverCardContent>
@@ -100,5 +104,5 @@ export function StreakCounter({
         </div>
       )}
     </div>
-  )
+  );
 }

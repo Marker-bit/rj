@@ -1,63 +1,66 @@
-"use client"
+"use client";
 
-import { DrawerDialog } from "@/components/ui/drawer-dialog"
-import { DialogHeader, DialogTitle } from "../../ui/dialog"
-import { CopyCheck, CopyIcon, Settings, Trash } from "lucide-react"
-import { useEffect, useState } from "react"
-import { Button } from "../../ui/button"
-import { Input } from "../../ui/input"
-import { AnimatePresence, motion } from "framer-motion"
-import { Book } from "@/lib/api-types"
-import { Loader } from "../../ui/loader"
-import { useRouter } from "next/navigation"
-import { toast } from "sonner"
-import { deleteBookLink } from "@/lib/actions/books"
+import { DrawerDialog } from "@/components/ui/drawer-dialog";
+import { DialogHeader, DialogTitle } from "../../ui/dialog";
+import { CopyCheck, CopyIcon, Settings, Trash } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Button } from "../../ui/button";
+import { Input } from "../../ui/input";
+import { AnimatePresence, motion } from "framer-motion";
+import { Book } from "@/lib/api-types";
+import { Loader } from "../../ui/loader";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { deleteBookLink } from "@/lib/actions/books";
 
 export function ShareBookModal({
   open,
   setOpen,
   book,
 }: {
-  open: boolean
-  setOpen: (v: boolean) => void
-  book: Book
+  open: boolean;
+  setOpen: (v: boolean) => void;
+  book: Book;
 }) {
-  const [copyLink, setCopyLink] = useState<string>()
+  const [copyLink, setCopyLink] = useState<string>();
   // const [link, setLink] = useState("");
   // useEffect(() => {
   //   setLink(`${window.location.origin}/books/${book.id}`);
   // }, [book.id]);
-  const [loading, setLoading] = useState(false)
-  const router = useRouter()
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const createLink = async () => {
-    setLoading(true)
+    setLoading(true);
     const resp = await fetch(`/api/books/${book.id}/links`, {
       method: "POST",
-    })
-    const res = await resp.json()
+    });
+    const res = await resp.json();
     if (resp.ok) {
-      setLoading(false)
-      router.refresh()
+      setLoading(false);
+      router.refresh();
     } else {
       toast.error("Возникла проблема при создании ссылки", {
         description: res.error,
-      })
+      });
     }
-  }
+  };
 
   const deleteLink = async (id: string) => {
-    toast.promise(async () => {
-      setLoading(true)
-      const resp = await deleteBookLink(id)
-      setLoading(false)
-      router.refresh()
-    }, {
-      loading: "Удаление ссылки...",
-      success: "Ссылка удалена",
-      error: "Возникла проблема при удалении ссылки",
-    })
-  }
+    toast.promise(
+      async () => {
+        setLoading(true);
+        const resp = await deleteBookLink(id);
+        setLoading(false);
+        router.refresh();
+      },
+      {
+        loading: "Удаление ссылки...",
+        success: "Ссылка удалена",
+        error: "Возникла проблема при удалении ссылки",
+      },
+    );
+  };
 
   return (
     <DrawerDialog
@@ -84,12 +87,12 @@ export function ShareBookModal({
                   navigator.clipboard.writeText(
                     `${
                       typeof window !== "undefined" && window.location.origin
-                    }/sharedbook/${link.id}`
-                  )
-                  setCopyLink(link.id)
+                    }/sharedbook/${link.id}`,
+                  );
+                  setCopyLink(link.id);
                   setTimeout(() => {
-                    setCopyLink(undefined)
-                  }, 2000)
+                    setCopyLink(undefined);
+                  }, 2000);
                 }}
               >
                 <AnimatePresence mode="wait" initial={false}>
@@ -116,10 +119,18 @@ export function ShareBookModal({
                   )}
                 </AnimatePresence>
               </Button>
-              <Button onClick={() => deleteLink(link.id)} disabled={loading} variant="outline">
+              <Button
+                onClick={() => deleteLink(link.id)}
+                disabled={loading}
+                variant="outline"
+              >
                 <Trash className="size-4" />
               </Button>
-              <Button onClick={() => toast.info("В разработке")} disabled={loading} variant="outline">
+              <Button
+                onClick={() => toast.info("В разработке")}
+                disabled={loading}
+                variant="outline"
+              >
                 <Settings className="size-4" />
               </Button>
             </div>
@@ -138,5 +149,5 @@ export function ShareBookModal({
         </Button>
       </div>
     </DrawerDialog>
-  )
+  );
 }

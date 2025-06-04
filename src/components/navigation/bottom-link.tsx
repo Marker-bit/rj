@@ -1,18 +1,18 @@
-"use client"
+"use client";
 
-import { cn } from "@/lib/utils"
-import { AnimatePresence, motion } from "framer-motion"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { cn } from "@/lib/utils";
+import { AnimatePresence, motion } from "framer-motion";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export function BottomLink({
   href,
   children,
 }: {
-  href: string
-  children: React.ReactNode
+  href: string;
+  children: React.ReactNode;
 }) {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   return (
     <Link
@@ -26,23 +26,23 @@ export function BottomLink({
     >
       {children}
     </Link>
-  )
+  );
 }
 
 export function BottomLinkMobile({
   href,
   children,
 }: {
-  href: string
-  children: React.ReactNode
+  href: string;
+  children: React.ReactNode;
 }) {
-  const pathname = usePathname()
+  const pathname = usePathname();
   return (
     <Link href={href} className="w-fit">
       <div
         className={cn(
           "flex flex-col text-gray-500 rounded-md p-2 items-center cursor-pointer transition-all relative",
-          pathname === href && "text-black dark:text-white"
+          pathname === href && "text-black dark:text-white",
         )}
       >
         {children}
@@ -59,5 +59,5 @@ export function BottomLinkMobile({
         </AnimatePresence>
       </div>
     </Link>
-  )
+  );
 }

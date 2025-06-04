@@ -1,10 +1,9 @@
 import { DependencyList, useEffect } from "react";
 
-
 export function useDebounceEffect(
   fn: () => void,
   waitTime: number,
-  deps: DependencyList
+  deps: DependencyList,
 ) {
   useEffect(() => {
     const t = setTimeout(() => {
@@ -14,6 +13,6 @@ export function useDebounceEffect(
     return () => {
       clearTimeout(t);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
 }

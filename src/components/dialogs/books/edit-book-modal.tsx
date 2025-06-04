@@ -1,6 +1,6 @@
-import { DrawerDialog } from "@/components/ui/drawer-dialog"
-import { DialogHeader, DialogTitle } from "../../ui/dialog"
-import { Edit, Loader, Plus, Trash, X } from "lucide-react"
+import { DrawerDialog } from "@/components/ui/drawer-dialog";
+import { DialogHeader, DialogTitle } from "../../ui/dialog";
+import { Edit, Loader, Plus, Trash, X } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -9,18 +9,18 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../../ui/form"
-import { useFieldArray, useForm } from "react-hook-form"
-import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import Image from "next/image"
-import { Button } from "../../ui/button"
-import { UploadButton } from "../../uploadthing"
-import { Input } from "../../ui/input"
-import { Textarea } from "../../ui/textarea"
-import { Book } from "@prisma/client"
-import { useRouter } from "next/navigation"
+} from "../../ui/form";
+import { useFieldArray, useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import Image from "next/image";
+import { Button } from "../../ui/button";
+import { UploadButton } from "../../uploadthing";
+import { Input } from "../../ui/input";
+import { Textarea } from "../../ui/textarea";
+import { Book } from "@prisma/client";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const bookSchema = z.object({
@@ -29,34 +29,33 @@ const bookSchema = z.object({
   pages: z.coerce.number().min(1),
   description: z.string().optional(),
   coverUrl: z.string().optional(),
-  fields: z
-    .array(
-      z.object({
-        title: z.string({ required_error: "Название поля обязательно" }),
-        value: z.string({
-          required_error: "Значение поля обязательно",
-        }),
-      })
-    ),
-})
+  fields: z.array(
+    z.object({
+      title: z.string({ required_error: "Название поля обязательно" }),
+      value: z.string({
+        required_error: "Значение поля обязательно",
+      }),
+    }),
+  ),
+});
 
 export function EditBookModal({
   open,
   setOpen,
   book,
 }: {
-  open: boolean
-  setOpen: (b: boolean) => void
-  book: Book
+  open: boolean;
+  setOpen: (b: boolean) => void;
+  book: Book;
 }) {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   const fieldsData =
     typeof book.fields === "string"
       ? JSON.parse(book.fields)
       : Array.isArray(book.fields)
-      ? book.fields
-      : []
+        ? book.fields
+        : [];
   const form = useForm<z.infer<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
     defaultValues: {
@@ -67,14 +66,14 @@ export function EditBookModal({
       coverUrl: book.coverUrl ?? "",
       fields: fieldsData ?? [],
     },
-  })
+  });
 
   const { fields, append, remove } = useFieldArray({
     name: "fields",
     control: form.control,
-  })
+  });
 
-  const router = useRouter()
+  const router = useRouter();
 
   const editMutation = useMutation({
     mutationFn: (values: z.infer<typeof bookSchema>) =>
@@ -85,17 +84,17 @@ export function EditBookModal({
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["books"],
-      })
+      });
       queryClient.invalidateQueries({
         queryKey: ["events"],
-      })
-      router.refresh()
+      });
+      router.refresh();
     },
-  })
+  });
 
   async function onSubmit(values: z.infer<typeof bookSchema>) {
-    await editMutation.mutateAsync(values)
-    setOpen(false)
+    await editMutation.mutateAsync(values);
+    setOpen(false);
   }
 
   return (
@@ -142,10 +141,10 @@ export function EditBookModal({
                         allowedContent: "Картинка (до 8МБ)",
                       }}
                       onClientUploadComplete={(res) => {
-                        field.onChange(res[0].ufsUrl)
+                        field.onChange(res[0].ufsUrl);
                       }}
                       onUploadError={(error: Error) => {
-                        console.error(error)
+                        console.error(error);
                       }}
                       className="ut-button:bg-blue-500 ut-button:px-4"
                     />
@@ -276,5 +275,5 @@ export function EditBookModal({
         </form>
       </Form>
     </DrawerDialog>
-  )
+  );
 }

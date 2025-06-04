@@ -1,8 +1,8 @@
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
-import { GroupBookView } from "../../book-view"
-import { AddBookButton } from "../../add-book-button"
-import { Book, Group, GroupBook } from "@prisma/client"
-import { BookIcon } from "lucide-react"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { GroupBookView } from "../../book-view";
+import { AddBookButton } from "../../add-book-button";
+import { Book, Group, GroupBook } from "@prisma/client";
+import { BookIcon } from "lucide-react";
 import { User } from "lucia";
 
 export default function BooksSection({
@@ -11,18 +11,18 @@ export default function BooksSection({
   myBooksFromGroup,
   user,
 }: {
-  isMember: boolean
+  isMember: boolean;
   group: {
-    id: string
+    id: string;
     groupBooks: (GroupBook & {
-      group: Group
-      book: (Book & { readEvents: { pagesRead: number }[] })[]
-    })[]
-  }
+      group: Group;
+      book: (Book & { readEvents: { pagesRead: number }[] })[];
+    })[];
+  };
   myBooksFromGroup: {
-    groupBookId: string
-  }[]
-  user: User
+    groupBookId: string;
+  }[];
+  user: User;
 }) {
   return (
     <div className="rounded-xl border p-4">
@@ -33,15 +33,11 @@ export default function BooksSection({
       </div>
       <ScrollArea className="h-[40vh]">
         {group.groupBooks.map((book) => (
-          <GroupBookView
-            groupBook={book}
-            key={book.id}
-            userId={user.id}
-          />
+          <GroupBookView groupBook={book} key={book.id} userId={user.id} />
         ))}
         <ScrollBar orientation="vertical" />
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
     </div>
-  )
+  );
 }

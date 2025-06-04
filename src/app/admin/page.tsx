@@ -1,13 +1,12 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -15,62 +14,58 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { db } from "@/lib/db"
-import { dateToString, declOfNum } from "@/lib/utils"
-import { subMonths } from "date-fns"
+} from "@/components/ui/table";
+import { db } from "@/lib/db";
+import { declOfNum } from "@/lib/utils";
+import { subMonths } from "date-fns";
 import {
-  Activity,
   ArrowUpRight,
   BookCopy,
   BookOpen,
   CreditCard,
-  DollarSign,
   MessageCircleQuestion,
-  MoreVertical,
-  Users,
-} from "lucide-react"
-import Link from "next/link"
-import BookMenu from "./book-menu"
+} from "lucide-react";
+import Link from "next/link";
+import BookMenu from "./book-menu";
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
 export default async function Page() {
-  const readEvents = await db.readEvent.count()
+  const readEvents = await db.readEvent.count();
 
-  const lastMonth = subMonths(new Date(), 1)
+  const lastMonth = subMonths(new Date(), 1);
   const lastMonthEvents = await db.readEvent.count({
     where: {
       readAt: {
         gte: lastMonth,
       },
     },
-  })
-  const lastMonthPercent = ((lastMonthEvents / readEvents) * 100).toFixed(1)
+  });
+  const lastMonthPercent = ((lastMonthEvents / readEvents) * 100).toFixed(1);
 
-  const books = await db.book.count()
+  const books = await db.book.count();
   const lastMonthBooks = await db.book.count({
     where: {
       createdAt: {
         gte: lastMonth,
       },
     },
-  })
-  const lastMonthBooksPercent = ((lastMonthBooks / books) * 100).toFixed(1)
+  });
+  const lastMonthBooksPercent = ((lastMonthBooks / books) * 100).toFixed(1);
 
-  const users = await db.user.count()
+  const users = await db.user.count();
   const lastMonthUsers = await db.user.count({
     where: {
       registeredAt: {
         gte: lastMonth,
       },
     },
-  })
-  const lastMonthUsersPercent = ((lastMonthUsers / users) * 100).toFixed(1)
+  });
+  const lastMonthUsersPercent = ((lastMonthUsers / users) * 100).toFixed(1);
 
   const supportTickets = await db.supportQuestion.count({
     where: { isDone: false },
-  })
+  });
 
   const recentBooks = await db.book.findMany({
     take: 5,
@@ -86,7 +81,7 @@ export default async function Page() {
       },
       user: true,
     },
-  })
+  });
 
   const recentUsers = await db.user.findMany({
     take: 5,
@@ -101,7 +96,7 @@ export default async function Page() {
         },
       },
     },
-  })
+  });
 
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
@@ -284,5 +279,5 @@ export default async function Page() {
         </Card>
       </div>
     </main>
-  )
+  );
 }

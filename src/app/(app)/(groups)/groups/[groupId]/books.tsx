@@ -1,50 +1,50 @@
-"use client"
+"use client";
 
-import { BookIcon, Search } from "lucide-react"
-import { AddBookButton } from "./add-book-button"
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
-import { GroupBookView } from "./book-view"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { useEffect, useState } from "react"
-import Fuse from "fuse.js"
-import { ExportBooksButton } from "./export-books-button"
-import { BookSuggestions } from "./book-suggestions"
+import { BookIcon, Search } from "lucide-react";
+import { AddBookButton } from "./add-book-button";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { GroupBookView } from "./book-view";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import Fuse from "fuse.js";
+import { ExportBooksButton } from "./export-books-button";
+import { BookSuggestions } from "./book-suggestions";
 import {
   GroupBookSuggestion,
   GroupMember,
   GroupMemberRole,
-} from "@prisma/client"
+} from "@prisma/client";
 
 export default function Books({
   isMember,
   group,
   userId,
 }: {
-  isMember: boolean
+  isMember: boolean;
   group: {
-    id: string
-    groupBooks: any[]
-    suggestions: GroupBookSuggestion[]
-    members: GroupMember[]
-  }
-  userId: string
+    id: string;
+    groupBooks: any[];
+    suggestions: GroupBookSuggestion[];
+    members: GroupMember[];
+  };
+  userId: string;
 }) {
-  const [searchText, setSearchText] = useState("")
-  const [filteredBooks, setFilteredBooks] = useState<any[]>()
+  const [searchText, setSearchText] = useState("");
+  const [filteredBooks, setFilteredBooks] = useState<any[]>();
   const search = new Fuse(group.groupBooks, {
     keys: ["title", "author", "description"],
-  })
+  });
 
   useEffect(() => {
     if (searchText) {
-      const res = search.search(searchText)
-      setFilteredBooks(res.map((result) => result.item))
+      const res = search.search(searchText);
+      setFilteredBooks(res.map((result) => result.item));
     } else {
-      setFilteredBooks(undefined)
+      setFilteredBooks(undefined);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchText, group.groupBooks])
+  }, [searchText, group.groupBooks]);
 
   return (
     <div className="rounded-xl border p-4">
@@ -79,5 +79,5 @@ export default function Books({
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
     </div>
-  )
+  );
 }

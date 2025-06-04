@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
           lastName: true,
           username: true,
           id: true,
-          avatarUrl: true
+          avatarUrl: true,
         },
       },
       first: {
@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
           lastName: true,
           username: true,
           id: true,
-          avatarUrl: true
+          avatarUrl: true,
         },
       },
     },
@@ -39,12 +39,14 @@ export async function GET(req: NextRequest) {
 
   const myFollows = await db.follow.findMany({
     where: {
-      firstId: user.id
+      firstId: user.id,
     },
   });
 
-  return NextResponse.json(follows.map(follow => ({
-    ...follow,
-    following: !!(myFollows.find((v) => v.secondId === follow.firstId))
-  })));
+  return NextResponse.json(
+    follows.map((follow) => ({
+      ...follow,
+      following: !!myFollows.find((v) => v.secondId === follow.firstId),
+    })),
+  );
 }

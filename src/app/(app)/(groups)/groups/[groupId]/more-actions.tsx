@@ -1,36 +1,36 @@
-"use client"
+"use client";
 
-import { DeleteGroupBookModal } from "@/components/dialogs/groups/delete-group-book-modal"
-import { EditGroupBookModal } from "@/components/dialogs/groups/edit-group-book-modal"
-import { Button } from "@/components/ui/button"
+import { DeleteGroupBookModal } from "@/components/dialogs/groups/delete-group-book-modal";
+import { EditGroupBookModal } from "@/components/dialogs/groups/edit-group-book-modal";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Group, GroupBook } from "@prisma/client"
+} from "@/components/ui/dropdown-menu";
+import { Group, GroupBook } from "@prisma/client";
 import {
   BarChartHorizontalBig,
   Edit,
   LinkIcon,
   MoreHorizontal,
   Trash,
-} from "lucide-react"
-import Link from "next/link"
-import { useState } from "react"
-import BindBookModal from "./bind-book-modal"
+} from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+import BindBookModal from "./bind-book-modal";
 
 export function MoreActions({
   book,
   addedBook,
 }: {
-  book: GroupBook & { group: Group }
-  addedBook: boolean
+  book: GroupBook & { group: Group };
+  addedBook: boolean;
 }) {
-  const [editOpen, setEditOpen] = useState(false)
-  const [deleteOpen, setDeleteOpen] = useState(false)
-  const [bindOpen, setBindOpen] = useState(false)
+  const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [bindOpen, setBindOpen] = useState(false);
 
   return (
     <>
@@ -72,5 +72,5 @@ export function MoreActions({
       <EditGroupBookModal open={editOpen} setOpen={setEditOpen} book={book} />
       <BindBookModal open={bindOpen} setOpen={setBindOpen} groupBook={book} />
     </>
-  )
+  );
 }

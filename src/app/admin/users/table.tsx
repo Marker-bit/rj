@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -18,7 +18,7 @@ import UserBooks from "./user-books";
 export default function UserTable({
   users,
 }: {
-  users: (User & { books: Book[] })[]
+  users: (User & { books: Book[] })[];
 }) {
   return (
     <Table>
@@ -83,5 +83,5 @@ export default function UserTable({
         ))}
       </TableBody>
     </Table>
-  )
+  );
 }

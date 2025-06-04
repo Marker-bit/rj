@@ -1,41 +1,41 @@
-"use client"
+"use client";
 
-import { setBookColor } from "@/lib/actions/books"
-import { backgroundColors } from "@/lib/colors"
-import { cn } from "@/lib/utils"
-import { BackgroundColor } from "@prisma/client"
-import { AnimatePresence, motion } from "framer-motion"
-import { Check, PaletteIcon } from "lucide-react"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { toast } from "sonner"
-import { Button } from "../ui/button"
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
+import { setBookColor } from "@/lib/actions/books";
+import { backgroundColors } from "@/lib/colors";
+import { cn } from "@/lib/utils";
+import { BackgroundColor } from "@prisma/client";
+import { AnimatePresence, motion } from "framer-motion";
+import { Check, PaletteIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
+import { Button } from "../ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 export default function Palette({
   background,
   bookId,
 }: {
-  background: BackgroundColor
-  bookId: string
+  background: BackgroundColor;
+  bookId: string;
 }) {
   const [chosenBackground, setChosenBackground] =
-    useState<BackgroundColor>(background)
-  const [loading, setLoading] = useState(false)
-  const router = useRouter()
+    useState<BackgroundColor>(background);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const setColor = (color: BackgroundColor) => {
-    if (loading) return
-    setChosenBackground(color)
-  }
+    if (loading) return;
+    setChosenBackground(color);
+  };
 
   const updateColor = async (color: BackgroundColor) => {
-    setLoading(true)
-    await setBookColor(bookId, color)
-    setLoading(false)
-    toast.success("Цвет изменен")
-    router.refresh()
-  }
+    setLoading(true);
+    await setBookColor(bookId, color);
+    setLoading(false);
+    toast.success("Цвет изменен");
+    router.refresh();
+  };
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -101,8 +101,11 @@ export default function Palette({
             </motion.div>
           )}
         </AnimatePresence>
-        <p className="text-xs text-muted-foreground mt-2">Изменить цвет этой книги (цветные книги будут показываться в самом верху списка)</p>
+        <p className="text-xs text-muted-foreground mt-2">
+          Изменить цвет этой книги (цветные книги будут показываться в самом
+          верху списка)
+        </p>
       </PopoverContent>
     </Popover>
-  )
+  );
 }

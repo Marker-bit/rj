@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -9,32 +9,32 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { toast } from "sonner"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { useDebounceCallback } from "usehooks-ts"
-import { z } from "zod"
-import { Loader } from "@/components/ui/loader"
-import { registerSchema } from "@/lib/validation/schemas"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useDebounceCallback } from "usehooks-ts";
+import { z } from "zod";
+import { Loader } from "@/components/ui/loader";
+import { registerSchema } from "@/lib/validation/schemas";
 
 export function RegisterForm() {
-  const [usernameFound, setUsernameFound] = useState<boolean | null>(null)
+  const [usernameFound, setUsernameFound] = useState<boolean | null>(null);
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
       username: "",
       password: "",
       firstName: "",
-      lastName: ""
+      lastName: "",
     },
-  })
-  const router = useRouter()
+  });
+  const router = useRouter();
 
   const userMutation = useMutation({
     mutationFn: (values: z.infer<typeof registerSchema>) => {
@@ -43,22 +43,22 @@ export function RegisterForm() {
         method: "POST",
       }).then(async (res) => {
         if (res.ok) {
-          router.push("/auth/login")
+          router.push("/auth/login");
         } else {
-          const data = await res.json()
+          const data = await res.json();
           if (data.error) {
             toast.error("Возникла проблема при регистрации", {
               description: data.error,
-            })
-            return
+            });
+            return;
           }
         }
-      })
+      });
     },
-  })
+  });
 
   function onSubmit(values: z.infer<typeof registerSchema>) {
-    userMutation.mutate(values)
+    userMutation.mutate(values);
   }
 
   const fetchUsername = useDebounceCallback(
@@ -66,10 +66,10 @@ export function RegisterForm() {
       fetch(`/api/auth/username?username=${username}`)
         .then((res) => res.json())
         .then((data) => {
-          setUsernameFound(data.found)
+          setUsernameFound(data.found);
         }),
-    200
-  )
+    200,
+  );
 
   return (
     <Form {...form}>
@@ -114,14 +114,15 @@ export function RegisterForm() {
                     placeholder="ivan.ivanov"
                     {...field}
                     onChange={(e) => {
-                      field.onChange(e)
-                      fetchUsername(e.target.value)
+                      field.onChange(e);
+                      fetchUsername(e.target.value);
                     }}
                   />
 
                   {usernameFound === true && (
                     <div className="text-xs">
-                      Пользователь с таким именем уже существует, выберите другое
+                      Пользователь с таким именем уже существует, выберите
+                      другое
                     </div>
                   )}
                 </div>
@@ -175,5 +176,5 @@ export function RegisterForm() {
         </p>
       </form>
     </Form>
-  )
+  );
 }

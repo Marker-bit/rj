@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   Pagination,
@@ -15,19 +15,19 @@ export default function UserPagination({
   currentPage,
   totalPages,
 }: {
-  currentPage: number
-  totalPages: number
+  currentPage: number;
+  totalPages: number;
 }) {
-  const searchParams = useSearchParams()
-  const pathname = usePathname()
-  const { replace } = useRouter()
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
 
   const getPageUrl = (page: number) => {
-    const params = new URLSearchParams(searchParams)
-    params.set("page", page.toString())
+    const params = new URLSearchParams(searchParams);
+    params.set("page", page.toString());
 
-    return `${pathname}?${params.toString()}`
-  }
+    return `${pathname}?${params.toString()}`;
+  };
 
   return (
     <div className="flex items-center justify-between">
@@ -84,5 +84,5 @@ export default function UserPagination({
         </PaginationContent>
       </Pagination>
     </div>
-  )
+  );
 }

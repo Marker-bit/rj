@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Check, LogOut, Plus, X } from "lucide-react"
-import { useCallback, useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Check, LogOut, Plus, X } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-import { CropImage } from "@/components/crop-image"
-import { Button } from "@/components/ui/button"
+import { CropImage } from "@/components/crop-image";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -16,29 +16,35 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Loader } from "@/components/ui/loader"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Loader } from "@/components/ui/loader";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { useUploadThing } from "@/components/uploadthing"
-import { cn } from "@/lib/utils"
-import { useMutation } from "@tanstack/react-query"
-import { useDropzone } from "@uploadthing/react"
-import Image from "next/image"
-import { generateClientDropzoneAccept, generatePermittedFileTypes } from "uploadthing/client"
-import { toast } from "sonner"
-import { User as LuciaUser } from "lucia"
-import { SharePeople } from "@prisma/client"
-import { Switch } from "@/components/ui/switch"
+} from "@/components/ui/select";
+import { useUploadThing } from "@/components/uploadthing";
+import { cn } from "@/lib/utils";
+import { useMutation } from "@tanstack/react-query";
+import { useDropzone } from "@uploadthing/react";
+import Image from "next/image";
+import {
+  generateClientDropzoneAccept,
+  generatePermittedFileTypes,
+} from "uploadthing/client";
+import { toast } from "sonner";
+import { User as LuciaUser } from "lucia";
+import { SharePeople } from "@prisma/client";
+import { Switch } from "@/components/ui/switch";
 
 const formSchema = z.object({
-  username: z.string().min(2, "Минимум 2 символа").max(50, "Максимум 50 символов"),
+  username: z
+    .string()
+    .min(2, "Минимум 2 символа")
+    .max(50, "Максимум 50 символов"),
   firstName: z.string().min(1, "Требуется имя").max(50),
   lastName: z.string().max(50, "Максимум 50 символов").optional(),
   avatarUrl: z.string().optional(),
@@ -49,13 +55,13 @@ const formSchema = z.object({
   shareFollowers: z.enum(["ALL", "SUBS", "NONE"]).default("NONE").optional(),
   shareStats: z.enum(["ALL", "SUBS", "NONE"]).default("NONE").optional(),
   hideActivity: z.boolean(),
-})
+});
 
 export function SettingsForm({ user }: { user: LuciaUser }) {
-  const [logOutLoading, setLogOutLoading] = useState(false)
-  const [usernameFound, setUsernameFound] = useState<boolean | null>()
-  const [cropOpen, setCropOpen] = useState(false)
-  const [uploadProgress, setUploadProgress] = useState<number | null>(null)
+  const [logOutLoading, setLogOutLoading] = useState(false);
+  const [usernameFound, setUsernameFound] = useState<boolean | null>();
+  const [cropOpen, setCropOpen] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -68,23 +74,23 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
         user.shareFollowers === SharePeople.ALL
           ? "ALL"
           : user.shareFollowers === SharePeople.SUBS
-          ? "SUBS"
-          : "NONE",
+            ? "SUBS"
+            : "NONE",
       shareSubscriptions:
         user.shareSubscriptions === SharePeople.ALL
           ? "ALL"
           : user.shareSubscriptions === SharePeople.SUBS
-          ? "SUBS"
-          : "NONE",
+            ? "SUBS"
+            : "NONE",
       shareStats:
         user.shareStats === SharePeople.ALL
           ? "ALL"
           : user.shareStats === SharePeople.SUBS
-          ? "SUBS"
-          : "NONE",
+            ? "SUBS"
+            : "NONE",
       hideActivity: user.hideActivity,
     },
-  })
+  });
 
   const userMutation = useMutation({
     mutationFn: (values: z.infer<typeof formSchema>) => {
@@ -97,46 +103,46 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
           if (res.error) {
             toast.error("Возникла проблема при обновлении профиля", {
               description: res.error,
-            })
-            throw new Error(res.error)
+            });
+            throw new Error(res.error);
           }
-        })
+        });
     },
     onSuccess: () => {
-      toast.success("Профиль обновлен")
+      toast.success("Профиль обновлен");
     },
-  })
+  });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    userMutation.mutate(values)
+    userMutation.mutate(values);
   }
 
-  const [files, setFiles] = useState<File[]>([])
+  const [files, setFiles] = useState<File[]>([]);
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles.length === 1) {
-      setFiles(acceptedFiles)
-      setCropOpen(true)
+      setFiles(acceptedFiles);
+      setCropOpen(true);
     } else {
-      toast.error("Принимается только 1 файл!")
+      toast.error("Принимается только 1 файл!");
     }
-  }, [])
+  }, []);
 
   const { startUpload, routeConfig } = useUploadThing("avatar", {
     onClientUploadComplete: (res) => {
-      form.setValue("avatarUrl", res[0].ufsUrl)
-      setUploadProgress(null)
+      form.setValue("avatarUrl", res[0].ufsUrl);
+      setUploadProgress(null);
     },
     onUploadError: (err) => {
-      toast.error("Произошла ошибка при загрузке файла")
+      toast.error("Произошла ошибка при загрузке файла");
     },
     onUploadBegin: () => {
       // alert("upload has begun");
     },
     onUploadProgress: (p) => {
       // console.log(p);
-      setUploadProgress(p)
+      setUploadProgress(p);
     },
-  })
+  });
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
@@ -170,11 +176,14 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
                             height={80}
                             alt="avatar"
                           />
-                          <input disabled={uploadProgress !== null} {...getInputProps()} />
+                          <input
+                            disabled={uploadProgress !== null}
+                            {...getInputProps()}
+                          />
                           <div
                             className={cn(
                               "absolute top-0 left-0 pointer-events-none w-full h-full bg-black/80 flex flex-col items-center justify-center opacity-0 text-white transition-opacity",
-                              uploadProgress !== null && "opacity-100"
+                              uploadProgress !== null && "opacity-100",
                             )}
                           >
                             <Loader className="size-4" />
@@ -189,7 +198,10 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
                           {...getRootProps()}
                         >
                           <Plus className="size-4 text-zinc-500" />
-                          <input disabled={uploadProgress !== null} {...getInputProps()} />
+                          <input
+                            disabled={uploadProgress !== null}
+                            {...getInputProps()}
+                          />
                         </div>
                       )}
                       {files.length > 0 && (
@@ -198,7 +210,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
                           setOpen={setCropOpen}
                           file={files[0]}
                           onSelect={(file) => {
-                            startUpload([file])
+                            startUpload([file]);
                           }}
                         />
                       )}
@@ -219,21 +231,21 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
                       <Input
                         {...field}
                         onChange={(e) => {
-                          field.onChange(e)
+                          field.onChange(e);
                           if (e.target.value === user.username) {
-                            setUsernameFound(undefined)
-                            return
+                            setUsernameFound(undefined);
+                            return;
                           }
-                          setUsernameFound(null)
+                          setUsernameFound(null);
                           fetch(`/api/auth/username?username=${e.target.value}`)
                             .then((res) => res.json())
                             .then((data) => {
                               setUsernameFound(
                                 e.target.value === user.username
                                   ? false
-                                  : data.found
-                              )
-                            })
+                                  : data.found,
+                              );
+                            });
                         }}
                       />
                       {usernameFound === true && (
@@ -395,25 +407,21 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
           <Button
             variant="outline"
             onClick={() => {
-              setLogOutLoading(true)
+              setLogOutLoading(true);
               fetch("/api/auth/", {
                 method: "DELETE",
               }).then(() => {
-                setLogOutLoading(false)
-                window.location.href = "/"
-              })
+                setLogOutLoading(false);
+                window.location.href = "/";
+              });
             }}
             disabled={logOutLoading}
           >
-            {logOutLoading ? (
-              <Loader className="mr-2 size-4" />
-            ) : (
-              <LogOut />
-            )}
+            {logOutLoading ? <Loader className="mr-2 size-4" /> : <LogOut />}
             Выйти из аккаунта
           </Button>
         </div>
       </form>
     </Form>
-  )
+  );
 }

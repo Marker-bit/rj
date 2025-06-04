@@ -1,7 +1,7 @@
 type QA = {
-  question: string
-  answer: string
-}
+  question: string;
+  answer: string;
+};
 
 const faq: QA[] = [
   {
@@ -9,6 +9,6 @@ const faq: QA[] = [
     answer:
       "Вы можете отметить прочтение в прошлом, открыв окно отметки прочтения и выбрав дату.",
   },
-]
+];
 
-export default faq
+export default faq;

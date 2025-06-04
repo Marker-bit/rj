@@ -1,7 +1,10 @@
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
 import { NextRequest, NextResponse } from "next/server";
-export async function POST(req: NextRequest, props: { params: Promise<{ bookId: string }> }) {
+export async function POST(
+  req: NextRequest,
+  props: { params: Promise<{ bookId: string }> },
+) {
   const params = await props.params;
   const bookId = params.bookId;
   const { user } = await validateRequest();

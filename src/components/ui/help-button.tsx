@@ -1,54 +1,64 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { Button } from "@/components/ui/button"
-import * as PopoverPrimitive from "@radix-ui/react-popover"
-import { Popover, PopoverContent } from "@/components/ui/popover"
-import { useState, useRef } from "react"
+import { Button } from "@/components/ui/button";
+import * as PopoverPrimitive from "@radix-ui/react-popover";
+import { Popover, PopoverContent } from "@/components/ui/popover";
+import { useState, useRef } from "react";
 
-export function HelpButton({ onClick, helpText, children, ...props }: Omit<React.ComponentPropsWithRef<typeof Button>, "onClick"> & { helpText: string; onClick: () => void }) {
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false)
-  const pressStartTime = useRef<Date | null>(null)
+export function HelpButton({
+  onClick,
+  helpText,
+  children,
+  ...props
+}: Omit<React.ComponentPropsWithRef<typeof Button>, "onClick"> & {
+  helpText: string;
+  onClick: () => void;
+}) {
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const pressStartTime = useRef<Date | null>(null);
 
   const handleMouseDown = () => {
-    pressStartTime.current = new Date()
-  }
+    pressStartTime.current = new Date();
+  };
 
   const handleMouseUp = () => {
     if (pressStartTime.current) {
-      const pressDuration = new Date().getTime() - pressStartTime.current.getTime()
-      pressStartTime.current = null
+      const pressDuration =
+        new Date().getTime() - pressStartTime.current.getTime();
+      pressStartTime.current = null;
 
       if (pressDuration >= 500) {
-        setIsPopoverOpen(true)
+        setIsPopoverOpen(true);
       } else {
-        console.log(onClick)
-        onClick()
+        console.log(onClick);
+        onClick();
       }
     }
-  }
+  };
 
   const handleMouseLeave = () => {
-    pressStartTime.current = null
-  }
+    pressStartTime.current = null;
+  };
 
   const handleTouchStart = () => {
-    pressStartTime.current = new Date()
-  }
+    pressStartTime.current = new Date();
+  };
 
   const handleTouchEnd = () => {
     if (pressStartTime.current) {
-      const pressDuration = new Date().getTime() - pressStartTime.current.getTime()
-      pressStartTime.current = null
+      const pressDuration =
+        new Date().getTime() - pressStartTime.current.getTime();
+      pressStartTime.current = null;
 
       if (pressDuration >= 500) {
-        setIsPopoverOpen(true)
+        setIsPopoverOpen(true);
       } else {
-        onClick()
+        onClick();
       }
     }
-  }
+  };
 
   return (
     <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
@@ -65,10 +75,8 @@ export function HelpButton({ onClick, helpText, children, ...props }: Omit<React
         </Button>
       </PopoverPrimitive.PopoverAnchor>
       <PopoverContent className="w-80">
-        <p className="text-sm text-muted-foreground">
-          {helpText}
-        </p>
+        <p className="text-sm text-muted-foreground">{helpText}</p>
       </PopoverContent>
     </Popover>
-  )
+  );
 }

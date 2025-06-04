@@ -4,7 +4,7 @@ import { endOfDay, startOfDay } from "date-fns";
 import UserBooks from "./user-books";
 
 export default async function BooksCountCard() {
-  const now = new Date()
+  const now = new Date();
   const booksToday = await db.book.findMany({
     where: {
       createdAt: {
@@ -21,12 +21,12 @@ export default async function BooksCountCard() {
       },
       readEvents: true,
     },
-  })
-  const users = booksToday.slice(0, 5).map((book) => book.user)
+  });
+  const users = booksToday.slice(0, 5).map((book) => book.user);
   const uniqueUsers = users.filter(
-    (value, index, self) => self.findIndex((v) => v.id === value.id) === index
-  )
-  const allBooksCount = await db.book.count()
+    (value, index, self) => self.findIndex((v) => v.id === value.id) === index,
+  );
+  const allBooksCount = await db.book.count();
 
   return (
     <div className="col-span-2 row-span-2 rounded-xl border p-4">
@@ -81,5 +81,5 @@ export default async function BooksCountCard() {
         ))} */}
       </div>
     </div>
-  )
+  );
 }

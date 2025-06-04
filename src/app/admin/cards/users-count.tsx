@@ -5,7 +5,7 @@ import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 
 export default async function UsersCountCard() {
-  const now = new Date()
+  const now = new Date();
   const usersToday = await db.user.findMany({
     where: {
       registeredAt: {
@@ -17,8 +17,8 @@ export default async function UsersCountCard() {
       books: true,
     },
     take: 5,
-  })
-  const allUsersCount = await db.user.count()
+  });
+  const allUsersCount = await db.user.count();
 
   return (
     <div className="flex rounded-xl border p-4 sm:col-span-6">
@@ -59,5 +59,5 @@ export default async function UsersCountCard() {
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
     </div>
-  )
+  );
 }

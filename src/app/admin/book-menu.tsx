@@ -1,15 +1,15 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Book } from "@prisma/client"
-import { MoreVertical, Trash, UserCircle } from "lucide-react"
-import Link from "next/link"
+} from "@/components/ui/dropdown-menu";
+import { Book } from "@prisma/client";
+import { MoreVertical, Trash, UserCircle } from "lucide-react";
+import Link from "next/link";
 
 export default function BookMenu({ book }: { book: Book }) {
   return (
@@ -30,5 +30,5 @@ export default function BookMenu({ book }: { book: Book }) {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

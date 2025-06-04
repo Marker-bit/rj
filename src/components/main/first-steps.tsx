@@ -62,7 +62,7 @@ export default async function FirstSteps() {
                 "flex size-8 min-w-8 min-h-8 max-w-8 max-h-8 items-center justify-center rounded-full",
                 createdBook
                   ? "bg-green-500 text-white"
-                  : "bg-zinc-200 dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-700"
+                  : "bg-zinc-200 dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-700",
               )}
             >
               {createdBook ? <Check className="size-4" /> : "1"}
@@ -75,7 +75,7 @@ export default async function FirstSteps() {
                 "flex size-8 min-w-8 min-h-8 max-w-8 max-h-8 items-center justify-center rounded-full",
                 markedReading
                   ? "bg-green-500 text-white"
-                  : "bg-zinc-200 dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-700"
+                  : "bg-zinc-200 dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-700",
               )}
             >
               {markedReading ? <Check className="size-4" /> : "2"}
@@ -88,7 +88,7 @@ export default async function FirstSteps() {
                 "flex size-8 min-w-8 min-h-8 max-w-8 max-h-8 items-center justify-center rounded-full",
                 addedCover
                   ? "bg-green-500 text-white"
-                  : "bg-zinc-200 dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-700"
+                  : "bg-zinc-200 dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-700",
               )}
             >
               {addedCover ? <Check className="size-4" /> : "3"}

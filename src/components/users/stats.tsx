@@ -8,7 +8,7 @@ import {
   endOfISOWeek,
   getDay,
   max,
-  startOfISOWeek
+  startOfISOWeek,
 } from "date-fns";
 import {
   BookCheck,
@@ -26,112 +26,113 @@ export async function Stats({
 }: {
   profile: User & {
     follower: {
-      id: string
-      firstId: string
-      secondId: string
-    }[]
+      id: string;
+      firstId: string;
+      secondId: string;
+    }[];
     following: {
-      id: string
-      firstId: string
-      secondId: string
-    }[]
-  }
+      id: string;
+      firstId: string;
+      secondId: string;
+    }[];
+  };
   events: (ReadEvent & {
     book: {
-      id: string
-      title: string
-      author: string
-      pages: number
-      description: string
-      coverUrl: string | null
-      userId: string
-    }
-  })[]
+      id: string;
+      title: string;
+      author: string;
+      pages: number;
+      description: string;
+      coverUrl: string | null;
+      userId: string;
+    };
+  })[];
   books: {
-    id: string
+    id: string;
     readEvents: {
-      pagesRead: number
-    }[]
-    pages: number
-  }[]
+      pagesRead: number;
+    }[];
+    pages: number;
+  }[];
 }) {
   const startAndEndOfWeek = () => {
-    const monday = startOfISOWeek(new Date())
-    const sunday = endOfISOWeek(new Date())
-    return [monday, sunday]
-  }
-  const date = new Date()
-  date.setHours(0, 0, 0, 0)
-  const [startOfWeek, _] = startAndEndOfWeek()
+    const monday = startOfISOWeek(new Date());
+    const sunday = endOfISOWeek(new Date());
+    return [monday, sunday];
+  };
+  const date = new Date();
+  date.setHours(0, 0, 0, 0);
+  const [startOfWeek, _] = startAndEndOfWeek();
 
-  let booksStats: Record<string, Record<string, number>> = {}
-  let booksStatsNum: Record<string, number> = {}
-  let readWeek: Record<string, number> = {}
-  let readWeekSum = 0
-  let currentWeek: Record<string, Record<string, number>> = {}
-  let currentWeekNum: Record<string, number> = {}
-  const {streak} = getStreak(events)
-  let readSpeed = []
+  let booksStats: Record<string, Record<string, number>> = {};
+  let booksStatsNum: Record<string, number> = {};
+  let readWeek: Record<string, number> = {};
+  let readWeekSum = 0;
+  let currentWeek: Record<string, Record<string, number>> = {};
+  let currentWeekNum: Record<string, number> = {};
+  const { streak } = getStreak(events);
+  let readSpeed = [];
   const readBooks = books.filter((book) =>
-    book.readEvents.find((event) => event.pagesRead >= book.pages)
-  )
+    book.readEvents.find((event) => event.pagesRead >= book.pages),
+  );
 
   if (events) {
     // events?.reverse();
     for (const event of events) {
-      const date = new Date(event.readAt)
+      const date = new Date(event.readAt);
       if (!currentWeek[event.bookId]) {
-        currentWeek[event.bookId] = {}
+        currentWeek[event.bookId] = {};
       }
       const currentBook = events.filter(
-        (evt: any) => evt.bookId === event.bookId
-      )
-      const beforeEventIndex = currentBook.indexOf(event) - 1
-      const beforeEvent = currentBook[beforeEventIndex]
-      const day = getDay(date).toString()
+        (evt: any) => evt.bookId === event.bookId,
+      );
+      const beforeEventIndex = currentBook.indexOf(event) - 1;
+      const beforeEvent = currentBook[beforeEventIndex];
+      const day = getDay(date).toString();
       if (beforeEvent) {
-        let beforeEventDate = new Date(beforeEvent.readAt)
+        let beforeEventDate = new Date(beforeEvent.readAt);
         if (differenceInDays(date, beforeEventDate) >= 1) {
-          beforeEventDate = max([addHours(date, -5), beforeEventDate])
+          beforeEventDate = max([addHours(date, -5), beforeEventDate]);
         }
-        const minuteDifference = differenceInMinutes(date, beforeEventDate)
-        const pageDifference = event.pagesRead - (beforeEvent?.pagesRead ?? 0)
-        readSpeed.push(pageDifference / minuteDifference)
+        const minuteDifference = differenceInMinutes(date, beforeEventDate);
+        const pageDifference = event.pagesRead - (beforeEvent?.pagesRead ?? 0);
+        readSpeed.push(pageDifference / minuteDifference);
       }
       if (date >= startOfWeek) {
         if (event.pagesRead > (currentWeek[event.bookId][day] ?? 0)) {
           const currentBook = events.filter(
-            (evt: any) => evt.bookId === event.bookId
-          )
-          const beforeEventIndex = currentBook.indexOf(event) - 1
-          const beforeEventPages = currentBook[beforeEventIndex]?.pagesRead ?? 0
+            (evt: any) => evt.bookId === event.bookId,
+          );
+          const beforeEventIndex = currentBook.indexOf(event) - 1;
+          const beforeEventPages =
+            currentBook[beforeEventIndex]?.pagesRead ?? 0;
           if (!currentWeek[event.bookId][day]) {
-            currentWeek[event.bookId][day] = 0
+            currentWeek[event.bookId][day] = 0;
           }
-          currentWeek[event.bookId][day] += event.pagesRead - beforeEventPages
+          currentWeek[event.bookId][day] += event.pagesRead - beforeEventPages;
         }
 
         if (!readWeek[event.bookId]) {
-          readWeek[event.bookId] = 0
+          readWeek[event.bookId] = 0;
         }
         if (event.pagesRead > readWeek[event.bookId]) {
-          readWeek[event.bookId] = event.pagesRead
+          readWeek[event.bookId] = event.pagesRead;
         }
       }
 
       if (!booksStats[event.bookId]) {
-        booksStats[event.bookId] = {} // date.getDay().toString()
+        booksStats[event.bookId] = {}; // date.getDay().toString()
       }
       if (event.pagesRead > (booksStats[event.bookId][day] ?? 0)) {
         const currentBook = events.filter(
-          (evt: any) => evt.bookId === event.bookId
-        )
-        const beforeEventIndex = currentBook.indexOf(event) - 1
-        const beforeEventPages = currentBook[beforeEventIndex]?.pagesRead ?? 0
+          (evt: any) => evt.bookId === event.bookId,
+        );
+        const beforeEventIndex = currentBook.indexOf(event) - 1;
+        const beforeEventPages = currentBook[beforeEventIndex]?.pagesRead ?? 0;
         if (!booksStats[event.bookId][day]) {
-          booksStats[event.bookId][day] = 0
+          booksStats[event.bookId][day] = 0;
         }
-        booksStats[event.bookId][day] += event.pagesRead - beforeEventPages
+        booksStats[event.bookId][day] += event.pagesRead - beforeEventPages;
       }
     }
   }
@@ -139,23 +140,23 @@ export async function Stats({
   for (const days of Object.values(booksStats)) {
     for (const [day, num] of Object.entries(days)) {
       if (!booksStatsNum[day]) {
-        booksStatsNum[day] = 0
+        booksStatsNum[day] = 0;
       }
-      booksStatsNum[day] += num
+      booksStatsNum[day] += num;
     }
   }
 
   for (const days of Object.values(currentWeek)) {
     for (const [day, num] of Object.entries(days)) {
       if (!currentWeekNum[day]) {
-        currentWeekNum[day] = 0
+        currentWeekNum[day] = 0;
       }
-      currentWeekNum[day] += num
+      currentWeekNum[day] += num;
     }
   }
 
   for (const n of Object.values(currentWeekNum)) {
-    readWeekSum += n
+    readWeekSum += n;
   }
 
   return (
@@ -229,5 +230,5 @@ export async function Stats({
         </Link>
       </div>
     </>
-  )
+  );
 }

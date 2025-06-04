@@ -1,22 +1,22 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { GroupBook } from "@prisma/client"
-import { Download } from "lucide-react"
+import { Button } from "@/components/ui/button";
+import { GroupBook } from "@prisma/client";
+import { Download } from "lucide-react";
 
 export function ExportBooksButton({ books }: { books: GroupBook[] }) {
   const downloadFile = (text: string, filename: string, type: string) => {
-    const element = document.createElement("a")
+    const element = document.createElement("a");
     const file = new Blob([text], {
       type,
-    })
-    element.href = URL.createObjectURL(file)
-    element.download = filename
-    element.style.display = "none"
-    document.body.appendChild(element)
-    element.click()
-    document.body.removeChild(element)
-  }
+    });
+    element.href = URL.createObjectURL(file);
+    element.download = filename;
+    element.style.display = "none";
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
   const generateJson = () => {
     const readyBooks = books.map((book) => {
       return {
@@ -25,14 +25,14 @@ export function ExportBooksButton({ books }: { books: GroupBook[] }) {
         pages: book.pages,
         coverUrl: book.coverUrl,
         description: book.description,
-      }
-    })
+      };
+    });
 
-    return JSON.stringify(readyBooks)
-  }
+    return JSON.stringify(readyBooks);
+  };
   const exportClick = () => {
-    downloadFile(generateJson(), "groupBooks.json", "application/json")
-  }
+    downloadFile(generateJson(), "groupBooks.json", "application/json");
+  };
   return (
     <Button
       size="icon"
@@ -42,5 +42,5 @@ export function ExportBooksButton({ books }: { books: GroupBook[] }) {
     >
       <Download className="size-4" />
     </Button>
-  )
+  );
 }

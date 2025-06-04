@@ -1,10 +1,10 @@
-import { db } from "@/lib/db"
-import { validateRequest } from "@/lib/server-validate-request"
-import { StreakButton } from "./streak-button"
+import { db } from "@/lib/db";
+import { validateRequest } from "@/lib/server-validate-request";
+import { StreakButton } from "./streak-button";
 
 export async function StreakBar() {
-  const { user } = await validateRequest()
-  if (!user) return null
+  const { user } = await validateRequest();
+  if (!user) return null;
 
   const events = await db.readEvent.findMany({
     where: {
@@ -18,7 +18,7 @@ export async function StreakBar() {
     orderBy: {
       readAt: "asc",
     },
-  })
+  });
 
-  return <StreakButton events={events} />
+  return <StreakButton events={events} />;
 }

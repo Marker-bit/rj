@@ -51,7 +51,7 @@ export function CreateCollection() {
     if (res.message && res.collection) {
       toast.success(res.message);
       router.refresh();
-      handleClose(false)
+      handleClose(false);
     }
   }
 

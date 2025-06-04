@@ -1,32 +1,32 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { DrawerDialog } from "../ui/drawer-dialog"
-import { DialogHeader, DialogTitle } from "../ui/dialog"
-import { useRouter } from "next/navigation"
-import Image from "next/image"
-import { Button } from "../ui/button"
-import { Loader, Plus, Search } from "lucide-react"
+import { useEffect, useState } from "react";
+import { DrawerDialog } from "../ui/drawer-dialog";
+import { DialogHeader, DialogTitle } from "../ui/dialog";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { Button } from "../ui/button";
+import { Loader, Plus, Search } from "lucide-react";
 
 export function AddFromMyBooks({
   groupId,
   open,
   setOpen,
 }: {
-  groupId: string
-  open: boolean
-  setOpen: (open: boolean) => void
+  groupId: string;
+  open: boolean;
+  setOpen: (open: boolean) => void;
 }) {
-  const router = useRouter()
-  const [books, setBooks] = useState<any[]>()
-  const [bookLoadingId, setBookLoadingId] = useState<string>()
-  const [search, setSearch] = useState("")
+  const router = useRouter();
+  const [books, setBooks] = useState<any[]>();
+  const [bookLoadingId, setBookLoadingId] = useState<string>();
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     fetch("/api/books")
       .then((res) => res.json())
-      .then((res) => setBooks(res))
-  }, [])
+      .then((res) => setBooks(res));
+  }, []);
 
   return (
     <DrawerDialog open={open} onOpenChange={setOpen} className="min-w-[50vw]">
@@ -53,7 +53,7 @@ export function AddFromMyBooks({
             (book) =>
               (book.title.toLowerCase().includes(search.toLowerCase()) ||
                 book.author.toLowerCase().includes(search.toLowerCase())) &&
-              book.groupBookId !== groupId
+              book.groupBookId !== groupId,
           )
           .map((book) => (
             <div
@@ -84,14 +84,14 @@ export function AddFromMyBooks({
                 variant="ghost"
                 className="ml-auto size-fit p-1"
                 onClick={() => {
-                  setBookLoadingId(book.id)
+                  setBookLoadingId(book.id);
                   fetch(`/api/groups/${groupId}/add-own/${book.id}`, {
                     method: "POST",
                   }).then(() => {
-                    setBookLoadingId(undefined)
-                    setOpen(false)
-                    router.refresh()
-                  })
+                    setBookLoadingId(undefined);
+                    setOpen(false);
+                    router.refresh();
+                  });
                 }}
               >
                 {bookLoadingId === book.id ? (
@@ -103,5 +103,5 @@ export function AddFromMyBooks({
             </div>
           ))}
     </DrawerDialog>
-  )
+  );
 }

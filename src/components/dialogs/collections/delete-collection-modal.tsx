@@ -61,11 +61,7 @@ export function DeleteCollectionModal({
           onClick={() => runAction()}
           disabled={loading}
         >
-          {loading ? (
-            <Loader className="size-4" />
-          ) : (
-            <Trash />
-          )}
+          {loading ? <Loader className="size-4" /> : <Trash />}
           Удалить
         </Button>
       </div>

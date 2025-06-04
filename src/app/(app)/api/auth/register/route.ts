@@ -13,36 +13,36 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 export async function POST(request: NextRequest) {
-  const data = await request.json()
-  const username = data.username
-  const password = data.password
-  const hashedPassword = await hash(password)
+  const data = await request.json();
+  const username = data.username;
+  const password = data.password;
+  const hashedPassword = await hash(password);
 
   const user = await db.user.findFirst({
     where: {
       username: username,
     },
-  })
+  });
   if (user) {
     return NextResponse.json(
       {
         error: "Пользователь с таким именем уже существует",
       },
-      { status: 400 }
-    )
+      { status: 400 },
+    );
   }
 
   try {
     registerSchema.parse(data);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const message = error.issues.map(i => i.message).join(", ")
+      const message = error.issues.map((i) => i.message).join(", ");
       return NextResponse.json(
         {
           error: message,
         },
-        { status: 400 }
-      )
+        { status: 400 },
+      );
       /* [
         {
           expected: 'string',
@@ -92,14 +92,14 @@ export async function POST(request: NextRequest) {
       lastName: data.lastName,
       // avatarUrl: files.data?.url,
     },
-  })
+  });
 
   const session = await lucia.createSession(createdUser.id, {});
   const sessionCookie = lucia.createSessionCookie(session.id);
   (await cookies()).set(
     sessionCookie.name,
     sessionCookie.value,
-    sessionCookie.attributes
-  )
-  return new NextResponse(null, { status: 200 })
+    sessionCookie.attributes,
+  );
+  return new NextResponse(null, { status: 200 });
 }

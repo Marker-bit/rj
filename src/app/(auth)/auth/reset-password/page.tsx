@@ -4,8 +4,8 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import ResetPasswordForm from "./form"
+} from "@/components/ui/card";
+import ResetPasswordForm from "./form";
 
 export default async function ResetPassword() {
   return (
@@ -24,5 +24,5 @@ export default async function ResetPassword() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

@@ -1,10 +1,10 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-import { Book, GroupBook, GroupMember, GroupMemberRole } from "@prisma/client"
+} from "@/components/ui/popover";
+import { Book, GroupBook, GroupMember, GroupMemberRole } from "@prisma/client";
 import { Text } from "lucide-react";
 
 export default function ChangedInfo({
@@ -13,15 +13,15 @@ export default function ChangedInfo({
   currentMember,
   groupBook,
 }: {
-  book: Book
-  member: GroupMember
-  currentMember: GroupMember
-  groupBook: GroupBook
+  book: Book;
+  member: GroupMember;
+  currentMember: GroupMember;
+  groupBook: GroupBook;
 }) {
-  const pagesUpdated = book.pages !== groupBook.pages
+  const pagesUpdated = book.pages !== groupBook.pages;
   const canSeeDescription =
     currentMember.role !== GroupMemberRole.MEMBER ||
-    currentMember.userId === member.userId
+    currentMember.userId === member.userId;
   return (
     <>
       {book?.description === groupBook.description ? null : (
@@ -53,5 +53,5 @@ export default function ChangedInfo({
         </div>
       )}
     </>
-  )
+  );
 }

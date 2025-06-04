@@ -1,20 +1,20 @@
-"use client"
-import { cn } from "@/lib/utils"
-import { motion } from "framer-motion"
-import {ReactNode} from "react"
+"use client";
+import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
+import { ReactNode } from "react";
 
 export const LampContainer = ({
   children,
   className,
 }: {
-  children: ReactNode
-  className?: string
+  children: ReactNode;
+  className?: string;
 }) => {
   return (
     <div
       className={cn(
         "relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-slate-950 w-full rounded-md z-0",
-        className
+        className,
       )}
     >
       <div className="relative isolate z-0 flex w-full flex-1 scale-y-125 items-center justify-center ">
@@ -81,5 +81,5 @@ export const LampContainer = ({
         {children}
       </div>
     </div>
-  )
-}
+  );
+};

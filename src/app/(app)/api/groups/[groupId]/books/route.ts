@@ -3,7 +3,10 @@ import { validateRequest } from "@/lib/server-validate-request";
 import { GroupMemberRole } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextRequest, props: { params: Promise<{ groupId: string }> }) {
+export async function POST(
+  req: NextRequest,
+  props: { params: Promise<{ groupId: string }> },
+) {
   const params = await props.params;
   const { user } = await validateRequest();
 

@@ -1,3 +1,3 @@
 export default async function Page() {
-  return <div>History</div>
+  return <div>History</div>;
 }

@@ -9,18 +9,20 @@ const bookSchema = z.object({
   pages: z.coerce.number().min(1),
   description: z.string().optional(),
   coverUrl: z.string().optional(),
-  fields: z
-    .array(
-      z.object({
-        title: z.string({ required_error: "Название поля обязательно" }),
-        value: z.string({
-          required_error: "Значение поля обязательно",
-        }),
-      })
-    ),
-})
+  fields: z.array(
+    z.object({
+      title: z.string({ required_error: "Название поля обязательно" }),
+      value: z.string({
+        required_error: "Значение поля обязательно",
+      }),
+    }),
+  ),
+});
 
-export async function PATCH(req: NextRequest, props: { params: Promise<{ bookId: string }> }) {
+export async function PATCH(
+  req: NextRequest,
+  props: { params: Promise<{ bookId: string }> },
+) {
   const params = await props.params;
   const bookId = params.bookId;
   const { user } = await validateRequest();
@@ -33,11 +35,14 @@ export async function PATCH(req: NextRequest, props: { params: Promise<{ bookId:
 
   const d = bookSchema.safeParse(data);
   if (!d.success) {
-    return NextResponse.json({
-      errors: d.error,
-    }, {
-      status: 400
-    })
+    return NextResponse.json(
+      {
+        errors: d.error,
+      },
+      {
+        status: 400,
+      },
+    );
   }
   const updateBook = await db.book.update({
     where: {
@@ -54,7 +59,10 @@ export async function PATCH(req: NextRequest, props: { params: Promise<{ bookId:
   });
 }
 
-export async function DELETE(req: NextRequest, props: { params: Promise<{ bookId: string }> }) {
+export async function DELETE(
+  req: NextRequest,
+  props: { params: Promise<{ bookId: string }> },
+) {
   const params = await props.params;
   const bookId = params.bookId;
   const { user } = await validateRequest();
@@ -71,10 +79,10 @@ export async function DELETE(req: NextRequest, props: { params: Promise<{ bookId
   });
   return NextResponse.json(
     {
-      data: null
+      data: null,
     },
     {
       status: 200,
-    }
+    },
   );
 }

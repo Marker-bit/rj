@@ -1,15 +1,15 @@
-import confetti from "canvas-confetti"
+import confetti from "canvas-confetti";
 
-import { Button } from "@/components/ui/button"
-import { PartyPopper } from "lucide-react"
+import { Button } from "@/components/ui/button";
+import { PartyPopper } from "lucide-react";
 
 export function ConfettiButton() {
   const handleClick = () => {
-    const end = Date.now() + 1000 // 3 seconds
-    const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"]
+    const end = Date.now() + 1000; // 3 seconds
+    const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"];
 
     const frame = () => {
-      if (Date.now() > end) return
+      if (Date.now() > end) return;
 
       confetti({
         particleCount: 2,
@@ -18,7 +18,7 @@ export function ConfettiButton() {
         startVelocity: 60,
         origin: { x: 0, y: 0.5 },
         colors: colors,
-      })
+      });
       confetti({
         particleCount: 2,
         angle: 120,
@@ -26,17 +26,22 @@ export function ConfettiButton() {
         startVelocity: 60,
         origin: { x: 1, y: 0.5 },
         colors: colors,
-      })
+      });
 
-      requestAnimationFrame(frame)
-    }
+      requestAnimationFrame(frame);
+    };
 
-    frame()
-  }
+    frame();
+  };
 
   return (
-    <Button onClick={handleClick} className="active:scale-90" size="icon" variant="ghost">
+    <Button
+      onClick={handleClick}
+      className="active:scale-90"
+      size="icon"
+      variant="ghost"
+    >
       <PartyPopper className="size-4" />
     </Button>
-  )
+  );
 }

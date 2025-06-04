@@ -1,4 +1,4 @@
-import { ModeToggle } from "@/components/mode-toggle"
+import { ModeToggle } from "@/components/mode-toggle";
 import {
   BarChartBig,
   BookCopyIcon,
@@ -6,12 +6,12 @@ import {
   CircleUserIcon,
   HomeIcon,
   Users,
-} from "lucide-react"
-import Link from "next/link"
-import React, { Suspense } from "react"
-import { BottomLink, BottomLinkMobile } from "./bottom-link"
-import { StreakBar } from "./bars/streak-bar"
-import { UserBar } from "./bars/user-bar"
+} from "lucide-react";
+import Link from "next/link";
+import React, { Suspense } from "react";
+import { BottomLink, BottomLinkMobile } from "./bottom-link";
+import { StreakBar } from "./bars/streak-bar";
+import { UserBar } from "./bars/user-bar";
 
 export function BottomBar() {
   const urls = [
@@ -50,7 +50,7 @@ export function BottomBar() {
       label: "Профиль",
       icon: CircleUserIcon,
     },
-  ]
+  ];
   return (
     <>
       <div className="hidden border-r bg-muted/40 md:block">
@@ -96,5 +96,5 @@ export function BottomBar() {
         </div>
       </div>
     </>
-  )
+  );
 }

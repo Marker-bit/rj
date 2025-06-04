@@ -1,30 +1,38 @@
-"use client"
+"use client";
 
-import { useId, useRef, useState } from "react"
-import { CheckIcon, CopyIcon } from "lucide-react"
+import { useId, useRef, useState } from "react";
+import { CheckIcon, CopyIcon } from "lucide-react";
 
-import { cn } from "@/lib/utils"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
+} from "@/components/ui/tooltip";
 
-export function Copy({ text, className, label }: { text: string; className?: string; label?: string }) {
-  const id = useId()
-  const [copied, setCopied] = useState<boolean>(false)
-  const inputRef = useRef<HTMLInputElement>(null)
+export function Copy({
+  text,
+  className,
+  label,
+}: {
+  text: string;
+  className?: string;
+  label?: string;
+}) {
+  const id = useId();
+  const [copied, setCopied] = useState<boolean>(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleCopy = () => {
     if (inputRef.current) {
-      navigator.clipboard.writeText(inputRef.current.value)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 1500)
+      navigator.clipboard.writeText(inputRef.current.value);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
     }
-  }
+  };
 
   return (
     <div className="*:not-first:mt-2">
@@ -50,7 +58,7 @@ export function Copy({ text, className, label }: { text: string; className?: str
                 <div
                   className={cn(
                     "transition-all",
-                    copied ? "scale-100 opacity-100" : "scale-0 opacity-0"
+                    copied ? "scale-100 opacity-100" : "scale-0 opacity-0",
                   )}
                 >
                   <CheckIcon
@@ -62,7 +70,7 @@ export function Copy({ text, className, label }: { text: string; className?: str
                 <div
                   className={cn(
                     "absolute transition-all",
-                    copied ? "scale-0 opacity-0" : "scale-100 opacity-100"
+                    copied ? "scale-0 opacity-0" : "scale-100 opacity-100",
                   )}
                 >
                   <CopyIcon size={16} aria-hidden="true" />
@@ -76,5 +84,5 @@ export function Copy({ text, className, label }: { text: string; className?: str
         </TooltipProvider>
       </div>
     </div>
-  )
+  );
 }

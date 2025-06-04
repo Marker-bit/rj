@@ -28,7 +28,7 @@ export function BookCollectionsModal({
   const router = useRouter();
   const [collections, setCollections] =
     useState<(Collection & { books: PrismaBook[] })[]>();
-  
+
   useEffect(() => {
     (async () => {
       const res = await getCollections();
@@ -41,9 +41,9 @@ export function BookCollectionsModal({
       setCollections(res.collections);
     })();
   }, []);
-  
+
   const [selectedCollections, setSelectedCollections] = useState(
-    book.collections.map((c) => c.id)
+    book.collections.map((c) => c.id),
   );
   const queryClient = useQueryClient();
   const updateMutation = useMutation({
@@ -89,7 +89,7 @@ export function BookCollectionsModal({
                     setSelectedCollections(
                       selectedCollections.includes(collection.id)
                         ? selectedCollections.filter((c) => c !== collection.id)
-                        : [...selectedCollections, collection.id]
+                        : [...selectedCollections, collection.id],
                     )
                   }
                 >
@@ -101,9 +101,9 @@ export function BookCollectionsModal({
                       setSelectedCollections(
                         selectedCollections.includes(collection.id)
                           ? selectedCollections.filter(
-                              (c) => c !== collection.id
+                              (c) => c !== collection.id,
                             )
-                          : [...selectedCollections, collection.id]
+                          : [...selectedCollections, collection.id],
                       )
                     }
                   />
@@ -122,7 +122,7 @@ export function BookCollectionsModal({
                     </p>
                   </div>
                 </div>
-              )
+              ),
             )}
           <Button
             className="mt-2 gap-2"

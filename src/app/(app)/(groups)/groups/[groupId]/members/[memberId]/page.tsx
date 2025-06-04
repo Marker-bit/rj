@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button"
-import { db } from "@/lib/db"
-import { validateRequest } from "@/lib/server-validate-request"
-import { declOfNum } from "@/lib/utils"
+import { Button } from "@/components/ui/button";
+import { db } from "@/lib/db";
+import { validateRequest } from "@/lib/server-validate-request";
+import { declOfNum } from "@/lib/utils";
 import {
   BookOpen,
   Check,
@@ -9,28 +9,26 @@ import {
   UserCircle,
   X,
   XCircle,
-} from "lucide-react"
-import Image from "next/image"
-import Link from "next/link"
-import ChangedInfo from "../../_components/changed-info"
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import ChangedInfo from "../../_components/changed-info";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+} from "@/components/ui/tooltip";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
-export default async function Page(
-  props: {
-    params: Promise<{ groupId: string; memberId: string }>
-  }
-) {
+export default async function Page(props: {
+  params: Promise<{ groupId: string; memberId: string }>;
+}) {
   const params = await props.params;
-  const { user } = await validateRequest()
+  const { user } = await validateRequest();
   if (!user) {
-    return null
+    return null;
   }
 
   const group = await db.group.findUnique({
@@ -53,16 +51,16 @@ export default async function Page(
         },
       },
     },
-  })
+  });
   if (!group) {
-    return null
+    return null;
   }
   const currentMember = group.members.find(
-    (member) => member.userId === user.id
-  )
+    (member) => member.userId === user.id,
+  );
 
   if (!currentMember) {
-    return null
+    return null;
   }
 
   const member = await db.groupMember.findUnique({
@@ -74,9 +72,9 @@ export default async function Page(
       user: true,
       booksAdded: true,
     },
-  })
+  });
 
-  if (!member) return null
+  if (!member) return null;
 
   const booksSaved = await db.book.findMany({
     where: {
@@ -89,13 +87,13 @@ export default async function Page(
       readEvents: { orderBy: [{ pagesRead: "desc" }, { readAt: "desc" }] },
       groupBook: true,
     },
-  })
+  });
 
   booksSaved.sort(
     (a, b) =>
       (b.readEvents[0]?.pagesRead || 0) / b.pages -
-      (a.readEvents[0]?.pagesRead || 0) / a.pages
-  )
+      (a.readEvents[0]?.pagesRead || 0) / a.pages,
+  );
 
   return (
     <div className="flex flex-col p-8 max-sm:mb-24">
@@ -215,5 +213,5 @@ export default async function Page(
         </div>
       </div>
     </div>
-  )
+  );
 }

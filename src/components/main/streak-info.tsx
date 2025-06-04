@@ -1,10 +1,10 @@
-import { db } from "@/lib/db"
-import { validateRequest } from "@/lib/server-validate-request"
-import StreakBlock from "./streak-block"
+import { db } from "@/lib/db";
+import { validateRequest } from "@/lib/server-validate-request";
+import StreakBlock from "./streak-block";
 
 export async function StreakInfo() {
-  const { user } = await validateRequest()
-  if (!user) return null
+  const { user } = await validateRequest();
+  if (!user) return null;
 
   const events = await db.readEvent.findMany({
     where: {
@@ -18,13 +18,13 @@ export async function StreakInfo() {
     orderBy: {
       readAt: "asc",
     },
-  })
+  });
 
   const profile = await db.user.findUniqueOrThrow({
     where: {
       id: user.id,
     },
-  })
+  });
 
   return <StreakBlock events={events} user={user} />;
 

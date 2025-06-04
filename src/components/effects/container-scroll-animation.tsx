@@ -1,38 +1,38 @@
-"use client"
-import React, { useRef } from "react"
-import { useScroll, useTransform, motion, MotionValue } from "framer-motion"
+"use client";
+import React, { useRef } from "react";
+import { useScroll, useTransform, motion, MotionValue } from "framer-motion";
 
 export function ContainerScroll({
   titleComponent,
   children,
 }: {
-  titleComponent: string | React.ReactNode
-  children: React.ReactNode
+  titleComponent: string | React.ReactNode;
+  children: React.ReactNode;
 }) {
-  const containerRef = useRef<any>(null)
+  const containerRef = useRef<any>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
-  })
-  const [isMobile, setIsMobile] = React.useState(false)
+  });
+  const [isMobile, setIsMobile] = React.useState(false);
 
   React.useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768)
-    }
-    checkMobile()
-    window.addEventListener("resize", checkMobile)
+      setIsMobile(window.innerWidth <= 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
     return () => {
-      window.removeEventListener("resize", checkMobile)
-    }
-  }, [])
+      window.removeEventListener("resize", checkMobile);
+    };
+  }, []);
 
   const scaleDimensions = () => {
-    return isMobile ? [0.7, 0.9] : [1.05, 1]
-  }
+    return isMobile ? [0.7, 0.9] : [1.05, 1];
+  };
 
-  const rotate = useTransform(scrollYProgress, [0, 1], [20, 0])
-  const scale = useTransform(scrollYProgress, [0, 1], scaleDimensions())
-  const translate = useTransform(scrollYProgress, [0, 1], [0, -100])
+  const rotate = useTransform(scrollYProgress, [0, 1], [20, 0]);
+  const scale = useTransform(scrollYProgress, [0, 1], scaleDimensions());
+  const translate = useTransform(scrollYProgress, [0, 1], [0, -100]);
 
   return (
     <div
@@ -50,7 +50,7 @@ export function ContainerScroll({
         </Card>
       </div>
     </div>
-  )
+  );
 }
 
 export const Header = ({ translate, titleComponent }: any) => {
@@ -63,18 +63,18 @@ export const Header = ({ translate, titleComponent }: any) => {
     >
       {titleComponent}
     </motion.div>
-  )
-}
+  );
+};
 
 export const Card = ({
   rotate,
   scale,
   children,
 }: {
-  rotate: MotionValue<number>
-  scale: MotionValue<number>
-  translate: MotionValue<number>
-  children: React.ReactNode
+  rotate: MotionValue<number>;
+  scale: MotionValue<number>;
+  translate: MotionValue<number>;
+  children: React.ReactNode;
 }) => {
   return (
     <motion.div
@@ -90,5 +90,5 @@ export const Card = ({
         {children}
       </div>
     </motion.div>
-  )
-}
+  );
+};

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { AddFromMyBooks } from "@/components/book/add-from-my-books";
 import { GroupBookForm } from "@/components/book/group-book-form";
@@ -13,7 +13,7 @@ import { Book, BookCopy, BookDashed, Plus } from "lucide-react";
 import { useState } from "react";
 
 export function AddBookButton({ groupId }: { groupId: string }) {
-  const [modeOpen, setModeOpen] = useState<"create" | "add-own">()
+  const [modeOpen, setModeOpen] = useState<"create" | "add-own">();
 
   return (
     <>
@@ -49,5 +49,5 @@ export function AddBookButton({ groupId }: { groupId: string }) {
         </DropdownMenuContent>
       </DropdownMenu>
     </>
-  )
+  );
 }

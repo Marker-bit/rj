@@ -1,9 +1,9 @@
-import { NextResponse } from "next/server"
-import type { NextRequest } from "next/server"
-import { cookies } from "next/headers"
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { cookies } from "next/headers";
 
 export async function middleware(request: NextRequest) {
-  const pathname = request.nextUrl.pathname
+  const pathname = request.nextUrl.pathname;
   const notProtectedRoutes = [
     "/",
     "/auth",
@@ -14,8 +14,8 @@ export async function middleware(request: NextRequest) {
     "/icon.png",
     "/yandex_82f007f1c17a7d7a.html",
     "/sitemap.xml",
-    "/rjrj.png"
-  ]
+    "/rjrj.png",
+  ];
   if (
     !(await cookies()).get("auth_session") &&
     pathname !== "/auth" &&
@@ -23,11 +23,13 @@ export async function middleware(request: NextRequest) {
     pathname !== "/favicon.png" &&
     !notProtectedRoutes.includes(pathname)
   ) {
-    return NextResponse.redirect(new URL("/auth", request.url))
+    return NextResponse.redirect(new URL("/auth", request.url));
   }
-  return NextResponse.next()
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|auth|og.png|images).*)"],
-}
+  matcher: [
+    "/((?!api|_next/static|_next/image|favicon.ico|auth|og.png|images).*)",
+  ],
+};

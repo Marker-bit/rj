@@ -1,16 +1,19 @@
-import { db } from "@/lib/db"
-import { validateRequest } from "@/lib/server-validate-request"
-import { NextRequest, NextResponse } from "next/server"
+import { db } from "@/lib/db";
+import { validateRequest } from "@/lib/server-validate-request";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextRequest, props: { params: Promise<{ linkId: string }> }) {
+export async function POST(
+  req: NextRequest,
+  props: { params: Promise<{ linkId: string }> },
+) {
   const params = await props.params;
-  const { user } = await validateRequest()
+  const { user } = await validateRequest();
 
   if (!user) {
-    return new Response("Unauthorized", { status: 401 })
+    return new Response("Unauthorized", { status: 401 });
   }
 
-  const { linkId } = params
+  const { linkId } = params;
   const link = await db.bookLink.findUniqueOrThrow({
     where: {
       id: linkId,
@@ -18,7 +21,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ linkId: 
     include: {
       book: true,
     },
-  })
+  });
 
   const newBook = await db.book.create({
     data: {
@@ -29,7 +32,7 @@ export async function POST(req: NextRequest, props: { params: Promise<{ linkId: 
       description: link.book.description,
       userId: user.id,
     },
-  })
+  });
 
-  return NextResponse.json({ bookId: newBook.id })
+  return NextResponse.json({ bookId: newBook.id });
 }

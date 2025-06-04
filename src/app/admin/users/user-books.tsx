@@ -1,16 +1,16 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-import { declOfNum } from "@/lib/utils"
-import { Book } from "@prisma/client"
-import { ChevronDown } from "lucide-react"
-import Image from "next/image"
-import Link from "next/link"
+} from "@/components/ui/popover";
+import { declOfNum } from "@/lib/utils";
+import { Book } from "@prisma/client";
+import { ChevronDown } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function UserBooks({ books }: { books: Book[] }) {
   return (
@@ -56,5 +56,5 @@ export default function UserBooks({ books }: { books: Book[] }) {
         </div>
       </PopoverContent>
     </Popover>
-  )
+  );
 }

@@ -16,10 +16,7 @@ export async function POST(request: NextRequest) {
     },
   });
   if (user) {
-    const validPassword = await verify(
-      user.hashedPassword,
-      password
-    );
+    const validPassword = await verify(user.hashedPassword, password);
 
     if (validPassword) {
       const session = await lucia.createSession(user.id, {});
@@ -27,9 +24,9 @@ export async function POST(request: NextRequest) {
       (await cookies()).set(
         sessionCookie.name,
         sessionCookie.value,
-        sessionCookie.attributes
+        sessionCookie.attributes,
       );
-      
+
       return NextResponse.json(null, { status: 200 });
     } else {
       return NextResponse.json(
@@ -38,7 +35,7 @@ export async function POST(request: NextRequest) {
         },
         {
           status: 400,
-        }
+        },
       );
     }
   }
@@ -49,7 +46,7 @@ export async function POST(request: NextRequest) {
     },
     {
       status: 400,
-    }
+    },
   );
 }
 
@@ -89,7 +86,7 @@ export async function DELETE(request: NextRequest) {
   (await cookies()).set(
     sessionCookie.name,
     sessionCookie.value,
-    sessionCookie.attributes
+    sessionCookie.attributes,
   );
   return new NextResponse();
 }

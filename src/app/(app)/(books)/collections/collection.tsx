@@ -1,13 +1,13 @@
-import { Book, Collection } from "@prisma/client"
-import { CollectionButtons } from "./collection-buttons"
-import { declOfNum } from "@/lib/utils"
+import { Book, Collection } from "@prisma/client";
+import { CollectionButtons } from "./collection-buttons";
+import { declOfNum } from "@/lib/utils";
 
 export async function CollectionView({
   collection,
 }: {
   collection: Collection & {
-    books: Book[]
-  }
+    books: Book[];
+  };
 }) {
   return (
     <div className="flex flex-col border-b rounded-b-xl p-3">
@@ -18,5 +18,5 @@ export async function CollectionView({
       </div>
       <CollectionButtons collection={collection} />
     </div>
-  )
+  );
 }

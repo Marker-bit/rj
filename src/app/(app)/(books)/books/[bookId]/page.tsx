@@ -1,16 +1,18 @@
-import { BookView } from "@/components/book/book-view"
-import { Button } from "@/components/ui/button"
-import { fetchBooks } from "@/lib/books"
-import { db } from "@/lib/db"
-import { validateRequest } from "@/lib/server-validate-request"
-import { ChevronLeft } from "lucide-react"
-import Link from "next/link"
-import { notFound } from "next/navigation"
+import { BookView } from "@/components/book/book-view";
+import { Button } from "@/components/ui/button";
+import { fetchBooks } from "@/lib/books";
+import { db } from "@/lib/db";
+import { validateRequest } from "@/lib/server-validate-request";
+import { ChevronLeft } from "lucide-react";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 
-export default async function Page(props: { params: Promise<{ bookId: string }> }) {
+export default async function Page(props: {
+  params: Promise<{ bookId: string }>;
+}) {
   const params = await props.params;
-  const { user } = await validateRequest()
-  if (!user) return null
+  const { user } = await validateRequest();
+  if (!user) return null;
 
   const book = await db.book.findUnique({
     where: {
@@ -34,8 +36,8 @@ export default async function Page(props: { params: Promise<{ bookId: string }> 
       },
       links: true,
     },
-  })
-  if (!book) return notFound()
+  });
+  if (!book) return notFound();
 
   return (
     <div className="p-2 max-sm:mb-[15vh]">
@@ -47,5 +49,5 @@ export default async function Page(props: { params: Promise<{ bookId: string }> 
       </Button>
       <BookView book={book} />
     </div>
-  )
+  );
 }

@@ -1,40 +1,40 @@
-import { Button } from "@/components/ui/button"
-import { Loader } from "@/components/ui/loader"
-import { GroupBookSuggestion, GroupMemberRole } from "@prisma/client"
-import { Plus } from "lucide-react"
-import Image from "next/image"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { toast } from "sonner"
+import { Button } from "@/components/ui/button";
+import { Loader } from "@/components/ui/loader";
+import { GroupBookSuggestion, GroupMemberRole } from "@prisma/client";
+import { Plus } from "lucide-react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export function Suggestion({
   suggestion,
   role,
 }: {
-  suggestion: GroupBookSuggestion
-  role: GroupMemberRole
+  suggestion: GroupBookSuggestion;
+  role: GroupMemberRole;
 }) {
-  const [loading, setLoading] = useState(false)
-  const router = useRouter()
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const onClick = () => {
-    setLoading(true)
+    setLoading(true);
     fetch(`/api/groups/${suggestion.groupId}/suggestion/${suggestion.id}`, {
       method: "POST",
     })
       .then((res) => res.json())
       .then((res) => {
-        setLoading(false)
+        setLoading(false);
         if (res.error) {
           toast.error("Возникла проблема при предложении книги", {
             description: res.error,
-          })
+          });
         } else {
-          toast.success(res.message)
-          router.refresh()
+          toast.success(res.message);
+          router.refresh();
         }
-      })
-  }
+      });
+  };
   return (
     <div className="flex gap-2">
       {suggestion.coverUrl && (
@@ -68,5 +68,5 @@ export function Suggestion({
         </Button>
       )}
     </div>
-  )
+  );
 }
