@@ -32,7 +32,7 @@ export default function AdminBookView({ book }: { book: Book }) {
           </p>
         </div>
       </HoverCardTrigger>
-      <HoverCardContent className="w-[320px]">
+      <HoverCardContent side="left" className="w-[320px]">
         <div className="space-y-3">
           <div className="space-y-1">
             <h2 className="font-semibold">

@@ -9,8 +9,6 @@ import {
 import { declOfNum } from "@/lib/utils";
 import { Book } from "@prisma/client";
 import { ChevronDown } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
 import AdminBookView from "./admin-book-view";
 
 export default function UserBooks({ books }: { books: Book[] }) {
