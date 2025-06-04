@@ -38,7 +38,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { toast } from "sonner";
 import { DateDoneModal } from "../dialogs/books/date-done-modal";
 import { ShareBookModal } from "../dialogs/books/share-book-modal";
@@ -227,7 +227,7 @@ export function BookView({
           <DialogHeader>
             <DialogTitle>Описание</DialogTitle>
           </DialogHeader>
-          <pre className="relative mt-2 block cursor-pointer overflow-hidden text-wrap font-sans">
+          <pre className="font-sans">
             {book.description}
           </pre>
         </DrawerDialog>
@@ -266,7 +266,7 @@ export function BookView({
           readDoneMutation={doneMutation}
           book={book}
         />
-        <EditBookModal open={editOpen} setOpen={setEditOpen} book={book} />
+        <EditBookModal open={editOpen} setOpen={setEditOpen} book={book} onUpdate={onUpdate} />
         {book.coverUrl && (
           <Image
             src={book.coverUrl}
@@ -473,19 +473,19 @@ export function BookView({
             </div>
           </div>
           {book.description && (
-            <pre className="relative line-clamp-2 block overflow-hidden text-ellipsis text-wrap font-sans text-muted-foreground">
+            <pre className="relative line-clamp-2 text-ellipsis text-wrap font-sans text-muted-foreground">
               {book.description}
             </pre>
           )}
           {fieldsData && (
             <div className="grid w-fit grid-cols-2 space-x-4">
               {fieldsData.map((field: { title: string; value: string }) => (
-                <>
+                <Fragment key={field.title + field.value}>
                   <div className="text-end font-bold text-muted-foreground">
                     {field.title}:
                   </div>
                   <div>{field.value}</div>
-                </>
+                </Fragment>
               ))}
             </div>
           )}

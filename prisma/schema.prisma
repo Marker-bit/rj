@@ -5,6 +5,10 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator json {
+  provider = "prisma-json-types-generator"
+}
+
 // datasource db {
 //   provider = "sqlite"
 //   url      = "file:./dev.db"
@@ -40,6 +44,7 @@ model User {
   sessions       Session[]
   books          Book[]
   collections    Collection[]
+  lastExport     DateTime?
 
   shareFollowers     SharePeople @default(NONE)
   shareSubscriptions SharePeople @default(NONE)
@@ -123,7 +128,8 @@ model Book {
   description String       @default("")
   coverUrl    String?
   links       BookLink[]
-  fields      Json        @default("[]")
+  /// [Field]
+  fields      Json[]        @default([])
 
   background BackgroundColor @default(NONE)
 

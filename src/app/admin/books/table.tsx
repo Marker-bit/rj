@@ -78,9 +78,8 @@ export default function BookTable({
             </TableCell>
             <TableCell>
               {book.groupBook ? (
-                <Link
-                  href={`/admin/groups/${book.userId}`}
-                  className="flex flex-col items-start rounded-xl p-2 transition hover:bg-black/5 dark:hover:bg-white/5"
+                <div
+                  className="flex flex-col items-start rounded-xl p-2"
                 >
                   <div className="font-medium">
                     {book.groupBook.group.title}
@@ -93,7 +92,7 @@ export default function BookTable({
                       "участников",
                     ])}
                   </div>
-                </Link>
+                </div>
               ) : (
                 "Без группы"
               )}

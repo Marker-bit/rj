@@ -46,28 +46,6 @@ export default async function BooksPage(props: {
       ) : (
         <>
           <AddBookButton />
-          {/* <Button
-            variant="outline"
-            asChild
-            className="m-2 flex items-start gap-2 sm:w-full md:w-1/2 lg:w-[30%]"
-          >
-            <Link href={"/books/history"}>
-              <div className="flex items-center gap-2">
-                <HistoryIcon className="size-4" />
-                История
-              </div>
-              <div className="ml-auto flex items-center gap-2">
-                {
-                  books.filter(
-                    (b) =>
-                      b.readEvents.length > 0 &&
-                      b.readEvents[0].pagesRead === b.pages
-                  ).length
-                }
-                <ChevronRight className="size-4" />
-              </div>
-            </Link>
-          </Button> */}
           <BookList books={books.filter((b) => !b.isHidden)} />
           {books.filter((b) => b.isHidden).length > 0 && (
             <div className="m-2">

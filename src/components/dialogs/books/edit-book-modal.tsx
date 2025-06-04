@@ -43,10 +43,12 @@ export function EditBookModal({
   open,
   setOpen,
   book,
+  onUpdate
 }: {
   open: boolean;
   setOpen: (b: boolean) => void;
   book: Book;
+  onUpdate?: () => void;
 }) {
   const queryClient = useQueryClient();
 
@@ -89,6 +91,7 @@ export function EditBookModal({
         queryKey: ["events"],
       });
       router.refresh();
+      onUpdate?.();
     },
   });
 
@@ -240,7 +243,7 @@ export function EditBookModal({
                     <Button
                       type="button"
                       variant="outline"
-                      size="sm"
+                      size="icon"
                       onClick={() => remove(index)}
                     >
                       <X className="size-4" />

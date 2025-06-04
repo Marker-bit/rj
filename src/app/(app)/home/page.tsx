@@ -1,4 +1,4 @@
-import { Books } from "@/components/main/books";
+import BooksCard from "@/components/main/cards/books-card";
 import FirstSteps from "@/components/main/first-steps";
 import { Stats } from "@/components/main/stats";
 import { StreakInfo } from "@/components/main/streak-info";
@@ -46,7 +46,7 @@ export default function Home() {
               </div>
             }
           >
-            <Books />
+            <BooksCard />
           </Suspense>
           <Suspense
             fallback={

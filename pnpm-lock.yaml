@@ -295,6 +295,9 @@ importers:
       prisma:
         specifier: ^6.8.2
         version: 6.8.2(typescript@5.8.3)
+      prisma-json-types-generator:
+        specifier: ^3.4.2
+        version: 3.4.2(prisma@6.8.2(typescript@5.8.3))(typescript@5.8.3)
       tailwindcss:
         specifier: ^4.1.8
         version: 4.1.8
@@ -1102,6 +1105,12 @@ packages:
   '@prisma/debug@6.8.2':
     resolution: {integrity: sha512-4muBSSUwJJ9BYth5N8tqts8JtiLT8QI/RSAzEogwEfpbYGFo9mYsInsVo8dqXdPO2+Rm5OG5q0qWDDE3nyUbVg==, tarball: https://registry.npmjs.org/@prisma/debug/-/debug-6.8.2.tgz}
 
+  '@prisma/debug@6.9.0':
+    resolution: {integrity: sha512-bFeur/qi/Q+Mqk4JdQ3R38upSYPebv5aOyD1RKywVD+rAMLtRkmTFn28ZuTtVOnZHEdtxnNOCH+bPIeSGz1+Fg==, tarball: https://registry.npmjs.org/@prisma/debug/-/debug-6.9.0.tgz}
+
+  '@prisma/dmmf@6.9.0':
+    resolution: {integrity: sha512-iMK+VwpZBhmpI67IKkHgnkJkoJcTK8e7w0cjnSFwdQY9nhf6GxS07SZVSvaQCZgBU/DJRANYDqddWyzkcAi4uw==, tarball: https://registry.npmjs.org/@prisma/dmmf/-/dmmf-6.9.0.tgz}
+
   '@prisma/engines-version@6.8.0-43.2060c79ba17c6bb9f5823312b6f6b7f4a845738e':
     resolution: {integrity: sha512-Rkik9lMyHpFNGaLpPF3H5q5TQTkm/aE7DsGM5m92FZTvWQsvmi6Va8On3pWvqLHOt5aPUvFb/FeZTmphI4CPiQ==, tarball: https://registry.npmjs.org/@prisma/engines-version/-/engines-version-6.8.0-43.2060c79ba17c6bb9f5823312b6f6b7f4a845738e.tgz}
 
@@ -1110,6 +1119,12 @@ packages:
 
   '@prisma/fetch-engine@6.8.2':
     resolution: {integrity: sha512-lCvikWOgaLOfqXGacEKSNeenvj0n3qR5QvZUOmPE2e1Eh8cMYSobxonCg9rqM6FSdTfbpqp9xwhSAOYfNqSW0g==, tarball: https://registry.npmjs.org/@prisma/fetch-engine/-/fetch-engine-6.8.2.tgz}
+
+  '@prisma/generator-helper@6.9.0':
+    resolution: {integrity: sha512-t3F2M0LR2PYERUQ4pXbMF0G8navRqDWynN9EqOu1WnbOBhPMUYF/Y40RxSe7LAKVqJ0PbNO0rc8MBDcQkFWQqg==, tarball: https://registry.npmjs.org/@prisma/generator-helper/-/generator-helper-6.9.0.tgz}
+
+  '@prisma/generator@6.9.0':
+    resolution: {integrity: sha512-4f0eZeLPB8Q/vmB7XHV7krn6Pu2Q4kLZLlC42LaBLfkHLdsYC/jsVCOQohKKHsq/ONpfgrzwYWf3ZBVHBZgNSA==, tarball: https://registry.npmjs.org/@prisma/generator/-/generator-6.9.0.tgz}
 
   '@prisma/get-platform@6.8.2':
     resolution: {integrity: sha512-vXSxyUgX3vm1Q70QwzwkjeYfRryIvKno1SXbIqwSptKwqKzskINnDUcx85oX+ys6ooN2ATGSD0xN2UTfg6Zcow==, tarball: https://registry.npmjs.org/@prisma/get-platform/-/get-platform-6.8.2.tgz}
@@ -3867,6 +3882,14 @@ packages:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==, tarball: https://registry.npmjs.org/prelude-ls/-/prelude-ls-1.2.1.tgz}
     engines: {node: '>= 0.8.0'}
 
+  prisma-json-types-generator@3.4.2:
+    resolution: {integrity: sha512-f//au4IY4HQ/0IF7JpGZAdJg1Gc2/yiLFTh0SiqYtGDmSkqlo5T2E2UUgkNktQt9twmxDawbUwEodOuNSEJ9EQ==, tarball: https://registry.npmjs.org/prisma-json-types-generator/-/prisma-json-types-generator-3.4.2.tgz}
+    engines: {node: '>=14.0'}
+    hasBin: true
+    peerDependencies:
+      prisma: ^6.7
+      typescript: ^5.8
+
   prisma@6.8.2:
     resolution: {integrity: sha512-JNricTXQxzDtRS7lCGGOB4g5DJ91eg3nozdubXze3LpcMl1oWwcFddrj++Up3jnRE6X/3gB/xz3V+ecBk/eEGA==, tarball: https://registry.npmjs.org/prisma/-/prisma-6.8.2.tgz}
     engines: {node: '>=18.18'}
@@ -5229,6 +5252,10 @@ snapshots:
 
   '@prisma/debug@6.8.2': {}
 
+  '@prisma/debug@6.9.0': {}
+
+  '@prisma/dmmf@6.9.0': {}
+
   '@prisma/engines-version@6.8.0-43.2060c79ba17c6bb9f5823312b6f6b7f4a845738e': {}
 
   '@prisma/engines@6.8.2':
@@ -5243,6 +5270,14 @@ snapshots:
       '@prisma/debug': 6.8.2
       '@prisma/engines-version': 6.8.0-43.2060c79ba17c6bb9f5823312b6f6b7f4a845738e
       '@prisma/get-platform': 6.8.2
+
+  '@prisma/generator-helper@6.9.0':
+    dependencies:
+      '@prisma/debug': 6.9.0
+      '@prisma/dmmf': 6.9.0
+      '@prisma/generator': 6.9.0
+
+  '@prisma/generator@6.9.0': {}
 
   '@prisma/get-platform@6.8.2':
     dependencies:
@@ -8423,6 +8458,13 @@ snapshots:
       source-map-js: 1.2.1
 
   prelude-ls@1.2.1: {}
+
+  prisma-json-types-generator@3.4.2(prisma@6.8.2(typescript@5.8.3))(typescript@5.8.3):
+    dependencies:
+      '@prisma/generator-helper': 6.9.0
+      prisma: 6.8.2(typescript@5.8.3)
+      tslib: 2.8.1
+      typescript: 5.8.3
 
   prisma@6.8.2(typescript@5.8.3):
     dependencies:
