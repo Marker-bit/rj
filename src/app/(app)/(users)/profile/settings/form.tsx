@@ -39,6 +39,7 @@ import { toast } from "sonner";
 import { User as LuciaUser } from "lucia";
 import { SharePeople } from "@prisma/client";
 import { Switch } from "@/components/ui/switch";
+import ExportDataButton from "@/components/users/export-data-button";
 
 const formSchema = z.object({
   username: z
@@ -420,6 +421,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
             {logOutLoading ? <Loader className="mr-2 size-4" /> : <LogOut />}
             Выйти из аккаунта
           </Button>
+          <ExportDataButton type="button" />
         </div>
       </form>
     </Form>
