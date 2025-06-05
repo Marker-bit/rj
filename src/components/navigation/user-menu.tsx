@@ -2,10 +2,9 @@
 
 import {
   BoltIcon,
-  BookOpenIcon,
-  Layers2Icon,
   LockKeyholeIcon,
   LogOutIcon,
+  MessageCircleQuestion,
   UserIcon,
 } from "lucide-react";
 
@@ -20,25 +19,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { validateRequest } from "@/lib/validate-request";
-import { User } from "lucia";
+import { Session, User } from "lucia";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { Skeleton } from "../ui/skeleton";
+import { use } from "react";
+import { Badge } from "../ui/badge";
 
-export default function UserMenu() {
-  const [user, setUser] = useState<User | null>();
-
-  useEffect(() => {
-    async function fetchUser() {
-      const { user } = await validateRequest();
-      setUser(user);
-    }
-    fetchUser();
-  }, []);
+export default function UserMenu({
+  auth,
+}: {
+  auth: Promise<{ user: User; unread: number } | { user: null; unread: null }>;
+}) {
+  const { user, unread } = use(auth);
 
   if (!user) {
-    return <Skeleton className="h-8 w-8 rounded-full" />;
+    return null;
   }
 
   return (
@@ -46,7 +40,7 @@ export default function UserMenu() {
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="h-auto p-0 hover:bg-transparent! rounded-full"
+          className="h-auto p-0 hover:bg-transparent! rounded-full relative"
         >
           <Avatar>
             <AvatarImage src={user.avatarUrl} alt="Ваш аватар" />
@@ -55,6 +49,12 @@ export default function UserMenu() {
               {user.lastName[0]}
             </AvatarFallback>
           </Avatar>
+          {unread > 0 && (
+            <div
+              aria-hidden="true"
+              className="bg-primary absolute top-0 right-0 size-2 rounded-full"
+            />
+          )}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="max-w-64" align="end">
@@ -80,6 +80,19 @@ export default function UserMenu() {
               </DropdownMenuItem>
             </Link>
           )}
+          <Link href="/support">
+            <DropdownMenuItem>
+              <MessageCircleQuestion
+                size={16}
+                className="opacity-60"
+                aria-hidden="true"
+              />
+              <span>Поддержка</span>
+              {unread > 0 && (
+                <Badge className="min-w-5 px-1">{unread}</Badge>
+              )}
+            </DropdownMenuItem>
+          </Link>
           <Link href="/profile">
             <DropdownMenuItem>
               <UserIcon size={16} className="opacity-60" aria-hidden="true" />

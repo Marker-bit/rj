@@ -9,6 +9,24 @@ export default async function Layout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const auth = validateRequest().then(async ({ user }) => {
+    if (!user) {
+      return { user: null, unread: null };
+    }
+    const unread = await db.supportAnswer.count({
+      where: {
+        read: {
+          none: {
+            userId: user?.id,
+          },
+        },
+        question: {
+          fromUserId: user?.id,
+        },
+      },
+    });
+    return { user, unread };
+  })
   const events = validateRequest().then(({ user }) =>
     user
       ? db.readEvent.findMany({
@@ -26,10 +44,10 @@ export default async function Layout({
         })
       : []
   );
-  
+
   return (
     <div>
-      <NavBar events={events} />
+      <NavBar events={events} auth={auth} />
       <div className="w-full overflow-auto">{children}</div>
     </div>
   );

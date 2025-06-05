@@ -30,6 +30,7 @@ import { StreakButton } from "./bars/streak-button";
 import { Suspense } from "react";
 import { ModeToggle } from "../mode-toggle";
 import { Skeleton } from "../ui/skeleton";
+import { User, Session } from "lucia";
 
 const navigationLinks = [
   { href: "/home", label: "Главная", icon: HouseIcon },
@@ -39,7 +40,15 @@ const navigationLinks = [
   { href: "/groups", label: "Группы", icon: Users },
 ];
 
-export default function NavBar({ events }: { events: Promise<ReadEvent[]> }) {
+export default function NavBar({
+  events,
+  auth,
+}: {
+  events: Promise<ReadEvent[]>;
+  auth: Promise<
+    { user: User; unread: number } | { user: null; unread: null }
+  >;
+}) {
   const pathname = usePathname();
   const isActive = (href: string) => href === pathname;
 
@@ -133,7 +142,9 @@ export default function NavBar({ events }: { events: Promise<ReadEvent[]> }) {
             <StreakButton events={events} />
           </Suspense>
           <ModeToggle />
-          <UserMenu />
+          <Suspense fallback={<Skeleton className="h-8 w-8 rounded-full" />}>
+            <UserMenu auth={auth} />
+          </Suspense>
         </div>
       </div>
     </header>
