@@ -63,7 +63,7 @@ export async function createBook(book: {
       coverUrl: book.coverUrl,
       description: book.description,
       userId: user.id,
-      fields: JSON.stringify(book.fields),
+      fields: book.fields,
     },
   });
   return newBook;

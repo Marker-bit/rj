@@ -88,9 +88,7 @@ export default function UserMenu({
                 aria-hidden="true"
               />
               <span>Поддержка</span>
-              {unread > 0 && (
-                <Badge className="min-w-5 px-1">{unread}</Badge>
-              )}
+              {unread > 0 && <Badge className="min-w-5 px-1">{unread}</Badge>}
             </DropdownMenuItem>
           </Link>
           <Link href="/profile">
@@ -99,10 +97,12 @@ export default function UserMenu({
               <span>Профиль</span>
             </DropdownMenuItem>
           </Link>
-          <DropdownMenuItem>
-            <BoltIcon size={16} className="opacity-60" aria-hidden="true" />
-            <span>Настройки</span>
-          </DropdownMenuItem>
+          <Link href="/profile/settings">
+            <DropdownMenuItem>
+              <BoltIcon size={16} className="opacity-60" aria-hidden="true" />
+              <span>Настройки</span>
+            </DropdownMenuItem>
+          </Link>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
