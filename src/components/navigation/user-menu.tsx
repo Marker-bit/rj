@@ -23,6 +23,8 @@ import { Session, User } from "lucia";
 import Link from "next/link";
 import { use } from "react";
 import { Badge } from "../ui/badge";
+import { logOut } from "@/lib/actions/auth";
+import { useRouter } from "next/navigation";
 
 export default function UserMenu({
   auth,
@@ -30,10 +32,16 @@ export default function UserMenu({
   auth: Promise<{ user: User; unread: number } | { user: null; unread: null }>;
 }) {
   const { user, unread } = use(auth);
+  const router = useRouter();
 
   if (!user) {
     return null;
   }
+
+  const logOutClick = async () => {
+    await logOut();
+    router.replace("/");
+  };
 
   return (
     <DropdownMenu>
@@ -105,7 +113,7 @@ export default function UserMenu({
           </Link>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={logOutClick}>
           <LogOutIcon size={16} className="opacity-60" aria-hidden="true" />
           <span>Выйти</span>
         </DropdownMenuItem>

@@ -53,7 +53,8 @@ export function LoginForm() {
         method: "POST",
       }).then(async (res) => {
         if (res.ok) {
-          router.refresh();
+          router.replace("/home");
+          toast.success("Вы успешно авторизовались");
         } else {
           const data = await res.json();
           if (data.error) {
