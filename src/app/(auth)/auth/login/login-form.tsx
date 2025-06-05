@@ -19,6 +19,8 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Loader } from "@/components/ui/loader";
+import { useEffect } from "react";
+import { validateRequest } from "@/lib/validate-request";
 
 const formSchema = z.object({
   username: z.string(),
@@ -34,6 +36,15 @@ export function LoginForm() {
     },
   });
   const router = useRouter();
+
+  useEffect(() => {
+    (async () => {
+      const { user } = await validateRequest();
+      if (user) {
+        router.replace("/home");
+      }
+    })();
+  }, []);
 
   const userMutation = useMutation({
     mutationFn: (values: z.infer<typeof formSchema>) => {

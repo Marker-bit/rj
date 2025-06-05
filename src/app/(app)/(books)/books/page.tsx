@@ -14,6 +14,8 @@ export default async function BooksPage(props: {
   const { user } = await validateRequest();
   if (!user) return null;
 
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
   const books = await fetchBooks(user.id);
   let bookId = searchParams?.bookId;
 
