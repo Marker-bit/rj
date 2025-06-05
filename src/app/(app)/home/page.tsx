@@ -15,12 +15,6 @@ export default function Home() {
       <div className="mb-[15vh]">
         <div className="m-2 flex items-center text-5xl font-black">
           Главная
-          <div className="ml-auto flex items-center gap-2">
-            <ModeToggle />
-            <Suspense fallback={<></>}>
-              <SupportButton />
-            </Suspense>
-          </div>
         </div>
         <div className="flex flex-col gap-2">
           <Suspense fallback={<></>}>
