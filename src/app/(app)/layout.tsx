@@ -1,5 +1,7 @@
 import "@/app/globals.css";
-import { BottomBar } from "../../components/navigation/bottom-bar";
+import NavBar from "@/components/navigation/navbar";
+import { db } from "@/lib/db";
+import { validateRequest } from "@/lib/server-validate-request";
 import React from "react";
 
 export default async function Layout({
@@ -7,9 +9,27 @@ export default async function Layout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const events = validateRequest().then(({ user }) =>
+    user
+      ? db.readEvent.findMany({
+          where: {
+            book: {
+              userId: user.id,
+            },
+          },
+          include: {
+            book: true,
+          },
+          orderBy: {
+            readAt: "asc",
+          },
+        })
+      : []
+  );
+  
   return (
-    <div className="relative grid h-dvh w-full justify-stretch md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
-      <BottomBar />
+    <div>
+      <NavBar events={events} />
       <div className="w-full overflow-auto">{children}</div>
     </div>
   );

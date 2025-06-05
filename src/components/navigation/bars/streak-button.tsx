@@ -17,10 +17,10 @@ import { ReadEvent } from "@prisma/client";
 import { addDays, differenceInDays, format, startOfWeek } from "date-fns";
 import { ru } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+import { use } from "react";
 
-export function StreakButton({ events }: { events: ReadEvent[] }) {
+export function StreakButton({ events: eventsPromise }: { events: Promise<ReadEvent[]> }) {
+  const events = use(eventsPromise);
   const { streak } = getStreak(events);
   const days = getDays(events);
   const nowDay = differenceInDays(
@@ -31,7 +31,7 @@ export function StreakButton({ events }: { events: ReadEvent[] }) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="ghost" className="flex items-center gap-2">
+        <Button variant="ghost" className="flex items-center gap-2 rounded-full">
           <CalendarIcon className="size-4" />
           {streak}
         </Button>
