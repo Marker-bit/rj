@@ -1,7 +1,10 @@
 "use client";
 
-import { BarChartBig, Book, Download, Users } from "lucide-react";
+import { exportData } from "@/lib/actions/export";
+import { exportDefaultItems } from "@/lib/export";
+import { Download } from "lucide-react";
 import { ComponentProps, useId, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
 import { DialogHeader, DialogTitle } from "../ui/dialog";
@@ -14,9 +17,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { exportDefaultItems } from "@/lib/export";
-import { exportData } from "@/lib/actions/export";
-import { toast } from "sonner";
 
 export default function ExportDataButton({
   ...props
@@ -121,7 +121,8 @@ export default function ExportDataButton({
             Экспорт
           </Button>
           <p className="text-muted-foreground text-center text-xs">
-            После этого, вы не сможете запросить экспорт ещё 48 часов
+            Следующий экспорт будет возможен через 48 часов.
+            Он нужен для сохранения вашего текущего состояния Читательского дневника (для переноса в другой сервис или восстановления данных).
           </p>
         </div>
       </DrawerDialog>
