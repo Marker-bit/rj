@@ -1,4 +1,5 @@
 import BooksCard from "@/components/main/cards/books-card";
+import LastReadCard from "@/components/main/cards/last-read-card";
 import FirstSteps from "@/components/main/first-steps";
 import { Stats } from "@/components/main/stats";
 import { StreakInfo } from "@/components/main/streak-info";
@@ -15,8 +16,11 @@ export default function Home() {
             <Suspense fallback={<></>}>
               <FirstSteps />
             </Suspense>
-            <Suspense fallback={<></>}>
+            <Suspense fallback={<Skeleton className="rounded-md h-full min-h-60 w-full" />}>
               <StreakInfo />
+            </Suspense>
+            <Suspense fallback={<></>}>
+              <LastReadCard />
             </Suspense>
           </div>
           <Suspense

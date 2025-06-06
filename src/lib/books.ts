@@ -71,3 +71,22 @@ export async function fetchBooks(
   );
   return books;
 }
+
+export async function getLastReadBook(userId: string) {
+  const readEvent = await db.readEvent.findFirst({
+    where: {
+      book: {
+        userId: userId,
+      },
+    },
+    include: {
+      book: true,
+    },
+    orderBy: {
+      readAt: "desc",
+    },
+  });
+  if (!readEvent) return null;
+
+  return {book: readEvent.book, pages: readEvent.pagesRead};
+}
