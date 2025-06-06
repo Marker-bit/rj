@@ -40,8 +40,11 @@ export function BookList({ books }: { books: Book[] }) {
     }
     if (localStorageSort) {
       _setSort(localStorageSort);
+      const searchParams = new URLSearchParams(window.location.search);
+      searchParams.set("sort", localStorageSort);
+      router.replace(`?${searchParams.toString()}`);
     }
-  }, []);
+  }, [router]);
 
   function setReadBooks(value: boolean) {
     localStorage.setItem("readBooks", JSON.stringify(value));
