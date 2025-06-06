@@ -4,8 +4,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { LightbulbIcon, NewspaperIcon } from "lucide-react";
-import React, { useState } from "react";
+import { LightbulbIcon } from "lucide-react";
+import { useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 
 // Добавлять строго в конец!

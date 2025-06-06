@@ -45,6 +45,12 @@ export function BookList({ books }: { books: Book[] }) {
       const searchParams = new URLSearchParams(window.location.search);
       searchParams.set("sort", actualSort);
       router.replace(`?${searchParams.toString()}`);
+    } else {
+      _setSort("percent");
+      localStorage.setItem("orderBy", JSON.stringify("percent"));
+      const searchParams = new URLSearchParams(window.location.search);
+      searchParams.set("sort", "percent");
+      router.replace(`?${searchParams.toString()}`);
     }
   }, [router]);
 
