@@ -15,7 +15,7 @@ export default async function LastReadCard() {
   const { book: lastReadBook, pages } = data;
 
   return (
-    <div className="bg-card text-card-foreground rounded-xl border p-6 shadow-sm overflow-hidden flex items-center">
+    <div className="bg-card text-card-foreground rounded-xl border p-6 shadow-sm overflow-hidden flex items-center relative">
       <div className="flex items-center gap-4 w-full z-10">
         {lastReadBook.coverUrl && (
           <div className="relative">
@@ -45,9 +45,10 @@ export default async function LastReadCard() {
             В книге {lastReadBook.title} - {lastReadBook.author}
           </div>
         </div>
-        <Button variant="outline" asChild className="ml-auto">
+        <Button variant="outline" asChild className="ml-auto absolute top-4 right-4">
           <Link href={`/books?bookId=${lastReadBook.id}`}>
-            Открыть <ArrowUpRight className="size-4" />
+            <div className="hidden sm:block">Открыть</div>
+            <ArrowUpRight className="size-4" />
           </Link>
         </Button>
       </div>
