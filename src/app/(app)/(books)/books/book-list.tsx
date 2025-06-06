@@ -19,13 +19,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function BookList({ books }: { books: Book[] }) {
   const [readBooks, _setReadBooks] = useState(false);
   const [notStarted, _setNotStarted] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [searchResults, setSearchResults] = useState<Book[]>();
-  const [sort, _setSort] = useState("percent");
+  const [sort, _setSort] = useState<"percent" | "activity">();
   const router = useRouter();
 
   useEffect(() => {
@@ -57,7 +58,7 @@ export function BookList({ books }: { books: Book[] }) {
   }
   function setSort(value: string) {
     localStorage.setItem("orderBy", JSON.stringify(value));
-    _setSort(value);
+    _setSort(value as "percent" | "activity");
     const searchParams = new URLSearchParams(window.location.search);
     searchParams.set("sort", value);
     router.replace(`?${searchParams.toString()}`);
@@ -111,6 +112,14 @@ export function BookList({ books }: { books: Book[] }) {
   const booksForRender = searchResults
     ? searchResults
     : outlinedBooks.concat(notOutlinedBooks);
+
+  if (sort === undefined) {
+    return (
+      <div className="p-2">
+        <Skeleton className="h-48 w-full" />
+      </div>
+    );
+  }
 
   return (
     <div>
