@@ -22,7 +22,7 @@ import {
 import { Session, User } from "lucia";
 import Link from "next/link";
 import { use } from "react";
-import { Badge } from "../ui/badge";
+import { Badge } from "../../ui/badge";
 import { logOut } from "@/lib/actions/auth";
 import { useRouter } from "next/navigation";
 

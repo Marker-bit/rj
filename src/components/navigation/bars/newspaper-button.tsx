@@ -4,7 +4,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { NewspaperIcon } from "lucide-react";
+import { LightbulbIcon, NewspaperIcon } from "lucide-react";
 import React, { useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 
@@ -19,7 +19,7 @@ const tips = [
     title: "Наш Telegram-канал",
     description:
       "Официальный Telegram-канал Читательского дневника - @rjrjdev. Подписывайтесь, чтобы быть в курсе новостей и обновлений.",
-  },
+  }
 ];
 
 export default function NewspaperButton() {
@@ -36,8 +36,15 @@ export default function NewspaperButton() {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="ghost" size="icon" className="rounded-full">
-          <NewspaperIcon />
+        <Button variant="ghost" size="icon" className="rounded-full relative">
+          <LightbulbIcon className="size-4" />
+
+          {currentTip !== tips.length && (
+            <div
+              aria-hidden="true"
+              className="bg-primary absolute top-0.5 right-0.5 size-2 rounded-full"
+            />
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="max-w-[280px] py-3 shadow-none" side="bottom">

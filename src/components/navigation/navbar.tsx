@@ -30,7 +30,7 @@ import { Suspense } from "react";
 import { ModeToggle } from "../mode-toggle";
 import { Skeleton } from "../ui/skeleton";
 import { StreakButton } from "./bars/streak-button";
-import UserMenu from "./user-menu";
+import UserMenu from "./bars/user-menu";
 import NewspaperButton from "./bars/newspaper-button";
 
 const navigationLinks = [
