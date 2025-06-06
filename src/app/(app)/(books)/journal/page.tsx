@@ -6,7 +6,16 @@ import { Calendar } from "@/components/ui/calendar";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ReadEvent } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
-import { addDays, format, isAfter, isBefore, isEqual } from "date-fns";
+import {
+  addDays,
+  endOfDay,
+  format,
+  isAfter,
+  isBefore,
+  isEqual,
+  isWithinInterval,
+  startOfDay,
+} from "date-fns";
 import { ru } from "date-fns/locale";
 import { BookMinus, ChevronLeft } from "lucide-react";
 import Link from "next/link";
@@ -40,17 +49,19 @@ export default function JournalPage() {
   function isBeforeOrEqual(date: Date, dateToCompare: Date) {
     return isBefore(date, dateToCompare) || isEqual(date, dateToCompare);
   }
+  console.log(dates);
   events = events.filter((event) => {
-    if (dates?.from && dates?.to) {
-      return (
-        isAfterOrEqual(event.readAt, dates.from) &&
-        isBeforeOrEqual(event.readAt, dates.to)
-      );
+    if (!dates) return true;
+    if (dates.from && dates.to) {
+      return isWithinInterval(event.readAt, {
+        start: startOfDay(dates.from),
+        end: endOfDay(dates.to),
+      });
     }
-    if (dates?.from) {
+    if (dates.from) {
       return isAfterOrEqual(event.readAt, dates.from);
     }
-    if (dates?.to) {
+    if (dates.to) {
       return isBeforeOrEqual(event.readAt, dates.to);
     }
     return true;
@@ -113,7 +124,7 @@ export default function JournalPage() {
             readAt: string | Date;
           }) => (
             <EventView event={event} key={event.id} />
-          ),
+          )
         )}
       </div>
     </div>
