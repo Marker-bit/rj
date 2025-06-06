@@ -2,21 +2,26 @@ import { BookView } from "@/components/book/book-view";
 import { Button } from "@/components/ui/button";
 import { fetchBooks } from "@/lib/books";
 import { validateRequest } from "@/lib/server-validate-request";
-import { ChevronLeft, ChevronRight, HistoryIcon } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { BookList } from "./book-list";
 import AddBookButton from "./button";
+import { loadSearchParams } from "./search-params";
+import { SearchParams } from "nuqs/server";
 
 export default async function BooksPage(props: {
-  searchParams: Promise<{ bookId: string | undefined }>;
+  searchParams: Promise<SearchParams>
 }) {
   const searchParams = await props.searchParams;
   const { user } = await validateRequest();
   if (!user) return null;
 
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  const { sort } = loadSearchParams(searchParams);
+  if (!["percent", "activity"].includes(sort)) {
+    return null;
+  }
+  const books = await fetchBooks(user.id, sort as "percent" | "activity");
 
-  const books = await fetchBooks(user.id);
   let bookId = searchParams?.bookId;
 
   const foundBook = bookId ? books.find((b) => b.id === bookId) : undefined;

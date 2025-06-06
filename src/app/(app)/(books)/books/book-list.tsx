@@ -5,27 +5,41 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Book } from "@/lib/api-types";
-import { BookMinus, Search } from "lucide-react";
+import { BookMinus, Calendar, Percent, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import Fuse from "fuse.js";
 import { BackgroundColor } from "@prisma/client";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { useRouter } from "next/navigation";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function BookList({ books }: { books: Book[] }) {
   const [readBooks, _setReadBooks] = useState(false);
   const [notStarted, _setNotStarted] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [searchResults, setSearchResults] = useState<Book[]>();
+  const [sort, _setSort] = useState("percent");
+  const router = useRouter();
 
   useEffect(() => {
     const localStorageReadBooks = localStorage.getItem("readBooks");
     const localStorageNotStarted = localStorage.getItem("notStarted");
+    const localStorageSort = localStorage.getItem("sort");
     if (localStorageReadBooks) {
       _setReadBooks(JSON.parse(localStorageReadBooks));
     }
     if (localStorageNotStarted) {
       _setNotStarted(JSON.parse(localStorageNotStarted));
+    }
+    if (localStorageSort) {
+      _setSort(localStorageSort);
     }
   }, []);
 
@@ -36,6 +50,13 @@ export function BookList({ books }: { books: Book[] }) {
   function setNotStarted(value: boolean) {
     localStorage.setItem("notStarted", JSON.stringify(value));
     _setNotStarted(value);
+  }
+  function setSort(value: string) {
+    localStorage.setItem("sort", value);
+    _setSort(value);
+    const searchParams = new URLSearchParams(window.location.search);
+    searchParams.set("sort", value);
+    router.replace(`?${searchParams.toString()}`);
   }
 
   let filteredBooks = books;
@@ -59,7 +80,6 @@ export function BookList({ books }: { books: Book[] }) {
     keys: ["title", "author"],
   });
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   function search(evt?: any) {
     if (searchText === "") {
       setSearchResults(undefined);
@@ -77,12 +97,16 @@ export function BookList({ books }: { books: Book[] }) {
   }, [searchText, books, readBooks, notStarted]);
 
   const outlinedBooks = filteredBooks.filter(
-    (book: Book) => book.background !== BackgroundColor.NONE,
+    (book: Book) => book.background !== BackgroundColor.NONE
   );
 
   const notOutlinedBooks = filteredBooks.filter(
-    (book: Book) => book.background === BackgroundColor.NONE,
+    (book: Book) => book.background === BackgroundColor.NONE
   );
+
+  const booksForRender = searchResults
+    ? searchResults
+    : outlinedBooks.concat(notOutlinedBooks);
 
   return (
     <div>
@@ -134,6 +158,32 @@ export function BookList({ books }: { books: Book[] }) {
             <Search className="size-4" />
           </Button>
         </form>
+        <div className="group relative w-full">
+          <label
+            htmlFor="sort"
+            className="bg-background text-foreground absolute start-1 top-0 z-10 block -translate-y-1/2 px-2 text-xs font-medium group-has-disabled:opacity-50"
+          >
+            Сортировка
+          </label>
+          <Select value={sort} onValueChange={setSort}>
+            <SelectTrigger
+              id="sort"
+              className="[&>span_svg]:text-muted-foreground/80 [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_svg]:shrink-0 w-full sm:w-[50%] md:w-[30%]"
+            >
+              <SelectValue placeholder="Select framework" />
+            </SelectTrigger>
+            <SelectContent className="[&_*[role=option]>span>svg]:text-muted-foreground/80 [&_*[role=option]>span]:flex [&_*[role=option]>span]:gap-2 [&_*[role=option]>span>svg]:shrink-0">
+              <SelectItem value="percent">
+                <Percent size={16} aria-hidden="true" />
+                <span className="truncate">По прогрессу в книге</span>
+              </SelectItem>
+              <SelectItem value="activity">
+                <Calendar size={16} aria-hidden="true" />
+                <span className="truncate">По последней активности</span>
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
         {searchResults && (
           <Button
             variant="outline"
@@ -154,23 +204,9 @@ export function BookList({ books }: { books: Book[] }) {
             </div>
           </div>
         )}
-        {searchResults ? (
-          searchResults.map((book: Book) => (
-            <BookView book={book} key={book.id} />
-          ))
-        ) : (
-          <>
-            {outlinedBooks.map((book: Book) => (
-              <BookView key={book.id} book={book} />
-            ))}
-            {notOutlinedBooks.map((book: Book) => (
-              <BookView key={book.id} book={book} />
-            ))}
-          </>
-        )}
-        {/* {(searchResults || filteredBooks).map((book: Book) => (
+        {booksForRender.map((book: Book) => (
           <BookView book={book} key={book.id} />
-        ))} */}
+        ))}
       </div>
     </div>
   );
