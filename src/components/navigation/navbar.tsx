@@ -21,16 +21,17 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { ReadEvent } from "@prisma/client";
+import { User } from "lucia";
 import Image from "next/image";
 import Link from "next/link";
-import UserMenu from "./user-menu";
 import { usePathname } from "next/navigation";
-import { ReadEvent } from "@prisma/client";
-import { StreakButton } from "./bars/streak-button";
 import { Suspense } from "react";
 import { ModeToggle } from "../mode-toggle";
 import { Skeleton } from "../ui/skeleton";
-import { User, Session } from "lucia";
+import { StreakButton } from "./bars/streak-button";
+import UserMenu from "./user-menu";
+import NewspaperButton from "./bars/newspaper-button";
 
 const navigationLinks = [
   { href: "/home", label: "Главная", icon: HouseIcon },
@@ -142,6 +143,7 @@ export default function NavBar({
             <StreakButton events={events} />
           </Suspense>
           <ModeToggle />
+          <NewspaperButton />
           <Suspense fallback={<Skeleton className="h-8 w-8 rounded-full" />}>
             <UserMenu auth={auth} />
           </Suspense>

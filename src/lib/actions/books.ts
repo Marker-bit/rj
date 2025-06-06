@@ -13,7 +13,7 @@ export async function getBooks(orderBy: "percent" | "activity" = "percent") {
     return [];
   }
 
-  const books = await fetchBooks(user.id, {orderBy, history: false});
+  const books = await fetchBooks(user.id, { orderBy });
   return books;
 }
 
@@ -29,7 +29,7 @@ const bookSchema = z.object({
       value: z.string({
         required_error: "Значение поля обязательно",
       }),
-    }),
+    })
   ),
 });
 
