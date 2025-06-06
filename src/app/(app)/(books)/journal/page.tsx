@@ -17,16 +17,22 @@ import {
   startOfDay,
 } from "date-fns";
 import { ru } from "date-fns/locale";
-import { BookMinus, ChevronLeft } from "lucide-react";
+import { BookMinus, ChevronDownIcon, ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
 import { EventView } from "./EventView";
 import { Loader } from "@/components/ui/loader";
 import { Book } from "@/lib/api-types";
+import { formatDateRange } from "little-date";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 export default function JournalPage() {
-  const tomorrow = addDays(new Date(), 1);
+  const today = new Date();
   const [dates, setDates] = useState<DateRange | undefined>();
   const [filterOpen, setFilterOpen] = useState(false);
   const eventsQuery = useQuery({
@@ -77,31 +83,34 @@ export default function JournalPage() {
         Журнал
       </div>
       <div className="flex flex-col gap-2 p-3">
-        <DrawerDialog open={filterOpen} onOpenChange={setFilterOpen}>
-          <DialogHeader>
-            <DialogTitle>Выбор дня</DialogTitle>
-          </DialogHeader>
-          <Calendar
-            mode="range"
-            selected={dates}
-            onSelect={setDates}
-            className="mx-auto mt-2 w-fit rounded-md border"
-            disabled={[{ from: tomorrow, to: new Date(3000, 1) }]}
-            weekStartsOn={1}
-            // showToday={false}
-            locale={ru}
-          />
-        </DrawerDialog>
-        <Button
-          variant="outline"
-          onClick={() => setFilterOpen(true)}
-          className="md:w-fit"
-        >
-          Фильтр по дням{" "}
-          {dates?.from && `с ${format(dates.from, "dd.MM.yyyy")}`}{" "}
-          {dates?.to && `до ${format(dates.to, "dd.MM.yyyy")}`}
-          {!dates && "выключен"}
-        </Button>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              id="dates"
+              className="min-w-80 w-full md:w-fit justify-between font-normal"
+            >
+              Фильтр по дням{" "}
+              {dates?.from && `с ${format(dates.from, "dd.MM.yyyy")}`}{" "}
+              {dates?.to && `до ${format(dates.to, "dd.MM.yyyy")}`}
+              {!dates && "выключен"}
+              <ChevronDownIcon />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+            <Calendar
+              mode="range"
+              selected={dates}
+              captionLayout="dropdown"
+              onSelect={(range) => {
+                setDates(range);
+              }}
+              weekStartsOn={1}
+              locale={ru}
+              disabled={{ after: today }}
+            />
+          </PopoverContent>
+        </Popover>
         {eventsQuery.data?.length === 0 && events.length === 0 ? (
           <div className="flex items-center gap-2 rounded-xl border p-2">
             <BookMinus className="size-10" />

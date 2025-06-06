@@ -198,6 +198,9 @@ importers:
       input-otp:
         specifier: ^1.4.2
         version: 1.4.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      little-date:
+        specifier: ^1.0.0
+        version: 1.0.0
       lucia:
         specifier: ^3.2.2
         version: 3.2.2
@@ -226,8 +229,8 @@ importers:
         specifier: 19.1.0
         version: 19.1.0
       react-day-picker:
-        specifier: ^8.10.1
-        version: 8.10.1(date-fns@4.1.0)(react@19.1.0)
+        specifier: ^9.7.0
+        version: 9.7.0(react@19.1.0)
       react-dom:
         specifier: 19.1.0
         version: 19.1.0(react@19.1.0)
@@ -336,6 +339,9 @@ packages:
   '@babel/runtime@7.27.4':
     resolution: {integrity: sha512-t3yaEOuGu9NlIZ+hIeGbBjFtZT7j2cb2tg0fuaJKeGotchRjjLfrBA9Kwf8quhpP1EUuxModQg04q/mBwyg8uA==, tarball: https://registry.npmjs.org/@babel/runtime/-/runtime-7.27.4.tgz}
     engines: {node: '>=6.9.0'}
+
+  '@date-fns/tz@1.2.0':
+    resolution: {integrity: sha512-LBrd7MiJZ9McsOgxqWX7AaxrDjcFVjWH/tIKJd7pnR7McaslGYOP1QmmiBXdJH/H/yLCT+rcQ7FaPBUxRGUtrg==, tarball: https://registry.npmjs.org/@date-fns/tz/-/tz-1.2.0.tgz}
 
   '@dicebear/adventurer-neutral@9.2.2':
     resolution: {integrity: sha512-XVAjhUWjav6luTZ7txz8zVJU/H0DiUy4uU1Z7IO5MDO6kWvum+If1+0OUgEWYZwM+RDI7rt2CgVP910DyZGd1w==, tarball: https://registry.npmjs.org/@dicebear/adventurer-neutral/-/adventurer-neutral-9.2.2.tgz}
@@ -2689,6 +2695,13 @@ packages:
     resolution: {integrity: sha512-BS8PfmtDGnrgYdOonGZQdLZslWIeCGFP9tpan0hi1Co2Zr2NKADsvGYA8XxuG/4UWgJ6Cjtv+YJnB6MM69QGlQ==, tarball: https://registry.npmjs.org/data-view-byte-offset/-/data-view-byte-offset-1.0.1.tgz}
     engines: {node: '>= 0.4'}
 
+  date-fns-jalali@4.1.0-0:
+    resolution: {integrity: sha512-hTIP/z+t+qKwBDcmmsnmjWTduxCg+5KfdqWQvb2X/8C9+knYY6epN/pfxdDuyVlSVeFz0sM5eEfwIUQ70U4ckg==, tarball: https://registry.npmjs.org/date-fns-jalali/-/date-fns-jalali-4.1.0-0.tgz}
+
+  date-fns@2.30.0:
+    resolution: {integrity: sha512-fnULvOpxnC5/Vg3NCiWelDsLiUc9bRwAPs/+LfTLNvetFCtCTN+yQz15C/fs4AwX1R9K5GLtLfn8QW+dWisaAw==, tarball: https://registry.npmjs.org/date-fns/-/date-fns-2.30.0.tgz}
+    engines: {node: '>=0.11'}
+
   date-fns@4.1.0:
     resolution: {integrity: sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==, tarball: https://registry.npmjs.org/date-fns/-/date-fns-4.1.0.tgz}
 
@@ -3506,6 +3519,10 @@ packages:
   linebreak@1.1.0:
     resolution: {integrity: sha512-MHp03UImeVhB7XZtjd0E4n6+3xr5Dq/9xI/5FptGk5FrbDR3zagPa2DS6U8ks/3HjbKWG9Q1M2ufOzxV2qLYSQ==, tarball: https://registry.npmjs.org/linebreak/-/linebreak-1.1.0.tgz}
 
+  little-date@1.0.0:
+    resolution: {integrity: sha512-41T/ktcwPzxC0OJ8E3wmaK0E1DL/QNR3n30kB9Dw6Ni6Eud24It8LZm70jK8lvDd+Mg+961fzKDcF6SQRL25cQ==, tarball: https://registry.npmjs.org/little-date/-/little-date-1.0.0.tgz}
+    engines: {node: '>=10'}
+
   loader-runner@4.3.0:
     resolution: {integrity: sha512-3R/1M+yS3j5ou80Me59j7F9IMs4PXs3VqRrm0TU3AbKPxlmpoY1TNscJV/oGJXo8qCatFGTfDbY6W6ipGOYXfg==, tarball: https://registry.npmjs.org/loader-runner/-/loader-runner-4.3.0.tgz}
     engines: {node: '>=6.11.5'}
@@ -3966,11 +3983,11 @@ packages:
   randombytes@2.1.0:
     resolution: {integrity: sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==, tarball: https://registry.npmjs.org/randombytes/-/randombytes-2.1.0.tgz}
 
-  react-day-picker@8.10.1:
-    resolution: {integrity: sha512-TMx7fNbhLk15eqcMt+7Z7S2KF7mfTId/XJDjKE8f+IUcFn0l08/kI4FiYTL/0yuOLmEcbR4Fwe3GJf/NiiMnPA==, tarball: https://registry.npmjs.org/react-day-picker/-/react-day-picker-8.10.1.tgz}
+  react-day-picker@9.7.0:
+    resolution: {integrity: sha512-urlK4C9XJZVpQ81tmVgd2O7lZ0VQldZeHzNejbwLWZSkzHH498KnArT0EHNfKBOWwKc935iMLGZdxXPRISzUxQ==, tarball: https://registry.npmjs.org/react-day-picker/-/react-day-picker-9.7.0.tgz}
+    engines: {node: '>=18'}
     peerDependencies:
-      date-fns: ^2.28.0 || ^3.0.0
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react: '>=16.8.0'
 
   react-dom@19.1.0:
     resolution: {integrity: sha512-Xs1hdnE+DyKgeHJeJznQmYMIBG3TKIHJJT95Q58nHLSrElKlGQqDTR2HQ9fx5CN/Gk6Vh/kupBTDLU11/nDk/g==, tarball: https://registry.npmjs.org/react-dom/-/react-dom-19.1.0.tgz}
@@ -4646,6 +4663,8 @@ snapshots:
       '@jridgewell/trace-mapping': 0.3.25
 
   '@babel/runtime@7.27.4': {}
+
+  '@date-fns/tz@1.2.0': {}
 
   '@dicebear/adventurer-neutral@9.2.2(@dicebear/core@9.2.2)':
     dependencies:
@@ -6921,6 +6940,12 @@ snapshots:
       es-errors: 1.3.0
       is-data-view: 1.0.2
 
+  date-fns-jalali@4.1.0-0: {}
+
+  date-fns@2.30.0:
+    dependencies:
+      '@babel/runtime': 7.27.4
+
   date-fns@4.1.0: {}
 
   debug@3.2.7:
@@ -7914,6 +7939,10 @@ snapshots:
       base64-js: 0.0.8
       unicode-trie: 2.0.0
 
+  little-date@1.0.0:
+    dependencies:
+      date-fns: 2.30.0
+
   loader-runner@4.3.0:
     optional: true
 
@@ -8556,9 +8585,11 @@ snapshots:
       safe-buffer: 5.2.1
     optional: true
 
-  react-day-picker@8.10.1(date-fns@4.1.0)(react@19.1.0):
+  react-day-picker@9.7.0(react@19.1.0):
     dependencies:
+      '@date-fns/tz': 1.2.0
       date-fns: 4.1.0
+      date-fns-jalali: 4.1.0-0
       react: 19.1.0
 
   react-dom@19.1.0(react@19.1.0):

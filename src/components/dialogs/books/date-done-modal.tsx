@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
-import { startOfDay } from "date-fns";
+import { getMonth, startOfDay } from "date-fns";
 import { ru } from "date-fns/locale";
 import { Save } from "lucide-react";
 import { useState } from "react";
@@ -58,12 +58,11 @@ export function DateDoneModal({
             }
           }}
           className="w-fit rounded-md border max-sm:w-full"
-          disabled={[{ after: today }]}
+          disabled={{ after: today }}
           weekStartsOn={1}
           locale={ru}
-          toDate={new Date()}
           modifiers={{ events: days }}
-          modifiersClassNames={{ events: "bg-green-100 dark:bg-green-800" }}
+          modifiersClassNames={{ events: "underline decoration-2 decoration-green-500" }}
         />
       </div>
 

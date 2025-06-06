@@ -106,7 +106,6 @@ export default function NavBar({
                 width={32}
                 height={32}
                 className="h-8 w-8"
-                draggable={false}
               />
             </Link>
           </div>
