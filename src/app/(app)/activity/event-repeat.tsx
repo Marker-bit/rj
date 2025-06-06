@@ -5,7 +5,7 @@ import { Book, ReadEvent, User } from "@prisma/client";
 import { ChevronDown, ChevronsUpDown } from "lucide-react";
 import Event from "./event";
 import { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 
 export default function EventRepeat({
   events,

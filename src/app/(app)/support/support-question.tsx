@@ -12,7 +12,7 @@ import { User as LuciaUser } from "lucia";
 import { CheckCheck, ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import AnswerQuestion from "./answer-question";
 import QuestionAnswer from "./question-answer";
 import { Badge } from "@/components/ui/badge";

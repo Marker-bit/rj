@@ -6,7 +6,7 @@ import { User as DbUser } from "@prisma/client";
 import { useState } from "react";
 import { FriendView } from "@/components/users/friend-view";
 import { UserX } from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { Stats } from "@/components/users/stats";
 
 export function UserTabs({

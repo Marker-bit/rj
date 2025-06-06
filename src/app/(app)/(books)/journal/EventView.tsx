@@ -1,14 +1,12 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Book } from "@/lib/api-types";
+import { dateToString } from "@/lib/utils";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { BookOpen, BookOpenCheck, Loader, Undo } from "lucide-react";
 import Link from "next/link";
-import { dateToString } from "@/lib/utils";
-import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { Book } from "@/lib/api-types";
 
 export function EventView({
   event,

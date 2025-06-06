@@ -6,7 +6,7 @@ import { CopyCheck, CopyIcon, Settings, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { Book } from "@/lib/api-types";
 import { Loader } from "../../ui/loader";
 import { useRouter } from "next/navigation";
