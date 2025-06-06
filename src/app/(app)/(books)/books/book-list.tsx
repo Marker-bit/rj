@@ -31,7 +31,7 @@ export function BookList({ books }: { books: Book[] }) {
   useEffect(() => {
     const localStorageReadBooks = localStorage.getItem("readBooks");
     const localStorageNotStarted = localStorage.getItem("notStarted");
-    const localStorageSort = localStorage.getItem("sort");
+    const localStorageSort = localStorage.getItem("orderBy");
     if (localStorageReadBooks) {
       _setReadBooks(JSON.parse(localStorageReadBooks));
     }
@@ -39,9 +39,10 @@ export function BookList({ books }: { books: Book[] }) {
       _setNotStarted(JSON.parse(localStorageNotStarted));
     }
     if (localStorageSort) {
-      _setSort(localStorageSort);
+      const actualSort = JSON.parse(localStorageSort);
+      _setSort(actualSort);
       const searchParams = new URLSearchParams(window.location.search);
-      searchParams.set("sort", localStorageSort);
+      searchParams.set("sort", actualSort);
       router.replace(`?${searchParams.toString()}`);
     }
   }, [router]);
@@ -55,7 +56,7 @@ export function BookList({ books }: { books: Book[] }) {
     _setNotStarted(value);
   }
   function setSort(value: string) {
-    localStorage.setItem("sort", value);
+    localStorage.setItem("orderBy", JSON.stringify(value));
     _setSort(value);
     const searchParams = new URLSearchParams(window.location.search);
     searchParams.set("sort", value);
