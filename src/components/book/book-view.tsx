@@ -52,9 +52,11 @@ export const dynamic = "force-dynamic";
 export function BookView({
   book,
   onUpdate,
+  history = false,
 }: {
   book: Book;
   onUpdate?: () => void;
+  history?: boolean;
 }) {
   const [editOpen, setEditOpen] = useState(false);
   const [dateOpen, setDateOpen] = useState(false);
@@ -165,8 +167,8 @@ export function BookView({
     typeof book.fields === "string"
       ? JSON.parse(book.fields)
       : Array.isArray(book.fields)
-        ? book.fields
-        : [];
+      ? book.fields
+      : [];
 
   return (
     <>
@@ -199,7 +201,7 @@ export function BookView({
           "group relative flex gap-2 rounded-md border p-2 transition-shadow hover:shadow-sm overflow-hidden",
           book.background !== BackgroundColor.NONE &&
             "outline-solid outline-8 my-2",
-          color && color.outline,
+          color && color.outline
         )}
         id={`book-${book.id}`}
       >
@@ -208,7 +210,7 @@ export function BookView({
             "absolute left-0 top-0 -z-50 h-full",
             color
               ? color.background
-              : "bg-neutral-100/50 dark:bg-neutral-900/50",
+              : "bg-neutral-100/50 dark:bg-neutral-900/50"
           )}
           style={{
             width: `${((lastEvent?.pagesRead || 0) / book.pages) * 100}%`,
@@ -227,9 +229,7 @@ export function BookView({
           <DialogHeader>
             <DialogTitle>Описание</DialogTitle>
           </DialogHeader>
-          <pre className="font-sans">
-            {book.description}
-          </pre>
+          <pre className="font-sans">{book.description}</pre>
         </DrawerDialog>
         <BookInfoModal
           open={actionsDrawerOpen}
@@ -266,7 +266,12 @@ export function BookView({
           readDoneMutation={doneMutation}
           book={book}
         />
-        <EditBookModal open={editOpen} setOpen={setEditOpen} book={book} onUpdate={onUpdate} />
+        <EditBookModal
+          open={editOpen}
+          setOpen={setEditOpen}
+          book={book}
+          onUpdate={onUpdate}
+        />
         {book.coverUrl && (
           <Image
             src={book.coverUrl}
@@ -417,37 +422,38 @@ export function BookView({
               <Share className="size-4" />
               <div className="max-sm:hidden">Поделиться</div>
             </HelpButton>
-            {book.isHidden ? (
-              <HelpButton
-                className="gap-2"
-                variant="outline"
-                onClick={() => hideMutation.mutate()}
-                disabled={hideMutation.isPending}
-                helpText="Переместить эту книгу в обычный список книг"
-              >
-                {hideMutation.isPending ? (
-                  <Loader className="size-4" />
-                ) : (
-                  <Eye className="size-4" />
-                )}
-                <div className="max-sm:hidden">Показать</div>
-              </HelpButton>
-            ) : (
-              <HelpButton
-                className="gap-2"
-                variant="outline"
-                onClick={() => hideMutation.mutate()}
-                disabled={hideMutation.isPending}
-                helpText="Переместить эту книгу в самый низ, например, чтобы отложить её чтение на будущее"
-              >
-                {hideMutation.isPending ? (
-                  <Loader className="size-4" />
-                ) : (
-                  <EyeOff className="size-4" />
-                )}
-                <div className="max-sm:hidden">Скрыть</div>
-              </HelpButton>
-            )}
+            {!history &&
+              (book.isHidden ? (
+                <HelpButton
+                  className="gap-2"
+                  variant="outline"
+                  onClick={() => hideMutation.mutate()}
+                  disabled={hideMutation.isPending}
+                  helpText="Переместить эту книгу в обычный список книг"
+                >
+                  {hideMutation.isPending ? (
+                    <Loader className="size-4" />
+                  ) : (
+                    <Eye className="size-4" />
+                  )}
+                  <div className="max-sm:hidden">Показать</div>
+                </HelpButton>
+              ) : (
+                <HelpButton
+                  className="gap-2"
+                  variant="outline"
+                  onClick={() => hideMutation.mutate()}
+                  disabled={hideMutation.isPending}
+                  helpText="Переместить эту книгу в самый низ, например, чтобы отложить её чтение на будущее"
+                >
+                  {hideMutation.isPending ? (
+                    <Loader className="size-4" />
+                  ) : (
+                    <EyeOff className="size-4" />
+                  )}
+                  <div className="max-sm:hidden">Скрыть</div>
+                </HelpButton>
+              ))}
             <Palette background={book.background} bookId={book.id} />
             <div className="absolute right-0 top-0 m-2 flex scale-0 gap-2 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
               <SimpleTooltip text="Отредактировать книгу">

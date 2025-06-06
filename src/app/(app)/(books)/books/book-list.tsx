@@ -123,9 +123,9 @@ export function BookList({ books }: { books: Book[] }) {
 
   return (
     <div>
-      <div className="flex flex-col gap-2 p-3">
+      <div className="flex flex-col gap-2">
         <div className="grid md:grid-cols-2 gap-2">
-          <div className="border-input has-data-[state=checked]:border-primary/50 relative flex w-full items-start gap-2 rounded-md border p-4 shadow-xs outline-none">
+          {/* <div className="border-input has-data-[state=checked]:border-primary/50 relative flex w-full items-start gap-2 rounded-md border p-4 shadow-xs outline-none">
             <Checkbox
               id="readBooks"
               aria-describedby="readBooks-description"
@@ -141,7 +141,7 @@ export function BookList({ books }: { books: Book[] }) {
                 Включите, чтобы прочитанные вами книги не отображались в списке.
               </p>
             </div>
-          </div>
+          </div> */}
           <div className="border-input has-data-[state=checked]:border-primary/50 relative flex w-full items-start gap-2 rounded-md border p-4 shadow-xs outline-none">
             <Checkbox
               id="notStarted"

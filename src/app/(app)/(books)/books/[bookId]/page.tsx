@@ -1,6 +1,5 @@
 import { BookView } from "@/components/book/book-view";
 import { Button } from "@/components/ui/button";
-import { fetchBooks } from "@/lib/books";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
 import { ChevronLeft } from "lucide-react";

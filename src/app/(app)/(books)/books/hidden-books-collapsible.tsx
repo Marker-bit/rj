@@ -14,7 +14,7 @@ export default function HiddenBooksCollapsible({
   hiddenBooks: Book[];
 }) {
   return (
-    <Collapsible className="m-2">
+    <Collapsible>
       <div className="flex items-center justify-between">
         <div className="flex flex-col">
           <h2 className="text-2xl font-bold">Скрытые</h2>

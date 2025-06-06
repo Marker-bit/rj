@@ -1,11 +1,18 @@
 import { Book } from "./api-types";
 import { db } from "./db";
 
+type FetchBooksOptions =
+  | {
+      orderBy: "percent" | "activity";
+    }
+  | { history: true };
+
 export async function fetchBooks(
   userId: string,
-  orderBy: "percent" | "activity" = "percent",
+  options: FetchBooksOptions = { orderBy: "percent" }
 ) {
-  const books = await db.book.findMany({
+  const isHistory = "history" in options;
+  let books = await db.book.findMany({
     where: {
       userId: userId,
     },
@@ -50,8 +57,17 @@ export async function fetchBooks(
 
     return bTime - aTime;
   };
+  books = books.filter((b) =>
+    isHistory
+      ? b.readEvents.find((e) => e.pagesRead === b.pages)
+      : !b.readEvents.find((e) => e.pagesRead === b.pages)
+  );
   books.sort(
-    orderBy === "percent" ? compareBooksByPercent : compareBooksByActivity,
+    isHistory
+      ? compareBooksByActivity
+      : options.orderBy === "percent"
+      ? compareBooksByPercent
+      : compareBooksByActivity
   );
   return books;
 }

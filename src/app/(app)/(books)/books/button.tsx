@@ -9,7 +9,7 @@ export default function AddBookButton() {
   const [open, setOpen] = useState(false);
   return (
     <>
-      <div className="m-2 flex items-center">
+      <div className="flex items-center">
         <Button onClick={() => setOpen(true)}>
           <Plus /> Добавить книгу
         </Button>
