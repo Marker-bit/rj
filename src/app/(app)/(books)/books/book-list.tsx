@@ -137,7 +137,7 @@ export function BookList({ books }: { books: Book[] }) {
               onCheckedChange={setNotStarted}
             />
             <div className="grid grow gap-2">
-              <Label htmlFor="notStarted">Скрывать не начатые книги</Label>
+              <Label htmlFor="notStarted">Скрывать неначатые книги</Label>
               <p
                 id="notStarted-description"
                 className="text-muted-foreground text-xs"
