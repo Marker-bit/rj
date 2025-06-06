@@ -3,6 +3,7 @@ import {
   BookOpen,
   BookOpenCheck,
   BookOpenTextIcon,
+  ChevronDown,
   Edit,
   Loader,
   Pencil,
@@ -15,6 +16,11 @@ import { dateToString, declOfNum } from "@/lib/utils";
 import { Badge } from "../../ui/badge";
 import { Collection, ReadEvent } from "@prisma/client";
 import { DialogTitle } from "@/components/ui/dialog";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 
 export function BookInfoModal({
   open,
@@ -79,42 +85,57 @@ export function BookInfoModal({
             )}
           </div>
         </div>
-        <div className="flex flex-col gap-2">
-          {book.readEvents.map((event: ReadEvent) => (
-            <div className="flex items-center gap-2" key={event.id}>
-              {event.pagesRead === book.pages ? (
-                <>
-                  <BookOpenCheck className="size-4 text-green-500" />
-                  <div className="flex flex-col">
-                    <div>Книга прочитана!</div>
-                    <div className="text-xs text-black/50 dark:text-white/50">
-                      {dateToString(new Date(event.readAt))}
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <BookOpen className="size-4" />
-                  <div className="flex flex-col">
-                    <div>
-                      {event.pagesRead}{" "}
-                      {declOfNum(event.pagesRead, [
-                        "страница",
-                        "страницы",
-                        "страниц",
-                      ])}{" "}
-                      прочитано
-                    </div>
-                    <div className="text-xs text-black/50 dark:text-white/50">
-                      {dateToString(new Date(event.readAt))}
-                    </div>
-                  </div>
-                </>
-              )}
+        {book.readEvents.length > 0 && (
+          <Collapsible>
+            <div className="flex items-center justify-between gap-4">
+              События
+              <CollapsibleTrigger asChild className="group">
+                <Button variant="ghost" size="icon">
+                  <ChevronDown className="size-4 group-data-[state=open]:rotate-180 transition" />
+                </Button>
+              </CollapsibleTrigger>
             </div>
-          ))}
-        </div>
-        <h3 className="text-xl">Коллекции</h3>
+            <CollapsibleContent>
+              <div className="flex flex-col gap-2">
+                {book.readEvents.map((event: ReadEvent) => (
+                  <div className="flex items-center gap-2" key={event.id}>
+                    {event.pagesRead === book.pages ? (
+                      <>
+                        <BookOpenCheck className="size-4 text-green-500" />
+                        <div className="flex flex-col">
+                          <div>Книга прочитана!</div>
+                          <div className="text-xs text-black/50 dark:text-white/50">
+                            {dateToString(new Date(event.readAt))}
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <BookOpen className="size-4" />
+                        <div className="flex flex-col">
+                          <div>
+                            {event.pagesRead}{" "}
+                            {declOfNum(event.pagesRead, [
+                              "страница",
+                              "страницы",
+                              "страниц",
+                            ])}{" "}
+                            прочитано
+                          </div>
+                          <div className="text-xs text-black/50 dark:text-white/50">
+                            {dateToString(new Date(event.readAt))}
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+        )}
+
+        <h3>Коллекции</h3>
         <div className="flex flex-col gap-2">
           {book.collections.map((collection: Collection) => (
             <div className="flex flex-col gap-2" key={collection.id}>
