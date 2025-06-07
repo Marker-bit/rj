@@ -5,7 +5,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { LightbulbIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 
 // Добавлять строго в конец!
@@ -19,12 +19,17 @@ const tips = [
     title: "Наш Telegram-канал",
     description:
       "Официальный Telegram-канал Читательского дневника - @rjrjdev. Подписывайтесь, чтобы быть в курсе новостей и обновлений.",
-  }
+  },
 ];
 
 export default function NewspaperButton() {
   const [open, setOpen] = useState(false);
   const [currentTip, setCurrentTip] = useLocalStorage("currentTip", 0);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleNavigation = () => {
     if (currentTip === tips.length - 1) {
@@ -33,10 +38,18 @@ export default function NewspaperButton() {
     setCurrentTip(currentTip + 1);
   };
 
+  if (!isClient) {
+    return null;
+  }
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="ghost" size="icon" className="rounded-full relative">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="rounded-full relative"
+        >
           <LightbulbIcon className="size-4" />
 
           {currentTip !== tips.length && (
