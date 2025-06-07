@@ -1,6 +1,6 @@
 import { BookView } from "@/components/book/book-view";
 import { Button } from "@/components/ui/button";
-import { fetchBooks } from "@/lib/books";
+import { fetchBook, fetchBooks } from "@/lib/books";
 import { validateRequest } from "@/lib/server-validate-request";
 import {
   ArrowRightIcon,
@@ -27,15 +27,16 @@ export default async function BooksPage(props: {
   if (!["percent", "activity"].includes(sort)) {
     return null;
   }
-  const books = await fetchBooks(user.id, {
-    orderBy: sort as "percent" | "activity",
-  });
 
   let bookId = searchParams?.bookId;
 
-  const foundBook = bookId ? books.find((b) => b.id === bookId) : undefined;
+  const books = bookId ? null : await fetchBooks(user.id, {
+    orderBy: sort as "percent" | "activity",
+  });
 
-  const hiddenBooks = books.filter((b) => b.isHidden);
+  const foundBook = bookId && await fetchBook(bookId as string, user.id);
+
+  const hiddenBooks = bookId ? null : books!.filter((b) => b.isHidden);
 
   return (
     <div className="p-2">
@@ -79,9 +80,9 @@ export default async function BooksPage(props: {
               </Button>
             </SimpleTooltip>
           </div>
-          <BookList books={books.filter((b) => !b.isHidden)} />
-          {hiddenBooks.length > 0 && (
-            <HiddenBooksCollapsible hiddenBooks={hiddenBooks} />
+          <BookList books={books!.filter((b) => !b.isHidden)} />
+          {hiddenBooks!.length > 0 && (
+            <HiddenBooksCollapsible hiddenBooks={hiddenBooks!} />
           )}
         </div>
       )}

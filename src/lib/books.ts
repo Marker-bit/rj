@@ -72,8 +72,34 @@ export async function fetchBooks(
   return books;
 }
 
+export async function fetchBook(id: string, userId?: string) {
+  return db.book.findUnique({
+    where: {
+      id,
+      userId: userId || undefined,
+    },
+    include: {
+      readEvents: {
+        orderBy: [
+          { pagesRead: "desc" },
+          {
+            readAt: "desc",
+          },
+        ],
+      },
+      collections: true,
+      groupBook: {
+        include: {
+          group: true,
+        },
+      },
+      links: true,
+    },
+  });
+}
+
 export async function getLastReadBook(userId: string) {
-  const readEvent = await db.readEvent.findFirst({
+  const readEvents = await db.readEvent.findMany({
     where: {
       book: {
         userId: userId,
@@ -86,7 +112,13 @@ export async function getLastReadBook(userId: string) {
       readAt: "desc",
     },
   });
-  if (!readEvent) return null;
+  let books: string[] = []
+  for (let readEvent of readEvents) {
+    if (readEvent.book.pages !== readEvent.pagesRead && !books.includes(readEvent.book.id)) {
+      return { book: readEvent.book, pages: readEvent.pagesRead };
+    }
+    books.push(readEvent.book.id)
+  }
 
-  return {book: readEvent.book, pages: readEvent.pagesRead};
+  return null;
 }

@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { getLastReadBook } from "@/lib/books";
 import { validateRequest } from "@/lib/server-validate-request";
-import { declOfNum } from "@/lib/utils";
 import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
