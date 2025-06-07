@@ -27,7 +27,7 @@ export function LoginButton({ noRedirect }: { noRedirect: boolean }) {
   ) : (
     <Button size="lg" asChild>
       <Link
-        href={loggedIn ? "/home" : "/auth/register"}
+        href={loggedIn ? "/home" : "/auth/login"}
         className="flex items-center gap-2"
       >
         {loggedIn ? "Открыть" : "Начать"}
