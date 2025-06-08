@@ -12,6 +12,9 @@ importers:
 
   .:
     dependencies:
+      '@date-fns/tz':
+        specifier: ^1.2.0
+        version: 1.2.0
       '@dicebear/collection':
         specifier: ^9.2.2
         version: 9.2.2(@dicebear/core@9.2.2)

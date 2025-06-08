@@ -1,13 +1,21 @@
 import { Badge, IconBadge } from "@/components/ui/badge";
 import { db } from "@/lib/db";
 import { dateToString } from "@/lib/utils";
-import { differenceInDays, endOfDay, isWithinInterval, startOfDay } from "date-fns";
+import {
+  differenceInDays,
+  endOfDay,
+  formatRelative,
+  isWithinInterval,
+  startOfDay,
+} from "date-fns";
 import { CalendarIcon, CheckIcon, XIcon } from "lucide-react";
 import AddRecommendation, {
   DeleteRecommendationButton,
   EditRecommendationButton,
 } from "./add-recommendation";
 import GenerateRecommendation from "./generate-recommendation";
+import { ru } from "date-fns/locale";
+import { TZDate } from "@date-fns/tz";
 
 export default async function Page() {
   const recommendations = await db.recommendation.findMany({
@@ -72,7 +80,9 @@ export default async function Page() {
                     : "outline"
                 }
               >
-                {dateToString(r.startsOn)} - {dateToString(r.endsOn)} ({differenceInDays(r.endsOn, r.startsOn) + 1} дн.)
+                {dateToString(new TZDate(r.startsOn, "Europe/Moscow"))} -{" "}
+                {dateToString(new TZDate(r.endsOn, "Europe/Moscow"))} (
+                {differenceInDays(r.endsOn, r.startsOn) + 1} дн.)
               </IconBadge>
             </div>
             <div className="flex gap-2">
