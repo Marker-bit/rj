@@ -16,7 +16,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Book } from "@/lib/api-types";
 import { BackgroundColor } from "@prisma/client";
 import Fuse from "fuse.js";
-import { BookMinus, Calendar, Percent, Search } from "lucide-react";
+import {
+  ArrowRightIcon,
+  BookMinus,
+  Calendar,
+  Percent,
+  Search,
+  SearchIcon,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -73,14 +80,14 @@ export function BookList({ books }: { books: Book[] }) {
   });
 
   function search(evt?: any) {
+    if (evt !== undefined) {
+      evt.preventDefault();
+    }
     if (searchText === "") {
       setSearchResults(undefined);
       return;
     }
     setSearchResults(fuse.search(searchText).map((result) => result.item));
-    if (evt !== undefined) {
-      evt.preventDefault();
-    }
   }
 
   useEffect(() => {
@@ -148,42 +155,54 @@ export function BookList({ books }: { books: Book[] }) {
             </div>
           </div>
         </div>
-        <form className="flex gap-2" onSubmit={search}>
-          <Input
-            placeholder="Поиск"
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-          />
-          <Button size="icon" type="submit">
-            <Search className="size-4" />
-          </Button>
-        </form>
-        <div className="group relative w-full">
-          <label
-            htmlFor="sort"
-            className="bg-background text-foreground absolute start-1 top-0 z-10 block -translate-y-1/2 px-2 text-xs font-medium group-has-disabled:opacity-50"
-          >
-            Сортировка
-          </label>
-          <Select value={sort} onValueChange={setSort}>
-            <SelectTrigger
-              id="sort"
-              className="[&>span_svg]:text-muted-foreground/80 [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_svg]:shrink-0 w-full sm:w-[50%] md:w-[30%]"
+        <div className="flex flex-col sm:flex-row gap-2">
+          <form className="relative w-full" onSubmit={search}>
+            <Input
+              className="peer ps-9 pe-9"
+              placeholder="Поиск..."
+              type="search"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+            />
+            <div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50">
+              <SearchIcon size={16} />
+            </div>
+            <button
+              className="text-muted-foreground/80 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-md transition-[color,box-shadow] outline-none focus:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+              aria-label="Искать"
+              type="submit"
             >
-              <SelectValue placeholder="Select framework" />
-            </SelectTrigger>
-            <SelectContent className="[&_*[role=option]>span>svg]:text-muted-foreground/80 [&_*[role=option]>span]:flex [&_*[role=option]>span]:gap-2 [&_*[role=option]>span>svg]:shrink-0">
-              <SelectItem value="percent">
-                <Percent size={16} aria-hidden="true" />
-                <span className="truncate">По прогрессу в книге</span>
-              </SelectItem>
-              <SelectItem value="activity">
-                <Calendar size={16} aria-hidden="true" />
-                <span className="truncate">По последней активности</span>
-              </SelectItem>
-            </SelectContent>
-          </Select>
+              <ArrowRightIcon size={16} aria-hidden="true" />
+            </button>
+          </form>
+          <div className="group relative w-full sm:w-[50%] md:w-[30%]">
+            <label
+              htmlFor="sort"
+              className="bg-background text-foreground absolute start-1 top-0 z-10 block -translate-y-1/2 px-2 text-xs font-medium group-has-disabled:opacity-50"
+            >
+              Сортировка
+            </label>
+            <Select value={sort} onValueChange={setSort}>
+              <SelectTrigger
+                id="sort"
+                className="[&>span_svg]:text-muted-foreground/80 [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_svg]:shrink-0 w-full"
+              >
+                <SelectValue placeholder="Select framework" />
+              </SelectTrigger>
+              <SelectContent className="[&_*[role=option]>span>svg]:text-muted-foreground/80 [&_*[role=option]>span]:flex [&_*[role=option]>span]:gap-2 [&_*[role=option]>span>svg]:shrink-0">
+                <SelectItem value="percent">
+                  <Percent size={16} aria-hidden="true" />
+                  <span className="truncate">По прогрессу в книге</span>
+                </SelectItem>
+                <SelectItem value="activity">
+                  <Calendar size={16} aria-hidden="true" />
+                  <span className="truncate">По последней активности</span>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
+
         {searchResults && (
           <Button
             variant="outline"

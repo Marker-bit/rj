@@ -19,7 +19,7 @@ export default function Home() {
             <Suspense fallback={<Skeleton className="rounded-md h-full min-h-60 w-full" />}>
               <StreakInfo />
             </Suspense>
-            <Suspense fallback={<></>}>
+            <Suspense fallback={<Skeleton className="rounded-md h-full min-h-60 w-full" />}>
               <LastReadCard />
             </Suspense>
           </div>
@@ -37,15 +37,7 @@ export default function Home() {
           </Suspense>
           <Suspense
             fallback={
-              <div className="flex flex-col gap-2">
-                <Skeleton className="h-12 w-80" />
-                <div className="grid grid-cols-2 gap-2">
-                  <Skeleton className="h-14 w-full" />
-                  <Skeleton className="h-14 w-full" />
-                  <Skeleton className="h-14 w-full" />
-                  <Skeleton className="h-14 w-full" />
-                </div>
-              </div>
+              <Skeleton className="rounded-md h-[300px] w-full" />
             }
           >
             <Stats />
