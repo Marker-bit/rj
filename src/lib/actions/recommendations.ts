@@ -45,3 +45,11 @@ export async function editRecommendation(
 
   return { message: "Рекомендация обновлена" };
 }
+
+export async function deleteRecommendation(id: string) {
+  await db.recommendation.delete({
+    where: { id },
+  });
+
+  return { message: "Рекомендация удалена" };
+}

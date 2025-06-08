@@ -1,13 +1,9 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import { DialogTitle } from "@/components/ui/dialog";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
-import { CalendarIcon, PencilIcon, Plus, Router } from "lucide-react";
-import { useState } from "react";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
@@ -18,22 +14,30 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Loader } from "@/components/ui/loader";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import { addDays, format } from "date-fns";
-import { Calendar } from "@/components/ui/calendar";
 import { Switch } from "@/components/ui/switch";
-import { addRecommendation, editRecommendation } from "@/lib/actions/recommendations";
-import { Loader } from "@/components/ui/loader";
-import { ru } from "date-fns/locale";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  addRecommendation,
+  deleteRecommendation,
+  editRecommendation,
+} from "@/lib/actions/recommendations";
+import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Recommendation } from "@prisma/client";
+import { addDays, format } from "date-fns";
+import { ru } from "date-fns/locale";
+import { CalendarIcon, PencilIcon, Plus, TrashIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 
 const formSchema = z.object({
   slogan: z.string().min(1, "Слоган обязателен"),
@@ -286,7 +290,11 @@ export default function AddRecommendationButton() {
   );
 }
 
-export function EditRecommendationButton({recommendation}: {recommendation: Recommendation}) {
+export function EditRecommendationButton({
+  recommendation,
+}: {
+  recommendation: Recommendation;
+}) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -294,7 +302,42 @@ export function EditRecommendationButton({recommendation}: {recommendation: Reco
       <Button onClick={() => setOpen(true)} variant="outline">
         <PencilIcon /> Редактировать рекомендацию
       </Button>
-      <AddRecommendation open={open} setOpen={setOpen} recommendation={recommendation} />
+      <AddRecommendation
+        open={open}
+        setOpen={setOpen}
+        recommendation={recommendation}
+      />
     </>
+  );
+}
+
+export function DeleteRecommendationButton({
+  recommendationId,
+}: {
+  recommendationId: string;
+}) {
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const runAction = async () => {
+    setLoading(true);
+    const res = await deleteRecommendation(recommendationId);
+    setLoading(false);
+    // if (res.error) {
+    //   toast.error("Возникла проблема при удалении рекомендации", {
+    //     description: res.error,
+    //   });
+    // }
+    if (res.message) {
+      toast.success(res.message);
+      router.refresh();
+    }
+  };
+
+  return (
+    <Button onClick={runAction} disabled={loading} variant="destructive">
+      {loading ? <Loader className="size-4" /> : <TrashIcon />}
+      Удалить рекомендацию
+    </Button>
   );
 }

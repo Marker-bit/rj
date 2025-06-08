@@ -2,7 +2,10 @@ import { Badge, IconBadge } from "@/components/ui/badge";
 import { db } from "@/lib/db";
 import { endOfDay, isWithinInterval, startOfDay } from "date-fns";
 import { CalendarIcon, CheckIcon, XIcon } from "lucide-react";
-import AddRecommendation, { EditRecommendationButton } from "./add-recommendation";
+import AddRecommendation, {
+  DeleteRecommendationButton,
+  EditRecommendationButton,
+} from "./add-recommendation";
 import GenerateRecommendation from "./generate-recommendation";
 
 export default async function Page() {
@@ -26,7 +29,10 @@ export default async function Page() {
       </div>
       <div className="flex flex-col gap-2">
         {recommendations.map((r) => (
-          <div key={r.id} className="flex flex-col items-start gap-2 border p-4 rounded-xl">
+          <div
+            key={r.id}
+            className="flex flex-col items-start gap-2 border p-4 rounded-xl"
+          >
             <div className="text-2xl font-bold -mb-2">{r.slogan}</div>
             <div className="text-sm">
               {r.title} - {r.author}
@@ -69,7 +75,10 @@ export default async function Page() {
                 {r.endsOn.toLocaleDateString()}
               </IconBadge>
             </div>
-            <EditRecommendationButton recommendation={r} />
+            <div className="flex gap-2">
+              <EditRecommendationButton recommendation={r} />
+              <DeleteRecommendationButton recommendationId={r.id} />
+            </div>
           </div>
         ))}
       </div>
