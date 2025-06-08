@@ -1,6 +1,7 @@
 import { Badge, IconBadge } from "@/components/ui/badge";
 import { db } from "@/lib/db";
-import { endOfDay, isWithinInterval, startOfDay } from "date-fns";
+import { dateToString } from "@/lib/utils";
+import { differenceInDays, endOfDay, isWithinInterval, startOfDay } from "date-fns";
 import { CalendarIcon, CheckIcon, XIcon } from "lucide-react";
 import AddRecommendation, {
   DeleteRecommendationButton,
@@ -71,8 +72,7 @@ export default async function Page() {
                     : "outline"
                 }
               >
-                {r.startsOn.toLocaleDateString()} -{" "}
-                {r.endsOn.toLocaleDateString()}
+                {dateToString(r.startsOn)} - {dateToString(r.endsOn)} ({differenceInDays(r.endsOn, r.startsOn) + 1} дн.)
               </IconBadge>
             </div>
             <div className="flex gap-2">
