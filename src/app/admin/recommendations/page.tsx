@@ -1,21 +1,19 @@
 import { Badge, IconBadge } from "@/components/ui/badge";
 import { db } from "@/lib/db";
 import { dateToString } from "@/lib/utils";
+import { TZDate } from "@date-fns/tz";
 import {
   differenceInDays,
   endOfDay,
-  formatRelative,
   isWithinInterval,
-  startOfDay,
+  startOfDay
 } from "date-fns";
-import { CalendarIcon, CheckIcon, XIcon } from "lucide-react";
+import { BookIcon, CalendarIcon, CheckIcon, XIcon } from "lucide-react";
 import AddRecommendation, {
   DeleteRecommendationButton,
   EditRecommendationButton,
 } from "./add-recommendation";
 import GenerateRecommendation from "./generate-recommendation";
-import { ru } from "date-fns/locale";
-import { TZDate } from "@date-fns/tz";
 
 export default async function Page() {
   const recommendations = await db.recommendation.findMany({
@@ -27,6 +25,13 @@ export default async function Page() {
     orderBy: {
       createdAt: "desc",
     },
+    include: {
+      _count: {
+        select: {
+          createdBooks: true,
+        },
+      }
+    }
   });
 
   return (
@@ -84,6 +89,10 @@ export default async function Page() {
                 {dateToString(new TZDate(r.endsOn, "Europe/Moscow"))} (
                 {differenceInDays(r.endsOn, r.startsOn) + 1} дн.)
               </IconBadge>
+              <IconBadge
+                icon={BookIcon}
+                variant="outline"
+                >{r._count.createdBooks} книг</IconBadge>
             </div>
             <div className="flex gap-2">
               <EditRecommendationButton recommendation={r} />
