@@ -1,0 +1,147 @@
+"use client";
+
+import {
+  BarChartBig,
+  BookCopyIcon,
+  BookIcon,
+  HouseIcon,
+  Menu,
+  MessageCircleQuestion,
+  Users,
+} from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+} from "@/components/ui/navigation-menu";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { ReadEvent } from "@prisma/client";
+import { User } from "lucia";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Suspense } from "react";
+import { ModeToggle } from "../mode-toggle";
+import { Skeleton } from "../ui/skeleton";
+import { StreakButton } from "./bars/streak-button";
+import UserMenu from "./bars/user-menu";
+import NewspaperButton from "./bars/newspaper-button";
+
+const navigationLinks = [
+  { href: "/admin", label: "Главная", icon: HouseIcon },
+  { href: "/admin/books", label: "Книги", icon: BookIcon },
+  { href: "/admin/support", label: "Поддержка", icon: MessageCircleQuestion },
+  { href: "/admin/users", label: "Пользователи", icon: Users },
+];
+
+export default function AdminNavBar({
+  auth,
+}: {
+  auth: Promise<
+    { user: User; unread: number } | { user: null; unread: null }
+  >;
+}) {
+  const pathname = usePathname();
+  const isActive = (href: string) => href === pathname;
+
+  return (
+    <header className="border-b px-4 md:px-6 sticky top-0 z-50 bg-background">
+      <div className="flex h-16 items-center justify-between gap-4">
+        {/* Left side */}
+        <div className="flex flex-1 items-center gap-2">
+          {/* Mobile menu trigger */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                className="group size-8 md:hidden"
+                variant="ghost"
+                size="icon"
+              >
+                <Menu className="text-muted-foreground" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent align="start" className="w-36 p-1 md:hidden">
+              <NavigationMenu className="max-w-none *:w-full">
+                <NavigationMenuList className="flex-col items-start gap-0 md:gap-2">
+                  {navigationLinks.map((link, index) => {
+                    const Icon = link.icon;
+                    return (
+                      <NavigationMenuItem key={index} className="w-full">
+                        <NavigationMenuLink
+                          className="flex-row items-center gap-2 py-1.5"
+                          asChild
+                          active={isActive(link.href)}
+                        >
+                          <Link href={link.href}>
+                            <Icon
+                              size={16}
+                              className="text-muted-foreground/80"
+                              aria-hidden="true"
+                            />
+                            <span>{link.label}</span>
+                          </Link>
+                        </NavigationMenuLink>
+                      </NavigationMenuItem>
+                    );
+                  })}
+                </NavigationMenuList>
+              </NavigationMenu>
+            </PopoverContent>
+          </Popover>
+          {/* Logo */}
+          <div className="flex items-center">
+            <Link href="/home" className="hover:bg-muted-foreground/10 p-1 rounded-lg transition">
+              <Image
+                src="/icon.png"
+                alt="logo"
+                width={32}
+                height={32}
+                className="h-8 w-8"
+              />
+            </Link>
+          </div>
+        </div>
+        {/* Middle area */}
+        <NavigationMenu className="max-md:hidden">
+          <NavigationMenuList className="gap-2">
+            {navigationLinks.map((link, index) => {
+              const Icon = link.icon;
+              return (
+                <NavigationMenuItem key={index}>
+                  <NavigationMenuLink
+                    className="text-foreground hover:text-primary flex-row items-center gap-2 py-1.5 font-medium"
+                    asChild
+                    active={isActive(link.href)}
+                  >
+                    <Link href={link.href}>
+                      <Icon
+                        size={16}
+                        className="text-muted-foreground/80"
+                        aria-hidden="true"
+                      />
+                      <span>{link.label}</span>
+                    </Link>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              );
+            })}
+          </NavigationMenuList>
+        </NavigationMenu>
+        {/* Right side */}
+        <div className="flex flex-1 items-center justify-end gap-2">
+          <ModeToggle />
+          <Suspense fallback={<Skeleton className="h-8 w-8 rounded-full" />}>
+            <UserMenu admin auth={auth} />
+          </Suspense>
+        </div>
+      </div>
+    </header>
+  );
+}

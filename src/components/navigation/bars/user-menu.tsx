@@ -5,6 +5,7 @@ import {
   LockKeyholeIcon,
   LogOutIcon,
   MessageCircleQuestion,
+  Undo2Icon,
   UserIcon,
 } from "lucide-react";
 
@@ -28,8 +29,10 @@ import { useRouter } from "next/navigation";
 
 export default function UserMenu({
   auth,
+  admin = false,
 }: {
   auth: Promise<{ user: User; unread: number } | { user: null; unread: null }>;
+  admin?: boolean;
 }) {
   const { user, unread } = use(auth);
   const router = useRouter();
@@ -77,14 +80,23 @@ export default function UserMenu({
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           {user.admin && (
-            <Link href="/admin">
+            <Link href={admin ? "/home" : "/admin"}>
               <DropdownMenuItem>
-                <LockKeyholeIcon
-                  size={16}
-                  className="opacity-60"
-                  aria-hidden="true"
-                />
-                <span>Админ-панель</span>
+                {admin ? (
+                  <Undo2Icon
+                    size={16}
+                    className="opacity-60"
+                    aria-hidden="true"
+                  />
+                ) : (
+                  <LockKeyholeIcon
+                    size={16}
+                    className="opacity-60"
+                    aria-hidden="true"
+                  />
+                )}
+
+                <span>{admin ? "На сайт" : "Админ-панель"}</span>
               </DropdownMenuItem>
             </Link>
           )}
