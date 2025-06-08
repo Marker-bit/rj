@@ -107,3 +107,33 @@ export async function deleteBookLink(linkId: string) {
     error: false,
   };
 }
+
+export async function saveBookFromRec(recId: string) {
+  const { user } = await validateRequest();
+
+  if (!user) {
+    return { error: "Не авторизован" };
+  }
+
+  const rec = await db.recommendation.findFirstOrThrow({
+    where: { id: recId },
+  });
+
+  if (!rec) {
+    return { error: "Рекомендация не найдена" };
+  }
+
+  const book = await db.book.create({
+    data: {
+      title: rec.title,
+      author: rec.author,
+      pages: rec.pages,
+      coverUrl: rec.coverUrl,
+      description: rec.description,
+      userId: user.id,
+      fromRecommendationId: rec.id,
+    },
+  });
+
+  return { id: book.id };
+}

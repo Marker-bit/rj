@@ -1,7 +1,9 @@
 import "@/app/globals.css";
 import NavBar from "@/components/navigation/navbar";
+import RecommendationBar from "@/components/navigation/recommendation-bar";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
+import { endOfToday, startOfToday } from "date-fns";
 import React from "react";
 
 export default async function Layout({
@@ -26,7 +28,7 @@ export default async function Layout({
       },
     });
     return { user, unread };
-  })
+  });
   const events = validateRequest().then(({ user }) =>
     user
       ? db.readEvent.findMany({
@@ -45,9 +47,34 @@ export default async function Layout({
       : []
   );
 
+  const recommendationsAvailable = validateRequest().then(async ({ user }) => {
+    if (!user) {
+      return null;
+    }
+
+    const res = db.recommendation.findMany({
+      where: {
+        startsOn: {
+          lte: startOfToday(),
+        },
+        endsOn: {
+          gte: startOfToday(),
+        },
+        published: true,
+        createdBooks: {
+          none: {
+            userId: user.id,
+          },
+        },
+      },
+    });
+    return res;
+  });
+
   return (
     <div>
       <NavBar events={events} auth={auth} />
+      <RecommendationBar recommendations={recommendationsAvailable} />
       <div className="w-full overflow-auto">{children}</div>
     </div>
   );

@@ -1,13 +1,12 @@
 "use client";
 
 import {
-  BarChartBig,
-  BookCopyIcon,
+  BookHeartIcon,
   BookIcon,
   HouseIcon,
   Menu,
   MessageCircleQuestion,
-  Users,
+  Users
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -22,7 +21,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ReadEvent } from "@prisma/client";
 import { User } from "lucia";
 import Image from "next/image";
 import Link from "next/link";
@@ -30,15 +28,14 @@ import { usePathname } from "next/navigation";
 import { Suspense } from "react";
 import { ModeToggle } from "../mode-toggle";
 import { Skeleton } from "../ui/skeleton";
-import { StreakButton } from "./bars/streak-button";
 import UserMenu from "./bars/user-menu";
-import NewspaperButton from "./bars/newspaper-button";
 
 const navigationLinks = [
   { href: "/admin", label: "Главная", icon: HouseIcon },
   { href: "/admin/books", label: "Книги", icon: BookIcon },
   { href: "/admin/support", label: "Поддержка", icon: MessageCircleQuestion },
   { href: "/admin/users", label: "Пользователи", icon: Users },
+  { href: "/admin/recommendations", label: "Рекомендации", icon: BookHeartIcon },
 ];
 
 export default function AdminNavBar({

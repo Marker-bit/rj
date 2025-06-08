@@ -129,7 +129,7 @@ model Book {
   coverUrl    String?
   links       BookLink[]
   /// [Field]
-  fields      Json[]        @default([])
+  fields      Json[]       @default([])
 
   background BackgroundColor @default(NONE)
 
@@ -140,6 +140,9 @@ model Book {
 
   groupBook   GroupBook? @relation(fields: [groupBookId], references: [id])
   groupBookId String?
+
+  fromRecommendation   Recommendation? @relation(fields: [fromRecommendationId], references: [id])
+  fromRecommendationId String?
 }
 
 model BookLink {
@@ -277,4 +280,23 @@ model ListBook {
   pages       Int
   coverUrl    String?
   description String  @default("")
+}
+
+model Recommendation {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  startsOn  DateTime
+  endsOn    DateTime
+  published Boolean
+
+  slogan   String
+  bookInfo String
+
+  title       String
+  author      String
+  pages       Int
+  coverUrl    String?
+  description String  @default("")
+
+  createdBooks Book[]
 }
