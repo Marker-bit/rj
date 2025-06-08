@@ -14,8 +14,11 @@ import {
   DollarSign,
   LoaderIcon,
   Router,
+  SaveIcon,
+  SearchIcon,
   SparklesIcon,
 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { toast } from "sonner";
@@ -131,6 +134,7 @@ export default function GenerateRecommendation() {
     ""
   );
   const [prompt, setPrompt] = useState(DEFAULT_PROMPT);
+  const [model, setModel] = useState("google/gemini-2.5-flash-preview-05-20");
   const [saveLoading, setSaveLoading] = useState(false);
   const [result, setResult] = useState<
     { recommendation: Rec; cost: number } | { error: string }
@@ -142,7 +146,7 @@ export default function GenerateRecommendation() {
     setLoading(true);
     const recommendation = await getRecommendation(
       openRouterToken,
-      "google/gemini-2.5-flash-preview-05-20",
+      model,
       prompt
     );
     setResult(recommendation);
@@ -182,6 +186,12 @@ export default function GenerateRecommendation() {
             type="password"
             value={openRouterToken}
             onChange={(e) => setOpenRouterToken(e.target.value)}
+          />
+          <Input
+            id="model"
+            className="font-mono"
+            value={model}
+            onChange={(e) => setModel(e.target.value)}
           />
           <Textarea
             id="prompt"
@@ -225,14 +235,27 @@ export default function GenerateRecommendation() {
               <div className="text-sm">
                 {result.recommendation.title} - {result.recommendation.author}
               </div>
-              <div className="line-clamp-3 text-sm text-muted-foreground">
+              <div className="text-sm text-muted-foreground">
                 {result.recommendation.bookInfo}
               </div>
               <IconBadge icon={CircleDollarSign} variant="outline">
                 ${result.cost.toFixed(5)} потрачено
               </IconBadge>
               <Button disabled={saveLoading} onClick={save}>
+                <SaveIcon className="opacity-60 size-4" aria-hidden="true" />
                 Сохранить
+              </Button>
+              <Button asChild>
+                <Link
+                  href={`https://www.google.com/search?q=${result.recommendation.title}+${result.recommendation.author}`}
+                  target="_blank"
+                >
+                  <SearchIcon
+                    className="opacity-60 size-4"
+                    aria-hidden="true"
+                  />
+                  Открыть Google
+                </Link>
               </Button>
             </div>
           ))}
