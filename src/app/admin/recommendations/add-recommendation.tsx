@@ -199,6 +199,8 @@ export function AddRecommendation({
                   <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
+                      locale={ru}
+                      weekStartsOn={1}
                       selected={field.value}
                       onSelect={field.onChange}
                       disabled={{ before: new Date() }}
@@ -238,6 +240,8 @@ export function AddRecommendation({
                   <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
+                      locale={ru}
+                      weekStartsOn={1}
                       selected={field.value}
                       onSelect={field.onChange}
                       captionLayout="dropdown"
