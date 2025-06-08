@@ -1,9 +1,8 @@
-import { Button } from "@/components/ui/button";
-import { db } from "@/lib/db";
-import { CalendarIcon, CheckIcon, SparklesIcon, XIcon } from "lucide-react";
-import AddRecommendation, { EditRecommendationButton } from "./add-recommendation";
 import { Badge, IconBadge } from "@/components/ui/badge";
+import { db } from "@/lib/db";
 import { endOfDay, isWithinInterval, startOfDay } from "date-fns";
+import { CalendarIcon, CheckIcon, XIcon } from "lucide-react";
+import AddRecommendation, { EditRecommendationButton } from "./add-recommendation";
 import GenerateRecommendation from "./generate-recommendation";
 
 export default async function Page() {

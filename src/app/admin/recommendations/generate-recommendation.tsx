@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { addRecommendation } from "@/lib/actions/recommendations";
 import { addDays, startOfDay, startOfToday } from "date-fns";
 import {
@@ -60,7 +61,8 @@ type Rec = { slogan: string; bookInfo: string; title: string; author: string };
 
 export const getRecommendation = async (
   apiKey: string,
-  modelName: string
+  modelName: string,
+  prompt?: string
 ): Promise<{ recommendation: Rec; cost: number } | { error: string }> => {
   const response = await fetch(
     "https://openrouter.ai/api/v1/chat/completions",
@@ -72,7 +74,7 @@ export const getRecommendation = async (
       },
       body: JSON.stringify({
         model: modelName,
-        messages: [{ role: "user", content: DEFAULT_PROMPT }],
+        messages: [{ role: "user", content: prompt || DEFAULT_PROMPT }],
         response_format: {
           type: "json_schema",
           json_schema: {
@@ -128,6 +130,7 @@ export default function GenerateRecommendation() {
     "openRouterToken",
     ""
   );
+  const [prompt, setPrompt] = useState(DEFAULT_PROMPT);
   const [saveLoading, setSaveLoading] = useState(false);
   const [result, setResult] = useState<
     { recommendation: Rec; cost: number } | { error: string }
@@ -139,14 +142,15 @@ export default function GenerateRecommendation() {
     setLoading(true);
     const recommendation = await getRecommendation(
       openRouterToken,
-      "google/gemini-2.5-flash-preview-05-20"
+      "google/gemini-2.5-flash-preview-05-20",
+      prompt
     );
     setResult(recommendation);
     setLoading(false);
     setOpen(true);
   };
 
-  const today = startOfToday()
+  const today = startOfToday();
 
   const save = async () => {
     if (result && "recommendation" in result) {
@@ -178,6 +182,12 @@ export default function GenerateRecommendation() {
             type="password"
             value={openRouterToken}
             onChange={(e) => setOpenRouterToken(e.target.value)}
+          />
+          <Textarea
+            id="prompt"
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            placeholder="Введите ваш промпт"
           />
           <div className="flex flex-col sm:flex-row sm:justify-between items-center">
             <div className="text-muted-foreground text-xs">
