@@ -2,16 +2,9 @@
 
 import { BookView } from "@/components/book/book-view";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { Book } from "@/lib/api-types";
-import { BookMinus, Calendar, Percent, Search } from "lucide-react";
-import { useEffect, useState } from "react";
-import Fuse from "fuse.js";
-import { BackgroundColor } from "@prisma/client";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useRouter } from "next/navigation";
 import {
   Select,
   SelectContent,
@@ -20,9 +13,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Book } from "@/lib/api-types";
+import { BackgroundColor } from "@prisma/client";
+import Fuse from "fuse.js";
+import { BookMinus, Calendar, Percent, Search } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export function BookList({ books }: { books: Book[] }) {
-  const [readBooks, _setReadBooks] = useState(false);
   const [notStarted, _setNotStarted] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [searchResults, setSearchResults] = useState<Book[]>();
@@ -30,12 +28,8 @@ export function BookList({ books }: { books: Book[] }) {
   const router = useRouter();
 
   useEffect(() => {
-    const localStorageReadBooks = localStorage.getItem("readBooks");
     const localStorageNotStarted = localStorage.getItem("notStarted");
     const localStorageSort = localStorage.getItem("orderBy");
-    if (localStorageReadBooks) {
-      _setReadBooks(JSON.parse(localStorageReadBooks));
-    }
     if (localStorageNotStarted) {
       _setNotStarted(JSON.parse(localStorageNotStarted));
     }
@@ -54,10 +48,6 @@ export function BookList({ books }: { books: Book[] }) {
     }
   }, [router]);
 
-  function setReadBooks(value: boolean) {
-    localStorage.setItem("readBooks", JSON.stringify(value));
-    _setReadBooks(value);
-  }
   function setNotStarted(value: boolean) {
     localStorage.setItem("notStarted", JSON.stringify(value));
     _setNotStarted(value);
@@ -71,15 +61,6 @@ export function BookList({ books }: { books: Book[] }) {
   }
 
   let filteredBooks = books;
-
-  if (readBooks) {
-    filteredBooks = filteredBooks.filter((book: Book) => {
-      if (book.readEvents.length === 0) {
-        return true;
-      }
-      return !(book.pages === book.readEvents[0].pagesRead);
-    });
-  }
 
   if (notStarted) {
     filteredBooks = filteredBooks.filter((book: Book) => {
@@ -105,7 +86,7 @@ export function BookList({ books }: { books: Book[] }) {
   useEffect(() => {
     search();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchText, books, readBooks, notStarted]);
+  }, [searchText, books, notStarted]);
 
   const outlinedBooks = filteredBooks.filter(
     (book: Book) => book.background !== BackgroundColor.NONE

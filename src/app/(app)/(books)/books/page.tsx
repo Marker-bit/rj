@@ -1,30 +1,26 @@
 import { BookView } from "@/components/book/book-view";
 import { Button } from "@/components/ui/button";
+import { SimpleTooltip } from "@/components/ui/tooltip";
 import { fetchBook, fetchBooks } from "@/lib/books";
 import { validateRequest } from "@/lib/server-validate-request";
 import {
   ArrowRightIcon,
   ChevronLeft,
-  ChevronRightIcon,
-  HistoryIcon,
+  HistoryIcon
 } from "lucide-react";
 import Link from "next/link";
-import { SearchParams } from "nuqs/server";
 import { BookList } from "./book-list";
 import AddBookButton from "./button";
 import HiddenBooksCollapsible from "./hidden-books-collapsible";
-import { loadSearchParams } from "./search-params";
-import { SimpleTooltip } from "@/components/ui/tooltip";
 
 export default async function BooksPage(props: {
-  searchParams: Promise<SearchParams>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const searchParams = await props.searchParams;
+  const sort = searchParams?.sort;
   const { user } = await validateRequest();
   if (!user) return null;
-
-  const { sort } = loadSearchParams(searchParams);
-  if (!["percent", "activity"].includes(sort)) {
+  if (sort && typeof sort === "string" && !["percent", "activity"].includes(sort)) {
     return null;
   }
 
