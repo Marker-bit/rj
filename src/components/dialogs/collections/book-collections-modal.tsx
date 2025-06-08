@@ -7,13 +7,13 @@ import { declOfNum } from "@/lib/utils";
 import type { Book as PrismaBook } from "@prisma/client";
 import { Collection } from "@prisma/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Loader } from "lucide-react";
+import { ArrowRight, Loader, PlusIcon, TrashIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "../../ui/button";
 import { Checkbox } from "../../ui/checkbox";
 import { DialogHeader, DialogTitle } from "../../ui/dialog";
-import { getCollections } from "@/lib/actions/collections";
+import { createCollection, deleteCollection, getCollections } from "@/lib/actions/collections";
 import { toast } from "sonner";
 
 export function BookCollectionsModal({
@@ -43,7 +43,7 @@ export function BookCollectionsModal({
   }, []);
 
   const [selectedCollections, setSelectedCollections] = useState(
-    book.collections.map((c) => c.id),
+    book.collections.map((c) => c.id)
   );
   const queryClient = useQueryClient();
   const updateMutation = useMutation({
@@ -63,6 +63,56 @@ export function BookCollectionsModal({
       router.refresh();
     },
   });
+
+  const [newCollectionTitle, setNewCollectionTitle] = useState("");
+  const [newCollectionLoading, setNewCollectionLoading] = useState(false);
+
+  const runAction = async () => {
+    setNewCollectionLoading(true);
+    const res = await createCollection(newCollectionTitle);
+    if (res.error) {
+      toast.error("Произошла ошибка при создании коллекции", {
+        description: res.error,
+      });
+      return;
+    }
+    toast.success(res.message);
+    const res2 = await getCollections();
+    if (res2.error) {
+      toast.error("Произошла ошибка при получении коллекций", {
+        description: res2.error,
+      });
+      return;
+    }
+    setCollections(res2.collections);
+    setNewCollectionTitle("");
+    setNewCollectionLoading(false);
+  };
+
+  const runDeleteCollection = async (id: string) => {
+    setDeleteInProgress(true);
+    const res = await deleteCollection(id);
+    if (res.error) {
+      toast.error("Произошла ошибка при удалении коллекции", {
+        description: res.error,
+      });
+      return;
+    }
+    toast.success(res.message);
+    const res2 = await getCollections();
+    if (res2.error) {
+      toast.error("Произошла ошибка при получении коллекций", {
+        description: res2.error,
+      });
+      return;
+    }
+    setCollections(res2.collections);
+    router.refresh()
+    setDeleteInProgress(false);
+  }
+
+  const [deleteInProgress, setDeleteInProgress] = useState(false);
+
   return (
     <DrawerDialog open={open} onOpenChange={setOpen} className="min-w-[50vw]">
       <DialogHeader>
@@ -89,7 +139,7 @@ export function BookCollectionsModal({
                     setSelectedCollections(
                       selectedCollections.includes(collection.id)
                         ? selectedCollections.filter((c) => c !== collection.id)
-                        : [...selectedCollections, collection.id],
+                        : [...selectedCollections, collection.id]
                     )
                   }
                 >
@@ -101,9 +151,9 @@ export function BookCollectionsModal({
                       setSelectedCollections(
                         selectedCollections.includes(collection.id)
                           ? selectedCollections.filter(
-                              (c) => c !== collection.id,
+                              (c) => c !== collection.id
                             )
-                          : [...selectedCollections, collection.id],
+                          : [...selectedCollections, collection.id]
                       )
                     }
                   />
@@ -121,13 +171,53 @@ export function BookCollectionsModal({
                       ])}
                     </p>
                   </div>
+                  <Button
+                    size="icon"
+                    variant="outline"
+                    className="top-2 right-2"
+                    disabled={deleteInProgress}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      runDeleteCollection(collection.id);
+                    }}
+                  >
+                    <TrashIcon />
+                  </Button>
                 </div>
-              ),
+              )
             )}
+          <form
+            className="border-input has-data-[state=checked]:border-primary/50 relative flex w-full items-center gap-2 rounded-md border p-4 shadow-xs outline-none"
+            onSubmit={(e) => {
+              e.preventDefault();
+              runAction();
+            }}
+          >
+            <PlusIcon className="text-muted-foreground size-4" />
+            <input
+              type="text"
+              placeholder="Новая коллекция"
+              className="w-full outline-none"
+              value={newCollectionTitle}
+              onChange={(e) => setNewCollectionTitle(e.target.value)}
+            />
+            <button
+              className="group"
+              disabled={
+                newCollectionTitle.length < 1 || newCollectionTitle.length > 70
+              }
+            >
+              {newCollectionLoading ? (
+                <Loader className="size-4 animate-spin" />
+              ) : (
+                <ArrowRight className="text-muted-foreground size-4 group-hover:text-primary group-disabled:opacity-50 group-disabled:text-muted-foreground" />
+              )}
+            </button>
+          </form>
           <Button
             className="mt-2 gap-2"
             onClick={() => updateMutation.mutate()}
-            disabled={updateMutation.isPending}
+            disabled={updateMutation.isPending || deleteInProgress}
           >
             {updateMutation.isPending && (
               <Loader className="size-4 animate-spin" />

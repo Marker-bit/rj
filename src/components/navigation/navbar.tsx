@@ -36,7 +36,6 @@ import NewspaperButton from "./bars/newspaper-button";
 const navigationLinks = [
   { href: "/home", label: "Главная", icon: HouseIcon },
   { href: "/books", label: "Книги", icon: BookIcon },
-  { href: "/collections", label: "Коллекции", icon: BookCopyIcon },
   { href: "/journal", label: "Журнал", icon: BarChartBig },
   { href: "/groups", label: "Группы", icon: Users },
 ];
