@@ -21,8 +21,8 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "**.ufs.sh",
-        pathname: "/**",
+        hostname: process.env.UPLOADTHING_APP_ID + ".ufs.sh",
+        pathname: "/f/*",
       },
       {
         protocol: "https",
