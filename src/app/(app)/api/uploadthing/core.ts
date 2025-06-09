@@ -23,10 +23,8 @@ export const ourFileRouter = {
       // This code RUNS ON YOUR SERVER after upload
       console.log("Upload complete for userId:", metadata.userId);
 
-      console.log("file url", file.url);
-
       // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
-      return { uploadedBy: metadata.userId, url: file.url };
+      return { uploadedBy: metadata.userId, url: file.ufsUrl };
     }),
   avatar: f({ image: { maxFileSize: "8MB" } })
     // .middleware(async ({ req }) => {
@@ -39,14 +37,14 @@ export const ourFileRouter = {
     .onUploadComplete(async ({ metadata, file }) => {
       // console.log("Upload complete for userId:", metadata.userId);
 
-      console.log("file url", file.url);
+      console.log("file url", file.ufsUrl);
 
-      return { url: file.url };
+      return { url: file.ufsUrl };
     }),
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;
 
 export const utapi = new UTApi({
-  apiKey: process.env.UPLOADTHING_SECRET,
+  token: process.env.UPLOADTHING_TOKEN,
 });

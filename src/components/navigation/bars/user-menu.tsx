@@ -46,6 +46,8 @@ export default function UserMenu({
     router.replace("/");
   };
 
+  console.log(user.avatarUrl);
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
