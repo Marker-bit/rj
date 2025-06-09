@@ -10,6 +10,7 @@ import {
 } from "date-fns";
 import { BookIcon, CalendarIcon, CheckIcon, XIcon } from "lucide-react";
 import AddRecommendation, {
+  CopyRecommendationButton,
   DeleteRecommendationButton,
   DuplicateRecommendationButton,
   EditRecommendationButton,
@@ -103,6 +104,7 @@ export default async function Page() {
               <EditRecommendationButton recommendation={r} />
               <DeleteRecommendationButton recommendationId={r.id} />
               <DuplicateRecommendationButton recommendationId={r.id} />
+              <CopyRecommendationButton recommendation={r} />
             </div>
           </div>
         ))}

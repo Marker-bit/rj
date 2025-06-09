@@ -34,13 +34,14 @@ import { addDays, format } from "date-fns";
 import { ru } from "date-fns/locale";
 import {
   CalendarIcon,
+  ClipboardCopyIcon,
   ClipboardPasteIcon,
   CopyIcon,
   Loader2Icon,
   PencilIcon,
   Plus,
   Save,
-  TrashIcon
+  TrashIcon,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -396,24 +397,47 @@ export function PasteRecommendation() {
       toast.error("Возникла проблема при вставке рекомендации");
     }
     setLoading(false);
-    router.refresh()
+    router.refresh();
     // if (res.message) {
     //   toast.success(res.message);
     // }
-  }
+  };
 
   return (
-    <Button
-      variant="outline"
-      disabled={loading}
-      onClick={pasteRecommendation}
-    >
+    <Button variant="outline" disabled={loading} onClick={pasteRecommendation}>
       {loading ? (
         <Loader2Icon className="animate-spin" aria-hidden="true" />
       ) : (
         <ClipboardPasteIcon className="opacity-60" aria-hidden="true" />
       )}
       Вставить рекомендацию
+    </Button>
+  );
+}
+
+export function CopyRecommendationButton({
+  recommendation,
+}: {
+  recommendation: Recommendation;
+}) {
+  const [loading, setLoading] = useState(false);
+
+  const copyRecommendation = async () => {
+    setLoading(true);
+    await navigator.clipboard.writeText(
+      JSON.stringify({ ...recommendation, id: undefined, published: false, _count: undefined })
+    );
+    setLoading(false);
+    toast.success("Рекомендация скопирована");
+  };
+  return (
+    <Button variant="outline" disabled={loading} onClick={copyRecommendation}>
+      {loading ? (
+        <Loader2Icon className="animate-spin" aria-hidden="true" />
+      ) : (
+        <ClipboardCopyIcon className="opacity-60" aria-hidden="true" />
+      )}
+      Копировать рекомендацию
     </Button>
   );
 }
