@@ -78,6 +78,7 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
     await createBook(values);
     setLoading(false);
     router.refresh();
+    window.location.reload();
     form.reset({
       title: "",
       author: "",

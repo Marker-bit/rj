@@ -1,15 +1,15 @@
 "use client";
 
+import { saveBookFromRec } from "@/lib/actions/books";
 import { Recommendation } from "@prisma/client";
-import { BookHeartIcon, Router, XIcon } from "lucide-react";
+import { BookHeartIcon, XIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { use, useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import { useLocalStorage, useReadLocalStorage } from "usehooks-ts";
 import { Button } from "../ui/button";
-import { DrawerDialog } from "../ui/drawer-dialog";
 import { DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
-import { saveBookFromRec } from "@/lib/actions/books";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { DrawerDialog } from "../ui/drawer-dialog";
 
 export default function RecommendationBar({
   recommendations,
