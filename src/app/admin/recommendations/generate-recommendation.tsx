@@ -5,15 +5,23 @@ import { Button } from "@/components/ui/button";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { addRecommendation } from "@/lib/actions/recommendations";
-import { addDays, startOfDay, startOfToday } from "date-fns";
+import { Label } from "@/components/ui/label";
 import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Textarea } from "@/components/ui/textarea";
+import { SimpleTooltip } from "@/components/ui/tooltip";
+import { addRecommendation } from "@/lib/actions/recommendations";
+import { addDays, startOfToday } from "date-fns";
+import {
+  BoltIcon,
+  BotIcon,
   CircleAlert,
   CircleDollarSign,
-  DollarSign,
+  Loader2Icon,
   LoaderIcon,
-  Router,
   SaveIcon,
   SearchIcon,
   SparklesIcon,
@@ -62,7 +70,7 @@ const DEFAULT_PROMPT = `Сгенерируй рекомендацию какой
 
 type Rec = { slogan: string; bookInfo: string; title: string; author: string };
 
-export const getRecommendation = async (
+const getRecommendation = async (
   apiKey: string,
   modelName: string,
   prompt?: string
@@ -179,40 +187,62 @@ export default function GenerateRecommendation() {
         <DialogHeader>
           <DialogTitle>Генерация рекомендаций</DialogTitle>
         </DialogHeader>
-        <h2 className="mb-1 text-sm font-semibold">Ваш токен для OpenRouter</h2>
-        <form className="space-y-3" onSubmit={runAction}>
-          <Input
-            id="openRouterToken"
-            type="password"
-            value={openRouterToken}
-            onChange={(e) => setOpenRouterToken(e.target.value)}
-          />
+        <form className="space-y-3 mt-2" onSubmit={runAction}>
+          <Label htmlFor="model">Модель для генерации</Label>
           <Input
             id="model"
             className="font-mono"
             value={model}
             onChange={(e) => setModel(e.target.value)}
           />
+          <Label htmlFor="prompt">Промпт для нейросети</Label>
           <Textarea
             id="prompt"
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             placeholder="Введите ваш промпт"
+            rows={5}
           />
-          <div className="flex flex-col sm:flex-row sm:justify-between items-center">
-            <div className="text-muted-foreground text-xs">
-              Получите его{" "}
-              <a
-                href="https://openrouter.ai/settings/keys"
-                target="_blank"
-                className="underline"
-              >
-                тут
-              </a>
-            </div>
-            <Button size="sm" disabled={!openRouterToken || loading}>
+          <div className="flex gap-2 sm:justify-end">
+            <Button disabled={!openRouterToken || loading}>
+              {loading ? <Loader2Icon className="animate-spin" /> : <BotIcon className="opacity-60" />}
               Сгенерировать
             </Button>
+            <Popover>
+              <SimpleTooltip text="Открыть настройки" asChild>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    aria-label="Открыть настройки"
+                    type="button"
+                  >
+                    <BoltIcon className="size-4" aria-hidden="true" />
+                  </Button>
+                </PopoverTrigger>
+              </SimpleTooltip>
+              <PopoverContent className="w-72 space-y-2">
+                <Label htmlFor="openRouterToken">Токен OpenRouter</Label>
+                <Input
+                  id="openRouterToken"
+                  className="font-mono"
+                  type="password"
+                  value={openRouterToken}
+                  onChange={(e) => setOpenRouterToken(e.target.value)}
+                />
+
+                <div className="text-muted-foreground text-xs">
+                  Получите его{" "}
+                  <a
+                    href="https://openrouter.ai/settings/keys"
+                    target="_blank"
+                    className="underline"
+                  >
+                    тут
+                  </a>
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
         </form>
         {result &&
@@ -242,7 +272,11 @@ export default function GenerateRecommendation() {
                 ${result.cost.toFixed(5)} потрачено
               </IconBadge>
               <Button disabled={saveLoading} onClick={save}>
-                <SaveIcon className="opacity-60 size-4" aria-hidden="true" />
+                {saveLoading ? (
+                  <Loader2Icon className="animate-spin" />
+                ) : (
+                  <SaveIcon className="opacity-60" aria-hidden="true" />
+                )}
                 Сохранить
               </Button>
               <Button asChild>
@@ -260,18 +294,7 @@ export default function GenerateRecommendation() {
             </div>
           ))}
       </DrawerDialog>
-      <Button
-        variant="outline"
-        disabled={loading}
-        onClick={() => setOpen(true)}
-        // onClick={() => {
-        //   if (openRouterToken) {
-        //     runAction();
-        //   } else {
-        //     setPopoverOpen(true);
-        //   }
-        // }}
-      >
+      <Button variant="outline" onClick={() => setOpen(true)}>
         {loading ? (
           <LoaderIcon
             className="opacity-60 size-4 animate-spin"

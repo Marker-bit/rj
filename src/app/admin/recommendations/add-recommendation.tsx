@@ -14,7 +14,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Loader } from "@/components/ui/loader";
 import {
   Popover,
   PopoverContent,
@@ -25,6 +24,7 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   addRecommendation,
   deleteRecommendation,
+  duplicateRecommendation,
   editRecommendation,
 } from "@/lib/actions/recommendations";
 import { cn } from "@/lib/utils";
@@ -32,7 +32,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Recommendation } from "@prisma/client";
 import { addDays, format } from "date-fns";
 import { ru } from "date-fns/locale";
-import { CalendarIcon, PencilIcon, Plus, TrashIcon } from "lucide-react";
+import {
+  CalendarIcon,
+  CopyIcon,
+  Loader2Icon,
+  PencilIcon,
+  Plus,
+  Save,
+  TrashIcon,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -92,7 +100,7 @@ export function AddRecommendation({
   }
 
   return (
-    <DrawerDialog open={open} onOpenChange={setOpen}>
+    <DrawerDialog open={open} onOpenChange={setOpen} className="min-w-[40vw]">
       <DialogTitle>Добавить рекомендацию</DialogTitle>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -273,7 +281,7 @@ export function AddRecommendation({
             )}
           />
           <Button type="submit" disabled={loading}>
-            {loading && <Loader invert className="mr-2 size-4" />}Сохранить
+            {loading ? <Loader2Icon className="animate-spin" /> : <Save />}Сохранить
           </Button>
         </form>
       </Form>
@@ -340,8 +348,34 @@ export function DeleteRecommendationButton({
 
   return (
     <Button onClick={runAction} disabled={loading} variant="destructive">
-      {loading ? <Loader className="size-4" /> : <TrashIcon />}
+      {loading ? <Loader2Icon className="animate-spin" /> : <TrashIcon />}
       Удалить рекомендацию
+    </Button>
+  );
+}
+
+export function DuplicateRecommendationButton({
+  recommendationId,
+}: {
+  recommendationId: string;
+}) {
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const runAction = async () => {
+    setLoading(true);
+    const res = await duplicateRecommendation(recommendationId);
+    setLoading(false);
+    if (res.message) {
+      toast.success(res.message);
+      router.refresh();
+    }
+  };
+
+  return (
+    <Button onClick={runAction} disabled={loading} variant="outline">
+      {loading ? <Loader2Icon className="animate-spin" /> : <CopyIcon />}
+      Дублировать рекомендацию
     </Button>
   );
 }

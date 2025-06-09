@@ -22,7 +22,9 @@ export function DrawerDialog({
     return (
       <>
         <Dialog {...props}>
-          <DialogContent className={cn("w-fit max-h-screen overflow-auto", className)}>
+          <DialogContent
+            className={cn("w-fit max-h-screen overflow-auto", className)}
+          >
             {children}
           </DialogContent>
         </Dialog>
@@ -33,9 +35,7 @@ export function DrawerDialog({
   return (
     <>
       <Drawer {...props}>
-        <DrawerContent>
-          <div className="p-2">{children}</div>
-        </DrawerContent>
+        <DrawerContent>{children}</DrawerContent>
       </Drawer>
     </>
   );

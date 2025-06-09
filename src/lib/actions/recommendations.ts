@@ -53,3 +53,20 @@ export async function deleteRecommendation(id: string) {
 
   return { message: "Рекомендация удалена" };
 }
+
+export async function duplicateRecommendation(id: string) {
+  const recommendation = await db.recommendation.findFirstOrThrow({
+    where: { id },
+  });
+
+  await db.recommendation.create({
+    data: {
+      ...recommendation,
+      id: undefined,
+      published: false,
+      createdAt: new Date(),
+    },
+  });
+
+  return { message: "Рекомендация дублирована" };
+}
