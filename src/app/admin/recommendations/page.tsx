@@ -13,6 +13,7 @@ import AddRecommendation, {
   DeleteRecommendationButton,
   DuplicateRecommendationButton,
   EditRecommendationButton,
+  PasteRecommendation,
 } from "./add-recommendation";
 import GenerateRecommendation from "./generate-recommendation";
 
@@ -41,6 +42,7 @@ export default async function Page() {
       <div className="flex gap-2 flex-wrap">
         <AddRecommendation />
         <GenerateRecommendation />
+        <PasteRecommendation />
       </div>
       <div className="flex flex-col gap-2 w-full max-w-full">
         {recommendations.map((r) => (

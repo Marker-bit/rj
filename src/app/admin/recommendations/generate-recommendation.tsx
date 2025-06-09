@@ -20,6 +20,7 @@ import {
   BotIcon,
   CircleAlert,
   CircleDollarSign,
+  ClipboardCopyIcon,
   Loader2Icon,
   LoaderIcon,
   SaveIcon,
@@ -30,7 +31,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { toast } from "sonner";
-import { useLocalStorage } from "usehooks-ts";
+import { useCopyToClipboard, useLocalStorage } from "usehooks-ts";
 
 const DEFAULT_PROMPT = `Сгенерируй рекомендацию какой-нибудь существующей книги для школьников 10+ (выбери конкретную аудиторию, например девочки 13+ (пример не бери)).`;
 
@@ -148,6 +149,7 @@ export default function GenerateRecommendation() {
     { recommendation: Rec; cost: number } | { error: string }
   >();
   const router = useRouter();
+  const [copiedText, copyToClipboard] = useCopyToClipboard();
 
   const runAction = async (evt: FormEvent) => {
     evt.preventDefault();
@@ -183,7 +185,11 @@ export default function GenerateRecommendation() {
 
   return (
     <>
-      <DrawerDialog open={open} onOpenChange={setOpen} className="w-[50vw]">
+      <DrawerDialog
+        open={open}
+        onOpenChange={setOpen}
+        className="w-[50vw] max-w-[50vw]!"
+      >
         <DialogHeader>
           <DialogTitle>Генерация рекомендаций</DialogTitle>
         </DialogHeader>
@@ -205,7 +211,11 @@ export default function GenerateRecommendation() {
           />
           <div className="flex gap-2 sm:justify-end">
             <Button disabled={!openRouterToken || loading}>
-              {loading ? <Loader2Icon className="animate-spin" /> : <BotIcon className="opacity-60" />}
+              {loading ? (
+                <Loader2Icon className="animate-spin" />
+              ) : (
+                <BotIcon className="opacity-60" />
+              )}
               Сгенерировать
             </Button>
             <Popover>
@@ -271,26 +281,49 @@ export default function GenerateRecommendation() {
               <IconBadge icon={CircleDollarSign} variant="outline">
                 ${result.cost.toFixed(5)} потрачено
               </IconBadge>
-              <Button disabled={saveLoading} onClick={save}>
-                {saveLoading ? (
-                  <Loader2Icon className="animate-spin" />
-                ) : (
-                  <SaveIcon className="opacity-60" aria-hidden="true" />
-                )}
-                Сохранить
-              </Button>
-              <Button asChild>
-                <Link
-                  href={`https://www.google.com/search?q=${result.recommendation.title}+${result.recommendation.author}`}
-                  target="_blank"
+              <div className="flex gap-2 flex-wrap">
+                <Button disabled={saveLoading} onClick={save}>
+                  {saveLoading ? (
+                    <Loader2Icon className="animate-spin" />
+                  ) : (
+                    <SaveIcon className="opacity-60" aria-hidden="true" />
+                  )}
+                  Сохранить
+                </Button>
+                <Button
+                  onClick={() => {
+                    copyToClipboard(
+                      JSON.stringify({
+                        ...result.recommendation,
+                        pages: 0,
+                        startsOn: today,
+                        endsOn: addDays(today, 6),
+                        published: false,
+                      })
+                    );
+                    toast.success("Рекомендация скопирована в буфер обмена");
+                  }}
+                  variant="outline"
                 >
-                  <SearchIcon
-                    className="opacity-60 size-4"
+                  <ClipboardCopyIcon
+                    className="opacity-60"
                     aria-hidden="true"
                   />
-                  Открыть Google
-                </Link>
-              </Button>
+                  Копировать в буфер
+                </Button>
+                <Button asChild variant="outline">
+                  <Link
+                    href={`https://www.google.com/search?q=${result.recommendation.title}+${result.recommendation.author}`}
+                    target="_blank"
+                  >
+                    <SearchIcon
+                      className="opacity-60 size-4"
+                      aria-hidden="true"
+                    />
+                    Открыть Google
+                  </Link>
+                </Button>
+              </div>
             </div>
           ))}
       </DrawerDialog>

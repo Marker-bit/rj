@@ -34,12 +34,13 @@ import { addDays, format } from "date-fns";
 import { ru } from "date-fns/locale";
 import {
   CalendarIcon,
+  ClipboardPasteIcon,
   CopyIcon,
   Loader2Icon,
   PencilIcon,
   Plus,
   Save,
-  TrashIcon,
+  TrashIcon
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -281,7 +282,8 @@ export function AddRecommendation({
             )}
           />
           <Button type="submit" disabled={loading}>
-            {loading ? <Loader2Icon className="animate-spin" /> : <Save />}Сохранить
+            {loading ? <Loader2Icon className="animate-spin" /> : <Save />}
+            Сохранить
           </Button>
         </form>
       </Form>
@@ -376,6 +378,42 @@ export function DuplicateRecommendationButton({
     <Button onClick={runAction} disabled={loading} variant="outline">
       {loading ? <Loader2Icon className="animate-spin" /> : <CopyIcon />}
       Дублировать рекомендацию
+    </Button>
+  );
+}
+
+export function PasteRecommendation() {
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const pasteRecommendation = async () => {
+    setLoading(true);
+    const copiedText = await navigator.clipboard.readText();
+    try {
+      const res = await addRecommendation(JSON.parse(copiedText));
+      toast.success(res.message);
+    } catch (e) {
+      toast.error("Возникла проблема при вставке рекомендации");
+    }
+    setLoading(false);
+    router.refresh()
+    // if (res.message) {
+    //   toast.success(res.message);
+    // }
+  }
+
+  return (
+    <Button
+      variant="outline"
+      disabled={loading}
+      onClick={pasteRecommendation}
+    >
+      {loading ? (
+        <Loader2Icon className="animate-spin" aria-hidden="true" />
+      ) : (
+        <ClipboardPasteIcon className="opacity-60" aria-hidden="true" />
+      )}
+      Вставить рекомендацию
     </Button>
   );
 }
