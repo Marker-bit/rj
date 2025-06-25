@@ -55,7 +55,7 @@ export function BookView({
   book,
   onUpdate,
   history = false,
-  initialReadOpen = false
+  initialReadOpen = false,
 }: {
   book: Book
   onUpdate?: () => void
@@ -432,15 +432,17 @@ export function BookView({
               <Share className="size-4" />
               <div className="max-sm:hidden">Поделиться</div>
             </HelpButton>
-            {/* <HelpButton
-              className="gap-2"
-              variant="outline"
-              onClick={() => setBookReadOpen(true)}
-              helpText="Создайте ссылки на книгу, чтобы другие могли скопировать её себе"
-            >
-              <BarChart className="size-4" />
-              <div className="max-sm:hidden">Статистика</div>
-            </HelpButton> */}
+            {history && (
+              <HelpButton
+                className="gap-2"
+                variant="outline"
+                onClick={() => setBookReadOpen(true)}
+                helpText="Создайте ссылки на книгу, чтобы другие могли скопировать её себе"
+              >
+                <BarChart className="size-4" />
+                <div className="max-sm:hidden">Статистика</div>
+              </HelpButton>
+            )}{" "}
             {!history &&
               (book.isHidden ? (
                 <HelpButton

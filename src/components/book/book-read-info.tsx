@@ -90,6 +90,13 @@ export default function BookReadInfo({
     setIsClient(true)
   }, [])
 
+  const close = () => {
+    setOpen(false)
+    if (window.location.search) {
+      window.history.replaceState(null, "", window.location.pathname)
+    }
+  }
+
   if (!isClient) {
     return null
   }
@@ -153,7 +160,7 @@ export default function BookReadInfo({
             </Button>
           ) : (
             <Button
-              onClick={() => setOpen(false)}
+              onClick={() => close()}
             >
               Закрыть
               <XIcon />
