@@ -137,7 +137,7 @@ function ChartTooltipContent({
     const key = `${labelKey || item?.dataKey || item?.name || "value"}`;
     const itemConfig = getPayloadConfigFromPayload(config, item, key);
     const value =
-      !labelKey && typeof label === "string"
+      !labelKey
         ? config[label as keyof typeof config]?.label || label
         : itemConfig?.label;
 
@@ -177,7 +177,7 @@ function ChartTooltipContent({
         className,
       )}
     >
-      {!nestLabel ? tooltipLabel : null}
+      {!nestLabel ? <div className="text-start">{tooltipLabel}</div> : null}
       <div className="grid gap-1.5">
         {payload.map((item, index) => {
           const key = `${nameKey || item.name || item.dataKey || "value"}`;

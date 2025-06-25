@@ -17,7 +17,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { format, subDays } from "date-fns";
+import { format, subDays } from "date-fns"
+import { dateToString } from "@/lib/utils";
 
 export const description = "A bar chart"
 
@@ -38,7 +39,11 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function DayChart({data}: {data: {date: Date, pagesRead: number}[]}) {
+export function DayChart({
+  data,
+}: {
+  data: { date: Date; pagesRead: number }[]
+}) {
   return (
     <ChartContainer config={chartConfig}>
       <BarChart accessibilityLayer data={data}>
@@ -50,14 +55,14 @@ export function DayChart({data}: {data: {date: Date, pagesRead: number}[]}) {
           axisLine={false}
           tickFormatter={(value: Date) => format(value, "dd.MM")}
         />
-        <YAxis
-          tickLine={false}
-          tickMargin={10}
-          dataKey="pagesRead"
-        />
+        <YAxis tickLine={false} tickMargin={10} dataKey="pagesRead" />
         <ChartTooltip
-          cursor={false}
-          content={<ChartTooltipContent hideLabel />}
+          content={
+            <ChartTooltipContent
+              label="date"
+              labelFormatter={(value: Date) => dateToString(value)}
+            />
+          }
         />
         <Bar dataKey="pagesRead" fill="var(--color-pagesRead)" radius={8} />
       </BarChart>
