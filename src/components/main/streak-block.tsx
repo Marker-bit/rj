@@ -33,7 +33,7 @@ export default function StreakBlock({
   const hasntRead = events.length === 0;
 
   return (
-    <Card className="pb-0 lg:hidden xl:flex overflow-hidden">
+    <Card className="pb-0 flex overflow-hidden">
       <CardHeader>
         <CardDescription className="flex gap-2 items-center">
           Ваш стрик
@@ -116,90 +116,5 @@ export default function StreakBlock({
         </ChartContainer>
       </CardContent>
     </Card>
-    // <Card>
-    //   <CardHeader>
-    //     <CardTitle className="flex items-center gap-2">
-    //     </CardTitle>
-    //     <CardDescription>
-    //       {streak > 0 ? (
-    //         <>
-    //           Вы читаете подряд уже{" "}
-    //           <span className="font-bold">
-    //             {streak} {declOfNum(streak, ["день", "дня", "дней"])}
-    //           </span>
-    //           , а сегодня прочитали{" "}
-    //           <span className="font-bold">
-    //             {days[days.length - 1].pagesRead}{" "}
-    //             {declOfNum(days[days.length - 1].pagesRead, [
-    //               "страницу",
-    //               "страницы",
-    //               "страниц",
-    //             ])}
-    //           </span>
-    //           {goodNumbers.includes(streak) && "!"}
-    //         </>
-    //       ) : (
-    //         <>
-    //           Вы не читаете уже{" "}
-    //           <span className="font-bold">
-    //             {differenceInDays(new Date(), breakDay)}{" "}
-    //             {declOfNum(differenceInDays(new Date(), breakDay), [
-    //               "день",
-    //               "дня",
-    //               "дней",
-    //             ])}
-    //           </span>
-    //         </>
-    //       )}
-    //     </CardDescription>
-    //   </CardHeader>
-    //   <CardContent className="flex flex-row items-baseline gap-4">
-    //     <div className="flex items-baseline gap-1 text-3xl font-bold tabular-nums leading-none">
-    //       {streak}
-    //       <span className="text-sm font-normal text-muted-foreground">
-    //         {declOfNum(streak, ["день", "дня", "дней"])}
-    //       </span>
-    //     </div>
-    //     <div className="ml-auto flex items-end gap-2">
-    //       <ChartContainer
-    //         config={{
-    //           pagesRead: {
-    //             label: "Страниц",
-    //             color: "var(--chart-1)",
-    //           },
-    //         }}
-    //         className="w-[72px]"
-    //       >
-    //         <BarChart
-    //           accessibilityLayer
-    //           margin={{
-    //             left: 0,
-    //             right: 0,
-    //             top: 0,
-    //             bottom: 0,
-    //           }}
-    //           data={days}
-    //         >
-    //           <Bar
-    //             dataKey="pagesRead"
-    //             fill="var(--color-pagesRead)"
-    //             radius={2}
-    //             fillOpacity={0.2}
-    //             activeIndex={6}
-    //             activeBar={<Rectangle fillOpacity={0.8} />}
-    //           />
-    //           <XAxis
-    //             dataKey="date"
-    //             tickLine={false}
-    //             axisLine={false}
-    //             tickMargin={4}
-    //             hide
-    //           />
-    //         </BarChart>
-    //       </ChartContainer>
-    //       {goodNumbers.includes(streak) && <ConfettiButton />}
-    //     </div>
-    //   </CardContent>
-    // </Card>
   );
 }
