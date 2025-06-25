@@ -1,24 +1,25 @@
-"use client";
+"use client"
 
-import { BookInfoModal } from "@/components/dialogs/books/book-info-modal";
-import { DateReadModal } from "@/components/dialogs/books/date-read-modal";
-import { EditBookModal } from "@/components/dialogs/books/edit-book-modal";
-import { BookCollectionsModal } from "@/components/dialogs/collections/book-collections-modal";
-import { Badge, IconBadge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { BookInfoModal } from "@/components/dialogs/books/book-info-modal"
+import { DateReadModal } from "@/components/dialogs/books/date-read-modal"
+import { EditBookModal } from "@/components/dialogs/books/edit-book-modal"
+import { BookCollectionsModal } from "@/components/dialogs/collections/book-collections-modal"
+import { Badge, IconBadge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { DrawerDialog } from "@/components/ui/drawer-dialog";
-import { Book } from "@/lib/api-types";
-import { backgroundColors } from "@/lib/colors";
-import { cn, dateToString, declOfNum } from "@/lib/utils";
-import { BackgroundColor } from "@prisma/client";
-import { useMutation } from "@tanstack/react-query";
-import { isSameDay } from "date-fns";
+} from "@/components/ui/dialog"
+import { DrawerDialog } from "@/components/ui/drawer-dialog"
+import { Book } from "@/lib/api-types"
+import { backgroundColors } from "@/lib/colors"
+import { cn, dateToString, declOfNum } from "@/lib/utils"
+import { BackgroundColor } from "@prisma/client"
+import { useMutation } from "@tanstack/react-query"
+import { isSameDay } from "date-fns"
 import {
+  BarChart,
   BookIcon,
   BookOpen,
   BookOpenCheck,
@@ -34,39 +35,43 @@ import {
   Trash,
   Undo,
   Users,
-} from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Fragment, useState } from "react";
-import { toast } from "sonner";
-import { DateDoneModal } from "../dialogs/books/date-done-modal";
-import { ShareBookModal } from "../dialogs/books/share-book-modal";
-import { HelpButton } from "../ui/help-button";
-import { Loader } from "../ui/loader";
-import { SimpleTooltip } from "../ui/tooltip";
-import Palette from "./palette";
+} from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { Fragment, useState } from "react"
+import { toast } from "sonner"
+import { DateDoneModal } from "../dialogs/books/date-done-modal"
+import { ShareBookModal } from "../dialogs/books/share-book-modal"
+import { HelpButton } from "../ui/help-button"
+import { Loader } from "../ui/loader"
+import { SimpleTooltip } from "../ui/tooltip"
+import Palette from "./palette"
+import BookReadInfo from "./book-read-info"
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic"
 
 export function BookView({
   book,
   onUpdate,
   history = false,
+  initialReadOpen = false
 }: {
-  book: Book;
-  onUpdate?: () => void;
-  history?: boolean;
+  book: Book
+  onUpdate?: () => void
+  history?: boolean
+  initialReadOpen?: boolean
 }) {
-  const [editOpen, setEditOpen] = useState(false);
-  const [dateOpen, setDateOpen] = useState(false);
-  const [doneOpen, setDoneOpen] = useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [actionsDrawerOpen, setActionsDrawerOpen] = useState(false);
-  const [descriptionDrawerOpen, setDescriptionDrawerOpen] = useState(false);
-  const [collectionsOpen, setCollectionsOpen] = useState(false);
-  const [shareBookOpen, setShareBookOpen] = useState(false);
-  const router = useRouter();
+  const [editOpen, setEditOpen] = useState(false)
+  const [dateOpen, setDateOpen] = useState(false)
+  const [doneOpen, setDoneOpen] = useState(false)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [actionsDrawerOpen, setActionsDrawerOpen] = useState(false)
+  const [descriptionDrawerOpen, setDescriptionDrawerOpen] = useState(false)
+  const [collectionsOpen, setCollectionsOpen] = useState(false)
+  const [shareBookOpen, setShareBookOpen] = useState(false)
+  const [bookReadOpen, setBookReadOpen] = useState(initialReadOpen)
+  const router = useRouter()
 
   const undoEventMutation = useMutation({
     mutationFn: () =>
@@ -74,13 +79,13 @@ export function BookView({
         method: "DELETE",
       }),
     onSuccess: () => {
-      toast.success("Событие отменено");
-      onUpdate?.();
-      router.refresh();
+      toast.success("Событие отменено")
+      onUpdate?.()
+      router.refresh()
       // router.push(`/books?bookId=${book.id}`)
       // router.refresh()
     },
-  });
+  })
 
   const doneMutation = useMutation({
     mutationFn: async ({ readAt }: { readAt?: Date }) => {
@@ -90,18 +95,18 @@ export function BookView({
           pages: book.pages,
           readAt: readAt || new Date(),
         }),
-      });
+      })
     },
     onSuccess: () => {
-      toast.success("Книга отмечена как прочитанная");
-      setDoneOpen(false);
-      setActionsDrawerOpen(false);
-      onUpdate?.();
-      router.refresh();
-      // router.push(`/books?bookId=${book.id}`)
+      toast.success("Книга отмечена как прочитанная")
+      setDoneOpen(false)
+      setActionsDrawerOpen(false)
+      onUpdate?.()
+      router.refresh()
+      router.push(`/books/history?bookReadId=${book.id}`)
       // router.refresh()
     },
-  });
+  })
 
   const readDateMutation = useMutation({
     mutationFn: ({ date, pages }: { date: Date; pages: number }) =>
@@ -113,13 +118,13 @@ export function BookView({
         }),
       }),
     onSuccess: () => {
-      setDateOpen(false);
-      toast.success("Событие сохранено");
-      setActionsDrawerOpen(false);
-      onUpdate?.();
-      router.refresh();
+      setDateOpen(false)
+      toast.success("Событие сохранено")
+      setActionsDrawerOpen(false)
+      onUpdate?.()
+      router.refresh()
     },
-  });
+  })
 
   const deleteMutation = useMutation({
     mutationFn: () =>
@@ -127,25 +132,25 @@ export function BookView({
         method: "DELETE",
       }),
     onSuccess: () => {
-      setDeleteDialogOpen(false);
-      setActionsDrawerOpen(false);
-      toast.success("Книга удалена");
-      onUpdate?.();
-      router.refresh();
+      setDeleteDialogOpen(false)
+      setActionsDrawerOpen(false)
+      toast.success("Книга удалена")
+      onUpdate?.()
+      router.refresh()
     },
-  });
+  })
 
   const hideMutation = useMutation({
     mutationFn: () => fetch(`/api/books/${book.id}/hide`, { method: "POST" }),
     onSuccess: () => {
-      setActionsDrawerOpen(false);
-      toast.success("Книга скрыта");
-      onUpdate?.();
-      router.refresh();
+      setActionsDrawerOpen(false)
+      toast.success("Книга скрыта")
+      onUpdate?.()
+      router.refresh()
     },
-  });
+  })
 
-  const lastEvent = book.readEvents[0];
+  const lastEvent = book.readEvents[0]
 
   // if (book.groupBook) {
   //   book = {
@@ -161,14 +166,14 @@ export function BookView({
 
   const color =
     book.background !== BackgroundColor.NONE &&
-    backgroundColors.find((bg) => bg.type === book.background);
+    backgroundColors.find((bg) => bg.type === book.background)
 
   const fieldsData =
     typeof book.fields === "string"
       ? JSON.parse(book.fields)
       : Array.isArray(book.fields)
       ? book.fields
-      : [];
+      : []
 
   return (
     <>
@@ -271,6 +276,11 @@ export function BookView({
           setOpen={setEditOpen}
           book={book}
           onUpdate={onUpdate}
+        />
+        <BookReadInfo
+          open={bookReadOpen}
+          setOpen={setBookReadOpen}
+          book={book}
         />
         {book.coverUrl && (
           <Image
@@ -422,6 +432,15 @@ export function BookView({
               <Share className="size-4" />
               <div className="max-sm:hidden">Поделиться</div>
             </HelpButton>
+            {/* <HelpButton
+              className="gap-2"
+              variant="outline"
+              onClick={() => setBookReadOpen(true)}
+              helpText="Создайте ссылки на книгу, чтобы другие могли скопировать её себе"
+            >
+              <BarChart className="size-4" />
+              <div className="max-sm:hidden">Статистика</div>
+            </HelpButton> */}
             {!history &&
               (book.isHidden ? (
                 <HelpButton
@@ -498,5 +517,5 @@ export function BookView({
         </div>
       </div>
     </>
-  );
+  )
 }

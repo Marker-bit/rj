@@ -32,7 +32,6 @@ export function HelpButton({
       if (pressDuration >= 500) {
         setIsPopoverOpen(true);
       } else {
-        console.log(onClick);
         onClick();
       }
     }

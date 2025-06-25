@@ -176,7 +176,7 @@ export default async function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={font.className + "  overflow-x-hidden"}>
+      <body className={font.className + " overflow-x-hidden"} vaul-drawer-wrapper="">
         <QueryProvider>
           <ThemeProvider
             attribute="class"
