@@ -22,7 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { AreaChartIcon, BarChartIcon } from "lucide-react";
+import { AreaChartIcon, BarChartIcon, ChartColumnIcon, LineChartIcon } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { addDays, isSameDay, subMonths } from "date-fns";
 import { useState } from "react";
@@ -116,10 +116,10 @@ export default function MainChart({
           </Select>
           <TabsList>
             <TabsTrigger value="area">
-              <AreaChartIcon className="size-4" />
+              <LineChartIcon className="size-4" />
             </TabsTrigger>
             <TabsTrigger value="bar">
-              <BarChartIcon className="size-4" />
+              <ChartColumnIcon className="size-4" />
             </TabsTrigger>
           </TabsList>
         </CardHeader>

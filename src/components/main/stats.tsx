@@ -1,8 +1,6 @@
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
-import { BarChart } from "lucide-react";
 import MainChart from "./main-chart";
-import { addDays, isSameDay, subMonths } from "date-fns";
 
 export async function Stats() {
   const { user } = await validateRequest();
@@ -29,5 +27,6 @@ export async function Stats() {
       readAt: "asc",
     },
   });
+  
   return <MainChart events={events} profile={profile} />;
 }
