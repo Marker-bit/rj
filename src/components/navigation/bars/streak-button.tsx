@@ -83,6 +83,13 @@ export function StreakButton({
                 </div>
               </TooltipTrigger>
               <TooltipContent>
+                <div className="text-primary-foreground/70 text-center">
+                  {format(
+                    addDays(startOfWeek(new Date(), { weekStartsOn: 1 }), i),
+                    "d MMMM",
+                    { locale: ru, weekStartsOn: 1 }
+                  )}
+                </div>
                 {days[i]}{" "}
                 {declOfNum(days[i], ["страница", "страницы", "страниц"])}
               </TooltipContent>
