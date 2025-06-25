@@ -2,11 +2,10 @@
 
 import {
   BarChartBig,
-  BookCopyIcon,
   BookIcon,
   HouseIcon,
   Menu,
-  Users,
+  Users
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -29,9 +28,9 @@ import { usePathname } from "next/navigation";
 import { Suspense } from "react";
 import { ModeToggle } from "../mode-toggle";
 import { Skeleton } from "../ui/skeleton";
+import NewspaperButton from "./bars/newspaper-button";
 import { StreakButton } from "./bars/streak-button";
 import UserMenu from "./bars/user-menu";
-import NewspaperButton from "./bars/newspaper-button";
 
 const navigationLinks = [
   { href: "/home", label: "Главная", icon: HouseIcon },
@@ -98,7 +97,7 @@ export default function NavBar({
           </Popover>
           {/* Logo */}
           <div className="flex items-center">
-            <Link href="/home" className="hover:bg-muted-foreground/10 p-1 rounded-lg transition">
+            <Link href="/home" className="hover:bg-muted-foreground/50 p-1 rounded-lg transition shrink-0">
               <Image
                 src="/icon.png"
                 alt="logo"

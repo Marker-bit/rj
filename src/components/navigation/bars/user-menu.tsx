@@ -1,16 +1,17 @@
-"use client";
+"use client"
 
 import {
   BoltIcon,
+  GalleryVertical,
   LockKeyholeIcon,
   LogOutIcon,
   MessageCircleQuestion,
   Undo2Icon,
   UserIcon,
-} from "lucide-react";
+} from "lucide-react"
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,34 +20,33 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Session, User } from "lucia";
-import Link from "next/link";
-import { use } from "react";
-import { Badge } from "../../ui/badge";
-import { logOut } from "@/lib/actions/auth";
-import { useRouter } from "next/navigation";
+} from "@/components/ui/dropdown-menu"
+import { logOut } from "@/lib/actions/auth"
+import { User } from "lucia"
+import Link from "next/link"
+import { usePathname, useRouter } from "next/navigation"
+import { use } from "react"
+import { Badge } from "../../ui/badge"
 
 export default function UserMenu({
   auth,
   admin = false,
 }: {
-  auth: Promise<{ user: User; unread: number } | { user: null; unread: null }>;
-  admin?: boolean;
+  auth: Promise<{ user: User; unread: number } | { user: null; unread: null }>
+  admin?: boolean
 }) {
-  const { user, unread } = use(auth);
-  const router = useRouter();
+  const { user, unread } = use(auth)
+  const router = useRouter()
+  const pathname = usePathname()
 
   if (!user) {
-    return null;
+    return null
   }
 
   const logOutClick = async () => {
-    await logOut();
-    router.replace("/");
-  };
-
-  console.log(user.avatarUrl);
+    await logOut()
+    router.replace("/")
+  }
 
   return (
     <DropdownMenu>
@@ -103,7 +103,7 @@ export default function UserMenu({
             </Link>
           )}
           <Link href="/support">
-            <DropdownMenuItem>
+            <DropdownMenuItem active={pathname === "/support"}>
               <MessageCircleQuestion
                 size={16}
                 className="opacity-60"
@@ -114,18 +114,29 @@ export default function UserMenu({
             </DropdownMenuItem>
           </Link>
           <Link href="/profile">
-            <DropdownMenuItem>
+            <DropdownMenuItem active={pathname === "/profile"}>
               <UserIcon size={16} className="opacity-60" aria-hidden="true" />
               <span>Профиль</span>
             </DropdownMenuItem>
           </Link>
           <Link href="/profile/settings">
-            <DropdownMenuItem>
+            <DropdownMenuItem active={pathname === "/profile/settings"}>
               <BoltIcon size={16} className="opacity-60" aria-hidden="true" />
               <span>Настройки</span>
             </DropdownMenuItem>
           </Link>
         </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <Link href="/activity">
+          <DropdownMenuItem active={pathname === "/activity"}>
+            <GalleryVertical
+              size={16}
+              className="opacity-60"
+              aria-hidden="true"
+            />
+            <span>Активность</span>
+          </DropdownMenuItem>
+        </Link>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={logOutClick}>
           <LogOutIcon size={16} className="opacity-60" aria-hidden="true" />
@@ -133,5 +144,5 @@ export default function UserMenu({
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  );
+  )
 }
