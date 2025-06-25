@@ -1,41 +1,51 @@
-"use client";
+"use client"
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from "@/components/ui/popover"
 import {
+  SimpleTooltip,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { getDays, getStreak } from "@/lib/stats";
-import { capitalizeFirstLetter, cn, declOfNum } from "@/lib/utils";
-import { ReadEvent } from "@prisma/client";
-import { addDays, differenceInDays, format, startOfWeek } from "date-fns";
-import { ru } from "date-fns/locale";
-import { CalendarIcon } from "lucide-react";
-import { use } from "react";
+} from "@/components/ui/tooltip"
+import { getDays, getStreak } from "@/lib/stats"
+import { capitalizeFirstLetter, cn, declOfNum } from "@/lib/utils"
+import { ReadEvent } from "@prisma/client"
+import { addDays, differenceInDays, format, startOfWeek } from "date-fns"
+import { ru } from "date-fns/locale"
+import { CalendarIcon } from "lucide-react"
+import { use } from "react"
 
-export function StreakButton({ events: eventsPromise }: { events: Promise<ReadEvent[]> }) {
-  const events = use(eventsPromise);
-  const { streak } = getStreak(events);
-  const days = getDays(events);
+export function StreakButton({
+  events: eventsPromise,
+}: {
+  events: Promise<ReadEvent[]>
+}) {
+  const events = use(eventsPromise)
+  const { streak } = getStreak(events)
+  const days = getDays(events)
   const nowDay = differenceInDays(
     new Date(),
-    startOfWeek(new Date(), { weekStartsOn: 1 }),
-  );
+    startOfWeek(new Date(), { weekStartsOn: 1 })
+  )
 
   return (
     <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="ghost" className="flex items-center gap-2 rounded-full">
-          <CalendarIcon className="size-4" />
-          {streak}
-        </Button>
-      </PopoverTrigger>
+      <SimpleTooltip text="Ваш стрик">
+        <PopoverTrigger asChild>
+          <Button
+            variant="ghost"
+            className="flex items-center gap-2 rounded-full"
+          >
+            <CalendarIcon className="size-4" />
+            {streak}
+          </Button>
+        </PopoverTrigger>
+      </SimpleTooltip>
       <PopoverContent className="w-fit">
         <div className="flex gap-2">
           {Array.from({ length: 7 }).map((_, i) => (
@@ -48,7 +58,7 @@ export function StreakButton({ events: eventsPromise }: { events: Promise<ReadEv
                       days[i] === 0
                         ? "bg-zinc-300 dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-700"
                         : "bg-green-300 dark:bg-green-700 border border-green-500",
-                      nowDay === i && "border-4 border-black dark:border-white",
+                      nowDay === i && "border-4 border-black dark:border-white"
                     )}
                   />
                   <p className="text-xs">
@@ -56,14 +66,14 @@ export function StreakButton({ events: eventsPromise }: { events: Promise<ReadEv
                       format(
                         addDays(
                           startOfWeek(new Date(), { weekStartsOn: 1 }),
-                          i,
+                          i
                         ),
                         "EEE",
                         {
                           locale: ru,
                           weekStartsOn: 1,
-                        },
-                      ),
+                        }
+                      )
                     ).slice(0, 2)}
                   </p>
                   <p className="text-xs">{days[i]}</p>
@@ -78,5 +88,5 @@ export function StreakButton({ events: eventsPromise }: { events: Promise<ReadEv
         </div>
       </PopoverContent>
     </Popover>
-  );
+  )
 }

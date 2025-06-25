@@ -27,6 +27,8 @@ import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { use } from "react"
 import { Badge } from "../../ui/badge"
+import { Popover, PopoverTrigger } from "@/components/ui/popover"
+import { SimpleTooltip } from "@/components/ui/tooltip"
 
 export default function UserMenu({
   auth,
@@ -50,26 +52,28 @@ export default function UserMenu({
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          className="h-auto p-0 hover:bg-transparent! rounded-full relative"
-        >
-          <Avatar>
-            <AvatarImage src={user.avatarUrl} alt="Ваш аватар" />
-            <AvatarFallback>
-              {user.firstName[0]}
-              {user.lastName[0]}
-            </AvatarFallback>
-          </Avatar>
-          {unread > 0 && (
-            <div
-              aria-hidden="true"
-              className="bg-primary absolute top-0 right-0 size-2 rounded-full"
-            />
-          )}
-        </Button>
-      </DropdownMenuTrigger>
+      <SimpleTooltip text="Профиль">
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            className="h-auto p-0 hover:bg-transparent! rounded-full relative"
+          >
+            <Avatar>
+              <AvatarImage src={user.avatarUrl} alt="Ваш аватар" />
+              <AvatarFallback>
+                {user.firstName[0]}
+                {user.lastName[0]}
+              </AvatarFallback>
+            </Avatar>
+            {unread > 0 && (
+              <div
+                aria-hidden="true"
+                className="bg-primary absolute top-0 right-0 size-2 rounded-full"
+              />
+            )}
+          </Button>
+        </DropdownMenuTrigger>
+      </SimpleTooltip>
       <DropdownMenuContent className="max-w-64" align="end">
         <DropdownMenuLabel className="flex min-w-0 flex-col">
           <span className="text-foreground truncate text-sm font-medium">

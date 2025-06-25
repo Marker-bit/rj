@@ -1,29 +1,32 @@
-"use client";
+"use client"
 
-import * as React from "react";
-import { useTheme } from "next-themes";
+import * as React from "react"
+import { useTheme } from "next-themes"
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Moon, Sun } from "lucide-react";
+} from "@/components/ui/dropdown-menu"
+import { Moon, Sun } from "lucide-react"
+import { SimpleTooltip } from "./ui/tooltip"
 
 export function ModeToggle() {
-  const { setTheme } = useTheme();
+  const { setTheme } = useTheme()
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="relative rounded-full">
-          <Sun className="size-4 dark:size-0" />
-          <Moon className="absolute size-0 dark:size-4" />
-          <span className="sr-only">Переключить тему</span>
-        </Button>
-      </DropdownMenuTrigger>
+      <SimpleTooltip text="Переключить тему">
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="icon" className="relative rounded-full">
+            <Sun className="size-4 dark:size-0" />
+            <Moon className="absolute size-0 dark:size-4" />
+            <span className="sr-only">Переключить тему</span>
+          </Button>
+        </DropdownMenuTrigger>
+      </SimpleTooltip>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme("light")}>
           Светлая
@@ -36,5 +39,5 @@ export function ModeToggle() {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  );
+  )
 }

@@ -97,7 +97,7 @@ export default function NavBar({
           </Popover>
           {/* Logo */}
           <div className="flex items-center">
-            <Link href="/home" className="hover:bg-muted-foreground/50 p-1 rounded-lg transition shrink-0">
+            <Link href="/home" className="hover:bg-accent p-1 rounded-lg transition shrink-0">
               <Image
                 src="/icon.png"
                 alt="logo"
