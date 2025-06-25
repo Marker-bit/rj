@@ -1,10 +1,4 @@
-import {
-  PASSWORD_MESSAGE,
-  PASSWORD_REGEX,
-  USERNAME_MESSAGE,
-  USERNAME_REGEX,
-} from "@/lib/api-validate";
-import { lucia } from "@/lib/auth";
+import { createSession, setSessionTokenCookie } from "@/lib/auth/sessions";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
 import { registerSchema } from "@/lib/validation/schemas";
@@ -107,12 +101,7 @@ export async function POST(request: NextRequest) {
     },
   });
 
-  const session = await lucia.createSession(createdUser.id, {});
-  const sessionCookie = lucia.createSessionCookie(session.id);
-  (await cookies()).set(
-    sessionCookie.name,
-    sessionCookie.value,
-    sessionCookie.attributes
-  );
+  const session = await createSession(createdUser.id);
+  await setSessionTokenCookie(session);
   return new NextResponse(null, { status: 200 });
 }

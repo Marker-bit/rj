@@ -1,12 +1,10 @@
 "use server";
 
+import { hash } from "@node-rs/argon2";
+import { NextResponse } from "next/server";
+import { createSession, deleteSession, setSessionTokenCookie } from "../auth/sessions";
 import { db } from "../db";
 import { validateRequest } from "../server-validate-request";
-import { NextResponse } from "next/server";
-import { lucia } from "../auth";
-import { cookies } from "next/headers";
-import { hash } from "@node-rs/argon2";
-import { redirect } from "next/navigation";
 
 export async function resetPassword(data: {
   username: string;
@@ -113,12 +111,5 @@ export async function logOut() {
     );
   }
 
-  await lucia.invalidateSession(session.id);
-
-  const sessionCookie = lucia.createBlankSessionCookie();
-  (await cookies()).set(
-    sessionCookie.name,
-    sessionCookie.value,
-    sessionCookie.attributes,
-  );
+  await deleteSession(session.id);
 }
