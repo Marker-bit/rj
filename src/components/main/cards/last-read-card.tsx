@@ -15,7 +15,7 @@ export default async function LastReadCard() {
 
   return (
     <div className="bg-card text-card-foreground rounded-xl border p-6 shadow-sm overflow-hidden flex items-center relative">
-      <div className="flex items-center gap-4 w-full z-10">
+      <div className="flex items-center gap-4 w-full z-10 shrink-0">
         {lastReadBook.coverUrl && (
           <div className="relative">
             <Image
@@ -31,7 +31,7 @@ export default async function LastReadCard() {
               alt="book"
               width={192}
               height={320}
-              className="h-40 w-auto rounded-md"
+              className="h-40 w-auto rounded-md shrink-0"
             />
           </div>
         )}
