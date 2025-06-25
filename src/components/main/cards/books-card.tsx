@@ -1,8 +1,8 @@
-"use client";
+"use client"
 
-import { AddBookDialog } from "@/components/book/book-form";
-import { BookView } from "@/components/book/book-view";
-import { Button } from "@/components/ui/button";
+import { AddBookDialog } from "@/components/book/book-form"
+import { BookView } from "@/components/book/book-view"
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardAction,
@@ -10,59 +10,62 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { fetchBooks } from "@/lib/books";
-import { ArrowRightIcon, TriangleAlert } from "lucide-react";
-import Link from "next/link";
-import { useEffect, useState, useTransition } from "react";
-import { useLocalStorage } from "usehooks-ts";
+} from "@/components/ui/card"
+import { fetchBooks } from "@/lib/books"
+import {
+  ArrowRightIcon,
+  ChevronRight,
+  PlusIcon,
+  TriangleAlert,
+} from "lucide-react"
+import Link from "next/link"
+import { useEffect, useState, useTransition } from "react"
+import { useLocalStorage } from "usehooks-ts"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { getBooks } from "@/lib/actions/books";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@/components/ui/select"
+import { getBooks } from "@/lib/actions/books"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export default function BooksCard() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
   const [orderBy, setOrderBy] = useLocalStorage<"percent" | "activity">(
     "orderBy",
-    "percent",
-  );
-  const [isPending, startTransition] = useTransition();
-  const [pageLoading, setPageLoading] = useState(true);
-  const [books, setBooks] = useState<Awaited<ReturnType<typeof fetchBooks>>>(
-    [],
-  );
+    "percent"
+  )
+  const [isPending, startTransition] = useTransition()
+  const [pageLoading, setPageLoading] = useState(true)
+  const [books, setBooks] = useState<Awaited<ReturnType<typeof fetchBooks>>>([])
 
   const updateBooks = (orderBy: "percent" | "activity") => {
     startTransition(async () => {
-      const books = await getBooks(orderBy);
+      const books = await getBooks(orderBy)
       setBooks(
         books
           .filter(
             (book) =>
-              book.readEvents[0]?.pagesRead !== book.pages && !book.isHidden,
+              book.readEvents[0]?.pagesRead !== book.pages && !book.isHidden
           )
-          .slice(0, 3),
-      );
-    });
-  };
+          .slice(0, 3)
+      )
+    })
+  }
 
   const refetchBooks = () => {
-    updateBooks(orderBy);
-  };
+    updateBooks(orderBy)
+  }
 
   useEffect(() => {
-    updateBooks(orderBy);
-  }, [orderBy]);
+    updateBooks(orderBy)
+  }, [orderBy])
 
   useEffect(() => {
-    setPageLoading(false);
-  }, []);
+    setPageLoading(false)
+  }, [])
 
   return (
     <>
@@ -88,9 +91,15 @@ export default function BooksCard() {
           </CardDescription>
           <CardAction className="flex gap-2">
             <Button variant="outline" asChild>
-              <Link href="/books">Больше</Link>
+              <Link href="/books">
+                <div className="max-sm:hidden">Больше</div>
+                <ChevronRight />
+              </Link>
             </Button>
-            <Button onClick={() => setOpen(true)}>Добавить</Button>
+            <Button onClick={() => setOpen(true)}>
+              <div className="max-sm:hidden">Добавить</div>
+              <PlusIcon />
+            </Button>
           </CardAction>
         </CardHeader>
         <CardContent>
@@ -131,5 +140,5 @@ export default function BooksCard() {
       </Card>
       <AddBookDialog open={open} setOpen={setOpen} />
     </>
-  );
+  )
 }

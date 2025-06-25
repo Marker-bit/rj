@@ -44,7 +44,7 @@ export function LoginForm() {
         router.replace("/home");
       }
     })();
-  }, []);
+  }, [router]);
 
   const userMutation = useMutation({
     mutationFn: (values: z.infer<typeof formSchema>) => {
@@ -109,7 +109,7 @@ export function LoginForm() {
         <div className="flex flex-wrap items-center gap-2">
           <Button type="submit" disabled={userMutation.isPending}>
             {userMutation.isPending && (
-              <Loader invert className="mr-2 size-4" />
+              <Loader invert className="size-4" />
             )}
             Авторизоваться
           </Button>

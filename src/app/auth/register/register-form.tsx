@@ -44,7 +44,7 @@ export function RegisterForm() {
         router.replace("/home");
       }
     })()
-  }, []);
+  }, [router]);
 
   const userMutation = useMutation({
     mutationFn: (values: z.infer<typeof registerSchema>) => {
@@ -53,7 +53,7 @@ export function RegisterForm() {
         method: "POST",
       }).then(async (res) => {
         if (res.ok) {
-          router.push("/auth/login");
+          router.push("/home");
         } else {
           const data = await res.json();
           if (data.error) {
@@ -160,7 +160,7 @@ export function RegisterForm() {
         <div className="flex flex-wrap items-center gap-2">
           <Button type="submit" disabled={userMutation.isPending}>
             {userMutation.isPending && (
-              <Loader invert className="mr-2 size-4" />
+              <Loader invert className="size-4" />
             )}
             Зарегистрироваться
           </Button>
