@@ -1,5 +1,5 @@
 import { ReadEvent } from "@prisma/client";
-import { addDays, endOfWeek, isSameDay, startOfWeek, subDays } from "date-fns";
+import { addDays, endOfWeek, isSameDay, startOfWeek, subDays, subWeeks } from "date-fns";
 
 export const goodNumbers = [
   5, 10, 15, 20, 50, 100, 200, 365, 730, 1095, 1460, 1825, 2190, 2555, 2920,
@@ -38,11 +38,11 @@ export function getStreak(events: ReadEvent[]) {
   return { streak, breakDay, readToday };
 }
 
-export function getDays(events: ReadEvent[]) {
+export function getDays(events: ReadEvent[], weekPadding: number = 0) {
   const now = new Date();
   const from = startOfWeek(now, { weekStartsOn: 1 });
   const to = endOfWeek(now, { weekStartsOn: 1 });
-  let current = from;
+  let current = subWeeks(from, weekPadding);
   let currentDays = 0;
   let streak: Record<string, number> = {};
   for (let i = 0; i < 7; i++) {

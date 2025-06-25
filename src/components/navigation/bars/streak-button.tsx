@@ -18,16 +18,17 @@ import { ReadEvent } from "@prisma/client"
 import { addDays, differenceInDays, format, startOfWeek } from "date-fns"
 import { ru } from "date-fns/locale"
 import { CalendarIcon } from "lucide-react"
-import { use } from "react"
+import { use, useState } from "react"
 
 export function StreakButton({
   events: eventsPromise,
 }: {
   events: Promise<ReadEvent[]>
 }) {
+  const [weekPadding, setWeekPadding] = useState(0)
   const events = use(eventsPromise)
   const { streak } = getStreak(events)
-  const days = getDays(events)
+  const days = getDays(events, weekPadding)
   const nowDay = differenceInDays(
     new Date(),
     startOfWeek(new Date(), { weekStartsOn: 1 })
@@ -58,7 +59,9 @@ export function StreakButton({
                       days[i] === 0
                         ? "bg-zinc-300 dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-700"
                         : "bg-green-300 dark:bg-green-700 border border-green-500",
-                      nowDay === i && "border-4 border-black dark:border-white"
+                      weekPadding === 0 &&
+                        nowDay === i &&
+                        "border-4 border-black dark:border-white"
                     )}
                   />
                   <p className="text-xs">
@@ -85,6 +88,32 @@ export function StreakButton({
               </TooltipContent>
             </Tooltip>
           ))}
+        </div>
+        <div className="flex gap-2 items-center justify-between mt-2">
+          <button
+            onClick={() => setWeekPadding((w) => w - 1)}
+            className="text-xs font-medium hover:underline disabled:no-underline disabled:opacity-50"
+          >
+            Назад
+          </button>
+          <div className="text-muted-foreground text-xs">
+            {weekPadding === 0
+              ? "Эта неделя"
+              : weekPadding === -1
+              ? "Прошлая неделя"
+              : `${Math.abs(weekPadding)} ${declOfNum(Math.abs(weekPadding), [
+                  "неделя",
+                  "недели",
+                  "недель",
+                ])} назад`}
+          </div>
+          <button
+            className="text-xs font-medium hover:underline disabled:no-underline disabled:opacity-50"
+            disabled={weekPadding === 0}
+            onClick={() => setWeekPadding((w) => w + 1)}
+          >
+            Вперёд
+          </button>
         </div>
       </PopoverContent>
     </Popover>
