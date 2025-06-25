@@ -56,8 +56,8 @@ export function getEventDays(events: ReadEvent[]) {
   let res: Map<Date, number> = new Map()
   while (current <= endDay) {
     const todayEvents = events.filter((e) => isSameDay(e.readAt, current))
+    let dayStreak = 0
     if (todayEvents.length) {
-      let dayStreak = 0
       for (let event of todayEvents) {
         const bookEvents = events.filter((e) => e.bookId === event.bookId)
         if (bookEvents.length === 1 || bookEvents.indexOf(event) === 0) {
@@ -68,8 +68,8 @@ export function getEventDays(events: ReadEvent[]) {
           dayStreak += event.pagesRead - previousEvent.pagesRead
         }
       }
-      res.set(current, dayStreak)
     }
+    res.set(current, dayStreak)
     current = addDays(current, 1)
   }
   return res.entries().map ? Array.from(

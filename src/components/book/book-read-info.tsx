@@ -49,6 +49,8 @@ export default function BookReadInfo({
       : 0
   const avg = chartData.reduce((a, b) => a + b.pagesRead, 0) / chartData.length
 
+  console.log(chartData)
+
   const steps: Step[] = [
     {
       title: "Поздравляем, вы прочитали эту книгу!",
