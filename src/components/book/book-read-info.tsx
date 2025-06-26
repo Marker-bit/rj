@@ -10,7 +10,7 @@ import {
 import { cn, dateToString, declOfNum } from "@/lib/utils"
 import { Button } from "../ui/button"
 import { ChevronLeft, ChevronRight, XIcon } from "lucide-react"
-import { motion } from "motion/react"
+import { AnimatePresence, motion } from "motion/react"
 import useMeasure from "react-use-measure"
 import { DayChart } from "./day-chart"
 import { Book } from "@/lib/api-types"
@@ -36,6 +36,7 @@ export default function BookReadInfo({
 }) {
   const [isClient, setIsClient] = useState(false)
   const [currentStep, setCurrentStep] = useState(0)
+  const [direction, setDirection] = useState<-1 | 0 | 1>(0)
   const chartData = useMemo(
     () => getEventDays(book.readEvents.toReversed()),
     [book.readEvents]
@@ -48,8 +49,6 @@ export default function BookReadInfo({
       ? differenceInDays(lastEvent.readAt, firstEvent.readAt)
       : 0
   const avg = chartData.reduce((a, b) => a + b.pagesRead, 0) / chartData.length
-
-  console.log(chartData)
 
   const steps: Step[] = [
     {
@@ -105,7 +104,7 @@ export default function BookReadInfo({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent>
+      <DialogContent className="overflow-hidden">
         <DialogTitle className="hidden">Статистика книги</DialogTitle>
         <DialogDescription className="hidden">
           Вся информация о чтении книги
@@ -129,25 +128,53 @@ export default function BookReadInfo({
           transition={{ duration: 0.5, type: "spring", bounce: 0 }}
           className="overflow-hidden"
         >
-          <div className="flex flex-col gap-2 text-center" ref={ref}>
-            <h1 className="text-xl font-semibold">{step.title}</h1>
-            {step.description && <p>{step.description}</p>}
-            {step.highlightedText && (
-              <p className="text-2xl font-bold leading-tight">
-                {step.highlightedText}
-              </p>
-            )}
-            {step.highlightedTextDescription && (
-              <p className="text-muted-foreground leading-tight">
-                {step.highlightedTextDescription}
-              </p>
-            )}
-            {step.component}
+          <div ref={ref}>
+            <AnimatePresence
+              mode="popLayout"
+              initial={false}
+              custom={direction}
+            >
+              <motion.div
+                className="flex flex-col gap-2 text-center"
+                key={`step-${currentStep}`}
+                custom={direction}
+                initial="initial"
+                animate="active"
+                exit="exit"
+                variants={{
+                  initial: (direction) => {
+                    return { x: `${110 * direction}%`, opacity: 0 }
+                  },
+                  active: { x: "0%", opacity: 1 },
+                  exit: (direction) => {
+                    return { x: `${-110 * direction}%`, opacity: 0 }
+                  },
+                }}
+                transition={{ duration: 0.5, type: "spring", bounce: 0 }}
+              >
+                <h1 className="text-xl font-semibold">{step.title}</h1>
+                {step.description && <p>{step.description}</p>}
+                {step.highlightedText && (
+                  <p className="text-2xl font-bold leading-tight">
+                    {step.highlightedText}
+                  </p>
+                )}
+                {step.highlightedTextDescription && (
+                  <p className="text-muted-foreground leading-tight">
+                    {step.highlightedTextDescription}
+                  </p>
+                )}
+                {step.component}
+              </motion.div>
+            </AnimatePresence>
           </div>
         </motion.div>
         <div className="flex justify-between">
           <Button
-            onClick={() => setCurrentStep((c) => c - 1)}
+            onClick={() => {
+              setCurrentStep((c) => c - 1)
+              setDirection(-1)
+            }}
             disabled={currentStep === 0}
           >
             <ChevronLeft />
@@ -155,15 +182,16 @@ export default function BookReadInfo({
           </Button>
           {currentStep !== steps.length - 1 ? (
             <Button
-              onClick={() => setCurrentStep((c) => c + 1)}
+              onClick={() => {
+                setCurrentStep((c) => c + 1)
+                setDirection(1)
+              }}
             >
               Далее
               <ChevronRight />
             </Button>
           ) : (
-            <Button
-              onClick={() => close()}
-            >
+            <Button onClick={() => close()}>
               Закрыть
               <XIcon />
             </Button>
