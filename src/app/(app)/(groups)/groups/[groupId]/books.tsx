@@ -1,20 +1,19 @@
 "use client";
 
-import { BookIcon, Search } from "lucide-react";
-import { AddBookButton } from "./add-book-button";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { GroupBookView } from "./book-view";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
-import Fuse from "fuse.js";
-import { ExportBooksButton } from "./export-books-button";
-import { BookSuggestions } from "./book-suggestions";
+import { Input } from "@/components/ui/input";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import {
   GroupBookSuggestion,
-  GroupMember,
-  GroupMemberRole,
+  GroupMember
 } from "@prisma/client";
+import Fuse from "fuse.js";
+import { BookIcon, Search } from "lucide-react";
+import { useEffect, useState } from "react";
+import { AddBookButton } from "./add-book-button";
+import { BookSuggestions } from "./book-suggestions";
+import { GroupBookView } from "./book-view";
+import { ExportBooksButton } from "./export-books-button";
 
 export default function Books({
   isMember,
