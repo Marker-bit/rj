@@ -17,7 +17,7 @@ import { backgroundColors } from "@/lib/colors"
 import { cn, dateToString, declOfNum } from "@/lib/utils"
 import { BackgroundColor } from "@prisma/client"
 import { useMutation } from "@tanstack/react-query"
-import { isSameDay } from "date-fns"
+import { endOfDay, isSameDay, isToday } from "date-fns"
 import {
   BarChart,
   BookIcon,
@@ -93,7 +93,11 @@ export function BookView({
         method: "POST",
         body: JSON.stringify({
           pages: book.pages,
-          readAt: readAt || new Date(),
+          readAt: readAt
+            ? isToday(readAt)
+              ? new Date()
+              : endOfDay(readAt)
+            : new Date(),
         }),
       })
     },
@@ -114,7 +118,7 @@ export function BookView({
         method: "POST",
         body: JSON.stringify({
           pages: pages,
-          readAt: isSameDay(date, new Date()) ? new Date() : date,
+          readAt: isToday(date) ? new Date() : endOfDay(date),
         }),
       }),
     onSuccess: () => {

@@ -1,6 +1,7 @@
 import { validateRequest } from "@/lib/server-validate-request";
 import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
+import { endOfDay, subDays } from "date-fns";
 export async function POST(
   req: NextRequest,
   props: { params: Promise<{ bookId: string }> },
@@ -17,9 +18,10 @@ export async function POST(
     pages: number;
     readAt?: string;
   } = await req.json();
+  const defaultReadAt = endOfDay(subDays(new Date(), 1));
   const event = await db.readEvent.create({
     data: {
-      readAt: data.readAt || new Date(),
+      readAt: data.readAt || defaultReadAt,
       pagesRead: data.pages,
       bookId: bookId as string,
     },

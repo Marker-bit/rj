@@ -10,10 +10,10 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function dateToString(date: Date) {
-  if (date.getHours() === 0 && date.getMinutes() === 0) {
+  if (date.getHours() === 23 && date.getMinutes() === 59 && date.getSeconds() === 59) {
     return formatRelative(date, new Date(), {
       locale: ru,
-    }).replace(" в 0:00", "");
+    }).replace(" в 23:59", "");
   }
   return formatRelative(date, new Date(), {
     locale: ru,
