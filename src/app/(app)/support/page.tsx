@@ -1,9 +1,7 @@
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
-import SupportQuestionCard from "./support-question";
-import { Button } from "@/components/ui/button";
-import { MessageCircleQuestion } from "lucide-react";
 import AskQuestion from "./ask-question";
+import SupportQuestionCard from "./support-question";
 
 export default async function Page() {
   const { user } = await validateRequest();
