@@ -1,6 +1,6 @@
-import { DrawerDialog } from "@/components/ui/drawer-dialog";
-import { DialogHeader, DialogTitle } from "../../ui/dialog";
-import { Edit, Loader, Plus, Trash, X } from "lucide-react";
+import { DrawerDialog } from "@/components/ui/drawer-dialog"
+import { DialogHeader, DialogTitle } from "../../ui/dialog"
+import { Edit, Loader, Plus, Trash, X } from "lucide-react"
 import {
   Form,
   FormControl,
@@ -9,19 +9,21 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../../ui/form";
-import { useFieldArray, useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import Image from "next/image";
-import { Button } from "../../ui/button";
-import { UploadButton } from "../../uploadthing";
-import { Input } from "../../ui/input";
-import { Textarea } from "../../ui/textarea";
-import { Book } from "@prisma/client";
-import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
+} from "../../ui/form"
+import { useFieldArray, useForm } from "react-hook-form"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import Image from "next/image"
+import { Button } from "../../ui/button"
+import { UploadButton } from "../../uploadthing"
+import { Input } from "../../ui/input"
+import { Textarea } from "../../ui/textarea"
+import { Book } from "@prisma/client"
+import { useRouter } from "next/navigation"
+import { cn } from "@/lib/utils"
+import { useState } from "react"
+import { toast } from "sonner"
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -35,29 +37,30 @@ const bookSchema = z.object({
       value: z.string({
         required_error: "Значение поля обязательно",
       }),
-    }),
+    })
   ),
-});
+})
 
 export function EditBookModal({
   open,
   setOpen,
   book,
-  onUpdate
+  onUpdate,
 }: {
-  open: boolean;
-  setOpen: (b: boolean) => void;
-  book: Book;
-  onUpdate?: () => void;
+  open: boolean
+  setOpen: (b: boolean) => void
+  book: Book
+  onUpdate?: () => void
 }) {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
+  const [fileUploading, setFileUploading] = useState(false)
 
   const fieldsData =
     typeof book.fields === "string"
       ? JSON.parse(book.fields)
       : Array.isArray(book.fields)
-        ? book.fields
-        : [];
+      ? book.fields
+      : []
   const form = useForm<z.infer<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
     defaultValues: {
@@ -68,14 +71,14 @@ export function EditBookModal({
       coverUrl: book.coverUrl ?? "",
       fields: fieldsData ?? [],
     },
-  });
+  })
 
   const { fields, append, remove } = useFieldArray({
     name: "fields",
     control: form.control,
-  });
+  })
 
-  const router = useRouter();
+  const router = useRouter()
 
   const editMutation = useMutation({
     mutationFn: (values: z.infer<typeof bookSchema>) =>
@@ -86,18 +89,18 @@ export function EditBookModal({
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["books"],
-      });
+      })
       queryClient.invalidateQueries({
         queryKey: ["events"],
-      });
-      router.refresh();
-      onUpdate?.();
+      })
+      router.refresh()
+      onUpdate?.()
     },
-  });
+  })
 
   async function onSubmit(values: z.infer<typeof bookSchema>) {
-    await editMutation.mutateAsync(values);
-    setOpen(false);
+    await editMutation.mutateAsync(values)
+    setOpen(false)
   }
 
   return (
@@ -126,10 +129,10 @@ export function EditBookModal({
                     <div className="absolute right-0 top-2 flex translate-x-1/2 flex-col gap-2">
                       <Button
                         size="icon"
-                        className="size-fit p-1"
                         variant="outline"
                         onClick={() => field.onChange("")}
                         type="button"
+                        className="dark:bg-background dark:hover:bg-accent"
                       >
                         <Trash className="size-4" />
                       </Button>
@@ -140,16 +143,27 @@ export function EditBookModal({
                     <UploadButton
                       endpoint="bookCover"
                       content={{
-                        button: "Обложка",
+                        button: ({ ready, isUploading }) =>
+                          isUploading || fileUploading
+                            ? "Загрузка..."
+                            : ready
+                            ? "Обложка"
+                            : "Подождите...",
                         allowedContent: "Картинка (до 8МБ)",
                       }}
                       onClientUploadComplete={(res) => {
-                        field.onChange(res[0].ufsUrl);
+                        field.onChange(res[0].ufsUrl)
+                        setFileUploading(false)
                       }}
                       onUploadError={(error: Error) => {
-                        console.error(error);
+                        toast.error("Ошибка при загрузке обложки", {
+                          description: error.message,
+                        })
                       }}
-                      className="ut-button:bg-blue-500 ut-button:px-4"
+                      onUploadBegin={(fileName) => {
+                        setFileUploading(true)
+                      }}
+                      className="ut-button:bg-blue-500 ut-button:ut-readying:bg-blue-500/50 ut-button:px-4 ut-button:ut-uploading:bg-blue-500/50"
                     />
                   </div>
                 )}
@@ -265,7 +279,7 @@ export function EditBookModal({
           </div>
           <Button
             type="submit"
-            disabled={editMutation.isPending}
+            disabled={editMutation.isPending || fileUploading}
             className="gap-2"
           >
             {editMutation.isPending ? (
@@ -278,5 +292,5 @@ export function EditBookModal({
         </form>
       </Form>
     </DrawerDialog>
-  );
+  )
 }
