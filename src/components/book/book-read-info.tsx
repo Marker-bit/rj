@@ -15,7 +15,7 @@ import useMeasure from "react-use-measure"
 import { DayChart } from "./day-chart"
 import { Book } from "@/lib/api-types"
 import { getEventDays } from "@/lib/stats"
-import { differenceInDays } from "date-fns"
+import { differenceInDays, endOfDay, startOfDay } from "date-fns"
 
 type Step = {
   title: string
@@ -46,8 +46,8 @@ export default function BookReadInfo({
   const lastEvent = book.readEvents[0]
   const readingTime =
     firstEvent && lastEvent
-      ? differenceInDays(lastEvent.readAt, firstEvent.readAt)
-      : 0
+      ? differenceInDays(endOfDay(lastEvent.readAt), startOfDay(firstEvent.readAt)) + 1
+      : 1
   const avg = chartData.reduce((a, b) => a + b.pagesRead, 0) / chartData.length
 
   const steps: Step[] = [
