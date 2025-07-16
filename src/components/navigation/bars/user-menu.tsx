@@ -2,6 +2,7 @@
 
 import {
   BoltIcon,
+  CheckIcon,
   GalleryVertical,
   LockKeyholeIcon,
   LogOutIcon,
@@ -29,6 +30,7 @@ import { use } from "react"
 import { Badge } from "../../ui/badge"
 import { Popover, PopoverTrigger } from "@/components/ui/popover"
 import { SimpleTooltip } from "@/components/ui/tooltip"
+import CheckMark from "@/components/checkmark";
 
 export default function UserMenu({
   auth,
@@ -76,9 +78,12 @@ export default function UserMenu({
       </SimpleTooltip>
       <DropdownMenuContent className="max-w-64" align="end">
         <DropdownMenuLabel className="flex min-w-0 flex-col">
-          <span className="text-foreground truncate text-sm font-medium">
-            {user.firstName} {user.lastName}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-foreground truncate text-sm font-medium">
+              {user.firstName} {user.lastName}
+            </span>
+            {user.verified && <CheckMark />}
+          </div>
           <span className="text-muted-foreground truncate text-xs font-normal">
             @{user.username}
           </span>
