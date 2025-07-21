@@ -509,16 +509,18 @@ export function BookView({
             </pre>
           )}
           {fieldsData && (
-            <div className="grid w-fit grid-cols-2 space-x-4">
-              {fieldsData.map((field: { title: string; value: string }) => (
-                <Fragment key={field.title + field.value}>
-                  <div className="text-end font-bold text-muted-foreground">
-                    {field.title}:
-                  </div>
-                  <div>{field.value}</div>
-                </Fragment>
-              ))}
-            </div>
+            <table>
+              <tbody>
+                {fieldsData.map((field: { title: string; value: string }) => (
+                  <tr key={field.title + field.value}>
+                    <td className="font-bold text-muted-foreground align-text-top">
+                      {field.title}:
+                    </td>
+                    <td className="pl-2">{field.value}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           )}
         </div>
       </div>
