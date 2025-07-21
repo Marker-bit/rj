@@ -207,7 +207,7 @@ export function BookView({
       </DrawerDialog>
       <div
         className={cn(
-          "group relative flex gap-2 rounded-md border p-2 transition-shadow hover:shadow-sm overflow-hidden",
+          "group relative flex flex-col gap-2 rounded-md border p-2 transition-shadow hover:shadow-sm overflow-hidden",
           book.background !== BackgroundColor.NONE &&
             "outline-solid outline-8 my-2",
           color && color.outline
@@ -286,243 +286,245 @@ export function BookView({
           setOpen={setBookReadOpen}
           book={book}
         />
-        {book.coverUrl && (
-          <Image
-            src={book.coverUrl}
-            alt="book"
-            width={192}
-            height={320}
-            className="h-40 w-auto rounded-md"
-          />
-        )}
-        <div className="flex flex-col">
-          <div className="text-xl font-bold">{book.title}</div>
-          <div className="text-sm">{book.author}</div>
-          <div className="my-2 flex flex-wrap items-center gap-2">
-            {book.readEvents.length === 0 ? (
-              <>
-                <IconBadge icon={CalendarDays}>Запланирована</IconBadge>
-                <IconBadge variant="secondary" icon={BookOpen}>
-                  {book.pages} страниц всего
-                </IconBadge>
-              </>
-            ) : lastEvent.pagesRead === book.pages ? (
-              <>
-                <IconBadge icon={BookOpenCheck}>Прочитана</IconBadge>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => undoEventMutation.mutate()}
-                  disabled={undoEventMutation.isPending}
-                  className="size-fit p-1"
-                >
-                  {undoEventMutation.isPending ? (
-                    <Loader className="size-4" />
-                  ) : (
-                    <Undo className="size-4" />
-                  )}
-                </Button>
-                <IconBadge variant="secondary" icon={BookOpen}>
-                  {book.pages}{" "}
-                  {declOfNum(book.pages, ["страница", "страницы", "страниц"])}{" "}
-                  всего
-                </IconBadge>
-                <IconBadge variant="outline" icon={CalendarDays}>
-                  {dateToString(new Date(lastEvent.readAt))}
-                </IconBadge>
-              </>
-            ) : (
-              <>
-                <IconBadge icon={BookIcon}>Читается</IconBadge>
-                <IconBadge variant="secondary" icon={BookOpen}>
-                  {lastEvent.pagesRead}/{book.pages}{" "}
-                  {declOfNum(book.pages, ["страницы", "страниц", "страниц"])} (
-                  {((lastEvent.pagesRead / book.pages) * 100).toFixed(1)}%)
-                </IconBadge>
-                <IconBadge variant="outline" icon={CalendarDays}>
-                  {dateToString(new Date(lastEvent.readAt))}
-                  <SimpleTooltip text="Отменить событие">
-                    <button
-                      onClick={() => undoEventMutation.mutate()}
-                      disabled={undoEventMutation.isPending}
-                      className="ml-1"
-                    >
-                      {undoEventMutation.isPending ? (
-                        <Loader className="size-3" />
-                      ) : (
-                        <Undo className="size-3" />
-                      )}
-                    </button>
-                  </SimpleTooltip>
-                </IconBadge>
-              </>
-            )}
-            {book.groupBook && (
-              <SimpleTooltip text="Группа, в которой находится книга">
-                <Link href={`/groups/${book.groupBook.group.id}`}>
-                  <IconBadge variant="outline" icon={Users}>
-                    {book.groupBook.group.title}
+        <div className="flex gap-2 items-start">
+          {book.coverUrl && (
+            <Image
+              src={book.coverUrl}
+              alt="book"
+              width={192}
+              height={320}
+              className="h-40 w-auto rounded-md"
+            />
+          )}
+          <div className="flex flex-col">
+            <div className="text-xl font-bold">{book.title}</div>
+            <div className="text-sm">{book.author}</div>
+            <div className="my-2 flex flex-wrap items-center gap-2">
+              {book.readEvents.length === 0 ? (
+                <>
+                  <IconBadge icon={CalendarDays}>Запланирована</IconBadge>
+                  <IconBadge variant="secondary" icon={BookOpen}>
+                    {book.pages} страниц всего
                   </IconBadge>
-                </Link>
-              </SimpleTooltip>
-            )}
-
-            {book.links.length !== 0 && (
-              <IconBadge
-                variant="outline"
-                onClick={() => setShareBookOpen(true)}
-                className="cursor-pointer"
-                icon={Link2}
-              >
-                {book.links.length}{" "}
-                {declOfNum(book.links.length, ["ссылка", "ссылки", "ссылок"])}
-              </IconBadge>
-            )}
-          </div>
-          <div className="flex flex-wrap gap-1">
-            {book.collections.map((collection) => (
-              <Badge key={collection.id} variant="outline">
-                {collection.name}
-              </Badge>
-            ))}
-            <SimpleTooltip text="Добавить в коллекцию">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => setCollectionsOpen(true)}
-              >
-                <Edit2 className="size-4" />
-              </Button>
-            </SimpleTooltip>
-          </div>
-          <div className="mt-1 flex flex-wrap gap-2">
-            <HelpButton
-              className="gap-2"
-              variant="outline"
-              size="icon"
-              onClick={() => setActionsDrawerOpen(true)}
-              helpText="Больше информации об этой книге"
-            >
-              <Info className="size-4" />
-            </HelpButton>
-            {lastEvent?.pagesRead !== book.pages && (
-              <>
-                <HelpButton
-                  className="gap-2"
-                  variant="outline"
-                  onClick={() => setDoneOpen(true)}
-                  helpText="Отметить книгу прочитанной в определённую дату"
-                >
-                  <BookOpenCheck className="size-4" />
-                  <div className="max-sm:hidden">Прочитана</div>
-                </HelpButton>
-                <HelpButton
-                  className="gap-2"
-                  variant="outline"
-                  onClick={() => setDateOpen(true)}
-                  helpText="Отметить прочтение определённого количества страниц книги в некоторую дату"
-                >
-                  <BookOpenTextIcon className="size-4" />
-                  <div className="max-sm:hidden">Отметить прочтение</div>
-                </HelpButton>
-              </>
-            )}
-            <HelpButton
-              className="gap-2"
-              variant="outline"
-              onClick={() => setShareBookOpen(true)}
-              helpText="Создайте ссылки на книгу, чтобы другие могли скопировать её себе"
-            >
-              <Share className="size-4" />
-              <div className="max-sm:hidden">Поделиться</div>
-            </HelpButton>
-            {history && (
-              <HelpButton
-                className="gap-2"
-                variant="outline"
-                onClick={() => setBookReadOpen(true)}
-                helpText="Создайте ссылки на книгу, чтобы другие могли скопировать её себе"
-              >
-                <BarChart className="size-4" />
-                <div className="max-sm:hidden">Статистика</div>
-              </HelpButton>
-            )}{" "}
-            {!history &&
-              (book.isHidden ? (
-                <HelpButton
-                  className="gap-2"
-                  variant="outline"
-                  onClick={() => hideMutation.mutate()}
-                  disabled={hideMutation.isPending}
-                  helpText="Переместить эту книгу в обычный список книг"
-                >
-                  {hideMutation.isPending ? (
-                    <Loader className="size-4" />
-                  ) : (
-                    <Eye className="size-4" />
-                  )}
-                  <div className="max-sm:hidden">Показать</div>
-                </HelpButton>
+                </>
+              ) : lastEvent.pagesRead === book.pages ? (
+                <>
+                  <IconBadge icon={BookOpenCheck}>Прочитана</IconBadge>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => undoEventMutation.mutate()}
+                    disabled={undoEventMutation.isPending}
+                    className="size-fit p-1"
+                  >
+                    {undoEventMutation.isPending ? (
+                      <Loader className="size-4" />
+                    ) : (
+                      <Undo className="size-4" />
+                    )}
+                  </Button>
+                  <IconBadge variant="secondary" icon={BookOpen}>
+                    {book.pages}{" "}
+                    {declOfNum(book.pages, ["страница", "страницы", "страниц"])}{" "}
+                    всего
+                  </IconBadge>
+                  <IconBadge variant="outline" icon={CalendarDays}>
+                    {dateToString(new Date(lastEvent.readAt))}
+                  </IconBadge>
+                </>
               ) : (
-                <HelpButton
-                  className="gap-2"
+                <>
+                  <IconBadge icon={BookIcon}>Читается</IconBadge>
+                  <IconBadge variant="secondary" icon={BookOpen}>
+                    {lastEvent.pagesRead}/{book.pages}{" "}
+                    {declOfNum(book.pages, ["страницы", "страниц", "страниц"])}{" "}
+                    ({((lastEvent.pagesRead / book.pages) * 100).toFixed(1)}%)
+                  </IconBadge>
+                  <IconBadge variant="outline" icon={CalendarDays}>
+                    {dateToString(new Date(lastEvent.readAt))}
+                    <SimpleTooltip text="Отменить событие">
+                      <button
+                        onClick={() => undoEventMutation.mutate()}
+                        disabled={undoEventMutation.isPending}
+                        className="ml-1"
+                      >
+                        {undoEventMutation.isPending ? (
+                          <Loader className="size-3" />
+                        ) : (
+                          <Undo className="size-3" />
+                        )}
+                      </button>
+                    </SimpleTooltip>
+                  </IconBadge>
+                </>
+              )}
+              {book.groupBook && (
+                <SimpleTooltip text="Группа, в которой находится книга">
+                  <Link href={`/groups/${book.groupBook.group.id}`}>
+                    <IconBadge variant="outline" icon={Users}>
+                      {book.groupBook.group.title}
+                    </IconBadge>
+                  </Link>
+                </SimpleTooltip>
+              )}
+
+              {book.links.length !== 0 && (
+                <IconBadge
                   variant="outline"
-                  onClick={() => hideMutation.mutate()}
-                  disabled={hideMutation.isPending}
-                  helpText="Переместить эту книгу в самый низ, например, чтобы отложить её чтение на будущее"
+                  onClick={() => setShareBookOpen(true)}
+                  className="cursor-pointer"
+                  icon={Link2}
                 >
-                  {hideMutation.isPending ? (
-                    <Loader className="size-4" />
-                  ) : (
-                    <EyeOff className="size-4" />
-                  )}
-                  <div className="max-sm:hidden">Скрыть</div>
-                </HelpButton>
+                  {book.links.length}{" "}
+                  {declOfNum(book.links.length, ["ссылка", "ссылки", "ссылок"])}
+                </IconBadge>
+              )}
+            </div>
+            <div className="flex flex-wrap gap-1">
+              {book.collections.map((collection) => (
+                <Badge key={collection.id} variant="outline">
+                  {collection.name}
+                </Badge>
               ))}
-            <Palette background={book.background} bookId={book.id} />
-            <div className="absolute right-0 top-0 m-2 flex scale-0 gap-2 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
-              <SimpleTooltip text="Отредактировать книгу">
+              <SimpleTooltip text="Добавить в коллекцию">
                 <Button
-                  size="icon"
                   variant="outline"
-                  className="size-fit p-1"
-                  onClick={() => setEditOpen(true)}
-                >
-                  <Edit className="size-4" />
-                </Button>
-              </SimpleTooltip>
-              <SimpleTooltip text="Удалить книгу">
-                <Button
                   size="icon"
-                  variant="outline"
-                  className="size-fit p-1"
-                  onClick={() => setDeleteDialogOpen(true)}
+                  onClick={() => setCollectionsOpen(true)}
                 >
-                  <Trash className="size-4" />
+                  <Edit2 className="size-4" />
                 </Button>
               </SimpleTooltip>
             </div>
           </div>
-          {book.description && (
-            <pre className="relative line-clamp-2 text-ellipsis text-wrap font-sans text-muted-foreground">
-              {book.description}
-            </pre>
-          )}
-          {fieldsData && (
-            <table>
-              <tbody>
-                {fieldsData.map((field: { title: string; value: string }) => (
-                  <tr key={field.title + field.value}>
-                    <td className="font-bold text-muted-foreground align-text-top">
-                      {field.title}:
-                    </td>
-                    <td className="pl-2">{field.value}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
         </div>
+        <div className="mt-1 flex flex-wrap gap-2">
+          <HelpButton
+            className="gap-2"
+            variant="outline"
+            size="icon"
+            onClick={() => setActionsDrawerOpen(true)}
+            helpText="Больше информации об этой книге"
+          >
+            <Info className="size-4" />
+          </HelpButton>
+          {lastEvent?.pagesRead !== book.pages && (
+            <>
+              <HelpButton
+                className="gap-2"
+                variant="outline"
+                onClick={() => setDoneOpen(true)}
+                helpText="Отметить книгу прочитанной в определённую дату"
+              >
+                <BookOpenCheck className="size-4" />
+                <div className="max-sm:hidden">Прочитана</div>
+              </HelpButton>
+              <HelpButton
+                className="gap-2"
+                variant="outline"
+                onClick={() => setDateOpen(true)}
+                helpText="Отметить прочтение определённого количества страниц книги в некоторую дату"
+              >
+                <BookOpenTextIcon className="size-4" />
+                <div className="max-sm:hidden">Отметить прочтение</div>
+              </HelpButton>
+            </>
+          )}
+          <HelpButton
+            className="gap-2"
+            variant="outline"
+            onClick={() => setShareBookOpen(true)}
+            helpText="Создайте ссылки на книгу, чтобы другие могли скопировать её себе"
+          >
+            <Share className="size-4" />
+            <div className="max-sm:hidden">Поделиться</div>
+          </HelpButton>
+          {history && (
+            <HelpButton
+              className="gap-2"
+              variant="outline"
+              onClick={() => setBookReadOpen(true)}
+              helpText="Создайте ссылки на книгу, чтобы другие могли скопировать её себе"
+            >
+              <BarChart className="size-4" />
+              <div className="max-sm:hidden">Статистика</div>
+            </HelpButton>
+          )}{" "}
+          {!history &&
+            (book.isHidden ? (
+              <HelpButton
+                className="gap-2"
+                variant="outline"
+                onClick={() => hideMutation.mutate()}
+                disabled={hideMutation.isPending}
+                helpText="Переместить эту книгу в обычный список книг"
+              >
+                {hideMutation.isPending ? (
+                  <Loader className="size-4" />
+                ) : (
+                  <Eye className="size-4" />
+                )}
+                <div className="max-sm:hidden">Показать</div>
+              </HelpButton>
+            ) : (
+              <HelpButton
+                className="gap-2"
+                variant="outline"
+                onClick={() => hideMutation.mutate()}
+                disabled={hideMutation.isPending}
+                helpText="Переместить эту книгу в самый низ, например, чтобы отложить её чтение на будущее"
+              >
+                {hideMutation.isPending ? (
+                  <Loader className="size-4" />
+                ) : (
+                  <EyeOff className="size-4" />
+                )}
+                <div className="max-sm:hidden">Скрыть</div>
+              </HelpButton>
+            ))}
+          <Palette background={book.background} bookId={book.id} />
+          <div className="absolute right-0 top-0 m-2 flex scale-0 gap-2 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
+            <SimpleTooltip text="Отредактировать книгу">
+              <Button
+                size="icon"
+                variant="outline"
+                className="size-fit p-1"
+                onClick={() => setEditOpen(true)}
+              >
+                <Edit className="size-4" />
+              </Button>
+            </SimpleTooltip>
+            <SimpleTooltip text="Удалить книгу">
+              <Button
+                size="icon"
+                variant="outline"
+                className="size-fit p-1"
+                onClick={() => setDeleteDialogOpen(true)}
+              >
+                <Trash className="size-4" />
+              </Button>
+            </SimpleTooltip>
+          </div>
+        </div>
+        {book.description && (
+          <pre className="relative line-clamp-2 text-ellipsis text-wrap font-sans text-muted-foreground">
+            {book.description}
+          </pre>
+        )}
+        {fieldsData && (
+          <table>
+            <tbody>
+              {fieldsData.map((field: { title: string; value: string }) => (
+                <tr key={field.title + field.value}>
+                  <td className="font-bold text-muted-foreground align-text-top">
+                    {field.title}:
+                  </td>
+                  <td className="pl-2">{field.value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </>
   )
