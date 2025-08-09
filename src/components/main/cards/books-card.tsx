@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/select"
 import { getBooks } from "@/lib/actions/books"
 import { Skeleton } from "@/components/ui/skeleton"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 
 export default function BooksCard() {
   const [open, setOpen] = useState(false)
@@ -37,35 +38,21 @@ export default function BooksCard() {
     "orderBy",
     "percent"
   )
-  const [isPending, startTransition] = useTransition()
-  const [pageLoading, setPageLoading] = useState(true)
-  const [books, setBooks] = useState<Awaited<ReturnType<typeof fetchBooks>>>([])
+  const queryClient = useQueryClient()
 
-  const updateBooks = (orderBy: "percent" | "activity") => {
-    startTransition(async () => {
-      const books = await getBooks(orderBy)
-      setBooks(
-        books
-          .filter(
-            (book) =>
-              book.readEvents[0]?.pagesRead !== book.pages && !book.isHidden
-          )
-          .slice(0, 3)
-      )
-    })
-  }
+  const percentBooks = useQuery({
+    queryKey: ["books", "percent"],
+    queryFn: () => getBooks("percent"),
+    enabled: orderBy === "percent", // only fetch when percent is selected
+  })
 
-  const refetchBooks = () => {
-    updateBooks(orderBy)
-  }
+  const activityBooks = useQuery({
+    queryKey: ["books", "activity"],
+    queryFn: () => getBooks("activity"),
+    enabled: orderBy === "activity", // only fetch when activity is selected
+  })
 
-  useEffect(() => {
-    updateBooks(orderBy)
-  }, [orderBy])
-
-  useEffect(() => {
-    setPageLoading(false)
-  }, [])
+  const booksQuery = orderBy === "percent" ? percentBooks : activityBooks
 
   return (
     <>
@@ -103,14 +90,20 @@ export default function BooksCard() {
           </CardAction>
         </CardHeader>
         <CardContent>
-          {isPending || pageLoading ? (
+          {booksQuery.isLoading ? (
             <Skeleton className="h-36 w-full" />
-          ) : (
+          ) : booksQuery.isSuccess ? (
             <div className="flex flex-col gap-2">
-              {books.map((book) => (
-                <BookView book={book} key={book.id} onUpdate={refetchBooks} />
+              {booksQuery.data.map((book) => (
+                <BookView
+                  book={book}
+                  key={book.id}
+                  onUpdate={() => {
+                    queryClient.invalidateQueries({ queryKey: ["books"] })
+                  }}
+                />
               ))}
-              {books.length === 0 && (
+              {booksQuery.data.length === 0 && (
                 <div className="rounded-md border px-4 py-3">
                   <div className="flex gap-3">
                     <TriangleAlert
@@ -134,6 +127,10 @@ export default function BooksCard() {
                   </div>
                 </div>
               )}
+            </div>
+          ) : (
+            <div className="bg-red-300 dark:bg-red-700 p-2 rounded-md">
+              <p>Произошла ошибка</p>
             </div>
           )}
         </CardContent>
