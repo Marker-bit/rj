@@ -6,7 +6,7 @@ import { db } from "../db";
 import { validateRequest } from "../server-validate-request";
 import { z } from "zod";
 
-export async function getBooks(orderBy: "percent" | "activity" = "percent") {
+export async function getBooks(orderBy: "percent" | "activity" = "percent", mainPage: boolean = false) {
   const { user } = await validateRequest();
 
   if (!user) {
@@ -14,6 +14,10 @@ export async function getBooks(orderBy: "percent" | "activity" = "percent") {
   }
 
   const books = await fetchBooks(user.id, { orderBy });
+
+  if (mainPage) {
+    return books.slice(0, 3);
+  }
   return books;
 }
 

@@ -44,13 +44,13 @@ export default function BooksCard() {
 
   const percentBooks = useQuery({
     queryKey: ["books", "percent"],
-    queryFn: () => getBooks("percent"),
+    queryFn: () => getBooks("percent", true),
     enabled: orderBy === "percent", // only fetch when percent is selected
   })
 
   const activityBooks = useQuery({
     queryKey: ["books", "activity"],
-    queryFn: () => getBooks("activity"),
+    queryFn: () => getBooks("activity", true),
     enabled: orderBy === "activity", // only fetch when activity is selected
   })
 
