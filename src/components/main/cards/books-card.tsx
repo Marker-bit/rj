@@ -14,7 +14,9 @@ import {
 import { fetchBooks } from "@/lib/books"
 import {
   ArrowRightIcon,
+  CalendarIcon,
   ChevronRight,
+  PercentIcon,
   PlusIcon,
   TriangleAlert,
 } from "lucide-react"
@@ -129,8 +131,12 @@ export default function BooksCard() {
               )}
             </div>
           ) : (
-            <div className="bg-red-300 dark:bg-red-700 p-2 rounded-md">
-              <p>Произошла ошибка</p>
+            <div className="bg-red-500/40 text-red-500 p-4 rounded-md flex gap-2 items-start">
+              <TriangleAlert className="size-4" aria-hidden="true" />
+              <div className="flex flex-col leading-tight">
+                <div className="font-bold">Произошла ошибка</div>
+                <div className="text-sm">{booksQuery.error?.message}</div>
+              </div>
             </div>
           )}
         </CardContent>
