@@ -1015,6 +1015,7 @@ packages:
   '@node-rs/argon2-win32-x64-msvc@2.0.2':
     resolution: {integrity: sha512-cJxWXanH4Ew9CfuZ4IAEiafpOBCe97bzoKowHCGk5lG/7kR4WF/eknnBlHW9m8q7t10mKq75kruPLtbSDqgRTw==}
     engines: {node: '>= 10'}
+    cpu: [x64]
     os: [win32]
 
   '@node-rs/argon2@2.0.2':

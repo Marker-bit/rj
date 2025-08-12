@@ -76,7 +76,7 @@ export function DateDoneModal({
             return
           }
           await readDoneMutation.mutate({ readAt: date })
-          console.log(evt.screenX, evt.screenY)
+          
           confetti({
             particleCount: 100,
             origin: {

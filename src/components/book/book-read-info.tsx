@@ -15,7 +15,9 @@ import useMeasure from "react-use-measure"
 import { DayChart } from "./day-chart"
 import { Book } from "@/lib/api-types"
 import { getEventDays } from "@/lib/stats"
-import { differenceInDays, endOfDay, startOfDay } from "date-fns"
+import { differenceInDays, endOfDay, formatDate, startOfDay } from "date-fns"
+import { formatDateRange } from "little-date";
+import { ru } from "date-fns/locale";
 
 type Step = {
   title: string
@@ -55,18 +57,14 @@ export default function BookReadInfo({
       title: "Поздравляем, вы прочитали эту книгу!",
       description: "Вся информация о ней",
     },
-    {
-      title: "Вы начали читать",
-      highlightedText: firstEvent ? dateToString(firstEvent.readAt) : "",
-    },
-    {
-      title: "А закончили",
-      highlightedText: lastEvent ? dateToString(lastEvent.readAt) : "",
+    (firstEvent && lastEvent) ? {
+      title: "Вы читали",
+      highlightedText: `с ${formatDate(firstEvent.readAt, "d MMMM, yyyy", {locale: ru})} по ${formatDate(lastEvent.readAt, "d MMMM, yyyy", {locale: ru})}`,
       highlightedTextDescription: `Всего вы читали ${readingTime} ${declOfNum(
         readingTime,
         ["день", "дня", "дней"]
       )}`,
-    },
+    } : undefined,
     {
       title: "В среднем, вы читали",
       highlightedText: `${avg.toFixed(1)} ${declOfNum(Math.floor(avg), [
@@ -81,7 +79,7 @@ export default function BookReadInfo({
       description: "Показан каждый день от первого до последнего",
       component: <DayChart data={chartData} />,
     },
-  ]
+  ].filter(a => a !== undefined)
 
   const [ref, { height: stepHeight }] = useMeasure()
 
