@@ -48,6 +48,7 @@ import { Loader } from "../ui/loader";
 import { SimpleTooltip } from "../ui/tooltip";
 import BookReadInfo from "./book-read-info";
 import Palette from "./palette";
+import confetti from "canvas-confetti";
 
 export const dynamic = "force-dynamic"
 
