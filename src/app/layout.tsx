@@ -1,19 +1,20 @@
-import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/next";
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "@/app/globals.css";
-import { QueryProvider } from "@/components/providers/query-client-provider";
-import { ThemeProvider } from "@/components/providers/theme-provider";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
-import { extractRouterConfig } from "uploadthing/server";
+import { Analytics } from "@vercel/analytics/react"
+import { SpeedInsights } from "@vercel/speed-insights/next"
+import type { Metadata } from "next"
+import { Inter } from "next/font/google"
+import "@/app/globals.css"
+import { QueryProvider } from "@/components/providers/query-client-provider"
+import { ThemeProvider } from "@/components/providers/theme-provider"
+import { TooltipProvider } from "@/components/ui/tooltip"
+import { Toaster } from "@/components/ui/toaster"
+import { Toaster as Sonner } from "@/components/ui/sonner"
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin"
+import { extractRouterConfig } from "uploadthing/server"
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
-import { ourFileRouter } from "@/app/(app)/api/uploadthing/core";
+import { ourFileRouter } from "@/app/(app)/api/uploadthing/core"
 
-const font = Inter({ subsets: ["latin"] });
+const font = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://rjrj.ru/"),
@@ -167,16 +168,19 @@ export const metadata: Metadata = {
       },
     ],
   },
-};
+}
 
 export default async function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={font.className + " overflow-x-hidden"} vaul-drawer-wrapper="">
+      <body
+        className={font.className + " overflow-x-hidden"}
+        vaul-drawer-wrapper=""
+      >
         <QueryProvider>
           <ThemeProvider
             attribute="class"
@@ -193,10 +197,11 @@ export default async function RootLayout({
               <SpeedInsights />
               <Toaster />
               <Sonner />
+              <ReactQueryDevtools initialIsOpen={false} />
             </TooltipProvider>
           </ThemeProvider>
         </QueryProvider>
       </body>
     </html>
-  );
+  )
 }

@@ -1,15 +1,16 @@
-"use client";
+"use client"
 
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { DrawerDialog } from "@/components/ui/drawer-dialog";
-import { getMonth, startOfDay } from "date-fns";
-import { ru } from "date-fns/locale";
-import { Save } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
-import { Loader } from "../../ui/loader";
+import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
+import { DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { DrawerDialog } from "@/components/ui/drawer-dialog"
+import { getMonth, startOfDay } from "date-fns"
+import { ru } from "date-fns/locale"
+import { Save } from "lucide-react"
+import { useState } from "react"
+import { toast } from "sonner"
+import { Loader } from "../../ui/loader"
+import confetti from "canvas-confetti"
 
 export function DateDoneModal({
   isOpen,
@@ -17,31 +18,31 @@ export function DateDoneModal({
   readDoneMutation,
   book,
 }: {
-  isOpen: boolean;
-  setIsOpen: (open: boolean) => void;
-  readDoneMutation: any;
-  book: { readEvents: { readAt: Date }[] };
+  isOpen: boolean
+  setIsOpen: (open: boolean) => void
+  readDoneMutation: any
+  book: { readEvents: { readAt: Date }[] }
 }) {
-  const today = new Date();
-  const [date, setDate] = useState<Date | undefined>(today);
+  const today = new Date()
+  const [date, setDate] = useState<Date | undefined>(today)
 
-  const days: Date[] = [];
+  const days: Date[] = []
 
   for (const event of book.readEvents) {
-    const date = startOfDay(event.readAt);
+    const date = startOfDay(event.readAt)
     if (!days.includes(date)) {
-      days.push(date);
+      days.push(date)
     }
   }
 
   const handleClose = (b: boolean) => {
     if (b) {
-      setIsOpen(true);
-      return;
+      setIsOpen(true)
+      return
     }
-    setDate(new Date());
-    setIsOpen(false);
-  };
+    setDate(new Date())
+    setIsOpen(false)
+  }
 
   return (
     <DrawerDialog open={isOpen} onOpenChange={handleClose}>
@@ -54,7 +55,7 @@ export function DateDoneModal({
           selected={date}
           onSelect={(newDate) => {
             if (newDate) {
-              setDate(newDate);
+              setDate(newDate)
             }
           }}
           className="w-fit rounded-md border max-sm:w-full"
@@ -62,17 +63,27 @@ export function DateDoneModal({
           weekStartsOn={1}
           locale={ru}
           modifiers={{ events: days }}
-          modifiersClassNames={{ events: "underline decoration-2 decoration-green-500" }}
+          modifiersClassNames={{
+            events: "underline decoration-2 decoration-green-500",
+          }}
         />
       </div>
 
       <Button
-        onClick={() => {
+        onClick={async (evt) => {
           if (!date) {
-            toast.error("Вы не выбрали дату");
-            return;
+            toast.error("Вы не выбрали дату")
+            return
           }
-          readDoneMutation.mutate({ readAt: date });
+          await readDoneMutation.mutate({ readAt: date })
+          
+          confetti({
+            particleCount: 100,
+            origin: {
+              x: evt.screenX / window.innerWidth,
+              y: evt.screenY / window.innerHeight,
+            },
+          })
         }}
         className="w-fit max-sm:w-full"
       >
@@ -84,5 +95,5 @@ export function DateDoneModal({
         Отметить
       </Button>
     </DrawerDialog>
-  );
+  )
 }
