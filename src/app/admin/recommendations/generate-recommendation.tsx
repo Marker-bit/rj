@@ -1,9 +1,9 @@
 "use client";
 
-import { IconBadge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
+import { IconBadge } from "@/components/ui/icon-badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -11,8 +11,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { SimpleTooltip } from "@/components/ui/simple-tooltip";
 import { Textarea } from "@/components/ui/textarea";
-import { SimpleTooltip } from "@/components/ui/tooltip";
 import { addRecommendation } from "@/lib/actions/recommendations";
 import { addDays, startOfToday } from "date-fns";
 import {
@@ -74,7 +74,7 @@ type Rec = { slogan: string; bookInfo: string; title: string; author: string };
 const getRecommendation = async (
   apiKey: string,
   modelName: string,
-  prompt?: string
+  prompt?: string,
 ): Promise<{ recommendation: Rec; cost: number } | { error: string }> => {
   const response = await fetch(
     "https://openrouter.ai/api/v1/chat/completions",
@@ -123,7 +123,7 @@ const getRecommendation = async (
           include: true,
         },
       }),
-    }
+    },
   );
 
   const data = await response.json();
@@ -140,7 +140,7 @@ export default function GenerateRecommendation() {
   const [open, setOpen] = useState(false);
   const [openRouterToken, setOpenRouterToken] = useLocalStorage<string>(
     "openRouterToken",
-    ""
+    "",
   );
   const [prompt, setPrompt] = useState(DEFAULT_PROMPT);
   const [model, setModel] = useState("google/gemini-2.5-flash-preview-05-20");
@@ -157,7 +157,7 @@ export default function GenerateRecommendation() {
     const recommendation = await getRecommendation(
       openRouterToken,
       model,
-      prompt
+      prompt,
     );
     setResult(recommendation);
     setLoading(false);
@@ -299,7 +299,7 @@ export default function GenerateRecommendation() {
                         startsOn: today,
                         endsOn: addDays(today, 6),
                         published: false,
-                      })
+                      }),
                     );
                     toast.success("Рекомендация скопирована в буфер обмена");
                   }}

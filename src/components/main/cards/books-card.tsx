@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { AddBookDialog } from "@/components/book/book-form"
-import { BookView } from "@/components/book/book-view"
-import { Button } from "@/components/ui/button"
+import { AddBookDialog } from "@/components/book/book-form";
+import { BookView } from "@/components/book/book-view";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardAction,
@@ -10,51 +10,60 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { fetchBooks } from "@/lib/books"
+} from "@/components/ui/card";
+import { fetchBooks } from "@/lib/books";
 import {
+  ArrowDownNarrowWide,
+  ArrowDownNarrowWideIcon,
   ArrowRightIcon,
   CalendarIcon,
+  CheckIcon,
   ChevronRight,
   PercentIcon,
   PlusIcon,
   TriangleAlert,
-} from "lucide-react"
-import Link from "next/link"
-import { useEffect, useState, useTransition } from "react"
-import { useLocalStorage } from "usehooks-ts"
+} from "lucide-react";
+import Link from "next/link";
+import { useEffect, useState, useTransition } from "react";
+import { useLocalStorage } from "usehooks-ts";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { getBooks } from "@/lib/actions/books"
-import { Skeleton } from "@/components/ui/skeleton"
-import { useQuery, useQueryClient } from "@tanstack/react-query"
+} from "@/components/ui/select";
+import { getBooks } from "@/lib/actions/books";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function BooksCard() {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
   const [orderBy, setOrderBy] = useLocalStorage<"percent" | "activity">(
     "orderBy",
-    "percent"
-  )
-  const queryClient = useQueryClient()
+    "percent",
+  );
+  const queryClient = useQueryClient();
 
   const percentBooks = useQuery({
     queryKey: ["books", "percent"],
     queryFn: () => getBooks("percent", true),
     enabled: orderBy === "percent", // only fetch when percent is selected
-  })
+  });
 
   const activityBooks = useQuery({
     queryKey: ["books", "activity"],
     queryFn: () => getBooks("activity", true),
     enabled: orderBy === "activity", // only fetch when activity is selected
-  })
+  });
 
-  const booksQuery = orderBy === "percent" ? percentBooks : activityBooks
+  const booksQuery = orderBy === "percent" ? percentBooks : activityBooks;
 
   return (
     <>
@@ -62,23 +71,32 @@ export default function BooksCard() {
         <CardHeader>
           <CardTitle>Книги</CardTitle>
           <CardDescription className="flex gap-2 items-center">
-            3 книги{" "}
-            <Select
-              value={orderBy}
-              onValueChange={(a) => setOrderBy(a as "percent" | "activity")}
-            >
-              <SelectTrigger className="bg-transparent! border-0 p-0 focus-visible:ring-0 h-fit!">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="percent">
-                  с наибольшим прогрессом чтения
-                </SelectItem>
-                <SelectItem value="activity">с недавней активностью</SelectItem>
-              </SelectContent>
-            </Select>
+            Недавние книги
           </CardDescription>
           <CardAction className="flex gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline">
+                  <div className="max-sm:hidden">Сортировать</div>
+                  <ArrowDownNarrowWideIcon />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => setOrderBy("percent")}>
+                  <PercentIcon />
+                  По прогрессу чтения
+                  {orderBy === "percent" && (
+                    <CheckIcon className="ml-auto opacity-60" />
+                  )}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setOrderBy("activity")}>
+                  <CalendarIcon /> По дате последней активности
+                  {orderBy === "activity" && (
+                    <CheckIcon className="ml-auto opacity-60" />
+                  )}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Button variant="outline" asChild>
               <Link href="/books">
                 <div className="max-sm:hidden">Больше</div>
@@ -101,7 +119,7 @@ export default function BooksCard() {
                   book={book}
                   key={book.id}
                   onUpdate={() => {
-                    queryClient.invalidateQueries({ queryKey: ["books"] })
+                    queryClient.invalidateQueries({ queryKey: ["books"] });
                   }}
                 />
               ))}
@@ -143,5 +161,5 @@ export default function BooksCard() {
       </Card>
       <AddBookDialog open={open} setOpen={setOpen} />
     </>
-  )
+  );
 }

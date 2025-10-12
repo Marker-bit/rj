@@ -1,18 +1,18 @@
-"use client"
+"use client";
 
 import {
   BoltIcon,
-  CheckIcon,
   GalleryVertical,
   LockKeyholeIcon,
   LogOutIcon,
   MessageCircleQuestion,
   Undo2Icon,
   UserIcon,
-} from "lucide-react"
+} from "lucide-react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
+import CheckMark from "@/components/checkmark";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,36 +21,34 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { logOut } from "@/lib/actions/auth"
-import { User } from "lucia"
-import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
-import { use } from "react"
-import { Badge } from "../../ui/badge"
-import { Popover, PopoverTrigger } from "@/components/ui/popover"
-import { SimpleTooltip } from "@/components/ui/tooltip"
-import CheckMark from "@/components/checkmark";
+} from "@/components/ui/dropdown-menu";
+import { SimpleTooltip } from "@/components/ui/simple-tooltip";
+import { logOut } from "@/lib/actions/auth";
+import { User } from "lucia";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { use } from "react";
+import { Badge } from "../../ui/badge";
 
 export default function UserMenu({
   auth,
   admin = false,
 }: {
-  auth: Promise<{ user: User; unread: number } | { user: null; unread: null }>
-  admin?: boolean
+  auth: Promise<{ user: User; unread: number } | { user: null; unread: null }>;
+  admin?: boolean;
 }) {
-  const { user, unread } = use(auth)
-  const router = useRouter()
-  const pathname = usePathname()
+  const { user, unread } = use(auth);
+  const router = useRouter();
+  const pathname = usePathname();
 
   if (!user) {
-    return null
+    return null;
   }
 
   const logOutClick = async () => {
-    await logOut()
-    router.replace("/")
-  }
+    await logOut();
+    router.replace("/");
+  };
 
   return (
     <DropdownMenu>
@@ -153,5 +151,5 @@ export default function UserMenu({
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

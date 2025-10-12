@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -9,23 +9,23 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { UploadButton, UploadDropzone } from "@/components/uploadthing"
-import { createBook } from "@/lib/actions/books"
-import { cn } from "@/lib/utils"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Plus, Trash, X } from "lucide-react"
-import Image from "next/image"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { useFieldArray, useForm } from "react-hook-form"
-import { toast } from "sonner"
-import { z } from "zod"
-import { DialogHeader, DialogTitle } from "../ui/dialog"
-import { DrawerDialog } from "../ui/drawer-dialog"
-import { Loader } from "../ui/loader"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { UploadButton, UploadDropzone } from "@/components/uploadthing";
+import { createBook } from "@/lib/actions/books";
+import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Plus, Trash, X } from "lucide-react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
+import { DialogHeader, DialogTitle } from "../ui/dialog";
+import { DrawerDialog } from "../ui/drawer-dialog";
+import { Loader } from "../ui/loader";
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -39,9 +39,9 @@ const bookSchema = z.object({
       value: z.string({
         required_error: "Значение поля обязательно",
       }),
-    })
+    }),
   ),
-})
+});
 
 export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
   const form = useForm<z.infer<typeof bookSchema>>({
@@ -54,31 +54,22 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
       description: "",
       fields: [],
     },
-  })
-  const [search, setSearch] = useState("")
-  const [searchLoading, setSearchLoading] = useState(false)
-  const [searchResults, setSearchResults] = useState<
-    {
-      title: string
-      authors: string
-      imageUrl: string | null
-    }[]
-  >()
-  const [fileUploading, setFileUploading] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const router = useRouter()
+  });
+  const [fileUploading, setFileUploading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const { fields, append, remove } = useFieldArray({
     name: "fields",
     control: form.control,
-  })
+  });
 
   async function onSubmit(values: z.infer<typeof bookSchema>) {
-    setLoading(true)
-    await createBook(values)
-    setLoading(false)
-    router.refresh()
-    window.location.reload()
+    setLoading(true);
+    await createBook(values);
+    setLoading(false);
+    router.refresh();
+    window.location.reload();
     form.reset({
       title: "",
       author: "",
@@ -86,69 +77,12 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
       coverUrl: "",
       description: "",
       fields: [],
-    })
-    if (onSuccess) onSuccess()
+    });
+    if (onSuccess) onSuccess();
   }
 
   return (
     <>
-      <div className="mb-2 flex flex-col gap-2">
-        {/* <form
-          onSubmit={(evt) => {
-            evt.preventDefault();
-            searchClick();
-          }}
-        >
-          <div className="flex gap-2">
-            <Input
-              className="w-full"
-              value={search}
-              onChange={(evt) => setSearch(evt.target.value)}
-              placeholder="Поиск"
-            />
-            <Button size="icon" disabled={search.length === 0} type="submit">
-              {searchLoading ? (
-                <Loader className="w-4 h-4 animate-spin" />
-              ) : (
-                <Search className="w-4 h-4" />
-              )}
-            </Button>
-          </div>
-        </form> */}
-        <div className="flex gap-2 md:grid md:grid-cols-2 lg:grid-cols-4">
-          {searchResults &&
-            searchResults.slice(0, 5).map((book) => (
-              <button
-                key={book.title}
-                className="flex gap-2 rounded-xl border p-3"
-                onClick={() => {
-                  form.reset({
-                    title: book.title,
-                    author: book.authors,
-                    coverUrl: book.imageUrl ?? undefined,
-                  })
-                  setSearchResults(undefined)
-                }}
-              >
-                {book.imageUrl && (
-                  <Image
-                    src={book.imageUrl}
-                    width={500}
-                    height={500}
-                    className="h-auto w-[20vw] rounded-md md:w-[15vw] lg:w-[10vw]"
-                    alt="cover"
-                  />
-                )}
-                <div className="flex flex-col">
-                  <div className="text-xl">{book.title}</div>
-                  <div className="w-fit text-xs text-black/70">
-                    {book.authors}
-                  </div>
-                </div>
-              </button>
-            ))}
-        </div>
-      </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
           <FormField
@@ -186,21 +120,21 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
                           isUploading || fileUploading
                             ? "Загрузка..."
                             : ready
-                            ? "Обложка"
-                            : "Подождите...",
+                              ? "Обложка"
+                              : "Подождите...",
                         allowedContent: "Картинка (до 8МБ)",
                       }}
                       onClientUploadComplete={(res) => {
-                        field.onChange(res[0].ufsUrl)
-                        setFileUploading(false)
+                        field.onChange(res[0].ufsUrl);
+                        setFileUploading(false);
                       }}
                       onUploadError={(error: Error) => {
                         toast.error("Ошибка при загрузке обложки", {
                           description: error.message,
-                        })
+                        });
                       }}
                       onUploadBegin={(fileName) => {
-                        setFileUploading(true)
+                        setFileUploading(true);
                       }}
                       className="ut-button:bg-blue-500 ut-button:ut-readying:bg-blue-500/50 ut-button:px-4 ut-button:ut-uploading:bg-blue-500/50"
                     />
@@ -323,15 +257,15 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
         </form>
       </Form>
     </>
-  )
+  );
 }
 
 export function AddBookDialog({
   open,
   setOpen,
 }: {
-  open: boolean
-  setOpen: (open: boolean) => void
+  open: boolean;
+  setOpen: (open: boolean) => void;
 }) {
   return (
     <>
@@ -342,11 +276,11 @@ export function AddBookDialog({
         <div className="p-4">
           <BookForm
             onSuccess={() => {
-              setOpen(false)
+              setOpen(false);
             }}
           />
         </div>
       </DrawerDialog>
     </>
-  )
+  );
 }

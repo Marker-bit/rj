@@ -67,12 +67,14 @@ export function DateReadModal({
               setDate(newDate);
             }
           }}
-          className="w-fit rounded-md border max-sm:w-full"
+          className="rounded-md border w-full"
           disabled={{ after: today }}
           weekStartsOn={1}
           locale={ru}
           modifiers={{ events: days }}
-          modifiersClassNames={{ events: "underline decoration-2 decoration-green-500" }}
+          modifiersClassNames={{
+            events: "underline decoration-2 decoration-green-500",
+          }}
         />
         {/* добавить captionLayout? */}
         <form

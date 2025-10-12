@@ -2,7 +2,14 @@
 
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
 import { DialogHeader, DialogTitle } from "../../ui/dialog";
-import { CopyCheck, CopyIcon, Settings, Trash } from "lucide-react";
+import {
+  CheckIcon,
+  CopyCheck,
+  CopyIcon,
+  LinkIcon,
+  Settings,
+  Trash,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
@@ -12,6 +19,21 @@ import { Loader } from "../../ui/loader";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { deleteBookLink } from "@/lib/actions/books";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard";
 
 export function ShareBookModal({
   open,
@@ -29,6 +51,7 @@ export function ShareBookModal({
   // }, [book.id]);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { copyToClipboard, isCopied } = useCopyToClipboard();
 
   const createLink = async () => {
     setLoading(true);
@@ -74,55 +97,38 @@ export function ShareBookModal({
       <div className="mt-2">
         <div className="flex flex-col items-stretch gap-2">
           {book.links.map((link) => (
-            <div className="flex w-full gap-2" key={link.id}>
-              <Input
-                readOnly
-                value={`${
-                  typeof window !== "undefined" && window.location.origin
-                }/sharedbook/${link.id}`}
-                className="w-full"
-              />
-              <Button
-                onClick={() => {
-                  navigator.clipboard.writeText(
-                    `${
-                      typeof window !== "undefined" && window.location.origin
-                    }/sharedbook/${link.id}`,
-                  );
-                  setCopyLink(link.id);
-                  setTimeout(() => {
-                    setCopyLink(undefined);
-                  }, 2000);
-                }}
-              >
-                <AnimatePresence mode="wait" initial={false}>
-                  {copyLink === link.id ? (
-                    <motion.div
-                      className="flex items-center gap-2 text-green-400 dark:text-green-600"
-                      initial={{ opacity: 0, scale: 0 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0 }}
-                      key="copied"
-                    >
-                      <CopyCheck className="size-4" />
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      className="flex items-center gap-2"
-                      initial={{ opacity: 0, scale: 0 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0 }}
-                      key="copy"
-                    >
-                      <CopyIcon className="size-4" />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </Button>
+            <div className="flex w-full gap-2 items-center" key={link.id}>
+              <InputGroup className="grow">
+                <InputGroupInput
+                  value={`${
+                    typeof window !== "undefined" && window.location.origin
+                  }/sharedbook/${link.id}`}
+                  readOnly
+                />
+                <InputGroupAddon align="inline-end">
+                  <InputGroupButton
+                    aria-label="Copy"
+                    title="Copy"
+                    size="icon-xs"
+                    onClick={() => {
+                      copyToClipboard(
+                        `${
+                          typeof window !== "undefined" &&
+                          window.location.origin
+                        }/sharedbook/${link.id}`,
+                      );
+                    }}
+                  >
+                    {isCopied ? <CheckIcon /> : <CopyIcon />}
+                  </InputGroupButton>
+                </InputGroupAddon>
+              </InputGroup>
               <Button
                 onClick={() => deleteLink(link.id)}
                 disabled={loading}
                 variant="outline"
+                size="icon"
+                className="shrink-0"
               >
                 <Trash className="size-4" />
               </Button>
@@ -130,6 +136,8 @@ export function ShareBookModal({
                 onClick={() => toast.info("В разработке")}
                 disabled={loading}
                 variant="outline"
+                size="icon"
+                className="shrink-0"
               >
                 <Settings className="size-4" />
               </Button>
@@ -137,7 +145,17 @@ export function ShareBookModal({
           ))}
         </div>
         {book.links.length === 0 && (
-          <div className="mt-2 text-center">Нет доступных ссылок</div>
+          <Empty>
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <LinkIcon />
+              </EmptyMedia>
+              <EmptyTitle>Ссылок ещё нет</EmptyTitle>
+              <EmptyDescription>
+                Вы ещё не создали ни одной ссылки. Создайте свою первую ссылку.
+              </EmptyDescription>
+            </EmptyHeader>
+          </Empty>
         )}
         <Button
           className="mt-2 w-full items-center gap-2"

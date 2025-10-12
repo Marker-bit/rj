@@ -1,13 +1,9 @@
 import { BookView } from "@/components/book/book-view";
 import { Button } from "@/components/ui/button";
-import { SimpleTooltip } from "@/components/ui/tooltip";
+import { SimpleTooltip } from "@/components/ui/simple-tooltip";
 import { fetchBook, fetchBooks } from "@/lib/books";
 import { validateRequest } from "@/lib/server-validate-request";
-import {
-  ArrowRightIcon,
-  ChevronLeft,
-  HistoryIcon
-} from "lucide-react";
+import { ArrowRightIcon, ChevronLeft, HistoryIcon } from "lucide-react";
 import Link from "next/link";
 import { BookList } from "./book-list";
 import AddBookButton from "./button";
@@ -20,17 +16,23 @@ export default async function BooksPage(props: {
   const sort = searchParams?.sort;
   const { user } = await validateRequest();
   if (!user) return null;
-  if (sort && typeof sort === "string" && !["percent", "activity"].includes(sort)) {
+  if (
+    sort &&
+    typeof sort === "string" &&
+    !["percent", "activity"].includes(sort)
+  ) {
     return null;
   }
 
   let bookId = searchParams?.bookId;
 
-  const books = bookId ? null : await fetchBooks(user.id, {
-    orderBy: sort as "percent" | "activity",
-  });
+  const books = bookId
+    ? null
+    : await fetchBooks(user.id, {
+        orderBy: sort as "percent" | "activity",
+      });
 
-  const foundBook = bookId && await fetchBook(bookId as string, user.id);
+  const foundBook = bookId && (await fetchBook(bookId as string, user.id));
 
   const hiddenBooks = bookId ? null : books!.filter((b) => b.isHidden);
 

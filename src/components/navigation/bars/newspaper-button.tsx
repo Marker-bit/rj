@@ -1,13 +1,13 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-import { SimpleTooltip } from "@/components/ui/tooltip"
-import { LightbulbIcon } from "lucide-react"
-import { useEffect, useState } from "react"
-import { useLocalStorage } from "usehooks-ts"
+} from "@/components/ui/popover";
+import { SimpleTooltip } from "@/components/ui/simple-tooltip";
+import { LightbulbIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useLocalStorage } from "usehooks-ts";
 
 // Добавлять строго в конец!
 const tips = [
@@ -21,26 +21,26 @@ const tips = [
     description:
       "Официальный Telegram-канал Читательского дневника - @rjrjdev. Подписывайтесь, чтобы быть в курсе новостей и обновлений.",
   },
-]
+];
 
 export default function NewspaperButton() {
-  const [open, setOpen] = useState(false)
-  const [currentTip, setCurrentTip] = useLocalStorage("currentTip", 0)
-  const [isClient, setIsClient] = useState(false)
+  const [open, setOpen] = useState(false);
+  const [currentTip, setCurrentTip] = useLocalStorage("currentTip", 0);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setIsClient(true)
-  }, [])
+    setIsClient(true);
+  }, []);
 
   const handleNavigation = () => {
     if (currentTip === tips.length - 1) {
-      setOpen(false)
+      setOpen(false);
     }
-    setCurrentTip(currentTip + 1)
-  }
+    setCurrentTip(currentTip + 1);
+  };
 
   if (!isClient) {
-    return null
+    return null;
   }
 
   return (
@@ -86,5 +86,5 @@ export default function NewspaperButton() {
         )}
       </PopoverContent>
     </Popover>
-  )
+  );
 }

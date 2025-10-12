@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  BarChartBig,
-  BookIcon,
-  HouseIcon,
-  Menu,
-  Users
-} from "lucide-react";
+import { BarChartBig, BookIcon, HouseIcon, Menu, Users } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -44,9 +38,7 @@ export default function NavBar({
   auth,
 }: {
   events: Promise<ReadEvent[]>;
-  auth: Promise<
-    { user: User; unread: number } | { user: null; unread: null }
-  >;
+  auth: Promise<{ user: User; unread: number } | { user: null; unread: null }>;
 }) {
   const pathname = usePathname();
   const isActive = (href: string) => href === pathname;
@@ -97,7 +89,10 @@ export default function NavBar({
           </Popover>
           {/* Logo */}
           <div className="flex items-center">
-            <Link href="/home" className="hover:bg-accent p-1 rounded-lg transition shrink-0">
+            <Link
+              href="/home"
+              className="hover:bg-accent p-1 rounded-lg transition shrink-0"
+            >
               <Image
                 src="/icon.png"
                 alt="logo"

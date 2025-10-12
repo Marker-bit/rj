@@ -1,4 +1,5 @@
-import { Badge, IconBadge } from "@/components/ui/badge";
+import { Badge } from "@/components/ui/badge";
+import { IconBadge } from "@/components/ui/icon-badge";
 import { db } from "@/lib/db";
 import { dateToString, declOfNum } from "@/lib/utils";
 import { TZDate } from "@date-fns/tz";

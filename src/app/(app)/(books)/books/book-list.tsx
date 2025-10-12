@@ -96,11 +96,11 @@ export function BookList({ books }: { books: Book[] }) {
   }, [searchText, books, notStarted]);
 
   const outlinedBooks = filteredBooks.filter(
-    (book: Book) => book.background !== BackgroundColor.NONE
+    (book: Book) => book.background !== BackgroundColor.NONE,
   );
 
   const notOutlinedBooks = filteredBooks.filter(
-    (book: Book) => book.background === BackgroundColor.NONE
+    (book: Book) => book.background === BackgroundColor.NONE,
   );
 
   const booksForRender = searchResults
@@ -136,7 +136,10 @@ export function BookList({ books }: { books: Book[] }) {
               </p>
             </div>
           </div> */}
-          <div className="border-input has-data-[state=checked]:border-primary/50 relative flex w-full items-start gap-2 rounded-md border p-4 shadow-xs outline-none">
+          <label
+            htmlFor="notStarted"
+            className="border-input has-data-[state=checked]:border-primary/50 relative flex w-full items-start gap-2 rounded-md border p-4 shadow-xs outline-none select-none"
+          >
             <Checkbox
               id="notStarted"
               aria-describedby="notStarted-description"
@@ -144,7 +147,9 @@ export function BookList({ books }: { books: Book[] }) {
               onCheckedChange={setNotStarted}
             />
             <div className="grid grow gap-2">
-              <Label htmlFor="notStarted">Скрывать неначатые книги</Label>
+              <div className="text-sm font-medium leading-none">
+                Скрывать неначатые книги
+              </div>
               <p
                 id="notStarted-description"
                 className="text-muted-foreground text-xs"
@@ -153,7 +158,7 @@ export function BookList({ books }: { books: Book[] }) {
                 списке.
               </p>
             </div>
-          </div>
+          </label>
         </div>
         <div className="flex flex-col sm:flex-row gap-2">
           <form className="relative w-full" onSubmit={search}>

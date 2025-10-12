@@ -1,27 +1,27 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { SimpleTooltip } from "@/components/ui/tooltip"
-import { dateToString } from "@/lib/utils"
-import { Book } from "@prisma/client"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { BookOpen, BookOpenCheck, Loader, Undo } from "lucide-react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button";
+import { SimpleTooltip } from "@/components/ui/simple-tooltip";
+import { dateToString } from "@/lib/utils";
+import { Book } from "@prisma/client";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { BookOpen, BookOpenCheck, Loader, Undo } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export function EventView({
   event,
 }: {
   event: {
-    id: string
-    bookId: string
-    book: Book
-    pagesRead: number
-    readAt: string | Date
-  }
+    id: string;
+    bookId: string;
+    book: Book;
+    pagesRead: number;
+    readAt: string | Date;
+  };
 }) {
-  const queryClient = useQueryClient()
-  const router = useRouter()
+  const queryClient = useQueryClient();
+  const router = useRouter();
   const undoMutation = useMutation({
     mutationFn: async () =>
       await fetch(`/api/journal/events/${event.id}`, {
@@ -30,13 +30,13 @@ export function EventView({
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["events"],
-      })
+      });
       queryClient.invalidateQueries({
         queryKey: ["books"],
-      })
-      router.refresh()
+      });
+      router.refresh();
     },
-  })
+  });
   return (
     <div className="flex cursor-default flex-wrap items-center gap-1 rounded-xl border p-2">
       {event.pagesRead === event.book.pages ? (
@@ -73,5 +73,5 @@ export function EventView({
         </Button>
       </SimpleTooltip>
     </div>
-  )
+  );
 }

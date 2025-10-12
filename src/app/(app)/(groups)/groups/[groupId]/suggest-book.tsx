@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { UploadButton } from "@/components/uploadthing";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader, Plus, Trash } from "lucide-react";
 import Image from "next/image";
@@ -26,7 +26,7 @@ import { useState } from "react";
 const bookSchema = z.object({
   title: z.string().min(1),
   author: z.string().min(1),
-  pages: z.coerce.number().min(1),
+  pages: z.number().min(1),
   description: z.string().optional(),
   coverUrl: z.string().optional(),
 });
@@ -34,7 +34,7 @@ const bookSchema = z.object({
 export function SuggestBook({ groupId }: { groupId: string }) {
   const [open, setOpen] = useState(false);
   const form = useForm<z.infer<typeof bookSchema>>({
-    resolver: zodResolver(bookSchema),
+    resolver: standardSchemaResolver(bookSchema),
   });
   const router = useRouter();
 
@@ -159,7 +159,7 @@ export function SuggestBook({ groupId }: { groupId: string }) {
                 <FormItem>
                   <FormLabel>Кол-во страниц</FormLabel>
                   <FormControl>
-                    <Input {...field} type="number" />
+                    <Input {...field} onChange={field.onChange} type="number" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
