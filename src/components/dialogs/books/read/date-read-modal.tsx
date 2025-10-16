@@ -5,7 +5,7 @@ import { DrawerDialog } from "@/components/ui/drawer-dialog";
 import { useMutation } from "@tanstack/react-query";
 import { endOfDay, isToday, startOfDay } from "date-fns";
 import { ru } from "date-fns/locale";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
 export function DateReadModal({
@@ -39,8 +39,8 @@ export function DateReadModal({
 
   const today = new Date();
   const [date, setDate] = useState<Date | undefined>(new Date());
-  const [changePages, setChangePages] = useState<number>(
-    lastEvent?.pagesRead ?? 0,
+  const [changePages, setChangePages] = useState<number | "">(
+    lastEvent?.pagesRead ?? "",
   );
   const input = useRef<HTMLInputElement>(null);
 

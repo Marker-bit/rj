@@ -12,8 +12,8 @@ export const PagesButtonGroup = ({
   lastPages,
   ...props
 }: {
-  value: number;
-  setValue: (value: number) => void;
+  value: number | "";
+  setValue: (value: number | "") => void;
   isPending?: boolean;
   lastPages?: number;
 } & ComponentPropsWithRef<typeof Input>) => {
@@ -26,11 +26,13 @@ export const PagesButtonGroup = ({
           autoFocus
           {...props}
           disabled={isPending}
+          value={value}
           onChange={(e) => {
             props.onChange?.(e);
-            const number = e.target.valueAsNumber;
-            if (!isNaN(number)) {
-              setValue(number);
+            const number = e.target.value;
+
+            if (number === "" || /^[0-9\b]+$/.test(number)) {
+              setValue(number === "" ? "" : Number(number));
             }
           }}
         />
@@ -43,7 +45,8 @@ export const PagesButtonGroup = ({
         </Button>
       </ButtonGroup>
       <p className="mt-2 text-sm text-muted-foreground">
-        {!isNaN(value) &&
+        {value !== "" &&
+          !isNaN(value) &&
           lastPages &&
           `Относительно прошлого: ${value - lastPages}`}
       </p>
