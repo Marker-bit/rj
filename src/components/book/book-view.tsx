@@ -1,7 +1,7 @@
 "use client";
 
 import { BookInfoModal } from "@/components/dialogs/books/book-info-modal";
-import { DateReadModal } from "@/components/dialogs/books/date-read-modal";
+import { DateReadModal } from "@/components/dialogs/books/read/date-read-modal";
 import { EditBookModal } from "@/components/dialogs/books/edit-book-modal";
 import { BookCollectionsModal } from "@/components/dialogs/collections/book-collections-modal";
 import { Badge } from "@/components/ui/badge";
@@ -43,7 +43,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { DateDoneModal } from "../dialogs/books/date-done-modal";
+import { DateDoneModal } from "../dialogs/books/read/date-done-modal";
 import { ShareBookModal } from "../dialogs/books/share-book-modal";
 import { HelpButton } from "../ui/help-button";
 import { Loader } from "../ui/loader";
@@ -110,24 +110,6 @@ export function BookView({
       router.refresh();
       router.push(`/books/history?bookReadId=${book.id}`);
       // router.refresh()
-    },
-  });
-
-  const readDateMutation = useMutation({
-    mutationFn: ({ date, pages }: { date: Date; pages: number }) =>
-      fetch(`/api/books/${book.id}/read/`, {
-        method: "POST",
-        body: JSON.stringify({
-          pages: pages,
-          readAt: isToday(date) ? new Date() : endOfDay(date),
-        }),
-      }),
-    onSuccess: () => {
-      setDateOpen(false);
-      toast.success("Событие сохранено");
-      setActionsDrawerOpen(false);
-      onUpdate?.();
-      router.refresh();
     },
   });
 
@@ -266,7 +248,11 @@ export function BookView({
         <DateReadModal
           isOpen={dateOpen}
           setIsOpen={setDateOpen}
-          readDateMutation={readDateMutation}
+          onSuccess={() => {
+            setActionsDrawerOpen(false);
+            onUpdate?.();
+            router.refresh();
+          }}
           book={book}
           lastEvent={lastEvent}
         />

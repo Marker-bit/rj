@@ -1,6 +1,13 @@
 "use client";
 
-import { BarChartBig, BookIcon, HouseIcon, Menu, Users } from "lucide-react";
+import {
+  BarChartBig,
+  BookIcon,
+  CheckIcon,
+  HouseIcon,
+  Menu,
+  Users,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -68,18 +75,18 @@ export default function NavBar({
                       <NavigationMenuItem key={index} className="w-full">
                         <NavigationMenuLink
                           className="flex-row items-center gap-2 py-1.5"
-                          asChild
+                          render={
+                            <Link href={link.href}>
+                              <Icon
+                                size={16}
+                                className="text-muted-foreground/80"
+                                aria-hidden="true"
+                              />
+                              <span>{link.label}</span>
+                            </Link>
+                          }
                           active={isActive(link.href)}
-                        >
-                          <Link href={link.href}>
-                            <Icon
-                              size={16}
-                              className="text-muted-foreground/80"
-                              aria-hidden="true"
-                            />
-                            <span>{link.label}</span>
-                          </Link>
-                        </NavigationMenuLink>
+                        ></NavigationMenuLink>
                       </NavigationMenuItem>
                     );
                   })}
@@ -112,18 +119,18 @@ export default function NavBar({
                 <NavigationMenuItem key={index}>
                   <NavigationMenuLink
                     className="text-foreground hover:text-primary flex-row items-center gap-2 py-1.5 font-medium"
-                    asChild
+                    render={
+                      <Link href={link.href}>
+                        <Icon
+                          size={16}
+                          className="text-muted-foreground/80"
+                          aria-hidden="true"
+                        />
+                        <span>{link.label}</span>
+                      </Link>
+                    }
                     active={isActive(link.href)}
-                  >
-                    <Link href={link.href}>
-                      <Icon
-                        size={16}
-                        className="text-muted-foreground/80"
-                        aria-hidden="true"
-                      />
-                      <span>{link.label}</span>
-                    </Link>
-                  </NavigationMenuLink>
+                  />
                 </NavigationMenuItem>
               );
             })}

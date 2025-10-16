@@ -10,6 +10,7 @@
     "postinstall": "npx prisma generate"
   },
   "dependencies": {
+    "@base-ui-components/react": "1.0.0-beta.4",
     "@date-fns/tz": "^1.4.1",
     "@dicebear/collection": "^9.2.4",
     "@dicebear/core": "^9.2.4",

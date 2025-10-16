@@ -6,6 +6,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { GroupMemberRole } from "@prisma/client";
 import { BookMinus, Crown, Shield, TriangleAlert, Users2 } from "lucide-react";
+import { GroupsEmpty } from "@/app/(app)/(groups)/groups/groups-empty";
 
 export const dynamic = "force-dynamic";
 
@@ -92,19 +93,8 @@ export default async function Page() {
             </div>
           </Link>
         ))}
-        {groups.length === 0 && (
-          <div className="rounded-md border px-4 py-3">
-            <p className="text-sm">
-              <TriangleAlert
-                className="me-3 -mt-0.5 inline-flex text-amber-500"
-                size={16}
-                aria-hidden="true"
-              />
-              Вы не состоите ни в одной группе
-            </p>
-          </div>
-        )}
       </div>
+      {groups.length === 0 && <GroupsEmpty />}
     </div>
   );
 }

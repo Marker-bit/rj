@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { Spinner } from "@/components/ui/spinner";
 
 const formSchema = z.object({
   title: z.string().min(1),
@@ -61,75 +62,9 @@ export function CreateGroupForm() {
             </FormItem>
           )}
         />
-        {/* <Button
-            type="button"
-            // disabled={loading}
-            onClick={(evt) => {
-              setLoading(!loading);
-              evt.preventDefault();
-            }}
-            className="gap-2 overflow-hidden"
-          >
-            <AnimatePresence mode="popLayout">
-              {loading && (
-                <motion.div
-                  initial={{ y: 30 }}
-                  animate={{ y: 0 }}
-                  exit={{ y: -30 }}
-                  className="flex items-center gap-2"
-                  key="loading"
-                >
-                  <Loader className="w-4 h-4 animate-spin" />
-                  <div className="max-sm:hidden">Добавляем...</div>
-                </motion.div>
-              )}
-              {!loading && (
-                <motion.div
-                  initial={{ y: 30 }}
-                  animate={{ y: 0 }}
-                  exit={{ y: -30 }}
-                  className="flex items-center gap-2"
-                  key="add"
-                >
-                  <PlusIcon className="w-4 h-4" />
-                  <div className="max-sm:hidden">Добавить</div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </Button> */}
-        <Button
-          type="submit"
-          // disabled={loading}
-          // onClick={() => setLoading(true)}
-          className="gap-2"
-          key="create-group"
-        >
-          <AnimatePresence mode="popLayout">
-            {loading && (
-              <motion.div
-                initial={{ y: 30 }}
-                animate={{ y: 0 }}
-                exit={{ y: -30 }}
-                className="flex items-center gap-2"
-                key="loading"
-              >
-                <Loader className="size-4 animate-spin" />
-                <div className="max-sm:hidden">Добавляем...</div>
-              </motion.div>
-            )}
-            {!loading && (
-              <motion.div
-                initial={{ y: 30 }}
-                animate={{ y: 0 }}
-                exit={{ y: -30 }}
-                className="flex items-center gap-2"
-                key="add"
-              >
-                <PlusIcon className="size-4" />
-                <div className="max-sm:hidden">Добавить</div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+        <Button type="submit" className="gap-2" disabled={loading}>
+          {loading ? <Spinner /> : <PlusIcon />}
+          Добавить
         </Button>
       </form>
     </Form>

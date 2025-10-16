@@ -1,33 +1,46 @@
-"use client";
-
-import { Button } from "@/components/ui/button";
+import { PagesButtonGroup } from "@/components/dialogs/books/read/pages-button-group";
 import { Calendar } from "@/components/ui/calendar";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
-import { Input } from "@/components/ui/input";
-import { startOfDay } from "date-fns";
+import { useMutation } from "@tanstack/react-query";
+import { endOfDay, isToday, startOfDay } from "date-fns";
 import { ru } from "date-fns/locale";
-import { Loader, Save } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
 export function DateReadModal({
   isOpen,
   setIsOpen,
-  readDateMutation,
+  onSuccess,
   book,
   lastEvent,
 }: {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
-  readDateMutation: any;
-  book: { readEvents: { readAt: Date }[] };
-  lastEvent: { pagesRead: number };
+  onSuccess?: () => void;
+  book: { readEvents: { readAt: Date }[]; id: string };
+  lastEvent?: { pagesRead: number };
 }) {
+  const readDateMutation = useMutation({
+    mutationFn: ({ date, pages }: { date: Date; pages: number }) =>
+      fetch(`/api/books/${book.id}/read/`, {
+        method: "POST",
+        body: JSON.stringify({
+          pages: pages,
+          readAt: isToday(date) ? new Date() : endOfDay(date),
+        }),
+      }),
+    onSuccess: () => {
+      setIsOpen(false);
+      toast.success("Событие сохранено");
+      onSuccess?.();
+    },
+  });
+
   const today = new Date();
   const [date, setDate] = useState<Date | undefined>(new Date());
-  const [changePages, setChangePages] = useState<string>(
-    lastEvent?.pagesRead.toString() || "",
+  const [changePages, setChangePages] = useState<number>(
+    lastEvent?.pagesRead ?? 0,
   );
   const input = useRef<HTMLInputElement>(null);
 
@@ -49,7 +62,7 @@ export function DateReadModal({
       return;
     }
     setDate(new Date());
-    setChangePages(lastEvent?.pagesRead.toString() || "");
+    setChangePages(lastEvent?.pagesRead ?? 0);
     setIsOpen(false);
   };
 
@@ -78,7 +91,7 @@ export function DateReadModal({
         />
         {/* добавить captionLayout? */}
         <form
-          onSubmit={(evt) => {
+          onSubmit={async (evt) => {
             evt.preventDefault();
             if (!date) {
               toast.error("Выберите дату");
@@ -88,43 +101,23 @@ export function DateReadModal({
               toast.error("Укажите количество страниц");
               return;
             }
-            if (parseInt(changePages) < 1) {
+            if (changePages < 1) {
               toast.error("Количество страниц должно быть больше 0");
               return;
             }
-            if (isNaN(parseInt(changePages))) {
+            if (isNaN(changePages)) {
               toast.error("Количество страниц должно быть числом");
               return;
             }
-            readDateMutation.mutate({ date, pages: parseInt(changePages) });
+            await readDateMutation.mutateAsync({ date, pages: changePages });
           }}
         >
-          <div className="flex flex-col items-center">
-            <div className="flex gap-2">
-              <Input
-                type="number"
-                min={1}
-                value={changePages}
-                onChange={(evt) => setChangePages(evt.target.value)}
-                autoFocus
-                ref={input}
-              />
-              <Button type="submit" disabled={readDateMutation.isPending}>
-                {readDateMutation.isPending ? (
-                  <Loader className="size-4 animate-spin" />
-                ) : (
-                  <Save className="size-4" />
-                )}
-              </Button>
-            </div>
-            <p className="mt-2 text-sm text-muted-foreground">
-              {!isNaN(parseInt(changePages)) &&
-                lastEvent &&
-                `Относительно прошлого: ${
-                  parseInt(changePages) - lastEvent.pagesRead
-                }`}
-            </p>
-          </div>
+          <PagesButtonGroup
+            value={changePages}
+            setValue={setChangePages}
+            isPending={readDateMutation.isPending}
+            lastPages={lastEvent?.pagesRead}
+          />
         </form>
       </div>
     </DrawerDialog>
