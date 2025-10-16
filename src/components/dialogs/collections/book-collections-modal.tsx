@@ -7,14 +7,31 @@ import { declOfNum } from "@/lib/utils";
 import type { Book as PrismaBook } from "@prisma/client";
 import { Collection } from "@prisma/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ArrowRight, Loader, PlusIcon, TrashIcon } from "lucide-react";
+import {
+  ArrowRight,
+  ArrowRightIcon,
+  Loader,
+  PlusIcon,
+  TrashIcon,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "../../ui/button";
 import { Checkbox } from "../../ui/checkbox";
 import { DialogHeader, DialogTitle } from "../../ui/dialog";
-import { createCollection, deleteCollection, getCollections } from "@/lib/actions/collections";
+import {
+  createCollection,
+  deleteCollection,
+  getCollections,
+} from "@/lib/actions/collections";
 import { toast } from "sonner";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import { Spinner } from "@/components/ui/spinner";
 
 export function BookCollectionsModal({
   open,
@@ -43,7 +60,7 @@ export function BookCollectionsModal({
   }, []);
 
   const [selectedCollections, setSelectedCollections] = useState(
-    book.collections.map((c) => c.id)
+    book.collections.map((c) => c.id),
   );
   const queryClient = useQueryClient();
   const updateMutation = useMutation({
@@ -107,9 +124,9 @@ export function BookCollectionsModal({
       return;
     }
     setCollections(res2.collections);
-    router.refresh()
+    router.refresh();
     setDeleteInProgress(false);
-  }
+  };
 
   const [deleteInProgress, setDeleteInProgress] = useState(false);
 
@@ -139,7 +156,7 @@ export function BookCollectionsModal({
                     setSelectedCollections(
                       selectedCollections.includes(collection.id)
                         ? selectedCollections.filter((c) => c !== collection.id)
-                        : [...selectedCollections, collection.id]
+                        : [...selectedCollections, collection.id],
                     )
                   }
                 >
@@ -151,9 +168,9 @@ export function BookCollectionsModal({
                       setSelectedCollections(
                         selectedCollections.includes(collection.id)
                           ? selectedCollections.filter(
-                              (c) => c !== collection.id
+                              (c) => c !== collection.id,
                             )
-                          : [...selectedCollections, collection.id]
+                          : [...selectedCollections, collection.id],
                       )
                     }
                   />
@@ -184,35 +201,35 @@ export function BookCollectionsModal({
                     <TrashIcon />
                   </Button>
                 </div>
-              )
+              ),
             )}
           <form
-            className="border-input has-data-[state=checked]:border-primary/50 relative flex w-full items-center gap-2 rounded-md border p-4 shadow-xs outline-none"
             onSubmit={(e) => {
               e.preventDefault();
               runAction();
             }}
           >
-            <PlusIcon className="text-muted-foreground size-4" />
-            <input
-              type="text"
-              placeholder="Новая коллекция"
-              className="w-full outline-none"
-              value={newCollectionTitle}
-              onChange={(e) => setNewCollectionTitle(e.target.value)}
-            />
-            <button
-              className="group"
-              disabled={
-                newCollectionTitle.length < 1 || newCollectionTitle.length > 70
-              }
-            >
-              {newCollectionLoading ? (
-                <Loader className="size-4 animate-spin" />
-              ) : (
-                <ArrowRight className="text-muted-foreground size-4 group-hover:text-primary group-disabled:opacity-50 group-disabled:text-muted-foreground" />
-              )}
-            </button>
+            <InputGroup>
+              <InputGroupInput
+                placeholder="Новая коллекция"
+                value={newCollectionTitle}
+                onChange={(e) => setNewCollectionTitle(e.target.value)}
+              />
+              <InputGroupAddon>
+                <PlusIcon />
+              </InputGroupAddon>
+              <InputGroupAddon align="inline-end">
+                <InputGroupButton
+                  aria-label="Создать"
+                  title="Создать"
+                  size="icon-xs"
+                  type="submit"
+                  disabled={newCollectionLoading}
+                >
+                  {newCollectionLoading ? <Spinner /> : <ArrowRightIcon />}
+                </InputGroupButton>
+              </InputGroupAddon>
+            </InputGroup>
           </form>
           <Button
             className="mt-2 gap-2"
