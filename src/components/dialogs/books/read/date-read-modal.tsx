@@ -5,7 +5,7 @@ import { DrawerDialog } from "@/components/ui/drawer-dialog";
 import { useMutation } from "@tanstack/react-query";
 import { endOfDay, isToday, startOfDay } from "date-fns";
 import { ru } from "date-fns/locale";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
 export function DateReadModal({

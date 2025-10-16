@@ -88,31 +88,6 @@ export function BookView({
     },
   });
 
-  const doneMutation = useMutation({
-    mutationFn: async ({ readAt }: { readAt?: Date }) => {
-      await fetch(`/api/books/${book.id}/read/`, {
-        method: "POST",
-        body: JSON.stringify({
-          pages: book.pages,
-          readAt: readAt
-            ? isToday(readAt)
-              ? new Date()
-              : endOfDay(readAt)
-            : new Date(),
-        }),
-      });
-    },
-    onSuccess: () => {
-      toast.success("Книга отмечена как прочитанная");
-      setDoneOpen(false);
-      setActionsDrawerOpen(false);
-      onUpdate?.();
-      router.refresh();
-      router.push(`/books/history?bookReadId=${book.id}`);
-      // router.refresh()
-    },
-  });
-
   const deleteMutation = useMutation({
     mutationFn: () =>
       fetch(`/api/books/${book.id}/`, {

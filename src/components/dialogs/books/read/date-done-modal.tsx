@@ -1,28 +1,50 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
 import confetti from "canvas-confetti";
-import { startOfDay } from "date-fns";
+import { endOfDay, isToday, startOfDay } from "date-fns";
 import { ru } from "date-fns/locale";
 import { Save } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Loader } from "@/components/ui/loader";
+import { useMutation } from "@tanstack/react-query";
+import { Book } from "@prisma/client";
+import { Spinner } from "@/components/ui/spinner";
+import { useRouter } from "next/navigation";
 
 export function DateDoneModal({
-  isOpen,
-  setIsOpen,
-  readDoneMutation,
+  open,
+  setOpen,
   book,
 }: {
-  isOpen: boolean;
-  setIsOpen: (open: boolean) => void;
-  readDoneMutation: any;
-  book: { readEvents: { readAt: Date }[] };
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  book: Book & { readEvents: { readAt: Date }[] };
 }) {
+  const router = useRouter();
+  const doneMutation = useMutation({
+    mutationFn: async ({ readAt }: { readAt?: Date }) => {
+      await fetch(`/api/books/${book.id}/read/`, {
+        method: "POST",
+        body: JSON.stringify({
+          pages: book.pages,
+          readAt: readAt
+            ? isToday(readAt)
+              ? new Date()
+              : endOfDay(readAt)
+            : new Date(),
+        }),
+      });
+    },
+    onSuccess: () => {
+      toast.success("Книга отмечена как прочитанная");
+      setOpen(false);
+      onSuccess?.();
+      router.push(`/books/history?bookReadId=${book.id}`);
+    },
+  });
   const today = new Date();
   const [date, setDate] = useState<Date | undefined>(today);
 
@@ -37,18 +59,19 @@ export function DateDoneModal({
 
   const handleClose = (b: boolean) => {
     if (b) {
-      setIsOpen(true);
+      setOpen(true);
       return;
     }
     setDate(new Date());
-    setIsOpen(false);
+    setOpen(false);
   };
 
   return (
-    <DrawerDialog open={isOpen} onOpenChange={handleClose}>
+    <DrawerDialog open={open} onOpenChange={handleClose}>
       <DialogHeader className="mb-2">
         <DialogTitle>Отметить книгу прочитанной</DialogTitle>
       </DialogHeader>
+
       <div className="flex flex-col gap-2">
         <Calendar
           mode="single"
@@ -75,7 +98,7 @@ export function DateDoneModal({
             toast.error("Вы не выбрали дату");
             return;
           }
-          await readDoneMutation.mutate({ readAt: date });
+          await doneMutation.mutateAsync({ readAt: date });
 
           confetti({
             particleCount: 100,
@@ -87,11 +110,7 @@ export function DateDoneModal({
         }}
         className="w-fit max-sm:w-full"
       >
-        {readDoneMutation.isPending ? (
-          <Loader invert className="mr-2 size-4" />
-        ) : (
-          <Save />
-        )}
+        {doneMutation.isPending ? <Spinner /> : <Save />}
         Отметить
       </Button>
     </DrawerDialog>
