@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { TextShimmer } from "@/components/ui/text-shimmer";
 import { MyUIMessage } from "@/lib/ai/message";
 import { cn } from "@/lib/utils";
-import { ChatStatus } from "ai";
+import { ChatAddToolApproveResponseFunction, ChatStatus } from "ai";
 import {
   BrainIcon,
   ChevronDownIcon,
@@ -17,139 +17,6 @@ import {
 import { AnimatePresence, motion } from "motion/react";
 import { ComponentPropsWithoutRef, useEffect, useRef, useState } from "react";
 
-const STEPS: (ComponentPropsWithoutRef<typeof ToolCall> & {
-  id: string;
-})[][] = [
-  [
-    {
-      header: (
-        <div className="text-sm whitespace-pre-wrap">
-          Просматривает все книги
-        </div>
-      ),
-      icon: ListIcon,
-      state: "loading",
-      isLast: true,
-      id: "step1",
-    },
-  ],
-  [
-    {
-      header: (
-        <div className="text-sm whitespace-pre-wrap">Просмотрел все книги</div>
-      ),
-      icon: ListIcon,
-      state: "success",
-      id: "step1",
-    },
-    {
-      header: (
-        <div className="text-sm whitespace-pre-wrap">
-          Создаёт книгу{" "}
-          <span className="font-bold">&quot;Моя первая книга&quot;</span>
-        </div>
-      ),
-      icon: PlusIcon,
-      isLast: true,
-      state: "loading",
-      id: "step2",
-    },
-  ],
-  [
-    {
-      header: (
-        <div className="text-sm whitespace-pre-wrap">Просмотрел все книги</div>
-      ),
-      icon: ListIcon,
-      state: "success",
-      id: "step1",
-    },
-    {
-      header: (
-        <div className="text-sm whitespace-pre-wrap">
-          Создал книгу{" "}
-          <span className="font-bold">&quot;Моя первая книга&quot;</span>
-        </div>
-      ),
-      icon: PlusIcon,
-      state: "success",
-      id: "step2",
-    },
-    {
-      header: <div className="text-sm whitespace-pre-wrap">Думает...</div>,
-      icon: BrainIcon,
-      isLast: true,
-      id: "step3",
-    },
-  ],
-  [
-    {
-      header: (
-        <div className="text-sm whitespace-pre-wrap">Просмотрел все книги</div>
-      ),
-      icon: ListIcon,
-      state: "success",
-      id: "step1",
-    },
-    {
-      header: (
-        <div className="text-sm whitespace-pre-wrap">
-          Создаёт книгу{" "}
-          <span className="font-bold">&quot;Моя первая книга&quot;</span>
-        </div>
-      ),
-      icon: PlusIcon,
-      state: "success",
-      id: "step2",
-    },
-    {
-      header: (
-        <div className="text-sm whitespace-pre-wrap">
-          Удаляет книгу{" "}
-          <span className="font-bold">&quot;Моя первая книга&quot;</span>
-        </div>
-      ),
-      icon: TrashIcon,
-      state: "loading",
-      isLast: true,
-      id: "step4",
-    },
-  ],
-  [
-    {
-      header: (
-        <div className="text-sm whitespace-pre-wrap">Просмотрел все книги</div>
-      ),
-      icon: ListIcon,
-      state: "success",
-      id: "step1",
-    },
-    {
-      header: (
-        <div className="text-sm whitespace-pre-wrap">
-          Создал книгу{" "}
-          <span className="font-bold">&quot;Моя первая книга&quot;</span>
-        </div>
-      ),
-      icon: PlusIcon,
-      state: "success",
-      id: "step2",
-    },
-    {
-      header: (
-        <div className="text-sm whitespace-pre-wrap">
-          Удалил книгу{" "}
-          <span className="font-bold">&quot;Моя первая книга&quot;</span>
-        </div>
-      ),
-      icon: TrashIcon,
-      state: "success",
-      isLast: true,
-      id: "step4",
-    },
-  ],
-];
-
 const MotionMessage = motion.create(Message);
 
 export function ChatHistory({
@@ -158,18 +25,17 @@ export function ChatHistory({
   status,
   onRetry,
   onRegenerate,
+  addToolApprovalResponse,
 }: {
   messages: MyUIMessage[];
   error?: Error;
   status: ChatStatus;
   onRetry: () => void;
   onRegenerate: (messageId: string) => void;
+  addToolApprovalResponse: ChatAddToolApproveResponseFunction;
 }) {
-  const [currentStepIdx, setCurrentStepIdx] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isAtBottom, setIsAtBottom] = useState(true);
-
-  const currentStep = STEPS[currentStepIdx];
 
   useEffect(() => {
     const container = containerRef.current;
@@ -206,14 +72,6 @@ export function ChatHistory({
   }, [containerRef, containerRef.current?.children]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentStepIdx((prevStepIdx) => (prevStepIdx + 1) % STEPS.length);
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [currentStep]);
-
-  useEffect(() => {
     if (messages.length > 0) {
       setTimeout(() => {
         scrollToBottom();
@@ -238,7 +96,7 @@ export function ChatHistory({
   };
 
   return (
-    <div className="h-full relative flex flex-col min-h-0">
+    <>
       <div
         className={cn(
           "absolute bottom-0 left-0 p-2 flex items-center justify-center pointer-events-none z-10 w-full bg-gradient-to-t from-background/50 to-background/0 transition-opacity",
@@ -284,6 +142,7 @@ export function ChatHistory({
               key={message.id}
               message={message}
               onRegenerate={() => onRegenerate(message.id)}
+              addToolApprovalResponse={addToolApprovalResponse}
             />
           ))}
         </AnimatePresence>
@@ -329,30 +188,7 @@ export function ChatHistory({
             </motion.div>
           )}
         </AnimatePresence>
-        {/*<AnimatePresence>
-        {currentStep.map(({ id, ...step }, index) => (
-          <motion.div
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.8, opacity: 0, filter: "blur(4px)", height: 0 }}
-            key={id}
-            className="origin-top-left"
-          >
-            <ToolCall {...step} />
-          </motion.div>
-        ))}
-      </AnimatePresence>*/}
-        {/*<div className="text-sm">
-        Привет! Я искусственный интеллект от разработчиков RJ.
-      </div>*/}
-        {/*<Button
-        className="self-end mt-auto"
-        onClick={() =>
-          setCurrentStepIdx((prevStepIdx) => (prevStepIdx + 1) % STEPS.length)
-        }
-      >
-        Далее
-      </Button>*/}
       </div>
-    </div>
+    </>
   );
 }

@@ -1,22 +1,25 @@
-import { MessageActions } from "@/components/agent/message/message-actions";
 import { MessageContainer } from "@/components/agent/message/message-container";
 import { MessageContextMenu } from "@/components/agent/message/message-context-menu";
 import { MessageRole } from "@/components/agent/message/message-role";
 import { ToolCall } from "@/components/agent/tool-call";
+import { ToolConfirmation } from "@/components/agent/tool-confirmation";
 import { MyUIMessage } from "@/lib/ai/message";
 import { toolViews } from "@/lib/ai/tools/toolset";
 import { cn } from "@/lib/utils";
-import { isToolUIPart } from "ai";
+import { ChatAddToolApproveResponseFunction, isToolUIPart } from "ai";
+import { CheckIcon, XIcon } from "lucide-react";
 import { useMemo } from "react";
 
 export function Message({
   message,
   ref,
   onRegenerate,
+  addToolApprovalResponse,
 }: {
   message: MyUIMessage;
   ref?: React.RefObject<HTMLDivElement>;
   onRegenerate: () => void;
+  addToolApprovalResponse: ChatAddToolApproveResponseFunction;
 }) {
   const toolParts = useMemo(() => {
     return message.parts.filter((part) => isToolUIPart(part));
@@ -49,16 +52,10 @@ export function Message({
             return (
               <ToolCall
                 key={part.toolCallId}
-                header={
-                  part.state === "output-available"
-                    ? toolView.texts.successText
-                    : toolView.texts.loadingText
-                }
-                icon={toolView.icon}
+                toolView={toolView}
                 isLast={idx === toolParts.length - 1}
-                state={
-                  part.state === "output-available" ? "success" : "loading"
-                }
+                toolCall={part}
+                addToolApprovalResponse={addToolApprovalResponse}
               />
             );
           })}

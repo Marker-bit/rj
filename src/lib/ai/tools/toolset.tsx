@@ -1,9 +1,10 @@
 import { ToolView } from "@/lib/ai/tools/types";
+import { createBookToolView } from "@/lib/ai/tools/views/create-book";
+import { getAllBooksToolView } from "@/lib/ai/tools/views/get-all-books";
 import { fetchBooks } from "@/lib/books";
 import { db } from "@/lib/db";
 import { tool } from "ai";
 import { User } from "lucia";
-import { BookIcon } from "lucide-react";
 import z from "zod";
 
 export const toolSetForUser = (user: User) => ({
@@ -23,22 +24,46 @@ export const toolSetForUser = (user: User) => ({
         orderBy: orderBy,
       });
       return books.map((book) => ({
+        id: book.id,
         title: book.title,
         author: book.author,
+        pages: book.pages,
         lastEvent: book.readEvents[0] ?? null,
       }));
     },
+    // needsApproval: true,
+  }),
+  createBook: tool({
+    description: "Создать книгу для пользователя",
+    inputSchema: z.object({
+      title: z.string().min(1).max(100).describe("Название книги"),
+      author: z.string().min(1).max(100).describe("Автор книги"),
+      pages: z
+        .number()
+        .min(1)
+        .max(10000)
+        .describe("Количество страниц в книге"),
+    }),
+    execute: async ({ title, author, pages }) => {
+      // await new Promise((resolve) => setTimeout(resolve, 10000));
+      const book = await db.book.create({
+        data: {
+          title,
+          author,
+          pages,
+          userId: user.id,
+        },
+      });
+
+      return { success: true };
+    },
+    needsApproval: true,
   }),
 });
 
 export const toolViews: Record<string, ToolView> = {
-  getAllBooks: {
-    texts: {
-      loadingText: "Просматривает книги...",
-      successText: "Просмотрел книги",
-    },
-    icon: BookIcon,
-  },
+  getAllBooks: getAllBooksToolView,
+  createBook: createBookToolView,
 };
 
 // export const tools = Object.fromEntries(

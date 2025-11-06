@@ -10,8 +10,8 @@
     "postinstall": "npx prisma generate"
   },
   "dependencies": {
-    "@ai-sdk/openai": "^2.0.60",
-    "@ai-sdk/react": "^2.0.86",
+    "@ai-sdk/openai": "3.0.0-beta.50",
+    "@ai-sdk/react": "3.0.0-beta.93",
     "@base-ui-components/react": "1.0.0-beta.4",
     "@date-fns/tz": "^1.4.1",
     "@dicebear/collection": "^9.2.4",
@@ -65,7 +65,7 @@
     "@vercel/blob": "^1.1.1",
     "@vercel/og": "^0.6.8",
     "@vercel/speed-insights": "^1.2.0",
-    "ai": "^5.0.86",
+    "ai": "6.0.0-beta.93",
     "blurhash": "^2.0.5",
     "canvas-confetti": "^1.9.3",
     "chart.js": "^4.5.0",

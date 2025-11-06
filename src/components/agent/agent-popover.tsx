@@ -1,10 +1,16 @@
 import { ChatHistory } from "@/components/agent/chat-history";
+import { EmptyView } from "@/components/agent/empty-view";
 import { MessageInput } from "@/components/agent/message-input";
 import { Button } from "@/components/ui/button";
 import { MyUIMessage } from "@/lib/ai/message";
 import { useChat } from "@ai-sdk/react";
-import { lastAssistantMessageIsCompleteWithToolCalls } from "ai";
+import {
+  lastAssistantMessageIsCompleteWithApprovalResponses,
+  lastAssistantMessageIsCompleteWithToolCalls,
+} from "ai";
 import { XIcon } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import { useState } from "react";
 
 export function AgentPopover({
   isOpen,
@@ -13,10 +19,20 @@ export function AgentPopover({
   isOpen: boolean;
   onClose: () => void;
 }) {
-  const { messages, sendMessage, error, status, regenerate } =
-    useChat<MyUIMessage>({
-      sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
-    });
+  const [isEmpty, setIsEmpty] = useState(true);
+
+  const {
+    messages,
+    sendMessage,
+    error,
+    status,
+    regenerate,
+    addToolApprovalResponse,
+  } = useChat<MyUIMessage>({
+    sendAutomaticallyWhen: ({ messages }) =>
+      lastAssistantMessageIsCompleteWithToolCalls({ messages }) ||
+      lastAssistantMessageIsCompleteWithApprovalResponses({ messages }),
+  });
 
   return (
     <div
@@ -34,14 +50,65 @@ export function AgentPopover({
           <XIcon />
         </Button>
       </div>
-      <ChatHistory
-        messages={messages}
-        error={error}
+      <div className="h-full relative flex flex-col min-h-0 overflow-x-hidden">
+        <AnimatePresence mode="popLayout">
+          {isEmpty && messages.length === 0 ? (
+            <motion.div
+              initial={{
+                x: "-100%",
+                opacity: 0,
+                filter: "blur(6px)",
+                scale: 0.7,
+              }}
+              animate={{ x: 0, opacity: 1, filter: "blur(0px)", scale: 1 }}
+              exit={{
+                x: "-100%",
+                opacity: 0,
+                filter: "blur(6px)",
+                scale: 0.7,
+              }}
+              transition={{ duration: 0.5, bounce: 0.1, type: "spring" }}
+              key="empty"
+              className="size-full"
+            >
+              <EmptyView sendMessage={(text) => sendMessage({ text })} />
+            </motion.div>
+          ) : (
+            <motion.div
+              initial={{
+                x: "-100%",
+                opacity: 0,
+                filter: "blur(6px)",
+                scale: 0.7,
+              }}
+              animate={{ x: 0, opacity: 1, filter: "blur(0px)", scale: 1 }}
+              exit={{
+                x: "-100%",
+                opacity: 0,
+                filter: "blur(6px)",
+                scale: 0.7,
+              }}
+              transition={{ duration: 0.5, bounce: 0.1, type: "spring" }}
+              key="chat"
+              className="size-full"
+            >
+              <ChatHistory
+                messages={messages}
+                error={error}
+                status={status}
+                onRetry={() => regenerate()}
+                onRegenerate={(messageId) => regenerate({ messageId })}
+                addToolApprovalResponse={addToolApprovalResponse}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+      <MessageInput
+        setIsEmpty={setIsEmpty}
         status={status}
-        onRetry={() => regenerate()}
-        onRegenerate={(messageId) => regenerate({ messageId })}
+        onSend={(message) => sendMessage({ text: message })}
       />
-      <MessageInput onSend={(message) => sendMessage({ text: message })} />
     </div>
   );
 }
