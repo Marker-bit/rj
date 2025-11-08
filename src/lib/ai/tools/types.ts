@@ -1,10 +1,11 @@
-import { JSONValue } from "ai";
+import { toolSetForUser } from "@/lib/ai/tools/toolset";
+import { InferToolInput, InferToolOutput } from "ai";
 import { LucideIcon } from "lucide-react";
 
-export type ToolView<
-  INPUT extends JSONValue | unknown | never = never,
-  OUTPUT extends JSONValue | unknown | never = never,
-> = {
+export type AllTools = ReturnType<typeof toolSetForUser>;
+export type ToolId = keyof AllTools;
+
+export type ToolView<ToolName extends ToolId = ToolId> = {
   texts: {
     loadingText: string;
     successText: string;
@@ -13,10 +14,17 @@ export type ToolView<
     deniedText?: string;
   };
   icon: LucideIcon;
-  outputView: ToolOutputView<INPUT, OUTPUT>;
+  outputView: ToolOutputView<ToolName>;
 };
 
-export type ToolOutputView<
-  INPUT extends JSONValue | unknown | never = never,
-  OUTPUT extends JSONValue | unknown | never = never,
-> = React.FC<{ input: INPUT; output: OUTPUT }>;
+export type ToolOutputView<ToolName extends ToolId> = React.FC<{
+  input: ToolInput<ToolName>;
+  output: ToolOutput<ToolName>;
+}>;
+
+export type ToolInput<ToolName extends ToolId> = InferToolInput<
+  AllTools[ToolName]
+>;
+export type ToolOutput<ToolName extends ToolId> = InferToolOutput<
+  AllTools[ToolName]
+>;

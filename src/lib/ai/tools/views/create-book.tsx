@@ -1,13 +1,8 @@
-import { toolSetForUser } from "@/lib/ai/tools/toolset";
 import { ToolOutputView, ToolView } from "@/lib/ai/tools/types";
 import { declOfNum } from "@/lib/utils";
-import { InferToolInput, InferToolOutput } from "ai";
-import { BookIcon, PlusIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 
-const CreateBookView: ToolOutputView<
-  InferToolInput<ReturnType<typeof toolSetForUser>["createBook"]>,
-  InferToolOutput<ReturnType<typeof toolSetForUser>["createBook"]>
-> = ({ input, output }) => {
+const CreateBookView: ToolOutputView<"createBook"> = ({ input, output }) => {
   return (
     <div>
       <div className="px-2 pt-1 pb-2 rounded-md flex flex-col leading-tight border">
@@ -22,10 +17,7 @@ const CreateBookView: ToolOutputView<
   );
 };
 
-export const createBookToolView: ToolView<
-  InferToolInput<ReturnType<typeof toolSetForUser>["createBook"]>,
-  InferToolOutput<ReturnType<typeof toolSetForUser>["createBook"]>
-> = {
+export const createBookToolView: ToolView<"createBook"> = {
   texts: {
     loadingText: "Создаёт книгу...",
     successText: "Создал книгу",

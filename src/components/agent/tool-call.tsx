@@ -4,22 +4,19 @@ import { ToolView } from "@/lib/ai/tools/types";
 import { cn } from "@/lib/utils";
 import {
   ChatAddToolApproveResponseFunction,
-  DeepPartial,
   UITool,
-  UIToolInvocation,
+  UIToolInvocation
 } from "ai";
 import {
   ChevronRightIcon,
   ClockIcon,
   Loader2Icon,
-  LucideIcon,
   ShieldQuestionIcon,
   TriangleAlertIcon,
-  XIcon,
+  XIcon
 } from "lucide-react";
 import { AnimatePresence, motion, Variants } from "motion/react";
 import { useEffect, useState } from "react";
-import z from "zod";
 
 const iconVariants: Variants = {
   initial: { scale: 0.5, opacity: 0, filter: "blur(4px)" },

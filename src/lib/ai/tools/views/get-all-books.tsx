@@ -1,13 +1,8 @@
-import { toolSetForUser } from "@/lib/ai/tools/toolset";
 import { ToolOutputView, ToolView } from "@/lib/ai/tools/types";
 import { declOfNum } from "@/lib/utils";
-import { InferToolInput, InferToolOutput } from "ai";
 import { BookIcon } from "lucide-react";
 
-const BookOutputView: ToolOutputView<
-  InferToolInput<ReturnType<typeof toolSetForUser>["getAllBooks"]>,
-  InferToolOutput<ReturnType<typeof toolSetForUser>["getAllBooks"]>
-> = ({ input, output }) => {
+const BookOutputView: ToolOutputView<"getAllBooks"> = ({ input, output }) => {
   const showedBooks = output.slice(0, 3);
   const leftBooks = Math.max(0, output.length - showedBooks.length);
 
@@ -37,10 +32,7 @@ const BookOutputView: ToolOutputView<
   );
 };
 
-export const getAllBooksToolView: ToolView<
-  InferToolInput<ReturnType<typeof toolSetForUser>["getAllBooks"]>,
-  InferToolOutput<ReturnType<typeof toolSetForUser>["getAllBooks"]>
-> = {
+export const getAllBooksToolView: ToolView<"getAllBooks"> = {
   texts: {
     loadingText: "Просматривает книги...",
     successText: "Просмотрел книги",

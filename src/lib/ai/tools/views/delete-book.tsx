@@ -1,15 +1,10 @@
 import { Spinner } from "@/components/ui/spinner";
-import { toolSetForUser } from "@/lib/ai/tools/toolset";
 import { ToolOutputView, ToolView } from "@/lib/ai/tools/types";
 import { declOfNum } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import { InferToolInput, InferToolOutput } from "ai";
 import { CircleAlertIcon, TrashIcon } from "lucide-react";
 
-const DeleteBookView: ToolOutputView<
-  InferToolInput<ReturnType<typeof toolSetForUser>["deleteBook"]>,
-  InferToolOutput<ReturnType<typeof toolSetForUser>["deleteBook"]>
-> = ({ input }) => {
+const DeleteBookView: ToolOutputView<"deleteBook"> = ({ input }) => {
   const bookQuery = useQuery({
     queryKey: ["book", input.id],
     queryFn: () =>
@@ -43,10 +38,7 @@ const DeleteBookView: ToolOutputView<
   );
 };
 
-export const deleteBookToolView: ToolView<
-  InferToolInput<ReturnType<typeof toolSetForUser>["deleteBook"]>,
-  InferToolOutput<ReturnType<typeof toolSetForUser>["deleteBook"]>
-> = {
+export const deleteBookToolView: ToolView<"deleteBook"> = {
   texts: {
     loadingText: "Удаляет книгу...",
     successText: "Удалил книгу",
