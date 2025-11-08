@@ -19,6 +19,34 @@ const bookSchema = z.object({
   ),
 });
 
+export async function GET(
+  req: NextRequest,
+  props: { params: Promise<{ bookId: string }> },
+) {
+  const params = await props.params;
+  const bookId = params.bookId;
+  const { user } = await validateRequest();
+  if (!user) {
+    return new NextResponse("Not Authorized", {
+      status: 401,
+    });
+  }
+  const book = await db.book.findUnique({
+    where: {
+      id: bookId,
+      userId: user.id,
+    },
+  });
+  if (!book) {
+    return new NextResponse(null, {
+      status: 404,
+    });
+  }
+  return NextResponse.json(book, {
+    status: 200,
+  });
+}
+
 export async function PATCH(
   req: NextRequest,
   props: { params: Promise<{ bookId: string }> },

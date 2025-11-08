@@ -10,6 +10,7 @@ import {
 } from "ai";
 import {
   ChevronRightIcon,
+  ClockIcon,
   Loader2Icon,
   LucideIcon,
   ShieldQuestionIcon,
@@ -17,7 +18,7 @@ import {
   XIcon,
 } from "lucide-react";
 import { AnimatePresence, motion, Variants } from "motion/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import z from "zod";
 
 const iconVariants: Variants = {
@@ -45,11 +46,21 @@ export function ToolCall<TOOL extends UITool>({
       ? texts.successText
       : toolCall.state === "approval-requested"
         ? texts.approvalText
-        : toolCall.state === "output-denied" && texts.deniedText
-          ? texts.deniedText
-          : texts.loadingText;
+        : toolCall.state === "approval-responded"
+          ? toolCall.approval.approved
+            ? (texts.acceptedText ?? "Принято")
+            : (texts.deniedText ?? "Отклонено")
+          : toolCall.state === "output-denied" && texts.deniedText
+            ? texts.deniedText
+            : texts.loadingText;
 
   const realIsLast = isLast && !isExpanded;
+
+  useEffect(() => {
+    if (toolCall.state === "approval-requested") {
+      setIsExpanded(true);
+    }
+  }, [toolCall.state]);
 
   return (
     <div
@@ -109,6 +120,16 @@ export function ToolCall<TOOL extends UITool>({
                 >
                   <ShieldQuestionIcon className="size-3.5 text-muted-foreground" />
                 </motion.div>
+              ) : toolCall.state === "approval-responded" ? (
+                <motion.div
+                  key="responded"
+                  variants={iconVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                >
+                  <ClockIcon className="size-3.5 text-muted-foreground" />
+                </motion.div>
               ) : (
                 toolCall.state === "output-denied" && (
                   <motion.div
@@ -159,13 +180,6 @@ export function ToolCall<TOOL extends UITool>({
               selectedText
             )}
           </motion.div>
-          {toolCall.state === "approval-requested" && (
-            <ToolConfirmation
-              className="mt-2"
-              invocation={toolCall}
-              addToolApprovalResponse={addToolApprovalResponse}
-            />
-          )}
         </AnimatePresence>
         <AnimatePresence>
           {isExpanded && (
@@ -175,20 +189,61 @@ export function ToolCall<TOOL extends UITool>({
                 opacity: 0,
                 filter: "blur(4px)",
                 height: 0,
+                paddingTop: 0,
               }}
               animate={{
                 scale: 1,
                 opacity: 1,
                 filter: "blur(0)",
                 height: "auto",
+                paddingTop: "0.5rem",
               }}
-              exit={{ scale: 0.7, opacity: 0, filter: "blur(4px)", height: 0 }}
-              className="origin-top-left text-sm whitespace-pre-wrap pt-2"
+              exit={{
+                scale: 0.7,
+                opacity: 0,
+                filter: "blur(4px)",
+                height: 0,
+                paddingTop: 0,
+              }}
+              className="origin-top-left text-sm whitespace-pre-wrap"
               transition={{ duration: 0.2 }}
             >
               <toolView.outputView
                 input={toolCall.input as never}
                 output={toolCall.output as never}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <AnimatePresence>
+          {toolCall.state === "approval-requested" && (
+            <motion.div
+              initial={{
+                opacity: 0,
+                scale: 0.7,
+                filter: "blur(4px)",
+                height: 0,
+                paddingTop: 0,
+              }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+                filter: "blur(0)",
+                height: "auto",
+                paddingTop: "0.5rem",
+              }}
+              exit={{
+                opacity: 0,
+                scale: 0.7,
+                filter: "blur(4px)",
+                height: 0,
+                paddingTop: 0,
+              }}
+              className="origin-top-left"
+            >
+              <ToolConfirmation
+                invocation={toolCall}
+                addToolApprovalResponse={addToolApprovalResponse}
               />
             </motion.div>
           )}

@@ -1,5 +1,6 @@
 import { ToolView } from "@/lib/ai/tools/types";
 import { createBookToolView } from "@/lib/ai/tools/views/create-book";
+import { deleteBookToolView } from "@/lib/ai/tools/views/delete-book";
 import { getAllBooksToolView } from "@/lib/ai/tools/views/get-all-books";
 import { fetchBooks } from "@/lib/books";
 import { db } from "@/lib/db";
@@ -59,11 +60,47 @@ export const toolSetForUser = (user: User) => ({
     },
     needsApproval: true,
   }),
+  deleteBook: tool({
+    description: "Удалить книгу пользователя",
+    inputSchema: z.object({
+      id: z.string().describe("Идентификатор книги"),
+    }),
+    execute: async ({ id }) => {
+      const book = await db.book.findFirst({
+        where: {
+          id,
+          userId: user.id,
+        },
+      });
+
+      if (!book) {
+        return { success: false, error: "Книга не найдена" };
+      }
+
+      await db.book.delete({
+        where: {
+          id,
+        },
+      });
+
+      return {
+        success: true,
+        book: {
+          id: book.id,
+          title: book.title,
+          author: book.author,
+          pages: book.pages,
+        },
+      };
+    },
+    needsApproval: true,
+  }),
 });
 
 export const toolViews: Record<string, ToolView> = {
   getAllBooks: getAllBooksToolView,
   createBook: createBookToolView,
+  deleteBook: deleteBookToolView,
 };
 
 // export const tools = Object.fromEntries(

@@ -1,6 +1,9 @@
 import { ChatHistory } from "@/components/agent/chat-history";
 import { EmptyView } from "@/components/agent/empty-view";
-import { MessageInput } from "@/components/agent/message-input";
+import {
+  MessageInput,
+  MessageInputRef,
+} from "@/components/agent/message-input";
 import { Button } from "@/components/ui/button";
 import { MyUIMessage } from "@/lib/ai/message";
 import { useChat } from "@ai-sdk/react";
@@ -10,7 +13,7 @@ import {
 } from "ai";
 import { XIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 export function AgentPopover({
   isOpen,
@@ -19,7 +22,7 @@ export function AgentPopover({
   isOpen: boolean;
   onClose: () => void;
 }) {
-  const [isEmpty, setIsEmpty] = useState(true);
+  const ref = useRef<MessageInputRef>(null);
 
   const {
     messages,
@@ -52,7 +55,7 @@ export function AgentPopover({
       </div>
       <div className="h-full relative flex flex-col min-h-0 overflow-x-hidden">
         <AnimatePresence mode="popLayout">
-          {isEmpty && messages.length === 0 ? (
+          {messages.length === 0 ? (
             <motion.div
               initial={{
                 x: "-100%",
@@ -71,7 +74,7 @@ export function AgentPopover({
               key="empty"
               className="size-full"
             >
-              <EmptyView sendMessage={(text) => sendMessage({ text })} />
+              <EmptyView setMessage={(text) => ref.current?.setMessage(text)} />
             </motion.div>
           ) : (
             <motion.div
@@ -105,7 +108,7 @@ export function AgentPopover({
         </AnimatePresence>
       </div>
       <MessageInput
-        setIsEmpty={setIsEmpty}
+        ref={ref}
         status={status}
         onSend={(message) => sendMessage({ text: message })}
       />

@@ -9,6 +9,7 @@ export type ToolView<
     loadingText: string;
     successText: string;
     approvalText: string;
+    acceptedText?: string;
     deniedText?: string;
   };
   icon: LucideIcon;

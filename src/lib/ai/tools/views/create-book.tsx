@@ -30,6 +30,7 @@ export const createBookToolView: ToolView<
     loadingText: "Создаёт книгу...",
     successText: "Создал книгу",
     approvalText: "Хочет создать книгу",
+    acceptedText: "Создание книги принято",
     deniedText: "Создание книги отклонено",
   },
   icon: PlusIcon,

@@ -1,22 +1,30 @@
 import { Button } from "@/components/ui/button";
 import { ChatStatus } from "ai";
 import { SendIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useImperativeHandle, useRef, useState } from "react";
+
+export type MessageInputRef = {
+  setMessage: (message: string) => void;
+};
 
 export function MessageInput({
   onSend,
   status,
-  setIsEmpty,
+  ref,
 }: {
   onSend: (message: string) => void;
   status: ChatStatus;
-  setIsEmpty: (isEmpty: boolean) => void;
+  ref: React.RefObject<MessageInputRef | null>;
 }) {
   const [message, setMessage] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    setIsEmpty(message.length === 0);
-  }, [message, setIsEmpty]);
+  useImperativeHandle(ref, () => ({
+    setMessage: (message: string) => {
+      inputRef.current?.focus();
+      setMessage(message);
+    },
+  }));
 
   return (
     <form
@@ -32,11 +40,16 @@ export function MessageInput({
         placeholder="Напишите сообщение..."
         value={message}
         onChange={(e) => setMessage(e.target.value)}
+        ref={inputRef}
       />
       <Button
         size="icon-sm"
         type="submit"
-        disabled={status === "streaming" || status === "submitted"}
+        disabled={
+          status === "streaming" ||
+          status === "submitted" ||
+          message.trim().length === 0
+        }
       >
         <SendIcon />
       </Button>

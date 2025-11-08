@@ -16,13 +16,15 @@ export function ToolConfirmation({
     <ButtonGroup {...props}>
       <Button
         variant="outline"
-        onClick={() =>
-          invocation.approval &&
-          addToolApprovalResponse({
-            id: invocation.approval.id,
-            approved: true,
-          })
-        }
+        onClick={(evt) => {
+          evt.stopPropagation();
+          if (invocation.approval) {
+            addToolApprovalResponse({
+              id: invocation.approval.id,
+              approved: true,
+            });
+          }
+        }}
         size="sm"
       >
         <CheckIcon />
@@ -30,13 +32,15 @@ export function ToolConfirmation({
       </Button>
       <Button
         variant="outline"
-        onClick={() =>
-          invocation.approval &&
-          addToolApprovalResponse({
-            id: invocation.approval.id,
-            approved: false,
-          })
-        }
+        onClick={(evt) => {
+          evt.stopPropagation();
+          if (invocation.approval) {
+            addToolApprovalResponse({
+              id: invocation.approval.id,
+              approved: false,
+            });
+          }
+        }}
         size="sm"
       >
         <XIcon />

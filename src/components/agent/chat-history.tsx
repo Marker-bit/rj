@@ -4,7 +4,11 @@ import { Button } from "@/components/ui/button";
 import { TextShimmer } from "@/components/ui/text-shimmer";
 import { MyUIMessage } from "@/lib/ai/message";
 import { cn } from "@/lib/utils";
-import { ChatAddToolApproveResponseFunction, ChatStatus } from "ai";
+import {
+  ChatAddToolApproveResponseFunction,
+  ChatStatus,
+  isToolUIPart,
+} from "ai";
 import {
   BrainIcon,
   ChevronDownIcon,
@@ -79,6 +83,10 @@ export function ChatHistory({
     }
   }, [messages]);
 
+  useEffect(() => {
+    scrollToBottom();
+  }, [error]);
+
   const handleScroll = () => {
     if (containerRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
@@ -99,16 +107,23 @@ export function ChatHistory({
     <>
       <div
         className={cn(
-          "absolute bottom-0 left-0 p-2 flex items-center justify-center pointer-events-none z-10 w-full bg-gradient-to-t from-background/50 to-background/0 transition-opacity",
+          "absolute bottom-0 left-0 flex items-end justify-center pointer-events-none z-10 w-full transition-opacity h-20",
           isAtBottom ? "opacity-0" : "opacity-100",
         )}
       >
+        <div
+          className="absolute size-full backdrop-blur-lg bg-background/70"
+          style={{
+            maskImage:
+              "linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0))",
+          }}
+        ></div>
         <Button
           className={cn(
             isAtBottom
               ? "pointer-events-none scale-90"
               : "pointer-events-auto scale-100",
-            "dark:bg-neutral-800! rounded-full transition-transform origin-bottom",
+            "dark:bg-neutral-800! rounded-full transition-transform origin-bottom mb-2",
           )}
           size="sm"
           variant="outline"
@@ -138,7 +153,12 @@ export function ChatHistory({
                 filter: "blur(0)",
                 height: "auto",
               }}
-              exit={{ scale: 0.6, opacity: 0, filter: "blur(4px)", height: 0 }}
+              exit={{
+                scale: 0.6,
+                opacity: 0,
+                filter: "blur(4px)",
+                height: 0,
+              }}
               key={message.id}
               message={message}
               onRegenerate={() => onRegenerate(message.id)}
@@ -147,22 +167,34 @@ export function ChatHistory({
           ))}
         </AnimatePresence>
         <AnimatePresence>
-          {status === "submitted" && (
+          {(status === "submitted" ||
+            (status === "streaming" &&
+              messages.length > 0 &&
+              messages.at(-1)!.parts.at(-1) &&
+              isToolUIPart(messages.at(-1)!.parts.at(-1)!))) && (
             <motion.div
               initial={{
                 scale: 0.6,
                 opacity: 0,
                 filter: "blur(4px)",
                 height: 0,
+                paddingBottom: 0,
               }}
               animate={{
                 scale: 1,
                 opacity: 1,
                 filter: "blur(0)",
                 height: "auto",
+                paddingBottom: "0.5rem",
               }}
-              exit={{ scale: 0.6, opacity: 0, filter: "blur(4px)", height: 0 }}
-              className="pb-2 overflow-visible"
+              exit={{
+                scale: 0.6,
+                opacity: 0,
+                filter: "blur(4px)",
+                height: 0,
+                paddingBottom: 0,
+              }}
+              className="overflow-visible w-fit"
             >
               <TextShimmer className="font-mono text-sm w-fit" duration={0.5}>
                 Думает...
@@ -174,9 +206,9 @@ export function ChatHistory({
           {error && (
             <motion.div
               className="text-red-500 bg-red-100/20 dark:bg-red-900/20 p-2 rounded-md flex flex-col gap-2 origin-top"
-              initial={{ opacity: 0, scaleY: 0.6, scaleX: 0.9 }}
-              animate={{ opacity: 1, scaleY: 1, scaleX: 1 }}
-              exit={{ opacity: 0, scaleY: 0.6, scaleX: 0.9 }}
+              initial={{ opacity: 0, scaleX: 0.9, height: 0 }}
+              animate={{ opacity: 1, scaleX: 1, height: "auto" }}
+              exit={{ opacity: 0, scaleX: 0.9, height: 0 }}
             >
               <div className="flex gap-2 text-sm">
                 <CircleAlertIcon className="size-[1lh] shrink-0 pt-1" />
