@@ -6,7 +6,7 @@ import {
   HouseIcon,
   Menu,
   MessageCircleQuestion,
-  Users
+  Users,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -35,15 +35,17 @@ const navigationLinks = [
   { href: "/admin/books", label: "Книги", icon: BookIcon },
   { href: "/admin/support", label: "Поддержка", icon: MessageCircleQuestion },
   { href: "/admin/users", label: "Пользователи", icon: Users },
-  { href: "/admin/recommendations", label: "Рекомендации", icon: BookHeartIcon },
+  {
+    href: "/admin/recommendations",
+    label: "Рекомендации",
+    icon: BookHeartIcon,
+  },
 ];
 
 export default function AdminNavBar({
   auth,
 }: {
-  auth: Promise<
-    { user: User; unread: number } | { user: null; unread: null }
-  >;
+  auth: Promise<{ user: User; unread: number } | { user: null; unread: null }>;
 }) {
   const pathname = usePathname();
   const isActive = (href: string) => href === pathname;
@@ -73,18 +75,18 @@ export default function AdminNavBar({
                       <NavigationMenuItem key={index} className="w-full">
                         <NavigationMenuLink
                           className="flex-row items-center gap-2 py-1.5"
-                          asChild
+                          render={
+                            <Link href={link.href}>
+                              <Icon
+                                size={16}
+                                className="text-muted-foreground/80"
+                                aria-hidden="true"
+                              />
+                              <span>{link.label}</span>
+                            </Link>
+                          }
                           active={isActive(link.href)}
-                        >
-                          <Link href={link.href}>
-                            <Icon
-                              size={16}
-                              className="text-muted-foreground/80"
-                              aria-hidden="true"
-                            />
-                            <span>{link.label}</span>
-                          </Link>
-                        </NavigationMenuLink>
+                        ></NavigationMenuLink>
                       </NavigationMenuItem>
                     );
                   })}
@@ -94,7 +96,10 @@ export default function AdminNavBar({
           </Popover>
           {/* Logo */}
           <div className="flex items-center">
-            <Link href="/home" className="hover:bg-muted-foreground/10 p-1 rounded-lg transition">
+            <Link
+              href="/home"
+              className="hover:bg-muted-foreground/10 p-1 rounded-lg transition"
+            >
               <Image
                 src="/icon.png"
                 alt="logo"
@@ -114,18 +119,18 @@ export default function AdminNavBar({
                 <NavigationMenuItem key={index}>
                   <NavigationMenuLink
                     className="text-foreground hover:text-primary flex-row items-center gap-2 py-1.5 font-medium"
-                    asChild
+                    render={
+                      <Link href={link.href}>
+                        <Icon
+                          size={16}
+                          className="text-muted-foreground/80"
+                          aria-hidden="true"
+                        />
+                        <span>{link.label}</span>
+                      </Link>
+                    }
                     active={isActive(link.href)}
-                  >
-                    <Link href={link.href}>
-                      <Icon
-                        size={16}
-                        className="text-muted-foreground/80"
-                        aria-hidden="true"
-                      />
-                      <span>{link.label}</span>
-                    </Link>
-                  </NavigationMenuLink>
+                  />
                 </NavigationMenuItem>
               );
             })}

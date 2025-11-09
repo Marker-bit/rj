@@ -52,7 +52,10 @@ function NavigationMenuItem({
   return (
     <NavigationMenuPrimitive.Item
       data-slot="navigation-menu-item"
-      className={cn("relative", className)}
+      className={cn(
+        "relative active:scale-95 active:blur-[1px] transition-[scale,filter]",
+        className,
+      )}
       {...props}
     />
   );
