@@ -1,70 +1,74 @@
-"use client"
+"use client";
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogTitle,
-} from "../ui/dialog"
-import { cn, dateToString, declOfNum } from "@/lib/utils"
-import { Button } from "../ui/button"
-import { ChevronLeft, ChevronRight, XIcon } from "lucide-react"
-import { AnimatePresence, motion } from "motion/react"
-import useMeasure from "react-use-measure"
-import { DayChart } from "./day-chart"
-import { Book } from "@/lib/api-types"
-import { getEventDays } from "@/lib/stats"
-import { differenceInDays, endOfDay, formatDate, startOfDay } from "date-fns"
-import { formatDateRange } from "little-date";
+} from "../ui/dialog";
+import { cn, dateToString, declOfNum } from "@/lib/utils";
+import { Button } from "../ui/button";
+import { ChevronLeft, ChevronRight, XIcon } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import useMeasure from "react-use-measure";
+import { DayChart } from "./day-chart";
+import { Book } from "@/lib/api-types";
+import { getEventDays } from "@/lib/stats";
+import { differenceInDays, endOfDay, formatDate, startOfDay } from "date-fns";
 import { ru } from "date-fns/locale";
 
 type Step = {
-  title: string
-  description?: string
-  highlightedText?: string
-  highlightedTextDescription?: string
-  component?: React.ReactNode
-}
+  title: string;
+  description?: string;
+  highlightedText?: string;
+  highlightedTextDescription?: string;
+  component?: React.ReactNode;
+};
 
 export default function BookReadInfo({
   open,
   setOpen,
   book,
 }: {
-  open: boolean
-  setOpen: (open: boolean) => void
-  book: Book
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  book: Book;
 }) {
-  const [isClient, setIsClient] = useState(false)
-  const [currentStep, setCurrentStep] = useState(0)
-  const [direction, setDirection] = useState<-1 | 0 | 1>(0)
+  const [isClient, setIsClient] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [direction, setDirection] = useState<-1 | 0 | 1>(0);
   const chartData = useMemo(
     () => getEventDays(book.readEvents.toReversed()),
-    [book.readEvents]
-  )
+    [book.readEvents],
+  );
 
-  const firstEvent = book.readEvents.at(-1)
-  const lastEvent = book.readEvents[0]
+  const firstEvent = book.readEvents.at(-1);
+  const lastEvent = book.readEvents[0];
   const readingTime =
     firstEvent && lastEvent
-      ? differenceInDays(endOfDay(lastEvent.readAt), startOfDay(firstEvent.readAt)) + 1
-      : 1
-  const avg = chartData.reduce((a, b) => a + b.pagesRead, 0) / chartData.length
+      ? differenceInDays(
+          endOfDay(lastEvent.readAt),
+          startOfDay(firstEvent.readAt),
+        ) + 1
+      : 1;
+  const avg = chartData.reduce((a, b) => a + b.pagesRead, 0) / chartData.length;
 
   const steps: Step[] = [
     {
       title: "Поздравляем, вы прочитали эту книгу!",
       description: "Вся информация о ней",
     },
-    (firstEvent && lastEvent) ? {
-      title: "Вы читали",
-      highlightedText: `с ${formatDate(firstEvent.readAt, "d MMMM, yyyy", {locale: ru})} по ${formatDate(lastEvent.readAt, "d MMMM, yyyy", {locale: ru})}`,
-      highlightedTextDescription: `Всего вы читали ${readingTime} ${declOfNum(
-        readingTime,
-        ["день", "дня", "дней"]
-      )}`,
-    } : undefined,
+    firstEvent && lastEvent
+      ? {
+          title: "Вы читали",
+          highlightedText: `с ${formatDate(firstEvent.readAt, "d MMMM, yyyy", { locale: ru })} по ${formatDate(lastEvent.readAt, "d MMMM, yyyy", { locale: ru })}`,
+          highlightedTextDescription: `Всего вы читали ${readingTime} ${declOfNum(
+            readingTime,
+            ["день", "дня", "дней"],
+          )}`,
+        }
+      : undefined,
     {
       title: "В среднем, вы читали",
       highlightedText: `${avg.toFixed(1)} ${declOfNum(Math.floor(avg), [
@@ -79,25 +83,25 @@ export default function BookReadInfo({
       description: "Показан каждый день от первого до последнего",
       component: <DayChart data={chartData} />,
     },
-  ].filter(a => a !== undefined)
+  ].filter((a) => a !== undefined);
 
-  const [ref, { height: stepHeight }] = useMeasure()
+  const [ref, { height: stepHeight }] = useMeasure();
 
-  const step = steps[currentStep]
+  const step = steps[currentStep];
 
   useEffect(() => {
-    setIsClient(true)
-  }, [])
+    setIsClient(true);
+  }, []);
 
   const close = () => {
-    setOpen(false)
+    setOpen(false);
     if (window.location.search) {
-      window.history.replaceState(null, "", window.location.pathname)
+      window.history.replaceState(null, "", window.location.pathname);
     }
-  }
+  };
 
   if (!isClient) {
-    return null
+    return null;
   }
 
   return (
@@ -115,7 +119,7 @@ export default function BookReadInfo({
                 "h-2 rounded-full transition-all duration-300 cursor-pointer",
                 currentStep === i
                   ? "bg-primary w-6"
-                  : "bg-primary/30 w-2 hover:bg-primary/50"
+                  : "bg-primary/30 w-2 hover:bg-primary/50",
               )}
               onClick={() => setCurrentStep(i)}
             />
@@ -141,11 +145,11 @@ export default function BookReadInfo({
                 exit="exit"
                 variants={{
                   initial: (direction) => {
-                    return { x: `${110 * direction}%`, opacity: 0 }
+                    return { x: `${110 * direction}%`, opacity: 0 };
                   },
                   active: { x: "0%", opacity: 1 },
                   exit: (direction) => {
-                    return { x: `${-110 * direction}%`, opacity: 0 }
+                    return { x: `${-110 * direction}%`, opacity: 0 };
                   },
                 }}
                 transition={{ duration: 0.5, type: "spring", bounce: 0 }}
@@ -170,8 +174,8 @@ export default function BookReadInfo({
         <div className="flex justify-between">
           <Button
             onClick={() => {
-              setCurrentStep((c) => c - 1)
-              setDirection(-1)
+              setCurrentStep((c) => c - 1);
+              setDirection(-1);
             }}
             disabled={currentStep === 0}
           >
@@ -181,8 +185,8 @@ export default function BookReadInfo({
           {currentStep !== steps.length - 1 ? (
             <Button
               onClick={() => {
-                setCurrentStep((c) => c + 1)
-                setDirection(1)
+                setCurrentStep((c) => c + 1);
+                setDirection(1);
               }}
             >
               Далее
@@ -197,5 +201,5 @@ export default function BookReadInfo({
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
