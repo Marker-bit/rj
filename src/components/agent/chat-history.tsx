@@ -1,5 +1,4 @@
 import { Message } from "@/components/agent/message/message";
-import { ToolCall } from "@/components/agent/tool-call";
 import { Button } from "@/components/ui/button";
 import { TextShimmer } from "@/components/ui/text-shimmer";
 import { MyUIMessage } from "@/lib/ai/message";
@@ -9,17 +8,9 @@ import {
   ChatStatus,
   isToolUIPart,
 } from "ai";
-import {
-  BrainIcon,
-  ChevronDownIcon,
-  CircleAlertIcon,
-  ListIcon,
-  PlusIcon,
-  RotateCwIcon,
-  TrashIcon,
-} from "lucide-react";
+import { ChevronDownIcon, CircleAlertIcon, RotateCwIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { ComponentPropsWithoutRef, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const MotionMessage = motion.create(Message);
 
@@ -163,6 +154,7 @@ export function ChatHistory({
               message={message}
               onRegenerate={() => onRegenerate(message.id)}
               addToolApprovalResponse={addToolApprovalResponse}
+              isStreaming={status === "streaming"}
             />
           ))}
         </AnimatePresence>

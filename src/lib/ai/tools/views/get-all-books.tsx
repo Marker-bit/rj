@@ -41,6 +41,7 @@ const BookOutputView: ToolOutputView<"getAllBooks"> = ({ input, output }) => {
 };
 
 export const getAllBooksToolView: ToolView<"getAllBooks"> = {
+  title: "Просмотреть книги",
   texts: {
     loadingText: "Просматривает книги...",
     successText: "Просмотрел книги",

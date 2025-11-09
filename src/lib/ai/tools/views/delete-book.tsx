@@ -1,15 +1,13 @@
 import { RemoteBookView } from "@/components/agent/book-view";
-import { Spinner } from "@/components/ui/spinner";
 import { ToolOutputView, ToolView } from "@/lib/ai/tools/types";
-import { declOfNum } from "@/lib/utils";
-import { useQuery } from "@tanstack/react-query";
-import { CircleAlertIcon, TrashIcon } from "lucide-react";
+import { TrashIcon } from "lucide-react";
 
 const DeleteBookView: ToolOutputView<"deleteBook"> = ({ input }) => {
   return <RemoteBookView bookId={input.id} />;
 };
 
 export const deleteBookToolView: ToolView<"deleteBook"> = {
+  title: "Удалить книгу",
   texts: {
     loadingText: "Удаляет книгу...",
     successText: "Удалил книгу",

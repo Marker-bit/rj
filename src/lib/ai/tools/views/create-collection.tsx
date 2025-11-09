@@ -34,6 +34,7 @@ const CreateCollectionView: ToolOutputView<"createCollection"> = ({
 };
 
 export const createCollectionToolView: ToolView<"createCollection"> = {
+  title: "Создать коллекцию",
   texts: {
     loadingText: "Создаёт коллекцию...",
     successText: "Создал коллекцию",

@@ -9,6 +9,7 @@ const CreateBookView: ToolOutputView<"createBook"> = ({ input, output }) => {
 };
 
 export const createBookToolView: ToolView<"createBook"> = {
+  title: "Создать книгу",
   texts: {
     loadingText: "Создаёт книгу...",
     successText: "Создал книгу",

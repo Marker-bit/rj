@@ -2,7 +2,9 @@ import { ToolId, ToolView } from "@/lib/ai/tools/types";
 import { createBookToolView } from "@/lib/ai/tools/views/create-book";
 import { createCollectionToolView } from "@/lib/ai/tools/views/create-collection";
 import { deleteBookToolView } from "@/lib/ai/tools/views/delete-book";
+import { deleteCollectionToolView } from "@/lib/ai/tools/views/delete-collection";
 import { getAllBooksToolView } from "@/lib/ai/tools/views/get-all-books";
+import { getAllCollectionsToolView } from "@/lib/ai/tools/views/get-all-collections";
 import { fetchBooks } from "@/lib/books";
 import { db } from "@/lib/db";
 import { tool } from "ai";
@@ -153,6 +155,75 @@ export const toolSetForUser = (user: User) => ({
     },
     needsApproval: true,
   }),
+  deleteCollection: tool({
+    description:
+      "Удалить коллекцию пользователя. Книги в коллекции НЕ будут удалены.",
+    inputSchema: z.object({
+      id: z.string().describe("Идентификатор коллекции"),
+    }),
+    execute: async ({ id }) => {
+      const collection = await db.collection.findFirst({
+        where: {
+          id,
+          userId: user.id,
+        },
+        include: {
+          books: true,
+        },
+      });
+
+      if (!collection) {
+        return { success: false, error: "Коллекция не найдена" };
+      }
+
+      await db.collection.delete({
+        where: {
+          id,
+        },
+      });
+
+      return {
+        success: true,
+        collection: {
+          id: collection.id,
+          name: collection.name,
+          books: collection.books.map((book) => ({
+            id: book.id,
+            title: book.title,
+            author: book.author,
+            pages: book.pages,
+          })),
+        },
+      };
+    },
+    needsApproval: true,
+  }),
+  getAllCollections: tool({
+    description: "Посмотреть все коллекции пользователя",
+    inputSchema: z.object({}),
+    execute: async () => {
+      // await new Promise((resolve) => setTimeout(resolve, 10000));
+      const collections = await db.collection.findMany({
+        where: {
+          userId: user.id,
+        },
+        include: {
+          books: true,
+        },
+      });
+
+      return collections.map((collection) => ({
+        id: collection.id,
+        name: collection.name,
+        books: collection.books.map((book) => ({
+          id: book.id,
+          title: book.title,
+          author: book.author,
+          pages: book.pages,
+        })),
+      }));
+    },
+  }),
 });
 
 export const toolViews: Record<ToolId, ToolView> = {
@@ -160,6 +231,8 @@ export const toolViews: Record<ToolId, ToolView> = {
   createBook: createBookToolView,
   deleteBook: deleteBookToolView,
   createCollection: createCollectionToolView,
+  deleteCollection: deleteCollectionToolView,
+  getAllCollections: getAllCollectionsToolView,
 };
 
 // export const tools = Object.fromEntries(

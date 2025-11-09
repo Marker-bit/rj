@@ -13,6 +13,7 @@ export type ToolView<ToolName extends ToolId = ToolId> = {
     acceptedText?: string;
     deniedText?: string;
   };
+  title: string;
   icon: LucideIcon;
   outputView: ToolOutputView<ToolName>;
 };

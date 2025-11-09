@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
-import { toolSetForUser } from "@/lib/ai/tools/toolset";
 import { ChatAddToolApproveResponseFunction, UIToolInvocation } from "ai";
 import { CheckIcon, XIcon } from "lucide-react";
 
