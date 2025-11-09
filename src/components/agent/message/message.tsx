@@ -6,12 +6,7 @@ import { groupMessageParts, MyUIMessage } from "@/lib/ai/message";
 import { toolViews } from "@/lib/ai/tools/toolset";
 import { ToolId } from "@/lib/ai/tools/types";
 import { cn } from "@/lib/utils";
-import {
-  ChatAddToolApproveResponseFunction,
-  isTextUIPart,
-  isToolUIPart,
-} from "ai";
-import { useMemo } from "react";
+import { ChatAddToolApproveResponseFunction, isTextUIPart } from "ai";
 import { Streamdown } from "streamdown";
 
 export function Message({
@@ -20,12 +15,14 @@ export function Message({
   onRegenerate,
   addToolApprovalResponse,
   isStreaming,
+  canRegenerate,
 }: {
   message: MyUIMessage;
   ref?: React.RefObject<HTMLDivElement>;
   onRegenerate: () => void;
   addToolApprovalResponse: ChatAddToolApproveResponseFunction;
   isStreaming: boolean;
+  canRegenerate: boolean;
 }) {
   // const toolParts = useMemo(() => {
   //   return message.parts.filter((part) => isToolUIPart(part));
@@ -46,7 +43,11 @@ export function Message({
       )}
       ref={ref}
     >
-      <MessageContextMenu message={message} onRegenerate={onRegenerate}>
+      <MessageContextMenu
+        message={message}
+        canRegenerate={canRegenerate}
+        onRegenerate={onRegenerate}
+      >
         <MessageContainer
           role={message.role}
           className="group relative flex flex-col"

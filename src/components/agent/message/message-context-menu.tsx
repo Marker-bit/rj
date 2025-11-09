@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -6,7 +5,6 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import { getCopyableMessageText } from "@/lib/ai/utils";
-import { cn } from "@/lib/utils";
 import { UIMessage } from "ai";
 import { CopyIcon, RefreshCcw } from "lucide-react";
 import { toast } from "sonner";
@@ -14,11 +12,13 @@ import { toast } from "sonner";
 export function MessageContextMenu({
   children,
   message,
+  canRegenerate,
   onRegenerate,
   ...props
 }: {
   onRegenerate: () => void;
   message: UIMessage;
+  canRegenerate: boolean;
 } & React.ComponentPropsWithRef<typeof ContextMenuTrigger>) {
   return (
     <ContextMenu>
@@ -45,7 +45,7 @@ export function MessageContextMenu({
           <CopyIcon />
           Скопировать сообщение
         </ContextMenuItem>
-        <ContextMenuItem onClick={onRegenerate}>
+        <ContextMenuItem onClick={onRegenerate} disabled={!canRegenerate}>
           <RefreshCcw />
           Повторить
         </ContextMenuItem>

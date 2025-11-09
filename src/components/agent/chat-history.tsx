@@ -154,6 +154,7 @@ export function ChatHistory({
               onRegenerate={() => onRegenerate(message.id)}
               addToolApprovalResponse={addToolApprovalResponse}
               isStreaming={status === "streaming"}
+              canRegenerate={status !== "submitted" && status !== "streaming"}
             />
           ))}
         </AnimatePresence>
