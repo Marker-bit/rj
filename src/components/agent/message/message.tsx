@@ -2,12 +2,11 @@ import { MessageContainer } from "@/components/agent/message/message-container";
 import { MessageContextMenu } from "@/components/agent/message/message-context-menu";
 import { MessageRole } from "@/components/agent/message/message-role";
 import { ToolCall } from "@/components/agent/tool-call";
-import { ToolConfirmation } from "@/components/agent/tool-confirmation";
 import { MyUIMessage } from "@/lib/ai/message";
 import { toolViews } from "@/lib/ai/tools/toolset";
+import { ToolId } from "@/lib/ai/tools/types";
 import { cn } from "@/lib/utils";
 import { ChatAddToolApproveResponseFunction, isToolUIPart } from "ai";
-import { CheckIcon, XIcon } from "lucide-react";
 import { useMemo } from "react";
 
 export function Message({
@@ -46,7 +45,8 @@ export function Message({
           <MessageRole role={message.role} />
           {toolParts.map((part, idx) => {
             const toolName = part.type.slice(5);
-            const toolView = toolName in toolViews ? toolViews[toolName] : null;
+            const toolView =
+              toolName in toolViews ? toolViews[toolName as ToolId] : null;
             if (!toolView) return null;
 
             return (

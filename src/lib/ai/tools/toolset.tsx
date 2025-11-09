@@ -1,5 +1,6 @@
-import { ToolView } from "@/lib/ai/tools/types";
+import { ToolId, ToolView } from "@/lib/ai/tools/types";
 import { createBookToolView } from "@/lib/ai/tools/views/create-book";
+import { createCollectionToolView } from "@/lib/ai/tools/views/create-collection";
 import { deleteBookToolView } from "@/lib/ai/tools/views/delete-book";
 import { getAllBooksToolView } from "@/lib/ai/tools/views/get-all-books";
 import { fetchBooks } from "@/lib/books";
@@ -30,9 +31,12 @@ export const toolSetForUser = (user: User) => ({
         author: book.author,
         pages: book.pages,
         lastEvent: book.readEvents[0] ?? null,
+        collections: book.collections.map((collection) => ({
+          id: collection.id,
+          name: collection.name,
+        })),
       }));
     },
-    // needsApproval: true,
   }),
   createBook: tool({
     description: "Создать книгу для пользователя",
@@ -46,8 +50,7 @@ export const toolSetForUser = (user: User) => ({
         .describe("Количество страниц в книге"),
     }),
     execute: async ({ title, author, pages }) => {
-      // await new Promise((resolve) => setTimeout(resolve, 10000));
-      const book = await db.book.create({
+      await db.book.create({
         data: {
           title,
           author,
@@ -95,12 +98,68 @@ export const toolSetForUser = (user: User) => ({
     },
     needsApproval: true,
   }),
+  createCollection: tool({
+    description: "Создать коллекцию книг",
+    inputSchema: z.object({
+      name: z.string().min(1).max(100).describe("Название коллекции"),
+      bookIds: z
+        .array(z.string())
+        .optional()
+        .describe(
+          "Идентификаторы книг для добавления в коллекцию (опционально)",
+        ),
+    }),
+    execute: async ({ name, bookIds }) => {
+      const books = await Promise.all(
+        (bookIds || []).map(async (id) => {
+          const book = await db.book.findFirst({
+            where: {
+              id,
+              userId: user.id,
+            },
+          });
+
+          if (!book) {
+            throw new Error(`Книга с идентификатором ${id} не найдена`);
+          }
+
+          return book;
+        }),
+      );
+
+      const collection = await db.collection.create({
+        data: {
+          name,
+          userId: user.id,
+          books: {
+            connect: books.map((book) => ({ id: book.id })),
+          },
+        },
+      });
+
+      return {
+        success: true,
+        collection: {
+          id: collection.id,
+          name: collection.name,
+          books: books.map((book) => ({
+            id: book.id,
+            title: book.title,
+            author: book.author,
+            pages: book.pages,
+          })),
+        },
+      };
+    },
+    needsApproval: true,
+  }),
 });
 
-export const toolViews: Record<string, ToolView> = {
+export const toolViews: Record<ToolId, ToolView> = {
   getAllBooks: getAllBooksToolView,
   createBook: createBookToolView,
   deleteBook: deleteBookToolView,
+  createCollection: createCollectionToolView,
 };
 
 // export const tools = Object.fromEntries(

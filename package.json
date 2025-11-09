@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@ai-sdk/openai": "3.0.0-beta.50",
+    "@ai-sdk/provider-utils": "^3.0.16",
     "@ai-sdk/react": "3.0.0-beta.93",
     "@base-ui-components/react": "1.0.0-beta.4",
     "@date-fns/tz": "^1.4.1",
@@ -24,7 +25,7 @@
     "@node-rs/argon2": "^2.0.2",
     "@node-rs/argon2-win32-x64-msvc": "^2.0.2",
     "@node-rs/bcrypt": "^1.10.7",
-    "@openrouter/ai-sdk-provider": "^0.7.5",
+    "@openrouter/ai-sdk-provider": "^1.2.1",
     "@origin-space/image-cropper": "^0.1.9",
     "@prisma/client": "^6.17.1",
     "@radix-ui/react-accordion": "^1.2.12",

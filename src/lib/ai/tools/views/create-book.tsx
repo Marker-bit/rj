@@ -1,19 +1,10 @@
+import { BookView } from "@/components/agent/book-view";
 import { ToolOutputView, ToolView } from "@/lib/ai/tools/types";
-import { declOfNum } from "@/lib/utils";
 import { PlusIcon } from "lucide-react";
 
 const CreateBookView: ToolOutputView<"createBook"> = ({ input, output }) => {
   return (
-    <div>
-      <div className="px-2 pt-1 pb-2 rounded-md flex flex-col leading-tight border">
-        <h2 className="text-sm font-semibold">{input.title}</h2>
-        <div className="text-xs text-muted-foreground">{input.author}</div>
-        <div className="text-xs text-muted-foreground">
-          {input.pages}{" "}
-          {declOfNum(input.pages, ["страница", "страницы", "страниц"])}
-        </div>
-      </div>
-    </div>
+    <BookView title={input.title} author={input.author} pages={input.pages} />
   );
 };
 

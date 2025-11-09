@@ -205,18 +205,29 @@ export function ChatHistory({
         <AnimatePresence>
           {error && (
             <motion.div
-              className="text-red-500 bg-red-100/20 dark:bg-red-900/20 p-2 rounded-md flex flex-col gap-2 origin-top"
+              className="overflow-hidden flex-none"
               initial={{ opacity: 0, scaleX: 0.9, height: 0 }}
-              animate={{ opacity: 1, scaleX: 1, height: "auto" }}
+              animate={{
+                opacity: 1,
+                scaleX: 1,
+                height: "auto",
+              }}
               exit={{ opacity: 0, scaleX: 0.9, height: 0 }}
+              style={{ display: "grid" }}
             >
-              <div className="flex gap-2 text-sm">
-                <CircleAlertIcon className="size-[1lh] shrink-0 pt-1" />
-                {error.message}
+              <div className="bg-red-100/20 dark:bg-red-900/20 px-2 rounded-md flex flex-col gap-2 origin-top">
+                <div className="flex gap-2 text-sm mt-2 text-red-500">
+                  <CircleAlertIcon className="size-[1lh] shrink-0 pt-1" />
+                  {error.message}
+                </div>
+                <Button
+                  onClick={() => onRetry()}
+                  variant="outline"
+                  className="mb-2 hover:bg-red-500/30!"
+                >
+                  <RotateCwIcon /> Попробовать снова
+                </Button>
               </div>
-              <Button onClick={() => onRetry()} variant="outline">
-                <RotateCwIcon /> Попробовать снова
-              </Button>
             </motion.div>
           )}
         </AnimatePresence>
