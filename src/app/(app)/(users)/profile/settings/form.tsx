@@ -82,20 +82,20 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
         user.shareFollowers === SharePeople.ALL
           ? "ALL"
           : user.shareFollowers === SharePeople.SUBS
-          ? "SUBS"
-          : "NONE",
+            ? "SUBS"
+            : "NONE",
       shareSubscriptions:
         user.shareSubscriptions === SharePeople.ALL
           ? "ALL"
           : user.shareSubscriptions === SharePeople.SUBS
-          ? "SUBS"
-          : "NONE",
+            ? "SUBS"
+            : "NONE",
       shareStats:
         user.shareStats === SharePeople.ALL
           ? "ALL"
           : user.shareStats === SharePeople.SUBS
-          ? "SUBS"
-          : "NONE",
+            ? "SUBS"
+            : "NONE",
       hideActivity: user.hideActivity,
     },
   });
@@ -147,7 +147,6 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
       // alert("upload has begun");
     },
     onUploadProgress: (p) => {
-      // console.log(p);
       setUploadProgress(p);
     },
   });
@@ -155,7 +154,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: generateClientDropzoneAccept(
-      generatePermittedFileTypes(routeConfig).fileTypes
+      generatePermittedFileTypes(routeConfig).fileTypes,
     ),
   });
 
@@ -195,7 +194,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
                           <div
                             className={cn(
                               "absolute top-0 left-0 pointer-events-none w-full h-full bg-black/80 flex flex-col items-center justify-center opacity-0 text-white transition-opacity",
-                              uploadProgress !== null && "opacity-100"
+                              uploadProgress !== null && "opacity-100",
                             )}
                           >
                             <Loader className="size-4" />
@@ -255,7 +254,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
                               setUsernameFound(
                                 e.target.value === user.username
                                   ? false
-                                  : data.found
+                                  : data.found,
                               );
                             });
                         }}

@@ -4,10 +4,12 @@ import {
   MessageInput,
   MessageInputRef,
 } from "@/components/agent/message-input";
+import { useToolSelection } from "@/components/agent/message-input/tool-selector";
 import { Button } from "@/components/ui/button";
 import { MyUIMessage } from "@/lib/ai/message";
 import { useChat } from "@ai-sdk/react";
 import {
+  DefaultChatTransport,
   lastAssistantMessageIsCompleteWithApprovalResponses,
   lastAssistantMessageIsCompleteWithToolCalls,
 } from "ai";
@@ -35,6 +37,16 @@ export function AgentPopover({
     sendAutomaticallyWhen: ({ messages }) =>
       lastAssistantMessageIsCompleteWithToolCalls({ messages }) ||
       lastAssistantMessageIsCompleteWithApprovalResponses({ messages }),
+    transport: new DefaultChatTransport({
+      prepareSendMessagesRequest: ({ ...data }) => {
+        return {
+          body: {
+            ...data,
+            allowedTools: useToolSelection.getState().allowedTools,
+          },
+        };
+      },
+    }),
   });
 
   return (

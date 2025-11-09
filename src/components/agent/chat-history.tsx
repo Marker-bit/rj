@@ -36,7 +36,6 @@ export function ChatHistory({
     const container = containerRef.current;
 
     const observer = new ResizeObserver((entries) => {
-      console.log(entries);
       handleScroll();
     });
     const mutObserver = new MutationObserver((mutations) => {
