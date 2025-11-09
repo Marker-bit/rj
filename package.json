@@ -62,12 +62,7 @@
     "@vercel/blob": "^1.1.1",
     "@vercel/og": "^0.6.8",
     "@vercel/speed-insights": "^1.2.0",
-<<<<<<< Updated upstream
-    "ai": "^4.3.19",
-    "blurhash": "^2.0.5",
-=======
     "ai": "6.0.0-beta.93",
->>>>>>> Stashed changes
     "canvas-confetti": "^1.9.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
