@@ -3,14 +3,14 @@
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { User } from "@prisma/client";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { BadgeCheck, UserPlus, UserX } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Loader } from "../ui/loader";
-import { Badge } from "../ui/badge";
 import { useEffect, useState } from "react";
+import { Badge } from "../ui/badge";
+import { Loader } from "../ui/loader";
 
 export function FriendView({
   friend,
