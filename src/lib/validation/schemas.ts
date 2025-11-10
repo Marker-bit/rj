@@ -14,7 +14,7 @@ export const registerSchema = z.object({
   // )
   firstName: z
     .string({
-      required_error: "Имя обязательно",
+      error: "Имя обязательно",
     })
     .min(3, "Имя должно содержать минимум 3 символа"),
   lastName: z

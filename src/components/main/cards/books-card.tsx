@@ -11,9 +11,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { fetchBooks } from "@/lib/books";
 import {
-  ArrowDownNarrowWide,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Skeleton } from "@/components/ui/skeleton";
+import { getBooks } from "@/lib/actions/books";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
   ArrowDownNarrowWideIcon,
   ArrowRightIcon,
   CalendarIcon,
@@ -24,24 +31,8 @@ import {
   TriangleAlert,
 } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState, useTransition } from "react";
+import { useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { getBooks } from "@/lib/actions/books";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 export default function BooksCard() {
   const [open, setOpen] = useState(false);

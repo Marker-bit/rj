@@ -30,21 +30,21 @@ import { Loader } from "../ui/loader";
 const bookSchema = z.object({
   title: z.string().min(1),
   author: z.string().min(1),
-  pages: z.coerce.number().min(1),
+  pages: z.coerce.number<number>().min(1),
   description: z.string().optional(),
   coverUrl: z.string().optional(),
   fields: z.array(
     z.object({
-      title: z.string({ required_error: "Название поля обязательно" }),
+      title: z.string({ error: "Название поля обязательно" }),
       value: z.string({
-        required_error: "Значение поля обязательно",
+        error: "Значение поля обязательно",
       }),
     }),
   ),
 });
 
 export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
-  const form = useForm<z.infer<typeof bookSchema>>({
+  const form = useForm<z.input<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
     defaultValues: {
       title: "",
@@ -64,7 +64,7 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
     control: form.control,
   });
 
-  async function onSubmit(values: z.infer<typeof bookSchema>) {
+  async function onSubmit(values: z.input<typeof bookSchema>) {
     setLoading(true);
     await createBook(values);
     setLoading(false);

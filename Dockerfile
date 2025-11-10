@@ -18,7 +18,7 @@ WORKDIR /app
 
 COPY package.json pnpm-lock.yaml ./
 COPY prisma ./prisma/
-RUN pnpm dlx prisma generate && pnpm install --frozen-lockfile --prefer-frozen-lockfile
+RUN pnpm install --frozen-lockfile --prefer-frozen-lockfile && pnpm dlx prisma generate
 
 # Builder
 FROM base AS builder

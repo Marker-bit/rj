@@ -22,57 +22,54 @@ import { z } from "zod";
 
 const formSchema = z.object({
   username: z
-    .string({ required_error: "Поле обязательно для заполнения" })
+    .string({ error: "Поле обязательно для заполнения" })
     .min(1, "Поле обязательно для заполнения"),
   name: z
-    .string({ required_error: "Поле обязательно для заполнения" })
+    .string({ error: "Поле обязательно для заполнения" })
     .min(1, "Поле обязательно для заполнения"),
   book1: z.object({
     title: z
-      .string({ required_error: "Поле обязательно для заполнения" })
+      .string({ error: "Поле обязательно для заполнения" })
       .min(1, "Поле обязательно для заполнения"),
     author: z.string().optional(),
     pages: z.coerce
-      .number({
-        required_error: "Поле обязательно для заполнения",
-        invalid_type_error: "Поле должно быть числом",
+      .number<number>({
+        error: "Поле обязательно для заполнения",
       })
       .min(1)
       .optional(),
   }),
   book2: z.object({
     title: z
-      .string({ required_error: "Поле обязательно для заполнения" })
+      .string({ error: "Поле обязательно для заполнения" })
       .min(1, "Поле обязательно для заполнения"),
     author: z.string().optional(),
     pages: z.coerce
-      .number({
-        required_error: "Поле обязательно для заполнения",
-        invalid_type_error: "Поле должно быть числом",
+      .number<number>({
+        error: "Поле обязательно для заполнения",
       })
       .min(1)
       .optional(),
   }),
   book3: z.object({
     title: z
-      .string({ required_error: "Поле обязательно для заполнения" })
+      .string({ error: "Поле обязательно для заполнения" })
       .min(1, "Поле обязательно для заполнения"),
     author: z.string().optional(),
     pages: z.coerce
-      .number({
-        required_error: "Поле обязательно для заполнения",
-        invalid_type_error: "Поле должно быть числом",
+      .number<number>({
+        error: "Поле обязательно для заполнения",
       })
       .min(1)
       .optional(),
   }),
   password: z
-    .string({ required_error: "Поле обязательно для заполнения" })
+    .string({ error: "Поле обязательно для заполнения" })
     .min(1, "Поле обязательно для заполнения"),
 });
 
 export default function ResetPasswordForm() {
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<z.input<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: "",
@@ -97,7 +94,7 @@ export default function ResetPasswordForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.input<typeof formSchema>) {
     setLoading(true);
     const res = await resetPassword(values);
     setLoading(false);

@@ -4,9 +4,12 @@ import { BackgroundColor } from "@prisma/client";
 import { fetchBooks } from "../books";
 import { db } from "../db";
 import { validateRequest } from "../server-validate-request";
-import { z } from "zod";
+import { prettifyError, z } from "zod";
 
-export async function getBooks(orderBy: "percent" | "activity" = "percent", mainPage: boolean = false) {
+export async function getBooks(
+  orderBy: "percent" | "activity" = "percent",
+  mainPage: boolean = false,
+) {
   const { user } = await validateRequest();
 
   if (!user) {
@@ -29,11 +32,11 @@ const bookSchema = z.object({
   coverUrl: z.string().optional(),
   fields: z.array(
     z.object({
-      title: z.string({ required_error: "Название поля обязательно" }),
+      title: z.string({ error: "Название поля обязательно" }),
       value: z.string({
-        required_error: "Значение поля обязательно",
+        error: "Значение поля обязательно",
       }),
-    })
+    }),
   ),
 });
 
@@ -56,7 +59,7 @@ export async function createBook(book: {
 
   const data = bookSchema.safeParse(book);
   if (!data.success) {
-    throw new Error(data.error.errors.map((e) => e.message).join("\n"));
+    throw new Error(prettifyError(data.error));
   }
 
   const newBook = await db.book.create({

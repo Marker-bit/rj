@@ -1,6 +1,17 @@
-import { DrawerDialog } from "@/components/ui/drawer-dialog"
-import { DialogHeader, DialogTitle } from "../../ui/dialog"
-import { Edit, Loader, Plus, Trash, X } from "lucide-react"
+import { DrawerDialog } from "@/components/ui/drawer-dialog";
+import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Book } from "@prisma/client";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Edit, Loader, Plus, Trash, X } from "lucide-react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
+import { Button } from "../../ui/button";
+import { DialogHeader, DialogTitle } from "../../ui/dialog";
 import {
   Form,
   FormControl,
@@ -9,37 +20,26 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../../ui/form"
-import { useFieldArray, useForm } from "react-hook-form"
-import { z } from "zod"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import Image from "next/image"
-import { Button } from "../../ui/button"
-import { UploadButton } from "../../uploadthing"
-import { Input } from "../../ui/input"
-import { Textarea } from "../../ui/textarea"
-import { Book } from "@prisma/client"
-import { useRouter } from "next/navigation"
-import { cn } from "@/lib/utils"
-import { useState } from "react"
-import { toast } from "sonner"
+} from "../../ui/form";
+import { Input } from "../../ui/input";
+import { Textarea } from "../../ui/textarea";
+import { UploadButton } from "../../uploadthing";
 
 const bookSchema = z.object({
   title: z.string().min(1),
   author: z.string().min(1),
-  pages: z.coerce.number().min(1),
+  pages: z.coerce.number<number>().min(1),
   description: z.string().optional(),
   coverUrl: z.string().optional(),
   fields: z.array(
     z.object({
-      title: z.string({ required_error: "Название поля обязательно" }),
+      title: z.string({ error: "Название поля обязательно" }),
       value: z.string({
-        required_error: "Значение поля обязательно",
+        error: "Значение поля обязательно",
       }),
-    })
+    }),
   ),
-})
+});
 
 export function EditBookModal({
   open,
@@ -47,20 +47,20 @@ export function EditBookModal({
   book,
   onUpdate,
 }: {
-  open: boolean
-  setOpen: (b: boolean) => void
-  book: Book
-  onUpdate?: () => void
+  open: boolean;
+  setOpen: (b: boolean) => void;
+  book: Book;
+  onUpdate?: () => void;
 }) {
-  const queryClient = useQueryClient()
-  const [fileUploading, setFileUploading] = useState(false)
+  const queryClient = useQueryClient();
+  const [fileUploading, setFileUploading] = useState(false);
 
   const fieldsData =
     typeof book.fields === "string"
       ? JSON.parse(book.fields)
       : Array.isArray(book.fields)
-      ? book.fields
-      : []
+        ? book.fields
+        : [];
   const form = useForm<z.infer<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
     defaultValues: {
@@ -71,17 +71,17 @@ export function EditBookModal({
       coverUrl: book.coverUrl ?? "",
       fields: fieldsData ?? [],
     },
-  })
+  });
 
   const { fields, append, remove } = useFieldArray({
     name: "fields",
     control: form.control,
-  })
+  });
 
-  const router = useRouter()
+  const router = useRouter();
 
   const editMutation = useMutation({
-    mutationFn: (values: z.infer<typeof bookSchema>) =>
+    mutationFn: (values: z.input<typeof bookSchema>) =>
       fetch(`/api/books/${book.id}/`, {
         method: "PATCH",
         body: JSON.stringify(values),
@@ -89,18 +89,18 @@ export function EditBookModal({
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["books"],
-      })
+      });
       queryClient.invalidateQueries({
         queryKey: ["events"],
-      })
-      router.refresh()
-      onUpdate?.()
+      });
+      router.refresh();
+      onUpdate?.();
     },
-  })
+  });
 
   async function onSubmit(values: z.infer<typeof bookSchema>) {
-    await editMutation.mutateAsync(values)
-    setOpen(false)
+    await editMutation.mutateAsync(values);
+    setOpen(false);
   }
 
   return (
@@ -147,21 +147,21 @@ export function EditBookModal({
                           isUploading || fileUploading
                             ? "Загрузка..."
                             : ready
-                            ? "Обложка"
-                            : "Подождите...",
+                              ? "Обложка"
+                              : "Подождите...",
                         allowedContent: "Картинка (до 8МБ)",
                       }}
                       onClientUploadComplete={(res) => {
-                        field.onChange(res[0].ufsUrl)
-                        setFileUploading(false)
+                        field.onChange(res[0].ufsUrl);
+                        setFileUploading(false);
                       }}
                       onUploadError={(error: Error) => {
                         toast.error("Ошибка при загрузке обложки", {
                           description: error.message,
-                        })
+                        });
                       }}
                       onUploadBegin={(fileName) => {
-                        setFileUploading(true)
+                        setFileUploading(true);
                       }}
                       className="ut-button:bg-blue-500 ut-button:ut-readying:bg-blue-500/50 ut-button:px-4 ut-button:ut-uploading:bg-blue-500/50"
                     />
@@ -292,5 +292,5 @@ export function EditBookModal({
         </form>
       </Form>
     </DrawerDialog>
-  )
+  );
 }

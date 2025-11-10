@@ -1,15 +1,11 @@
-const withMDX = require("@next/mdx")()
+const withMDX = require("@next/mdx")();
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "standalone",
   webpack: (config) => {
-    config.externals.push(
-      "@node-rs/argon2",
-      "@node-rs/bcrypt",
-      "@resvg/resvg-js"
-    )
-    return config
+    config.externals.push("@node-rs/argon2", "@node-rs/bcrypt");
+    return config;
   },
   images: {
     remotePatterns: [
@@ -40,9 +36,6 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   // experimental: {
   //   turbo: {
   //     resolveExtensions: [
@@ -58,5 +51,5 @@ const nextConfig = {
   //   mdxRs: true,
   //   serverComponentsExternalPackages: ["@node-rs/argon2-win32-x64-msvc"],
   // },
-}
-module.exports = withMDX(nextConfig)
+};
+module.exports = withMDX(nextConfig);

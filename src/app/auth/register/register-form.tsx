@@ -43,27 +43,26 @@ export function RegisterForm() {
       if (user) {
         router.replace("/home");
       }
-    })()
+    })();
   }, [router]);
 
   const userMutation = useMutation({
-    mutationFn: (values: z.infer<typeof registerSchema>) => {
-      return fetch("/api/auth/register", {
+    mutationFn: async (values: z.infer<typeof registerSchema>) => {
+      const res = await fetch("/api/auth/register", {
         body: JSON.stringify(values),
         method: "POST",
-      }).then(async (res) => {
-        if (res.ok) {
-          router.push("/home");
-        } else {
-          const data = await res.json();
-          if (data.error) {
-            toast.error("Возникла проблема при регистрации", {
-              description: data.error,
-            });
-            return;
-          }
-        }
       });
+      if (res.ok) {
+        router.push("/home");
+      } else {
+        const data = await res.json();
+        if (data.error) {
+          toast.error("Возникла проблема при регистрации", {
+            description: data.error,
+          });
+          return;
+        }
+      }
     },
   });
 
@@ -78,7 +77,7 @@ export function RegisterForm() {
         .then((data) => {
           setUsernameFound(data.found);
         }),
-    200
+    200,
   );
 
   return (
@@ -159,9 +158,7 @@ export function RegisterForm() {
         />
         <div className="flex flex-wrap items-center gap-2">
           <Button type="submit" disabled={userMutation.isPending}>
-            {userMutation.isPending && (
-              <Loader invert className="size-4" />
-            )}
+            {userMutation.isPending && <Loader invert className="size-4" />}
             Зарегистрироваться
           </Button>
           <Link href="/auth/login">

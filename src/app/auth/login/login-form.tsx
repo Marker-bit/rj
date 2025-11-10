@@ -47,24 +47,23 @@ export function LoginForm() {
   }, [router]);
 
   const userMutation = useMutation({
-    mutationFn: (values: z.infer<typeof formSchema>) => {
-      return fetch("/api/auth/login", {
+    mutationFn: async (values: z.infer<typeof formSchema>) => {
+      const res = await fetch("/api/auth/login", {
         body: JSON.stringify(values),
         method: "POST",
-      }).then(async (res) => {
-        if (res.ok) {
-          router.replace("/home");
-          toast.success("Вы успешно авторизовались");
-        } else {
-          const data = await res.json();
-          if (data.error) {
-            toast.error("Возникла проблема при входе", {
-              description: data.error,
-            });
-            return;
-          }
-        }
       });
+      if (res.ok) {
+        router.replace("/home");
+        toast.success("Вы успешно авторизовались");
+      } else {
+        const data = await res.json();
+        if (data.error) {
+          toast.error("Возникла проблема при входе", {
+            description: data.error,
+          });
+          return;
+        }
+      }
     },
   });
 
@@ -108,9 +107,7 @@ export function LoginForm() {
         />
         <div className="flex flex-wrap items-center gap-2">
           <Button type="submit" disabled={userMutation.isPending}>
-            {userMutation.isPending && (
-              <Loader invert className="size-4" />
-            )}
+            {userMutation.isPending && <Loader invert className="size-4" />}
             Авторизоваться
           </Button>
           <Link href="/auth/register">

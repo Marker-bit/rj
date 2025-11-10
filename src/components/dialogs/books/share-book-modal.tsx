@@ -1,27 +1,6 @@
-"use client";
-
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
-import { DialogHeader, DialogTitle } from "../../ui/dialog";
-import {
-  CheckIcon,
-  CopyCheck,
-  CopyIcon,
-  LinkIcon,
-  Settings,
-  Trash,
-} from "lucide-react";
-import { useEffect, useState } from "react";
-import { Button } from "../../ui/button";
-import { Input } from "../../ui/input";
-import { AnimatePresence, motion } from "motion/react";
-import { Book } from "@/lib/api-types";
-import { Loader } from "../../ui/loader";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { deleteBookLink } from "@/lib/actions/books";
 import {
   Empty,
-  EmptyContent,
   EmptyDescription,
   EmptyHeader,
   EmptyMedia,
@@ -34,6 +13,15 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard";
+import { deleteBookLink } from "@/lib/actions/books";
+import { Book } from "@/lib/api-types";
+import { CheckIcon, CopyIcon, LinkIcon, Settings, Trash } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
+import { Button } from "../../ui/button";
+import { DialogHeader, DialogTitle } from "../../ui/dialog";
+import { Loader } from "../../ui/loader";
 
 export function ShareBookModal({
   open,

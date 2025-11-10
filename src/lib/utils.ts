@@ -1,7 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { formatRelative } from "date-fns";
 import { ru } from "date-fns/locale";
-import moment from "moment";
 import { twMerge } from "tailwind-merge";
 import { PixelCrop } from "react-image-crop";
 
@@ -10,7 +9,11 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function dateToString(date: Date) {
-  if (date.getHours() === 23 && date.getMinutes() === 59 && date.getSeconds() === 59) {
+  if (
+    date.getHours() === 23 &&
+    date.getMinutes() === 59 &&
+    date.getSeconds() === 59
+  ) {
     return formatRelative(date, new Date(), {
       locale: ru,
     }).replace(" в 23:59", "");
