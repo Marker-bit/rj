@@ -1,4 +1,3 @@
-import { RemoteBookView } from "@/components/agent/book-view";
 import { Spinner } from "@/components/ui/spinner";
 import { ToolOutputView, ToolView } from "@/lib/ai/tools/types";
 import { useQuery } from "@tanstack/react-query";
