@@ -24,7 +24,7 @@ import { UploadButton } from "../../uploadthing";
 const bookSchema = z.object({
   title: z.string().min(1),
   author: z.string().min(1),
-  pages: z.coerce.number().min(1),
+  pages: z.coerce.number<number>().min(1),
   description: z.string().optional(),
   coverUrl: z.string().optional(),
 });
@@ -42,7 +42,7 @@ export function EditGroupBookModal({
 }) {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const form = useForm<z.infer<typeof bookSchema>>({
+  const form = useForm<z.input<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
     defaultValues: {
       title: book.title,
@@ -54,7 +54,7 @@ export function EditGroupBookModal({
   });
 
   const editMutation = useMutation({
-    mutationFn: (values: z.infer<typeof bookSchema>) =>
+    mutationFn: (values: z.input<typeof bookSchema>) =>
       fetch(`/api/groups/${book.group.id}/books/${book.id}/`, {
         method: "PATCH",
         body: JSON.stringify(values),
@@ -70,7 +70,7 @@ export function EditGroupBookModal({
     },
   });
 
-  async function onSubmit(values: z.infer<typeof bookSchema>) {
+  async function onSubmit(values: z.input<typeof bookSchema>) {
     await editMutation.mutateAsync(values);
     setOpen(false);
   }

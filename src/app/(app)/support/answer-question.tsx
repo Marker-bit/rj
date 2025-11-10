@@ -20,7 +20,7 @@ import { z } from "zod";
 
 const formSchema = z.object({
   content: z
-    .string({ required_error: "Поле обязательно для заполнения" })
+    .string({ error: "Поле обязательно для заполнения" })
     .min(1, "Поле обязательно для заполнения"),
 });
 

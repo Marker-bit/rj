@@ -25,7 +25,7 @@ import { DrawerDialog } from "../ui/drawer-dialog";
 const bookSchema = z.object({
   title: z.string().min(1),
   author: z.string().min(1),
-  pages: z.coerce.number().min(1),
+  pages: z.coerce.number<number>().min(1),
   description: z.string().optional(),
   coverUrl: z.string().optional(),
 });
@@ -42,13 +42,13 @@ export function GroupBookForm({
   setOpen: (open: boolean) => void;
 }) {
   const queryClient = useQueryClient();
-  const form = useForm<z.infer<typeof bookSchema>>({
+  const form = useForm<z.input<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
   });
   const router = useRouter();
 
   const bookMutation = useMutation({
-    mutationFn: (values: z.infer<typeof bookSchema>) =>
+    mutationFn: (values: z.input<typeof bookSchema>) =>
       fetch(`/api/groups/${groupId}/books`, {
         method: "POST",
         body: JSON.stringify(values),
@@ -70,7 +70,7 @@ export function GroupBookForm({
     },
   });
 
-  function onSubmit(values: z.infer<typeof bookSchema>) {
+  function onSubmit(values: z.input<typeof bookSchema>) {
     bookMutation.mutate(values);
   }
 

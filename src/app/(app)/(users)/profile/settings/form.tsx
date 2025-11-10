@@ -101,20 +101,18 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
   });
 
   const userMutation = useMutation({
-    mutationFn: (values: z.infer<typeof formSchema>) => {
-      return fetch("/api/auth", {
+    mutationFn: async (values: z.infer<typeof formSchema>) => {
+      const req = await fetch("/api/auth", {
         method: "PATCH",
         body: JSON.stringify(values),
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.error) {
-            toast.error("Возникла проблема при обновлении профиля", {
-              description: res.error,
-            });
-            throw new Error(res.error);
-          }
+      });
+      const res = await req.json();
+      if (res.error) {
+        toast.error("Возникла проблема при обновлении профиля", {
+          description: res.error,
         });
+        throw new Error(res.error);
+      }
     },
     onSuccess: () => {
       toast.success("Профиль обновлен");

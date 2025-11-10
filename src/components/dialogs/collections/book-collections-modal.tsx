@@ -1,5 +1,3 @@
-"use client";
-
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
 import {
   InputGroup,

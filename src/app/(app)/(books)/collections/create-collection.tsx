@@ -24,7 +24,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 const formSchema = z.object({
-  name: z.string().min(1, { message: "Поле обязательно для заполнения" }),
+  name: z.string().min(1, { error: "Поле обязательно для заполнения" }),
 });
 
 export function CreateCollection() {

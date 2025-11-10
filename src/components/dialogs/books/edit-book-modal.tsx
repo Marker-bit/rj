@@ -28,14 +28,14 @@ import { UploadButton } from "../../uploadthing";
 const bookSchema = z.object({
   title: z.string().min(1),
   author: z.string().min(1),
-  pages: z.coerce.number().min(1),
+  pages: z.coerce.number<number>().min(1),
   description: z.string().optional(),
   coverUrl: z.string().optional(),
   fields: z.array(
     z.object({
-      title: z.string({ required_error: "Название поля обязательно" }),
+      title: z.string({ error: "Название поля обязательно" }),
       value: z.string({
-        required_error: "Значение поля обязательно",
+        error: "Значение поля обязательно",
       }),
     }),
   ),
@@ -81,7 +81,7 @@ export function EditBookModal({
   const router = useRouter();
 
   const editMutation = useMutation({
-    mutationFn: (values: z.infer<typeof bookSchema>) =>
+    mutationFn: (values: z.input<typeof bookSchema>) =>
       fetch(`/api/books/${book.id}/`, {
         method: "PATCH",
         body: JSON.stringify(values),

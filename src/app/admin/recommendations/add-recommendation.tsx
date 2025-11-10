@@ -28,6 +28,7 @@ import {
   editRecommendation,
 } from "@/lib/actions/recommendations";
 import { cn } from "@/lib/utils";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Recommendation } from "@prisma/client";
 import { addDays, format } from "date-fns";
@@ -55,10 +56,10 @@ const formSchema = z.object({
   title: z.string().min(1, "Название книги обязательно"),
   author: z.string().min(1, "Автор книги обязателен"),
   pages: z.coerce
-    .number({ required_error: "Нужно ввести количество страниц" })
+    .number<number>({ error: "Нужно ввести количество страниц" })
     .min(1, "Количество страниц обязательно"),
-  startsOn: z.date({ required_error: "Дата начала обязательна" }),
-  endsOn: z.date({ required_error: "Дата конца обязательна" }),
+  startsOn: z.date({ error: "Дата начала обязательна" }),
+  endsOn: z.date({ error: "Дата конца обязательна" }),
   published: z.boolean(),
 });
 
@@ -72,7 +73,7 @@ export function AddRecommendation({
   setOpen: (open: boolean) => void;
 }) {
   const [loading, setLoading] = useState(false);
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<z.input<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       slogan: recommendation?.slogan ?? "",
@@ -87,7 +88,7 @@ export function AddRecommendation({
   });
   const router = useRouter();
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.input<typeof formSchema>) {
     setLoading(true);
     if (recommendation) {
       const res = await editRecommendation(recommendation.id, values);
@@ -194,7 +195,7 @@ export function AddRecommendation({
                         variant={"outline"}
                         className={cn(
                           "w-[240px] pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
+                          !field.value && "text-muted-foreground",
                         )}
                       >
                         {field.value ? (
@@ -235,7 +236,7 @@ export function AddRecommendation({
                         variant={"outline"}
                         className={cn(
                           "w-[240px] pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
+                          !field.value && "text-muted-foreground",
                         )}
                       >
                         {field.value ? (
@@ -425,7 +426,12 @@ export function CopyRecommendationButton({
   const copyRecommendation = async () => {
     setLoading(true);
     await navigator.clipboard.writeText(
-      JSON.stringify({ ...recommendation, id: undefined, published: false, _count: undefined })
+      JSON.stringify({
+        ...recommendation,
+        id: undefined,
+        published: false,
+        _count: undefined,
+      }),
     );
     setLoading(false);
     toast.success("Рекомендация скопирована");

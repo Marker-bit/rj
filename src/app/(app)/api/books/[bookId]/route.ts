@@ -11,9 +11,9 @@ const bookSchema = z.object({
   coverUrl: z.string().optional(),
   fields: z.array(
     z.object({
-      title: z.string({ required_error: "Название поля обязательно" }),
+      title: z.string({ error: "Название поля обязательно" }),
       value: z.string({
-        required_error: "Значение поля обязательно",
+        error: "Значение поля обязательно",
       }),
     }),
   ),
