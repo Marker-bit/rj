@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "npx prisma generate"
+    "postinstall": "npx prisma generate",
+    "db:push": "prisma db push"
   },
   "dependencies": {
     "@base-ui-components/react": "1.0.0-beta.4",

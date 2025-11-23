@@ -1,18 +1,17 @@
 services:
   db:
-    image: postgres
+    image: postgres:18
     restart: always
+    shm_size: 128mb
+    ports:
+      - 5433:5432
     environment:
       POSTGRES_USER: test
       POSTGRES_PASSWORD: example
       POSTGRES_DB: rj
-    ports:
-      - 5433:5432
-    volumes:
-      - pgdata:/var/lib/postgresql/data
 
   adminer:
-    image: adminer
+    image: adminer:5.4.1
     restart: always
     ports:
       - 8080:8080
