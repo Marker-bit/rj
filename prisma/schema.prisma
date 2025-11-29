@@ -14,16 +14,8 @@ generator json {
 //   url      = "file:./dev.db"
 // }
 
-// datasource db {
-//   provider  = "postgresql"
-//   url       = env("DATABASE_URL")
-//   directUrl = env("DIRECT_URL")
-// }
-
 datasource db {
   provider  = "postgresql"
-  url       = env("DB_PRISMA_URL") // uses connection pooling
-  directUrl = env("DB_URL_NON_POOLING") // uses a direct connection
 }
 
 enum SharePeople {
@@ -57,6 +49,7 @@ model User {
 
   verified Boolean @default(false)
   admin    Boolean @default(false)
+  aiEnabled Boolean @default(false)
 
   Group            Group?            @relation(fields: [groupId], references: [id])
   groupId          String?
