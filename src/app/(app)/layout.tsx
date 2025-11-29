@@ -1,5 +1,6 @@
 import "@/app/globals.css";
 import { Agent } from "@/components/agent/agent";
+import { AgentSuspense } from "@/components/agent/agent-suspense";
 import NavBar from "@/components/navigation/navbar";
 import RecommendationBar from "@/components/navigation/recommendation-bar";
 import { db } from "@/lib/db";
@@ -72,12 +73,25 @@ export default async function Layout({
     return res;
   });
 
+  const aiEnabled = validateRequest().then(async ({ user }) => {
+    if (!user) {
+      return null;
+    }
+
+    const res = await db.user.findUniqueOrThrow({
+      where: {
+        id: user.id,
+      },
+    });
+    return res.aiEnabled;
+  });
+
   return (
     <div>
       <NavBar events={events} auth={auth} />
       <RecommendationBar recommendations={recommendationsAvailable} />
       <div className="w-full overflow-auto">{children}</div>
-      <Agent />
+      <AgentSuspense aiEnabled={aiEnabled} />
     </div>
   );
 }

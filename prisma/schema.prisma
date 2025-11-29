@@ -57,6 +57,7 @@ model User {
 
   verified Boolean @default(false)
   admin    Boolean @default(false)
+  aiEnabled Boolean @default(false)
 
   Group            Group?            @relation(fields: [groupId], references: [id])
   groupId          String?

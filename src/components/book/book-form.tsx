@@ -17,7 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -26,6 +26,7 @@ import { DrawerDialog } from "../ui/drawer-dialog";
 import { Loader } from "../ui/loader";
 import { ScanDialog } from "./scan-dialog";
 import { bookSchema } from "@/lib/validation/schemas";
+import { useQuery } from "@tanstack/react-query";
 
 export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
   const form = useForm<z.input<typeof bookSchema>>({
@@ -43,6 +44,13 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
   const [loading, setLoading] = useState(false);
   const [scanDialogOpen, setScanDialogOpen] = useState(false);
   const router = useRouter();
+  const { data: aiEnabled } = useQuery({
+    queryKey: ["ai", "enabled"],
+    queryFn: async () =>
+      await fetch("/api/chat/allowed")
+        .then((r) => r.json())
+        .then((r) => r.aiEnabled as boolean),
+  });
 
   const { fields, append, remove } = useFieldArray({
     name: "fields",
@@ -70,11 +78,13 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
-          <ScanDialog
-            reset={form.reset}
-            open={scanDialogOpen}
-            setOpen={setScanDialogOpen}
-          />
+          {aiEnabled && (
+            <ScanDialog
+              reset={form.reset}
+              open={scanDialogOpen}
+              setOpen={setScanDialogOpen}
+            />
+          )}
           <FormField
             control={form.control}
             name="coverUrl"
