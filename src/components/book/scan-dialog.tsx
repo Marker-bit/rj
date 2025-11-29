@@ -53,7 +53,7 @@ export function ScanDialog({
             setIsLoading(true);
             const b64 = await fileToBase64(file);
             const result = await generateBookData(b64);
-            if (!result.book) {
+            if (!result?.book) {
               toast.error("Не удалось извлечь информацию о книге.");
             }
             setData(result);

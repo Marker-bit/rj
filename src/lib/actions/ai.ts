@@ -3,10 +3,24 @@
 import { openrouter } from "@openrouter/ai-sdk-provider";
 import { generateObject } from "ai";
 import z from "zod";
+import { validateRequest } from "../server-validate-request";
+import { db } from "../db";
 
 const IMAGE_MODEL = "qwen/qwen3-vl-30b-a3b-thinking";
 
 export async function generateBookData(base64File: string) {
+  const { user } = await validateRequest();
+  if (!user) return null;
+  const { aiEnabled } = await db.user.findUniqueOrThrow({
+    where: {
+      id: user.id,
+    },
+    select: {
+      aiEnabled: true,
+    },
+  });
+  if (!aiEnabled) return { book: null };
+
   const res = await generateObject({
     model: openrouter(IMAGE_MODEL),
     messages: [

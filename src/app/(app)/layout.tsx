@@ -75,7 +75,7 @@ export default async function Layout({
 
   const aiEnabled = validateRequest().then(async ({ user }) => {
     if (!user) {
-      return null;
+      return false;
     }
 
     const res = await db.user.findUniqueOrThrow({

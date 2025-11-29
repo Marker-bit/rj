@@ -1,4 +1,5 @@
 import { toolSetForUser } from "@/lib/ai/tools/toolset";
+import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
 import { openrouter } from "@openrouter/ai-sdk-provider";
 import { convertToModelMessages, streamText, UIMessage } from "ai";
@@ -8,14 +9,27 @@ import { NextRequest } from "next/server";
 export const maxDuration = 30;
 
 export async function POST(req: NextRequest) {
-  const {
-    messages,
-    allowedTools,
-  }: { messages: UIMessage[]; allowedTools?: string[] } = await req.json();
   const { user } = await validateRequest();
   if (!user) {
     return new Response("Unauthorized", { status: 401 });
   }
+
+  const { aiEnabled } = await db.user.findUniqueOrThrow({
+    where: {
+      id: user.id,
+    },
+    select: {
+      aiEnabled: true,
+    },
+  });
+  if (!aiEnabled) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  const {
+    messages,
+    allowedTools,
+  }: { messages: UIMessage[]; allowedTools?: string[] } = await req.json();
 
   const toolSet = Object.fromEntries(
     Object.entries(toolSetForUser(user)).filter(([key, value]) =>
