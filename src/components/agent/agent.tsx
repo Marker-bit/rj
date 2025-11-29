@@ -8,7 +8,10 @@ export function Agent() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="flex flex-col gap-2 fixed bottom-4 right-4 items-end">
+    <div
+      className="flex flex-col gap-2 fixed bottom-4 right-4 items-end data-[hidden]:pointer-events-none"
+      data-hidden={!isOpen || undefined}
+    >
       <AgentPopover isOpen={isOpen} onClose={() => setIsOpen(false)} />
       <AgentToggle
         isOpen={isOpen}

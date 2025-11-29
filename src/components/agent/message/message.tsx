@@ -7,6 +7,7 @@ import { toolViews } from "@/lib/ai/tools/toolset";
 import { ToolId } from "@/lib/ai/tools/types";
 import { cn } from "@/lib/utils";
 import { ChatAddToolApproveResponseFunction, isTextUIPart } from "ai";
+import { Fragment } from "react";
 import { Streamdown } from "streamdown";
 
 export function Message({
@@ -24,13 +25,6 @@ export function Message({
   isStreaming: boolean;
   canRegenerate: boolean;
 }) {
-  // const toolParts = useMemo(() => {
-  //   return message.parts.filter((part) => isToolUIPart(part));
-  // }, [message.parts]);
-  // const textPart = useMemo(() => {
-  //   return message.parts.find((part) => part.type === "text");
-  // }, [message.parts]);
-
   const partGroups = groupMessageParts(message);
 
   return (
@@ -55,35 +49,37 @@ export function Message({
           <MessageRole role={message.role} />
           {partGroups.map((partGroup, idx) => {
             if (!Array.isArray(partGroup) && isTextUIPart(partGroup)) {
-              const previousParts = partGroups.slice(0, idx);
-              const hasToolPartsBefore = previousParts.some(Array.isArray);
-
               return (
                 <Streamdown
                   key={idx}
                   isAnimating={isStreaming}
-                  className={cn(hasToolPartsBefore && "mt-2")}
+                  className={idx !== 0 ? "mt-2" : ""}
                 >
                   {partGroup.text}
                 </Streamdown>
               );
             }
             if (Array.isArray(partGroup)) {
-              return partGroup.map((part, index) => {
-                const toolName = part.type.slice(5);
-                if (!(toolName in toolViews)) return null;
-                const toolView = toolViews[toolName as ToolId];
+              return (
+                <Fragment key={idx}>
+                  <div className="h-2" />
+                  {partGroup.map((part, index) => {
+                    const toolName = part.type.slice(5);
+                    if (!(toolName in toolViews)) return null;
+                    const toolView = toolViews[toolName as ToolId];
 
-                return (
-                  <ToolCall
-                    key={part.toolCallId}
-                    toolView={toolView}
-                    isLast={index === partGroup.length - 1}
-                    toolCall={part}
-                    addToolApprovalResponse={addToolApprovalResponse}
-                  />
-                );
-              });
+                    return (
+                      <ToolCall
+                        key={part.toolCallId}
+                        toolView={toolView}
+                        isLast={index === partGroup.length - 1}
+                        toolCall={part}
+                        addToolApprovalResponse={addToolApprovalResponse}
+                      />
+                    );
+                  })}
+                </Fragment>
+              );
             }
           })}
           {/*<p

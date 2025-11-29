@@ -46,7 +46,7 @@ export default function NewspaperButton() {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <SimpleTooltip text="Советы">
-        <PopoverTrigger asChild>
+        <PopoverTrigger asChild suppressHydrationWarning>
           <Button variant="ghost" size="icon" className="rounded-full relative">
             <LightbulbIcon className="size-4" />
 

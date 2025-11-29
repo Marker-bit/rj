@@ -32,6 +32,11 @@ const nextConfig = {
       },
     ],
   },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "5mb",
+    },
+  },
   pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
   typescript: {
     ignoreBuildErrors: true,

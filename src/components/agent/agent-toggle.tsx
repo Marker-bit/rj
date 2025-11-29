@@ -14,7 +14,7 @@ export function AgentToggle({
     <Button
       size="icon-sm"
       variant="outline"
-      className="dark:bg-neutral-800!"
+      className="dark:bg-neutral-800! pointer-events-auto"
       onClick={onClick}
     >
       <AnimatePresence initial={false} mode="popLayout">

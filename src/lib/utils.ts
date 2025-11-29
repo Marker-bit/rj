@@ -134,3 +134,11 @@ export function b64toBlob(b64Data: string, contentType = "", sliceSize = 512) {
   const blob = new Blob(byteArrays, { type: contentType });
   return blob;
 }
+
+export const fileToBase64 = (file: File) =>
+  new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+  });

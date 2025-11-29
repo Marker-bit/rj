@@ -1,5 +1,3 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -12,7 +10,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { UploadButton, UploadDropzone } from "@/components/uploadthing";
+import { UploadButton } from "@/components/uploadthing";
 import { createBook } from "@/lib/actions/books";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,22 +24,8 @@ import { z } from "zod";
 import { DialogHeader, DialogTitle } from "../ui/dialog";
 import { DrawerDialog } from "../ui/drawer-dialog";
 import { Loader } from "../ui/loader";
-
-const bookSchema = z.object({
-  title: z.string().min(1),
-  author: z.string().min(1),
-  pages: z.coerce.number<number>().min(1),
-  description: z.string().optional(),
-  coverUrl: z.string().optional(),
-  fields: z.array(
-    z.object({
-      title: z.string({ error: "Название поля обязательно" }),
-      value: z.string({
-        error: "Значение поля обязательно",
-      }),
-    }),
-  ),
-});
+import { ScanDialog } from "./scan-dialog";
+import { bookSchema } from "@/lib/validation/schemas";
 
 export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
   const form = useForm<z.input<typeof bookSchema>>({
@@ -57,6 +41,7 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
   });
   const [fileUploading, setFileUploading] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [scanDialogOpen, setScanDialogOpen] = useState(false);
   const router = useRouter();
 
   const { fields, append, remove } = useFieldArray({
@@ -85,6 +70,11 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+          <ScanDialog
+            reset={form.reset}
+            open={scanDialogOpen}
+            setOpen={setScanDialogOpen}
+          />
           <FormField
             control={form.control}
             name="coverUrl"
@@ -196,10 +186,10 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
               </FormItem>
             )}
           />
-          <div>
+          <div className="flex flex-col gap-2">
             {fields.map((field, index) => (
               <FormItem key={field.id}>
-                <FormLabel className={cn(index !== 0 && "sr-only")}>
+                <FormLabel className={cn(index !== 0 ? "sr-only" : "mt-2")}>
                   Поля
                 </FormLabel>
                 <FormDescription className={cn(index !== 0 && "sr-only")}>
@@ -243,7 +233,7 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
               type="button"
               variant="outline"
               size="sm"
-              className="mt-2"
+              className="mt-2 place-self-start"
               onClick={() => append({ title: "", value: "" })}
             >
               <Plus />

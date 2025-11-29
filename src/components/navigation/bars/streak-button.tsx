@@ -44,7 +44,7 @@ export function StreakButton({
   return (
     <Popover>
       <SimpleTooltip text="Ваш стрик">
-        <PopoverTrigger asChild>
+        <PopoverTrigger asChild suppressHydrationWarning>
           <Button
             variant="ghost"
             className="flex items-center gap-2 rounded-full"

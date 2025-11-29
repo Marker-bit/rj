@@ -51,7 +51,7 @@ export function AgentPopover({
 
   return (
     <div
-      className="border bg-popover text-popover-foreground rounded-md origin-bottom-right data-[hidden]:opacity-0 data-[hidden]:scale-95 data-[hidden]:pointer-events-none transition-all h-[30rem] max-h-[30rem] w-80 grid grid-rows-[auto_1fr_auto] overflow-y-hidden"
+      className="border bg-popover text-popover-foreground rounded-md origin-bottom-right data-[hidden]:opacity-0 data-[hidden]:scale-95 transition-all h-[30rem] max-h-[30rem] w-80 grid grid-rows-[auto_1fr_auto] overflow-y-hidden"
       data-hidden={!isOpen || undefined}
     >
       <div className="p-1 pl-3 pr-2 border-b flex items-center justify-between shrink-0">

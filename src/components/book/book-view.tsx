@@ -49,6 +49,11 @@ import { HelpButton } from "../ui/help-button";
 import { Loader } from "../ui/loader";
 import BookReadInfo from "./book-read-info";
 import Palette from "./palette";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "../ui/hover-card";
 
 export const dynamic = "force-dynamic";
 
@@ -499,18 +504,26 @@ export function BookView({
           </pre>
         )}
         {fieldsData && (
-          <table>
-            <tbody>
-              {fieldsData.map((field: { title: string; value: string }) => (
-                <tr key={field.title + field.value}>
-                  <td className="text-muted-foreground align-text-top font-bold">
-                    {field.title}:
-                  </td>
-                  <td className="pl-2">{field.value}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="grid grid-cols-3 gap-2 w-full md:w-1/2">
+            {fieldsData.map((field: { title: string; value: string }) => (
+              <HoverCard key={field.title + field.value}>
+                <HoverCardTrigger>
+                  <div className="flex flex-col gap-1 border rounded-md p-2">
+                    <div className="text-muted-foreground text-sm truncate">
+                      {field.title}
+                    </div>
+                    <div className="font-bold truncate">{field.value}</div>
+                  </div>
+                </HoverCardTrigger>
+                <HoverCardContent className="max-w-160 w-fit min-w-80 max-h-[40vh] overflow-auto">
+                  <div className="text-muted-foreground text-sm">
+                    {field.title}
+                  </div>
+                  <div>{field.value}</div>
+                </HoverCardContent>
+              </HoverCard>
+            ))}
+          </div>
         )}
       </div>
     </>
