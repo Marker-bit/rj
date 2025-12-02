@@ -18,7 +18,7 @@ export function ModeToggle() {
   return (
     <DropdownMenu>
       <SimpleTooltip text="Переключить тему">
-        <DropdownMenuTrigger asChild>
+        <DropdownMenuTrigger asChild suppressHydrationWarning>
           <Button variant="ghost" size="icon" className="relative rounded-full">
             <Sun className="size-4 dark:size-0" />
             <Moon className="absolute size-0 dark:size-4" />

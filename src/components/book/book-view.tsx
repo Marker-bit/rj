@@ -49,6 +49,11 @@ import { HelpButton } from "../ui/help-button";
 import { Loader } from "../ui/loader";
 import BookReadInfo from "./book-read-info";
 import Palette from "./palette";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "../ui/hover-card";
 
 export const dynamic = "force-dynamic";
 
@@ -190,16 +195,16 @@ export function BookView({
       </DrawerDialog>
       <div
         className={cn(
-          "group relative flex flex-col gap-2 rounded-md border p-2 transition-shadow hover:shadow-sm overflow-hidden",
+          "group relative flex flex-col gap-2 overflow-hidden rounded-md border p-2 transition-shadow hover:shadow-sm",
           book.background !== BackgroundColor.NONE &&
-            "outline-solid outline-8 my-2",
+            "my-2 outline-8 outline-solid",
           color && color.outline,
         )}
         id={`book-${book.id}`}
       >
         <div
           className={cn(
-            "absolute left-0 top-0 -z-50 h-full",
+            "absolute top-0 left-0 -z-50 h-full",
             color
               ? color.background
               : "bg-neutral-100/50 dark:bg-neutral-900/50",
@@ -273,7 +278,7 @@ export function BookView({
           setOpen={setBookReadOpen}
           book={book}
         />
-        <div className="flex gap-2 items-start">
+        <div className="flex items-start gap-2">
           {book.coverUrl && (
             <Image
               src={book.coverUrl}
@@ -470,7 +475,7 @@ export function BookView({
               </HelpButton>
             ))}
           <Palette background={book.background} bookId={book.id} />
-          <div className="absolute right-0 top-0 m-2 flex scale-0 gap-2 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
+          <div className="absolute top-0 right-0 m-2 flex scale-0 gap-2 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
             <SimpleTooltip text="Отредактировать книгу">
               <Button
                 size="icon"
@@ -494,23 +499,31 @@ export function BookView({
           </div>
         </div>
         {book.description && (
-          <pre className="relative line-clamp-2 text-ellipsis text-wrap font-sans text-muted-foreground">
+          <pre className="text-muted-foreground relative line-clamp-2 font-sans text-wrap text-ellipsis">
             {book.description}
           </pre>
         )}
         {fieldsData && (
-          <table>
-            <tbody>
-              {fieldsData.map((field: { title: string; value: string }) => (
-                <tr key={field.title + field.value}>
-                  <td className="font-bold text-muted-foreground align-text-top">
-                    {field.title}:
-                  </td>
-                  <td className="pl-2">{field.value}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="grid grid-cols-3 gap-2 w-full md:w-1/2">
+            {fieldsData.map((field: { title: string; value: string }) => (
+              <HoverCard key={field.title + field.value}>
+                <HoverCardTrigger>
+                  <div className="flex flex-col gap-1 border rounded-md p-2">
+                    <div className="text-muted-foreground text-sm truncate">
+                      {field.title}
+                    </div>
+                    <div className="font-bold truncate">{field.value}</div>
+                  </div>
+                </HoverCardTrigger>
+                <HoverCardContent className="max-w-160 w-fit min-w-80 max-h-[40vh] overflow-auto">
+                  <div className="text-muted-foreground text-sm">
+                    {field.title}
+                  </div>
+                  <div>{field.value}</div>
+                </HoverCardContent>
+              </HoverCard>
+            ))}
+          </div>
         )}
       </div>
     </>

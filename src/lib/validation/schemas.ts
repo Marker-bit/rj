@@ -22,3 +22,19 @@ export const registerSchema = z.object({
     .min(3, "Фамилия должна содержать минимум 3 символа")
     .or(z.literal("")),
 });
+
+export const bookSchema = z.object({
+  title: z.string().min(1),
+  author: z.string().min(1),
+  pages: z.coerce.number<number>().min(1),
+  description: z.string().optional(),
+  coverUrl: z.string().optional(),
+  fields: z.array(
+    z.object({
+      title: z.string({ error: "Название поля обязательно" }),
+      value: z.string({
+        error: "Значение поля обязательно",
+      }),
+    }),
+  ),
+});

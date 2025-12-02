@@ -8,6 +8,5 @@ export default defineConfig({
   },
   datasource: {
     url: env("DB_PRISMA_URL"),
-    directUrl: env("DB_URL_NON_POOLING"),
   },
 });

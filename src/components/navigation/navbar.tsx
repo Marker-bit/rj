@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  BarChartBig,
-  BookIcon,
-  CheckIcon,
-  HouseIcon,
-  Menu,
-  Users,
-} from "lucide-react";
+import { BarChartBig, BookIcon, HouseIcon, Menu, Users } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -57,7 +50,7 @@ export default function NavBar({
         <div className="flex flex-1 items-center gap-2">
           {/* Mobile menu trigger */}
           <Popover>
-            <PopoverTrigger asChild>
+            <PopoverTrigger suppressHydrationWarning asChild>
               <Button
                 className="group size-8 md:hidden"
                 variant="ghost"

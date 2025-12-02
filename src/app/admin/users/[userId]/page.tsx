@@ -4,6 +4,7 @@ import { BadgeCheck, Ban, KeyRound } from "lucide-react";
 import { notFound } from "next/navigation";
 import BadgeCheckButton from "./badge-check-button";
 import PasswordUpdateButton from "./password-update";
+import AIAllowButton from "./ai-allow-button";
 
 export default async function Page(props: {
   params: Promise<{ userId: string }>;
@@ -26,6 +27,7 @@ export default async function Page(props: {
       <div className="text-sm text-muted-foreground">@{user.username}</div>
 
       <div className="flex flex-wrap gap-2">
+        <AIAllowButton aiEnabled={user.aiEnabled} userId={user.id} />
         <BadgeCheckButton isVerified={user.verified} userId={user.id} />
         <Button variant="outline">
           <Ban />

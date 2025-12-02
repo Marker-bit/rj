@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { TrendingUp } from "lucide-react"
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
+import { TrendingUp } from "lucide-react";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 import {
   Card,
@@ -10,17 +10,17 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
-import { format, subDays } from "date-fns"
+} from "@/components/ui/chart";
+import { format, subDays } from "date-fns";
 import { dateToString } from "@/lib/utils";
 
-export const description = "A bar chart"
+export const description = "A bar chart";
 
 const chartData = [
   { date: subDays(new Date(), 1), pagesRead: 100 },
@@ -30,19 +30,19 @@ const chartData = [
   // { month: "April", pagesRead: 73 },
   // { month: "May", pagesRead: 209 },
   // { month: "June", pagesRead: 214 },
-]
+];
 
 const chartConfig = {
   pagesRead: {
     label: "Страниц прочитано",
     color: "var(--chart-1)",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 export function DayChart({
   data,
 }: {
-  data: { date: Date; pagesRead: number }[]
+  data: { date: Date; pagesRead: number }[];
 }) {
   return (
     <ChartContainer config={chartConfig}>
@@ -67,5 +67,5 @@ export function DayChart({
         <Bar dataKey="pagesRead" fill="var(--color-pagesRead)" radius={8} />
       </BarChart>
     </ChartContainer>
-  )
+  );
 }

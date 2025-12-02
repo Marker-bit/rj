@@ -52,7 +52,10 @@ function NavigationMenuItem({
   return (
     <NavigationMenuPrimitive.Item
       data-slot="navigation-menu-item"
-      className={cn("relative", className)}
+      className={cn(
+        "relative active:scale-95 active:blur-[1px] transition-[scale,filter]",
+        className,
+      )}
       {...props}
     />
   );
@@ -115,6 +118,7 @@ function NavigationMenuViewport({
           "origin-top-center bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-90 relative mt-1.5 h-[var(--radix-navigation-menu-viewport-height)] w-full overflow-hidden rounded-md border shadow md:w-[var(--radix-navigation-menu-viewport-width)]",
           className,
         )}
+        suppressHydrationWarning
         {...props}
       />
     </div>

@@ -53,7 +53,7 @@ export default function UserMenu({
   return (
     <DropdownMenu>
       <SimpleTooltip text="Профиль">
-        <DropdownMenuTrigger asChild>
+        <DropdownMenuTrigger asChild suppressHydrationWarning>
           <Button
             variant="ghost"
             className="h-auto p-0 hover:bg-transparent! rounded-full relative"

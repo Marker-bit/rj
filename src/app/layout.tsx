@@ -195,7 +195,10 @@ export default async function RootLayout({
               <Analytics />
               <SpeedInsights />
               <Toaster />
-              <ReactQueryDevtools initialIsOpen={false} />
+              <ReactQueryDevtools
+                initialIsOpen={false}
+                buttonPosition="top-left"
+              />
             </TooltipProvider>
           </ThemeProvider>
         </QueryProvider>
