@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
         sessionCookie.attributes,
       );
 
-      return NextResponse.json(null, { status: 200 });
+      return NextResponse.json({id: user.id}, { status: 200 });
     } else {
       return NextResponse.json(
         {

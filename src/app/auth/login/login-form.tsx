@@ -21,6 +21,7 @@ import { z } from "zod";
 import { Loader } from "@/components/ui/loader";
 import { useEffect } from "react";
 import { validateRequest } from "@/lib/validate-request";
+import posthog from "posthog-js";
 
 const formSchema = z.object({
   username: z.string(),
@@ -53,6 +54,8 @@ export function LoginForm() {
         method: "POST",
       });
       if (res.ok) {
+        const data = await res.json();
+        posthog.identify(data.id)
         router.replace("/home");
         toast.success("Вы успешно авторизовались");
       } else {

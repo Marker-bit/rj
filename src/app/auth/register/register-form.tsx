@@ -23,6 +23,7 @@ import { z } from "zod";
 import { Loader } from "@/components/ui/loader";
 import { registerSchema } from "@/lib/validation/schemas";
 import { validateRequest } from "@/lib/validate-request";
+import posthog from "posthog-js";
 
 export function RegisterForm() {
   const [usernameFound, setUsernameFound] = useState<boolean | null>(null);
@@ -53,6 +54,8 @@ export function RegisterForm() {
         method: "POST",
       });
       if (res.ok) {
+        const data = await res.json();
+        posthog.identify(data.id)
         router.push("/home");
       } else {
         const data = await res.json();

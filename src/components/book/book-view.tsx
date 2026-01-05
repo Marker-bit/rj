@@ -54,6 +54,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "../ui/hover-card";
+import posthog from "posthog-js";
 
 export const dynamic = "force-dynamic";
 
@@ -164,8 +165,8 @@ export function BookView({
     typeof book.fields === "string"
       ? JSON.parse(book.fields)
       : Array.isArray(book.fields)
-        ? book.fields
-        : [];
+      ? book.fields
+      : [];
 
   return (
     <>
@@ -198,7 +199,7 @@ export function BookView({
           "group relative flex flex-col gap-2 overflow-hidden rounded-md border p-2 transition-shadow hover:shadow-sm",
           book.background !== BackgroundColor.NONE &&
             "my-2 outline-8 outline-solid",
-          color && color.outline,
+          color && color.outline
         )}
         id={`book-${book.id}`}
       >
@@ -207,7 +208,7 @@ export function BookView({
             "absolute top-0 left-0 -z-50 h-full",
             color
               ? color.background
-              : "bg-neutral-100/50 dark:bg-neutral-900/50",
+              : "bg-neutral-100/50 dark:bg-neutral-900/50"
           )}
           style={{
             width: `${((lastEvent?.pagesRead || 0) / book.pages) * 100}%`,
@@ -271,7 +272,15 @@ export function BookView({
           open={editOpen}
           setOpen={setEditOpen}
           book={book}
-          onUpdate={onUpdate}
+          onUpdate={(newBook) => {
+            posthog.capture("edited_book", {
+              title: newBook.title,
+              author: newBook.author,
+              oldTitle: book.title,
+              oldAuthor: book.author,
+            });
+            onUpdate?.();
+          }}
         />
         <BookReadInfo
           open={bookReadOpen}
