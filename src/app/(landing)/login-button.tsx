@@ -1,12 +1,12 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { validateRequest } from "@/lib/validate-request";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { validateRequest } from "@/lib/validate-request";
 
 export function LoginButton({ noRedirect }: { noRedirect: boolean }) {
   const [loggedIn, setLoggedIn] = useState<boolean>();

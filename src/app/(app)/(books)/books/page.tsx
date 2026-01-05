@@ -1,10 +1,10 @@
+import { ArrowRightIcon, ChevronLeft, HistoryIcon } from "lucide-react";
+import Link from "next/link";
 import { BookView } from "@/components/book/book-view";
 import { Button } from "@/components/ui/button";
 import { SimpleTooltip } from "@/components/ui/simple-tooltip";
 import { fetchBook, fetchBooks } from "@/lib/books";
 import { validateRequest } from "@/lib/server-validate-request";
-import { ArrowRightIcon, ChevronLeft, HistoryIcon } from "lucide-react";
-import Link from "next/link";
 import { BookList } from "./book-list";
 import AddBookButton from "./button";
 import HiddenBooksCollapsible from "./hidden-books-collapsible";
@@ -24,7 +24,7 @@ export default async function BooksPage(props: {
     return null;
   }
 
-  let bookId = searchParams?.bookId;
+  const bookId = searchParams?.bookId;
 
   const books = bookId
     ? null
@@ -34,7 +34,7 @@ export default async function BooksPage(props: {
 
   const foundBook = bookId && (await fetchBook(bookId as string, user.id));
 
-  const hiddenBooks = bookId ? null : books!.filter((b) => b.isHidden);
+  const hiddenBooks = bookId ? null : books?.filter((b) => b.isHidden);
 
   return (
     <div className="p-2">
@@ -78,8 +78,8 @@ export default async function BooksPage(props: {
               </Button>
             </SimpleTooltip>
           </div>
-          <BookList books={books!.filter((b) => !b.isHidden)} />
-          {hiddenBooks!.length > 0 && (
+          <BookList books={books?.filter((b) => !b.isHidden)} />
+          {hiddenBooks?.length > 0 && (
             <HiddenBooksCollapsible hiddenBooks={hiddenBooks!} />
           )}
         </div>

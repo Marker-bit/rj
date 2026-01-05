@@ -1,5 +1,25 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import type { Recommendation } from "@prisma/client";
+import { addDays, format } from "date-fns";
+import { ru } from "date-fns/locale";
+import {
+  CalendarIcon,
+  ClipboardCopyIcon,
+  ClipboardPasteIcon,
+  CopyIcon,
+  Loader2Icon,
+  PencilIcon,
+  Plus,
+  Save,
+  TrashIcon,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { DialogTitle } from "@/components/ui/dialog";
@@ -28,27 +48,6 @@ import {
   editRecommendation,
 } from "@/lib/actions/recommendations";
 import { cn } from "@/lib/utils";
-import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Recommendation } from "@prisma/client";
-import { addDays, format } from "date-fns";
-import { ru } from "date-fns/locale";
-import {
-  CalendarIcon,
-  ClipboardCopyIcon,
-  ClipboardPasteIcon,
-  CopyIcon,
-  Loader2Icon,
-  PencilIcon,
-  Plus,
-  Save,
-  TrashIcon,
-} from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
 
 const formSchema = z.object({
   slogan: z.string().min(1, "Слоган обязателен"),
@@ -394,7 +393,7 @@ export function PasteRecommendation() {
     try {
       const res = await addRecommendation(JSON.parse(copiedText));
       toast.success(res.message);
-    } catch (e) {
+    } catch (_e) {
       toast.error("Возникла проблема при вставке рекомендации");
     }
     setLoading(false);

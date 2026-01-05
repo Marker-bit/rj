@@ -1,7 +1,7 @@
+import { SquareStackIcon } from "lucide-react";
 import { RemoteBookView } from "@/components/agent/book-view";
-import { ToolOutputView, ToolView } from "@/lib/ai/tools/types";
+import type { ToolOutputView, ToolView } from "@/lib/ai/tools/types";
 import { declOfNum } from "@/lib/utils";
-import { BookIcon, SquareStackIcon } from "lucide-react";
 
 const CreateCollectionView: ToolOutputView<"createCollection"> = ({
   input,

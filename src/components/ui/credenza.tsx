@@ -1,8 +1,6 @@
-"use client"
+"use client";
 
-import * as React from "react"
-
-import { cn } from "@/lib/utils"
+import * as React from "react";
 import {
   Dialog,
   DialogClose,
@@ -12,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 import {
   Drawer,
   DrawerClose,
@@ -22,21 +20,22 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer"
+} from "@/components/ui/drawer";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 interface BaseProps {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 interface RootCredenzaProps extends BaseProps {
-  open?: boolean
-  onOpenChange?: (open: boolean) => void
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 interface CredenzaProps extends BaseProps {
-  className?: string
-  asChild?: true
+  className?: string;
+  asChild?: true;
 }
 
 const CredenzaContext = React.createContext<{ isDesktop: boolean }>({
@@ -65,7 +64,6 @@ const Credenza = ({ children, ...props }: RootCredenzaProps) => {
     </CredenzaContext.Provider>
   );
 };
-
 
 const CredenzaTrigger = ({ className, children, ...props }: CredenzaProps) => {
   const { isDesktop } = useCredenzaContext();
@@ -166,4 +164,4 @@ export {
   CredenzaTitle,
   CredenzaBody,
   CredenzaFooter,
-}
+};

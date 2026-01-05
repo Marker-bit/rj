@@ -1,13 +1,13 @@
 "use client";
 
-import { DrawerDialog } from "@/components/ui/drawer-dialog";
-import { Button } from "@/components/ui/button";
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Loader } from "@/components/ui/loader";
 import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { DrawerDialog } from "@/components/ui/drawer-dialog";
+import { Loader } from "@/components/ui/loader";
 
 export function DeleteGroupButton({ groupId }: { groupId: string }) {
   const [loading, setLoading] = useState(false);

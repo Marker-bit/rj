@@ -1,7 +1,7 @@
+import { GroupMemberRole } from "@prisma/client";
+import { type NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
-import { GroupMemberRole } from "@prisma/client";
-import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(
   req: NextRequest,

@@ -1,9 +1,9 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { cn, dateToString, declOfNum } from "@/lib/utils";
-import { Book, ReadEvent, User } from "@prisma/client";
+import type { Book, ReadEvent, User } from "@prisma/client";
 import { BookCheck, BookOpen } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { cn, dateToString, declOfNum } from "@/lib/utils";
 
 export default function Event({
   event,
@@ -24,8 +24,8 @@ export default function Event({
         <Avatar>
           <AvatarImage src={user.avatarUrl} />
           <AvatarFallback>
-            {user.firstName && user.firstName[0]}
-            {user.lastName && user.lastName[0]}
+            {user.firstName?.[0]}
+            {user.lastName?.[0]}
           </AvatarFallback>
         </Avatar>
         <div className="flex flex-col">

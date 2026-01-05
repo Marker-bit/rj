@@ -1,12 +1,12 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Loader } from "@/components/ui/loader";
-import { Book, Collection } from "@prisma/client";
+import type { Book, Collection } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Loader } from "@/components/ui/loader";
 
 export function AddBook({
   book,

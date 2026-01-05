@@ -1,6 +1,6 @@
-import { RemoteBookView } from "@/components/agent/book-view";
-import { ToolOutputView, ToolView } from "@/lib/ai/tools/types";
 import { TrashIcon } from "lucide-react";
+import { RemoteBookView } from "@/components/agent/book-view";
+import type { ToolOutputView, ToolView } from "@/lib/ai/tools/types";
 
 const DeleteBookView: ToolOutputView<"deleteBook"> = ({ input }) => {
   return <RemoteBookView bookId={input.id} />;

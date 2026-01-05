@@ -1,6 +1,5 @@
 "use client";
 
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
   MutationCache,
   QueryCache,

@@ -1,12 +1,11 @@
 "use server";
 
-import { db } from "../db";
-import { validateRequest } from "../server-validate-request";
+import { hash } from "@node-rs/argon2";
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { lucia } from "../auth";
-import { cookies } from "next/headers";
-import { hash } from "@node-rs/argon2";
-import { redirect } from "next/navigation";
+import { db } from "../db";
+import { validateRequest } from "../server-validate-request";
 
 export async function resetPassword(data: {
   username: string;

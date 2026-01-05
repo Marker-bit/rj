@@ -1,7 +1,7 @@
+import type { ChatAddToolApproveResponseFunction, UIToolInvocation } from "ai";
+import { CheckIcon, XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
-import { ChatAddToolApproveResponseFunction, UIToolInvocation } from "ai";
-import { CheckIcon, XIcon } from "lucide-react";
 
 export function ToolConfirmation({
   invocation,

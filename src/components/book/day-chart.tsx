@@ -1,28 +1,18 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
+import { format, subDays } from "date-fns";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
-
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  ChartConfig,
+  type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { format, subDays } from "date-fns";
 import { dateToString } from "@/lib/utils";
 
 export const description = "A bar chart";
 
-const chartData = [
+const _chartData = [
   { date: subDays(new Date(), 1), pagesRead: 100 },
   { date: new Date(), pagesRead: 186 },
   // { month: "February", pagesRead: 305 },

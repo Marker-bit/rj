@@ -7,7 +7,7 @@ export default async function Page(props: {
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const searchParams = await props.searchParams;
-  let page = searchParams?.page ? parseInt(searchParams.page as string) : 1;
+  let page = searchParams?.page ? parseInt(searchParams.page as string, 10) : 1;
   const pageSize = 20;
   if (page < 1) {
     page = 1;

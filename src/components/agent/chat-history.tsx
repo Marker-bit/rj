@@ -1,16 +1,16 @@
-import { Message } from "@/components/agent/message/message";
-import { Button } from "@/components/ui/button";
-import { TextShimmer } from "@/components/ui/text-shimmer";
-import { MyUIMessage } from "@/lib/ai/message";
-import { cn } from "@/lib/utils";
 import {
-  ChatAddToolApproveResponseFunction,
-  ChatStatus,
+  type ChatAddToolApproveResponseFunction,
+  type ChatStatus,
   isToolUIPart,
 } from "ai";
 import { ChevronDownIcon, CircleAlertIcon, RotateCwIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
+import { Message } from "@/components/agent/message/message";
+import { Button } from "@/components/ui/button";
+import { TextShimmer } from "@/components/ui/text-shimmer";
+import type { MyUIMessage } from "@/lib/ai/message";
+import { cn } from "@/lib/utils";
 
 const MotionMessage = motion.create(Message);
 
@@ -35,7 +35,7 @@ export function ChatHistory({
   useEffect(() => {
     const container = containerRef.current;
 
-    const observer = new ResizeObserver((entries) => {
+    const observer = new ResizeObserver((_entries) => {
       handleScroll();
     });
     const mutObserver = new MutationObserver((mutations) => {
@@ -63,7 +63,7 @@ export function ChatHistory({
         }
       }
     };
-  }, [containerRef, containerRef.current?.children]);
+  }, [handleScroll]);
 
   useEffect(() => {
     if (messages.length > 0) {
@@ -71,11 +71,11 @@ export function ChatHistory({
         scrollToBottom();
       }, 300);
     }
-  }, [messages]);
+  }, [messages, scrollToBottom]);
 
   useEffect(() => {
     scrollToBottom();
-  }, [error]);
+  }, [scrollToBottom]);
 
   const handleScroll = () => {
     if (containerRef.current) {
@@ -129,7 +129,7 @@ export function ChatHistory({
         onScroll={handleScroll}
       >
         <AnimatePresence>
-          {messages.map((message, index) => (
+          {messages.map((message, _index) => (
             <MotionMessage
               initial={{
                 scale: 0.6,
@@ -162,8 +162,8 @@ export function ChatHistory({
           {(status === "submitted" ||
             (status === "streaming" &&
               messages.length > 0 &&
-              messages.at(-1)!.parts.at(-1) &&
-              isToolUIPart(messages.at(-1)!.parts.at(-1)!))) && (
+              messages.at(-1)?.parts.at(-1) &&
+              isToolUIPart(messages.at(-1)?.parts.at(-1)!))) && (
             <motion.div
               initial={{
                 scale: 0.6,

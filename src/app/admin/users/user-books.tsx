@@ -1,5 +1,7 @@
 "use client";
 
+import type { Book } from "@prisma/client";
+import { ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -7,8 +9,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { declOfNum } from "@/lib/utils";
-import { Book } from "@prisma/client";
-import { ChevronDown } from "lucide-react";
 import AdminBookView from "./admin-book-view";
 
 export default function UserBooks({ books }: { books: Book[] }) {

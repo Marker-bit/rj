@@ -1,7 +1,7 @@
-import { BookView } from "@/components/agent/book-view";
-import { ToolOutputView, ToolView } from "@/lib/ai/tools/types";
-import { declOfNum } from "@/lib/utils";
 import { BookIcon, ListOrderedIcon } from "lucide-react";
+import { BookView } from "@/components/agent/book-view";
+import type { ToolOutputView, ToolView } from "@/lib/ai/tools/types";
+import { declOfNum } from "@/lib/utils";
 
 const BookOutputView: ToolOutputView<"getAllBooks"> = ({ input, output }) => {
   const showedBooks = output.slice(0, 3);

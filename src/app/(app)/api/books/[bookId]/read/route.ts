@@ -1,7 +1,7 @@
-import { validateRequest } from "@/lib/server-validate-request";
-import { db } from "@/lib/db";
-import { NextRequest, NextResponse } from "next/server";
 import { endOfDay, subDays } from "date-fns";
+import { type NextRequest, NextResponse } from "next/server";
+import { db } from "@/lib/db";
+import { validateRequest } from "@/lib/server-validate-request";
 export async function POST(
   req: NextRequest,
   props: { params: Promise<{ bookId: string }> },

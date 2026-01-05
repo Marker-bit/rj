@@ -1,7 +1,5 @@
-import { DrawerDialog } from "@/components/ui/drawer-dialog";
-import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Book } from "@prisma/client";
+import type { Book } from "@prisma/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Edit, Loader, Plus, Trash, X } from "lucide-react";
 import Image from "next/image";
@@ -10,6 +8,8 @@ import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { DrawerDialog } from "@/components/ui/drawer-dialog";
+import { cn } from "@/lib/utils";
 import { Button } from "../../ui/button";
 import { DialogHeader, DialogTitle } from "../../ui/dialog";
 import {
@@ -160,7 +160,7 @@ export function EditBookModal({
                           description: error.message,
                         });
                       }}
-                      onUploadBegin={(fileName) => {
+                      onUploadBegin={(_fileName) => {
                         setFileUploading(true);
                       }}
                       className="ut-button:bg-blue-500 ut-button:ut-readying:bg-blue-500/50 ut-button:px-4 ut-button:ut-uploading:bg-blue-500/50"

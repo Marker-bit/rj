@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   Pagination,
   PaginationContent,
@@ -9,7 +10,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function UserPagination({
   currentPage,

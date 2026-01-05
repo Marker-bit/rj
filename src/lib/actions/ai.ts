@@ -3,8 +3,8 @@
 import { openrouter } from "@openrouter/ai-sdk-provider";
 import { generateObject } from "ai";
 import z from "zod";
-import { validateRequest } from "../server-validate-request";
 import { db } from "../db";
+import { validateRequest } from "../server-validate-request";
 
 const IMAGE_MODEL = "qwen/qwen3-vl-30b-a3b-thinking";
 

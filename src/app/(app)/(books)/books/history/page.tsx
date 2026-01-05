@@ -1,17 +1,17 @@
-import { BookView } from "@/components/book/book-view"
-import { fetchBooks } from "@/lib/books"
-import { validateRequest } from "@/lib/server-validate-request"
+import { BookView } from "@/components/book/book-view";
+import { fetchBooks } from "@/lib/books";
+import { validateRequest } from "@/lib/server-validate-request";
 
 export default async function Page({
   searchParams,
 }: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const { user } = await validateRequest()
-  if (!user) return null
+  const { user } = await validateRequest();
+  if (!user) return null;
 
-  const books = await fetchBooks(user.id, { history: true })
-  const { bookReadId } = await searchParams
+  const books = await fetchBooks(user.id, { history: true });
+  const { bookReadId } = await searchParams;
 
   return (
     <div className="flex flex-col gap-2 p-2">
@@ -21,9 +21,14 @@ export default async function Page({
       </p>
       <div className="flex flex-col gap-2">
         {books.map((book) => (
-          <BookView history key={book.id} book={book} initialReadOpen={book.id === bookReadId} />
+          <BookView
+            history
+            key={book.id}
+            book={book}
+            initialReadOpen={book.id === bookReadId}
+          />
         ))}
       </div>
     </div>
-  )
+  );
 }

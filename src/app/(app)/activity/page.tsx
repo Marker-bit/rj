@@ -1,21 +1,21 @@
-import { db } from "@/lib/db"
-import { validateRequest } from "@/lib/server-validate-request"
-import Event from "./event"
-import Pagination from "./pagination"
-import { Book, ReadEvent, User } from "@prisma/client"
-import EventRepeat from "./event-repeat"
-import { ReactElement } from "react"
+import type { Book, ReadEvent, User } from "@prisma/client";
+import type { ReactElement } from "react";
+import { db } from "@/lib/db";
+import { validateRequest } from "@/lib/server-validate-request";
+import Event from "./event";
+import EventRepeat from "./event-repeat";
+import Pagination from "./pagination";
 
 export default async function Page(props: {
-  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const searchParams = await props.searchParams
-  const { user } = await validateRequest()
-  if (!user) return null
-  let page = searchParams?.page ? parseInt(searchParams.page as string) : 1
-  const pageSize = 20
+  const searchParams = await props.searchParams;
+  const { user } = await validateRequest();
+  if (!user) return null;
+  let page = searchParams?.page ? parseInt(searchParams.page as string, 10) : 1;
+  const pageSize = 20;
   if (page < 1) {
-    page = 1
+    page = 1;
   }
   const fullCount = await db.readEvent.count({
     where: {
@@ -32,10 +32,10 @@ export default async function Page(props: {
         },
       },
     },
-  })
-  const totalPages = Math.ceil(fullCount / pageSize)
+  });
+  const totalPages = Math.ceil(fullCount / pageSize);
   if (page > totalPages) {
-    page = totalPages
+    page = totalPages;
   }
   const activity =
     page === 0
@@ -66,25 +66,25 @@ export default async function Page(props: {
           },
           skip: (page - 1) * pageSize,
           take: pageSize,
-        })
-  let components: ReactElement<any>[] = []
-  let tempArray: (ReadEvent & { book: Book & { user: User } })[] = []
+        });
+  const components: ReactElement<any>[] = [];
+  let tempArray: (ReadEvent & { book: Book & { user: User } })[] = [];
 
   activity.forEach((event, index) => {
-    tempArray.push(event)
+    tempArray.push(event);
     // Check if the current event's type does not match the next event's type or if it's the last event
     if (
       index === activity.length - 1 ||
       event.bookId !== activity[index + 1].bookId
     ) {
       if (tempArray.length > 2) {
-        components.push(<EventRepeat key={event.id} events={tempArray} />)
+        components.push(<EventRepeat key={event.id} events={tempArray} />);
       } else {
-        components.push(<Event key={event.id} event={tempArray[0]} />)
+        components.push(<Event key={event.id} event={tempArray[0]} />);
       }
-      tempArray = [] // Reset tempArray for the next sequence
+      tempArray = []; // Reset tempArray for the next sequence
     }
-  })
+  });
 
   if (page === 0) {
     return (
@@ -93,7 +93,7 @@ export default async function Page(props: {
           Пока что нечего смотреть, приходите позже
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -104,5 +104,5 @@ export default async function Page(props: {
       {components}
       <Pagination currentPage={page} totalPages={totalPages} />
     </div>
-  )
+  );
 }

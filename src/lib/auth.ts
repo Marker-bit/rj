@@ -1,9 +1,9 @@
 /* src/lib/utils.ts */
-import { Lucia } from "lucia";
-import { PrismaAdapter } from "@lucia-auth/adapter-prisma";
 
+import { PrismaAdapter } from "@lucia-auth/adapter-prisma";
+import type { SharePeople } from "@prisma/client";
+import { Lucia } from "lucia";
 import { db } from "./db";
-import { SharePeople } from "@prisma/client";
 
 const adapter = new PrismaAdapter(db.session, db.user);
 

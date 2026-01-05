@@ -1,3 +1,6 @@
+import { LightbulbIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useLocalStorage } from "usehooks-ts";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -5,9 +8,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { SimpleTooltip } from "@/components/ui/simple-tooltip";
-import { LightbulbIcon } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useLocalStorage } from "usehooks-ts";
 
 // Добавлять строго в конец!
 const tips = [

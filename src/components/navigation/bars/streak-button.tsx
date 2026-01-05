@@ -1,5 +1,17 @@
 "use client";
 
+import type { ReadEvent } from "@prisma/client";
+import {
+  addDays,
+  addWeeks,
+  differenceInDays,
+  format,
+  startOfDay,
+  startOfWeek,
+} from "date-fns";
+import { ru } from "date-fns/locale";
+import { CalendarIcon } from "lucide-react";
+import { use, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -14,18 +26,6 @@ import {
 } from "@/components/ui/tooltip";
 import { getDays, getStreak } from "@/lib/stats";
 import { capitalizeFirstLetter, cn, declOfNum } from "@/lib/utils";
-import { ReadEvent } from "@prisma/client";
-import {
-  addDays,
-  addWeeks,
-  differenceInDays,
-  format,
-  startOfDay,
-  startOfWeek,
-} from "date-fns";
-import { ru } from "date-fns/locale";
-import { CalendarIcon } from "lucide-react";
-import { use, useState } from "react";
 
 export function StreakButton({
   events: eventsPromise,

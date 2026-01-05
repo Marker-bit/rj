@@ -1,12 +1,12 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Loader } from "@/components/ui/loader";
-import { markAsRead } from "@/lib/actions/support";
 import { CheckCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Loader } from "@/components/ui/loader";
+import { markAsRead } from "@/lib/actions/support";
 
 export default function ReadButton({
   answerId,

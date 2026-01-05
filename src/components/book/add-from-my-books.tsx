@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { DrawerDialog } from "../ui/drawer-dialog";
-import { DialogHeader, DialogTitle } from "../ui/dialog";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-import { Button } from "../ui/button";
 import { Loader, Plus, Search } from "lucide-react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Button } from "../ui/button";
+import { DialogHeader, DialogTitle } from "../ui/dialog";
+import { DrawerDialog } from "../ui/drawer-dialog";
 
 export function AddFromMyBooks({
   groupId,
@@ -47,61 +47,60 @@ export function AddFromMyBooks({
           placeholder="Поиск"
         />
       </div>
-      {books &&
-        books
-          .filter(
-            (book) =>
-              (book.title.toLowerCase().includes(search.toLowerCase()) ||
-                book.author.toLowerCase().includes(search.toLowerCase())) &&
-              book.groupBookId !== groupId,
-          )
-          .map((book) => (
-            <div
-              key={book.id}
-              className="flex items-center gap-2 rounded-xl p-2 transition-all hover:bg-muted/10"
-            >
-              {book.coverUrl && (
-                <Image
-                  src={book.coverUrl}
-                  alt="book"
-                  width={500}
-                  height={500}
-                  className="h-20 w-auto rounded-md"
-                />
-              )}
-              <div className="flex flex-col gap-1">
-                <div className="text-xl font-bold">{book.title}</div>
-                <div className="-mt-1 text-sm text-zinc-500">{book.author}</div>
-                <div className="-mt-1 text-sm text-zinc-500">
-                  {book.pages} стр.
-                </div>
-                <div className="-mt-1 text-sm text-zinc-500">
-                  {book.description}
-                </div>
+      {books
+        ?.filter(
+          (book) =>
+            (book.title.toLowerCase().includes(search.toLowerCase()) ||
+              book.author.toLowerCase().includes(search.toLowerCase())) &&
+            book.groupBookId !== groupId,
+        )
+        .map((book) => (
+          <div
+            key={book.id}
+            className="flex items-center gap-2 rounded-xl p-2 transition-all hover:bg-muted/10"
+          >
+            {book.coverUrl && (
+              <Image
+                src={book.coverUrl}
+                alt="book"
+                width={500}
+                height={500}
+                className="h-20 w-auto rounded-md"
+              />
+            )}
+            <div className="flex flex-col gap-1">
+              <div className="text-xl font-bold">{book.title}</div>
+              <div className="-mt-1 text-sm text-zinc-500">{book.author}</div>
+              <div className="-mt-1 text-sm text-zinc-500">
+                {book.pages} стр.
               </div>
-              <Button
-                size="icon"
-                variant="ghost"
-                className="ml-auto size-fit p-1"
-                onClick={() => {
-                  setBookLoadingId(book.id);
-                  fetch(`/api/groups/${groupId}/add-own/${book.id}`, {
-                    method: "POST",
-                  }).then(() => {
-                    setBookLoadingId(undefined);
-                    setOpen(false);
-                    router.refresh();
-                  });
-                }}
-              >
-                {bookLoadingId === book.id ? (
-                  <Loader className="size-4 animate-spin" />
-                ) : (
-                  <Plus className="size-4" />
-                )}
-              </Button>
+              <div className="-mt-1 text-sm text-zinc-500">
+                {book.description}
+              </div>
             </div>
-          ))}
+            <Button
+              size="icon"
+              variant="ghost"
+              className="ml-auto size-fit p-1"
+              onClick={() => {
+                setBookLoadingId(book.id);
+                fetch(`/api/groups/${groupId}/add-own/${book.id}`, {
+                  method: "POST",
+                }).then(() => {
+                  setBookLoadingId(undefined);
+                  setOpen(false);
+                  router.refresh();
+                });
+              }}
+            >
+              {bookLoadingId === book.id ? (
+                <Loader className="size-4 animate-spin" />
+              ) : (
+                <Plus className="size-4" />
+              )}
+            </Button>
+          </div>
+        ))}
     </DrawerDialog>
   );
 }

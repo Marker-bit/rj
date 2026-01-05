@@ -1,22 +1,5 @@
 "use client";
 
-import { BookInfoModal } from "@/components/dialogs/books/book-info-modal";
-import { DateReadModal } from "@/components/dialogs/books/read/date-read-modal";
-import { EditBookModal } from "@/components/dialogs/books/edit-book-modal";
-import { BookCollectionsModal } from "@/components/dialogs/collections/book-collections-modal";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { DrawerDialog } from "@/components/ui/drawer-dialog";
-import { IconBadge } from "@/components/ui/icon-badge";
-import { SimpleTooltip } from "@/components/ui/simple-tooltip";
-import { Book } from "@/lib/api-types";
-import { backgroundColors } from "@/lib/colors";
-import { cn, dateToString, declOfNum } from "@/lib/utils";
 import { BackgroundColor } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { endOfDay, isToday } from "date-fns";
@@ -41,20 +24,37 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import posthog from "posthog-js";
 import { useState } from "react";
 import { toast } from "sonner";
+import { BookInfoModal } from "@/components/dialogs/books/book-info-modal";
+import { EditBookModal } from "@/components/dialogs/books/edit-book-modal";
+import { DateReadModal } from "@/components/dialogs/books/read/date-read-modal";
+import { BookCollectionsModal } from "@/components/dialogs/collections/book-collections-modal";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { DrawerDialog } from "@/components/ui/drawer-dialog";
+import { IconBadge } from "@/components/ui/icon-badge";
+import { SimpleTooltip } from "@/components/ui/simple-tooltip";
+import type { Book } from "@/lib/api-types";
+import { backgroundColors } from "@/lib/colors";
+import { cn, dateToString, declOfNum } from "@/lib/utils";
 import { DateDoneModal } from "../dialogs/books/read/date-done-modal";
 import { ShareBookModal } from "../dialogs/books/share-book-modal";
 import { HelpButton } from "../ui/help-button";
-import { Loader } from "../ui/loader";
-import BookReadInfo from "./book-read-info";
-import Palette from "./palette";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from "../ui/hover-card";
-import posthog from "posthog-js";
+import { Loader } from "../ui/loader";
+import BookReadInfo from "./book-read-info";
+import Palette from "./palette";
 
 export const dynamic = "force-dynamic";
 
@@ -165,8 +165,8 @@ export function BookView({
     typeof book.fields === "string"
       ? JSON.parse(book.fields)
       : Array.isArray(book.fields)
-      ? book.fields
-      : [];
+        ? book.fields
+        : [];
 
   return (
     <>
@@ -199,7 +199,7 @@ export function BookView({
           "group relative flex flex-col gap-2 overflow-hidden rounded-md border p-2 transition-shadow hover:shadow-sm",
           book.background !== BackgroundColor.NONE &&
             "my-2 outline-8 outline-solid",
-          color && color.outline
+          color?.outline,
         )}
         id={`book-${book.id}`}
       >
@@ -208,7 +208,7 @@ export function BookView({
             "absolute top-0 left-0 -z-50 h-full",
             color
               ? color.background
-              : "bg-neutral-100/50 dark:bg-neutral-900/50"
+              : "bg-neutral-100/50 dark:bg-neutral-900/50",
           )}
           style={{
             width: `${((lastEvent?.pagesRead || 0) / book.pages) * 100}%`,

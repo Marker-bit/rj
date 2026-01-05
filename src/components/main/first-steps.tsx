@@ -1,9 +1,7 @@
+import { Check } from "lucide-react";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
 import { cn } from "@/lib/utils";
-import { Check } from "lucide-react";
-import Link from "next/link";
-import { Button } from "../ui/button";
 import {
   Card,
   CardContent,
@@ -11,7 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import AddBookButton from "@/app/(app)/(books)/books/button";
 
 export default async function FirstSteps() {
   const { user } = await validateRequest();

@@ -1,9 +1,9 @@
+import type { UIMessage } from "ai";
+import { CopyIcon, RefreshCcw } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { getCopyableMessageText } from "@/lib/ai/utils";
 import { cn } from "@/lib/utils";
-import { UIMessage } from "ai";
-import { CopyIcon, RefreshCcw } from "lucide-react";
-import { toast } from "sonner";
 
 export function MessageActions({
   className,

@@ -1,13 +1,13 @@
-import { db } from "@/lib/db"
-import { validateRequest } from "@/lib/server-validate-request"
-import { redirect } from "next/navigation"
-import JournalView from "./journal-view"
+import { redirect } from "next/navigation";
+import { db } from "@/lib/db";
+import { validateRequest } from "@/lib/server-validate-request";
+import JournalView from "./journal-view";
 
 export default async function JournalPage() {
-  const { user } = await validateRequest()
+  const { user } = await validateRequest();
 
   if (!user) {
-    return redirect("/auth/login")
+    return redirect("/auth/login");
   }
 
   const events = await db.readEvent.findMany({
@@ -22,7 +22,7 @@ export default async function JournalPage() {
     orderBy: {
       readAt: "desc",
     },
-  })
+  });
 
-  return <JournalView events={events} />
+  return <JournalView events={events} />;
 }

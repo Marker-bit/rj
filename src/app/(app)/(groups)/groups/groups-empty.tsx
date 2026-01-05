@@ -1,5 +1,5 @@
+import { UsersIcon } from "lucide-react";
 import { AddGroupButton } from "@/app/(app)/(groups)/groups/add-group-button";
-import { Button } from "@/components/ui/button";
 import {
   Empty,
   EmptyContent,
@@ -8,7 +8,6 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { UsersIcon } from "lucide-react";
 
 export const GroupsEmpty = () => (
   <Empty>

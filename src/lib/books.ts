@@ -1,4 +1,4 @@
-import { Book } from "./api-types";
+import type { Book } from "./api-types";
 import { db } from "./db";
 
 type FetchBooksOptions =
@@ -9,7 +9,7 @@ type FetchBooksOptions =
 
 export async function fetchBooks(
   userId: string,
-  options: FetchBooksOptions = { orderBy: "percent" }
+  options: FetchBooksOptions = { orderBy: "percent" },
 ) {
   const isHistory = "history" in options;
   let books = await db.book.findMany({
@@ -43,13 +43,13 @@ export async function fetchBooks(
     aPages = aPages / a.pages;
     bPages = bPages / b.pages;
     if (aPages > bPages) return -1;
-    if (aPages == bPages) return 0;
+    if (aPages === bPages) return 0;
     if (aPages < bPages) return 1;
     return 0;
   };
   const compareBooksByActivity = (a: Book, b: Book) => {
-    let aTime = a.readEvents[0]?.readAt.getTime() || a.createdAt.getTime();
-    let bTime = b.readEvents[0]?.readAt.getTime() || a.createdAt.getTime();
+    const aTime = a.readEvents[0]?.readAt.getTime() || a.createdAt.getTime();
+    const bTime = b.readEvents[0]?.readAt.getTime() || a.createdAt.getTime();
 
     if (aTime === undefined && bTime === undefined) return 0;
     if (aTime === undefined) return 1;
@@ -60,14 +60,14 @@ export async function fetchBooks(
   books = books.filter((b) =>
     isHistory
       ? b.readEvents.find((e) => e.pagesRead === b.pages)
-      : !b.readEvents.find((e) => e.pagesRead === b.pages)
+      : !b.readEvents.find((e) => e.pagesRead === b.pages),
   );
   books.sort(
     isHistory
       ? compareBooksByActivity
       : options.orderBy === "percent"
-      ? compareBooksByPercent
-      : compareBooksByActivity
+        ? compareBooksByPercent
+        : compareBooksByActivity,
   );
   return books;
 }
@@ -112,12 +112,15 @@ export async function getLastReadBook(userId: string) {
       readAt: "desc",
     },
   });
-  let books: string[] = []
-  for (let readEvent of readEvents) {
-    if (readEvent.book.pages !== readEvent.pagesRead && !books.includes(readEvent.book.id)) {
+  const books: string[] = [];
+  for (const readEvent of readEvents) {
+    if (
+      readEvent.book.pages !== readEvent.pagesRead &&
+      !books.includes(readEvent.book.id)
+    ) {
       return { book: readEvent.book, pages: readEvent.pagesRead };
     }
-    books.push(readEvent.book.id)
+    books.push(readEvent.book.id);
   }
 
   return null;

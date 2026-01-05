@@ -1,6 +1,6 @@
-import { toolSetForUser } from "@/lib/ai/tools/toolset";
-import { InferToolInput, InferToolOutput } from "ai";
-import { LucideIcon } from "lucide-react";
+import type { InferToolInput, InferToolOutput } from "ai";
+import type { LucideIcon } from "lucide-react";
+import type { toolSetForUser } from "@/lib/ai/tools/toolset";
 
 export type AllTools = ReturnType<typeof toolSetForUser>;
 export type ToolId = keyof AllTools;

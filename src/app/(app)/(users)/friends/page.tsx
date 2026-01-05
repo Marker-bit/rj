@@ -1,7 +1,7 @@
 import { ChevronLeft, UserX } from "lucide-react";
 import Link from "next/link";
-import { FriendView } from "@/components/users/friend-view";
 import { Button } from "@/components/ui/button";
+import { FriendView } from "@/components/users/friend-view";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
 

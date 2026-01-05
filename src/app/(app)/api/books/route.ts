@@ -1,9 +1,9 @@
-import { db } from "@/lib/db";
-import { NextRequest, NextResponse } from "next/server";
-import { validateRequest } from "@/lib/server-validate-request";
+import { type NextRequest, NextResponse } from "next/server";
 import { fetchBooks } from "@/lib/books";
+import { db } from "@/lib/db";
+import { validateRequest } from "@/lib/server-validate-request";
 
-export async function GET(req: NextRequest) {
+export async function GET(_req: NextRequest) {
   const { user } = await validateRequest();
   if (!user)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

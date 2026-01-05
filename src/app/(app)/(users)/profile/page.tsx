@@ -1,14 +1,13 @@
-import { ChevronLeft, Edit, Settings, Users2 } from "lucide-react";
-import Image from "next/image";
+import { ChevronLeft, Settings } from "lucide-react";
 import Link from "next/link";
-import { Stats } from "@/components/users/stats";
-import { validateRequest } from "@/lib/server-validate-request";
-import { db } from "@/lib/db";
-import { CopyUrl } from "./CopyUrl";
 import { Suspense } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Stats } from "@/components/users/stats";
+import { db } from "@/lib/db";
+import { validateRequest } from "@/lib/server-validate-request";
+import { CopyUrl } from "./CopyUrl";
 
 export default async function ProfilePage() {
   const { user } = await validateRequest();
@@ -70,8 +69,8 @@ export default async function ProfilePage() {
         <Avatar className="size-20">
           <AvatarImage src={userData?.avatarUrl} />
           <AvatarFallback>
-            {userData?.firstName && userData?.firstName[0]}
-            {userData?.lastName && userData?.lastName[0]}
+            {userData?.firstName?.[0]}
+            {userData?.lastName?.[0]}
           </AvatarFallback>
         </Avatar>
         <div className="flex flex-col">
@@ -84,7 +83,7 @@ export default async function ProfilePage() {
         </div>
       </div>
       <div className="flex items-center justify-center">
-        <CopyUrl username={userData?.username!} />
+        <CopyUrl username={userData?.username} />
       </div>
       <Suspense
         fallback={

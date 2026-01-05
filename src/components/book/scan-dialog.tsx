@@ -1,4 +1,12 @@
 import { FileScanIcon, TriangleAlertIcon } from "lucide-react";
+import { useState } from "react";
+import type { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import type z from "zod";
+import { generateBookData } from "@/lib/actions/ai";
+import { fileToBase64 } from "@/lib/utils";
+import type { bookSchema } from "@/lib/validation/schemas";
+import { FileArea } from "../file-area";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -8,15 +16,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import { Table, TableBody, TableRow, TableCell } from "../ui/table";
-import { FileArea } from "../file-area";
-import { generateBookData } from "@/lib/actions/ai";
-import { useState } from "react";
-import { toast } from "sonner";
-import { fileToBase64 } from "@/lib/utils";
-import { useForm } from "react-hook-form";
-import z from "zod";
-import { bookSchema } from "@/lib/validation/schemas";
+import { Table, TableBody, TableCell, TableRow } from "../ui/table";
 
 export function ScanDialog({
   open,

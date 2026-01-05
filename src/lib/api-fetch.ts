@@ -30,7 +30,7 @@ export async function apiFetch(
         }
         if (after) after(data);
         return data;
-      } catch (error) {
+      } catch (_error) {
         throw new Error(messages.errorNoBody);
       }
     },

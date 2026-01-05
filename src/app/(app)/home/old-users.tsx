@@ -1,7 +1,7 @@
+import { differenceInDays } from "date-fns";
+import type { ReactNode } from "react";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
-import { differenceInDays } from "date-fns";
-import { ReactNode } from "react";
 
 export default async function OldUsers({ children }: { children: ReactNode }) {
   const { user } = await validateRequest();
@@ -14,5 +14,5 @@ export default async function OldUsers({ children }: { children: ReactNode }) {
 
   const dayDiff = differenceInDays(new Date(), userDb.registeredAt);
 
-  return dayDiff > 5 ? <>{children}</> : <></>;
+  return dayDiff > 5 ? children : <></>;
 }

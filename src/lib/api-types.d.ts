@@ -5,7 +5,7 @@ type Book = Awaited<ReturnType<typeof fetchBooks>>[0];
 
 declare global {
   namespace PrismaJson {
-    type Field = { title: string; value: string }
-    type Fields = Field[]
+    type Field = { title: string; value: string };
+    type Fields = Field[];
   }
 }

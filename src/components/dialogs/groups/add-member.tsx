@@ -1,6 +1,6 @@
 "use client";
 
-import { Group } from "@prisma/client";
+import type { Group } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
 import Image from "next/image";

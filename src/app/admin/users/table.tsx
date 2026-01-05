@@ -1,5 +1,7 @@
 "use client";
 
+import type { Book, User } from "@prisma/client";
+import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Table,
@@ -11,8 +13,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { declOfNum } from "@/lib/utils";
-import { Book, User } from "@prisma/client";
-import Link from "next/link";
 import UserBooks from "./user-books";
 
 export default function UserTable({
@@ -50,8 +50,8 @@ export default function UserTable({
                 <Avatar>
                   <AvatarImage src={user.avatarUrl} />
                   <AvatarFallback>
-                    {user.firstName && user.firstName[0]}
-                    {user.lastName && user.lastName[0]}
+                    {user.firstName?.[0]}
+                    {user.lastName?.[0]}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col">

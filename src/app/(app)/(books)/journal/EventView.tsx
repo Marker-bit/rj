@@ -1,13 +1,13 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { SimpleTooltip } from "@/components/ui/simple-tooltip";
-import { dateToString } from "@/lib/utils";
-import { Book } from "@prisma/client";
+import type { Book } from "@prisma/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { BookOpen, BookOpenCheck, Loader, Undo } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { SimpleTooltip } from "@/components/ui/simple-tooltip";
+import { dateToString } from "@/lib/utils";
 
 export function EventView({
   event,

@@ -1,3 +1,6 @@
+import type { UIMessage } from "ai";
+import { CopyIcon, RefreshCcw } from "lucide-react";
+import { toast } from "sonner";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -5,9 +8,6 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 import { getCopyableMessageText } from "@/lib/ai/utils";
-import { UIMessage } from "ai";
-import { CopyIcon, RefreshCcw } from "lucide-react";
-import { toast } from "sonner";
 
 export function MessageContextMenu({
   children,

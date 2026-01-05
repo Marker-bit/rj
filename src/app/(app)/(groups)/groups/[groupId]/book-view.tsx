@@ -1,80 +1,80 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Book, Group, GroupBook } from "@prisma/client"
-import { BookOpen, Minus, Plus } from "lucide-react"
-import { Loader } from "@/components/ui/loader"
-import Image from "next/image"
-import { MoreActions } from "./more-actions"
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { declOfNum } from "@/lib/utils"
-import Link from "next/link"
+import type { Book, Group, GroupBook } from "@prisma/client";
+import { BookOpen, Minus, Plus } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Loader } from "@/components/ui/loader";
 import {
   Tooltip,
-  TooltipTrigger,
   TooltipContent,
-} from "@/components/ui/tooltip"
-import RemoveBookDialog from "./remove-book-dialog"
-import { toast } from "sonner"
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { declOfNum } from "@/lib/utils";
+import { MoreActions } from "./more-actions";
+import RemoveBookDialog from "./remove-book-dialog";
 
 export function GroupBookView({
   groupBook,
   userId,
 }: {
   groupBook: GroupBook & {
-    group: Group
-    book: (Book & { readEvents: { pagesRead: number }[] })[]
-  }
-  userId: string
+    group: Group;
+    book: (Book & { readEvents: { pagesRead: number }[] })[];
+  };
+  userId: string;
 }) {
-  const [loading, setLoading] = useState(false)
-  const [removeDialogOpen, setRemoveDialogOpen] = useState(false)
-  const router = useRouter()
+  const [loading, setLoading] = useState(false);
+  const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
+  const router = useRouter();
 
-  const book = groupBook.book.find((b) => b.userId === userId)
+  const book = groupBook.book.find((b) => b.userId === userId);
 
   const addBook = async () => {
-    setLoading(true)
+    setLoading(true);
     const res = await fetch(
       `/api/groups/${groupBook.groupId}/books/${groupBook.id}/own`,
       {
         method: "POST",
-      }
-    )
-    const data = await res.json()
-    setLoading(false)
-    router.refresh()
+      },
+    );
+    const data = await res.json();
+    setLoading(false);
+    router.refresh();
     toast("Книга добавлена", {
       description: "Теперь вы можете читать ее",
       action: {
         onClick: () => {
-          router.push(`/books/${data.id}`)
-          router.refresh()
+          router.push(`/books/${data.id}`);
+          router.refresh();
         },
         label: "Перейти",
       },
-    })
-  }
+    });
+  };
 
   const deleteBook = async () => {
     if (!book) {
-      return
+      return;
     }
     if (book.readEvents.length === 0) {
-      setLoading(true)
+      setLoading(true);
       await fetch(
         `/api/groups/${groupBook.groupId}/books/${groupBook.id}/own`,
         {
           method: "DELETE",
-        }
-      )
-      setLoading(false)
-      router.refresh()
+        },
+      );
+      setLoading(false);
+      router.refresh();
     } else {
-      setRemoveDialogOpen(true)
+      setRemoveDialogOpen(true);
     }
-  }
+  };
 
   return (
     <div
@@ -135,7 +135,7 @@ export function GroupBookView({
                 variant="ghost"
                 className="size-fit p-1 max-sm:hidden"
                 onClick={async () => {
-                  await addBook()
+                  await addBook();
                 }}
               >
                 {loading ? (
@@ -156,7 +156,7 @@ export function GroupBookView({
                   variant="ghost"
                   className="size-fit p-1 max-sm:hidden"
                   onClick={async () => {
-                    await deleteBook()
+                    await deleteBook();
                   }}
                 >
                   {loading ? (
@@ -184,5 +184,5 @@ export function GroupBookView({
         />
       </div>
     </div>
-  )
+  );
 }

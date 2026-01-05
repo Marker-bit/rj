@@ -1,8 +1,8 @@
+import { Check } from "lucide-react";
+import Link from "next/link";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
 import { declOfNum } from "@/lib/utils";
-import { Check } from "lucide-react";
-import Link from "next/link";
 
 export default async function Support() {
   const { user } = await validateRequest();

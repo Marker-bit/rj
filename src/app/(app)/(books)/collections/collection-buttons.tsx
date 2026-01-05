@@ -1,11 +1,11 @@
 "use client";
 
-import { DeleteCollectionModal } from "@/components/dialogs/collections/delete-collection-modal";
-import { Button } from "@/components/ui/button";
-import { Book, Collection } from "@prisma/client";
+import type { Book, Collection } from "@prisma/client";
 import { Pencil, Trash } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { DeleteCollectionModal } from "@/components/dialogs/collections/delete-collection-modal";
+import { Button } from "@/components/ui/button";
 
 export function CollectionButtons({
   collection,

@@ -1,8 +1,8 @@
+import { useQuery } from "@tanstack/react-query";
+import { CircleAlertIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Spinner } from "@/components/ui/spinner";
 import { declOfNum } from "@/lib/utils";
-import { useQuery } from "@tanstack/react-query";
-import { CircleAlertIcon } from "lucide-react";
 
 export function BookView({
   title,

@@ -1,7 +1,11 @@
 "use client";
 
+import { addDays, isSameDay, subMonths } from "date-fns";
+import { ChartColumnIcon, LineChartIcon } from "lucide-react";
+import { useState } from "react";
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, XAxis } from "recharts";
-
+import { Button } from "@/components/ui/button";
+import { ButtonGroup } from "@/components/ui/button-group";
 import {
   Card,
   CardContent,
@@ -10,7 +14,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  ChartConfig,
+  type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
@@ -22,17 +26,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  AreaChartIcon,
-  BarChartIcon,
-  ChartColumnIcon,
-  LineChartIcon,
-} from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { addDays, isSameDay, subMonths } from "date-fns";
-import { useState } from "react";
-import { ButtonGroup } from "@/components/ui/button-group";
-import { Button } from "@/components/ui/button";
 
 const chartConfig = {
   desktop: {

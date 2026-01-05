@@ -1,7 +1,7 @@
 "use client";
 
-import { Copy } from "@/components/copy";
 import { useEffect, useState } from "react";
+import { Copy } from "@/components/copy";
 
 export function CopyUrl({ username }: { username: string }) {
   const [url, setUrl] = useState<string>();

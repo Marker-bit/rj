@@ -1,15 +1,12 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import {
-  GroupBookSuggestion,
-  GroupMember
-} from "@prisma/client";
+import type { GroupBookSuggestion, GroupMember } from "@prisma/client";
 import Fuse from "fuse.js";
 import { BookIcon, Search } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { AddBookButton } from "./add-book-button";
 import { BookSuggestions } from "./book-suggestions";
 import { GroupBookView } from "./book-view";
@@ -35,6 +32,8 @@ export default function Books({
     keys: ["title", "author", "description"],
   });
 
+  const groupMember = group.members.find((member) => member.userId === userId);
+
   useEffect(() => {
     if (searchText) {
       const res = search.search(searchText);
@@ -43,7 +42,11 @@ export default function Books({
       setFilteredBooks(undefined);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchText, group.groupBooks]);
+  }, [searchText, search.search]);
+
+  if (!groupMember) {
+    return null;
+  }
 
   return (
     <div className="rounded-xl border p-4">
@@ -55,7 +58,7 @@ export default function Books({
           <ExportBooksButton books={group.groupBooks} />
           <BookSuggestions
             suggestions={group.suggestions}
-            member={group.members.find((member) => member.userId === userId)!}
+            member={groupMember}
           />
         </div>
       </div>

@@ -1,7 +1,7 @@
-import { Spinner } from "@/components/ui/spinner";
-import { ToolOutputView, ToolView } from "@/lib/ai/tools/types";
 import { useQuery } from "@tanstack/react-query";
 import { CircleAlertIcon, TrashIcon } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
+import type { ToolOutputView, ToolView } from "@/lib/ai/tools/types";
 
 const DeleteCollectionView: ToolOutputView<"deleteCollection"> = ({
   input,

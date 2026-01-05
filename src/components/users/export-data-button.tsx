@@ -1,10 +1,10 @@
 "use client";
 
+import { Download } from "lucide-react";
+import { type ComponentProps, useId, useState } from "react";
+import { toast } from "sonner";
 import { exportData } from "@/lib/actions/export";
 import { exportDefaultItems } from "@/lib/export";
-import { Download } from "lucide-react";
-import { ComponentProps, useId, useState } from "react";
-import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
 import { DialogHeader, DialogTitle } from "../ui/dialog";
@@ -26,7 +26,7 @@ export default function ExportDataButton({
   const id = useId();
 
   const [items, setItems] = useState(
-    exportDefaultItems.map((a) => ({ ...a, checked: a.defaultChecked }))
+    exportDefaultItems.map((a) => ({ ...a, checked: a.defaultChecked })),
   );
   const [format, setFormat] = useState<"json" | "yaml">("json");
 
@@ -46,7 +46,9 @@ export default function ExportDataButton({
       return;
     }
     const d = Buffer.from(res.data, "base64").toString("utf-8");
-    const blob = new Blob([d], { type: format === "json" ? "application/json" : "application/x-yaml" });
+    const blob = new Blob([d], {
+      type: format === "json" ? "application/json" : "application/x-yaml",
+    });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -87,8 +89,8 @@ export default function ExportDataButton({
                       if (checked === "indeterminate") checked = false;
                       setItems((items) =>
                         items.map((a) =>
-                          a.value === item.value ? { ...a, checked } : a
-                        )
+                          a.value === item.value ? { ...a, checked } : a,
+                        ),
                       );
                     }}
                   />
@@ -121,8 +123,9 @@ export default function ExportDataButton({
             Экспорт
           </Button>
           <p className="text-muted-foreground text-center text-xs">
-            Следующий экспорт будет возможен через 48 часов.
-            Он нужен для сохранения вашего текущего состояния Читательского дневника (для переноса в другой сервис или восстановления данных).
+            Следующий экспорт будет возможен через 48 часов. Он нужен для
+            сохранения вашего текущего состояния Читательского дневника (для
+            переноса в другой сервис или восстановления данных).
           </p>
         </div>
       </DrawerDialog>

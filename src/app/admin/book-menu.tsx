@@ -1,5 +1,8 @@
 "use client";
 
+import type { Book } from "@prisma/client";
+import { MoreVertical, Trash, UserCircle } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -7,9 +10,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Book } from "@prisma/client";
-import { MoreVertical, Trash, UserCircle } from "lucide-react";
-import Link from "next/link";
 
 export default function BookMenu({ book }: { book: Book }) {
   return (

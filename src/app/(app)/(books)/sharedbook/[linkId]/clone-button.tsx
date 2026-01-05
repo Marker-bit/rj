@@ -1,11 +1,11 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Loader } from "@/components/ui/loader";
 import { Copy } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Loader } from "@/components/ui/loader";
 
 export function CloneButton({ linkId }: { linkId: string }) {
   const [loading, setLoading] = useState(false);

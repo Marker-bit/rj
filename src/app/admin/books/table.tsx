@@ -1,5 +1,7 @@
 "use client";
 
+import type { Book, Group, GroupBook, GroupMember, User } from "@prisma/client";
+import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Table,
@@ -10,9 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { dateToString, declOfNum } from "@/lib/utils";
-import { Book, Group, GroupBook, GroupMember, User } from "@prisma/client";
-import Link from "next/link";
+import { declOfNum } from "@/lib/utils";
 
 export default function BookTable({
   books,
@@ -50,8 +50,8 @@ export default function BookTable({
                 <Avatar>
                   <AvatarImage src={book.user.avatarUrl} />
                   <AvatarFallback>
-                    {book.user.firstName && book.user.firstName[0]}
-                    {book.user.lastName && book.user.lastName[0]}
+                    {book.user.firstName?.[0]}
+                    {book.user.lastName?.[0]}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col">
@@ -78,9 +78,7 @@ export default function BookTable({
             </TableCell>
             <TableCell>
               {book.groupBook ? (
-                <div
-                  className="flex flex-col items-start rounded-xl p-2"
-                >
+                <div className="flex flex-col items-start rounded-xl p-2">
                   <div className="font-medium">
                     {book.groupBook.group.title}
                   </div>

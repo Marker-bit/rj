@@ -2,7 +2,7 @@
 
 import React, { useRef, useState } from "react";
 
-import { Area, getCroppedImg } from "@/lib/crop/utils";
+import { type Area, getCroppedImg } from "@/lib/crop/utils";
 import "react-image-crop/dist/ReactCrop.css";
 import { Button } from "./ui/button";
 import {
@@ -25,7 +25,7 @@ export function CropImage({
   onSelect: (file: File) => void;
 }) {
   const [imgSrc, setImgSrc] = useState("");
-  const previewCanvasRef = useRef<HTMLCanvasElement>(null);
+  const _previewCanvasRef = useRef<HTMLCanvasElement>(null);
   const [cropData, setCropData] = React.useState<Area | null>(null);
 
   const reader = new FileReader();

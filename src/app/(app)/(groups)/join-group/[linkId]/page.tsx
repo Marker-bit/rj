@@ -1,13 +1,12 @@
+import { BadgeCheck, Home } from "lucide-react";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
 import { declOfNum } from "@/lib/utils";
-import { BadgeCheck, Check, Home } from "lucide-react";
-import Image from "next/image";
 import { JoinGroupButton } from "./buttons";
-import { redirect } from "next/navigation";
-import Link from "next/link";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default async function Page(props: {
   params: Promise<{ linkId: string }>;
@@ -65,10 +64,8 @@ export default async function Page(props: {
             <Avatar className="size-8">
               <AvatarImage src={link.createdBy.user?.avatarUrl} />
               <AvatarFallback>
-                {link.createdBy.user?.firstName &&
-                  link.createdBy.user?.firstName[0]}
-                {link.createdBy.user?.lastName &&
-                  link.createdBy.user?.lastName[0]}
+                {link.createdBy.user?.firstName?.[0]}
+                {link.createdBy.user?.lastName?.[0]}
               </AvatarFallback>
             </Avatar>
             <div className="flex flex-col">

@@ -1,11 +1,16 @@
+import {
+  type Book,
+  type GroupBook,
+  type GroupMember,
+  GroupMemberRole,
+} from "@prisma/client";
+import { Text } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Book, GroupBook, GroupMember, GroupMemberRole } from "@prisma/client";
-import { Text } from "lucide-react";
 
 export default function ChangedInfo({
   book,
