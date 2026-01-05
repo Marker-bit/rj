@@ -54,8 +54,14 @@ export function RegisterForm() {
         method: "POST",
       });
       if (res.ok) {
-        const data = await res.json();
-        posthog.identify(data.id)
+        try {
+          const data = await res.json();
+          if (posthog.__loaded) {
+            posthog.identify(data.id);
+          }
+        } catch (error) {
+          console.error("Failed to identify user with PostHog:", error);
+        }
         router.push("/home");
       } else {
         const data = await res.json();
@@ -80,7 +86,7 @@ export function RegisterForm() {
         .then((data) => {
           setUsernameFound(data.found);
         }),
-    200,
+    200
   );
 
   return (

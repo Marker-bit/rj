@@ -54,8 +54,14 @@ export function LoginForm() {
         method: "POST",
       });
       if (res.ok) {
-        const data = await res.json();
-        posthog.identify(data.id)
+        try {
+          const data = await res.json();
+          if (posthog.__loaded) {
+            posthog.identify(data.id);
+          }
+        } catch (error) {
+          console.error("Failed to identify user with PostHog:", error);
+        }
         router.replace("/home");
         toast.success("Вы успешно авторизовались");
       } else {
