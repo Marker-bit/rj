@@ -27,8 +27,13 @@ import { Loader } from "../ui/loader";
 import { ScanDialog } from "./scan-dialog";
 import { bookSchema } from "@/lib/validation/schemas";
 import { useQuery } from "@tanstack/react-query";
+import posthog from "posthog-js";
 
-export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
+export function BookForm({
+  onSuccess,
+}: {
+  onSuccess?: (book: z.input<typeof bookSchema>) => void;
+}) {
   const form = useForm<z.input<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
     defaultValues: {
@@ -71,7 +76,7 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
       description: "",
       fields: [],
     });
-    if (onSuccess) onSuccess();
+    if (onSuccess) onSuccess(values);
   }
 
   return (
@@ -120,8 +125,8 @@ export function BookForm({ onSuccess }: { onSuccess?: () => void }) {
                           isUploading || fileUploading
                             ? "Загрузка..."
                             : ready
-                              ? "Обложка"
-                              : "Подождите...",
+                            ? "Обложка"
+                            : "Подождите...",
                         allowedContent: "Картинка (до 8МБ)",
                       }}
                       onClientUploadComplete={(res) => {
@@ -275,7 +280,12 @@ export function AddBookDialog({
         </DialogHeader>
         <div className="p-4">
           <BookForm
-            onSuccess={() => {
+            onSuccess={(book) => {
+              posthog.capture("book_created", {
+                title: book.title,
+                author: book.author,
+                pages: book.pages,
+              });
               setOpen(false);
             }}
           />

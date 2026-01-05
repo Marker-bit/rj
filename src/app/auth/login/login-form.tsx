@@ -21,6 +21,7 @@ import { z } from "zod";
 import { Loader } from "@/components/ui/loader";
 import { useEffect } from "react";
 import { validateRequest } from "@/lib/validate-request";
+import posthog from "posthog-js";
 
 const formSchema = z.object({
   username: z.string(),
@@ -53,6 +54,14 @@ export function LoginForm() {
         method: "POST",
       });
       if (res.ok) {
+        try {
+          const data = await res.json();
+          if (posthog.__loaded) {
+            posthog.identify(data.id);
+          }
+        } catch (error) {
+          console.error("Failed to identify user with PostHog:", error);
+        }
         router.replace("/home");
         toast.success("Вы успешно авторизовались");
       } else {

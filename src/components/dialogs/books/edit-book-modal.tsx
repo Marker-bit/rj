@@ -50,7 +50,7 @@ export function EditBookModal({
   open: boolean;
   setOpen: (b: boolean) => void;
   book: Book;
-  onUpdate?: () => void;
+  onUpdate?: (book: z.infer<typeof bookSchema>) => void;
 }) {
   const queryClient = useQueryClient();
   const [fileUploading, setFileUploading] = useState(false);
@@ -86,7 +86,7 @@ export function EditBookModal({
         method: "PATCH",
         body: JSON.stringify(values),
       }),
-    onSuccess: () => {
+    onSuccess: (_, values) => {
       queryClient.invalidateQueries({
         queryKey: ["books"],
       });
@@ -94,7 +94,7 @@ export function EditBookModal({
         queryKey: ["events"],
       });
       router.refresh();
-      onUpdate?.();
+      onUpdate?.(values);
     },
   });
 

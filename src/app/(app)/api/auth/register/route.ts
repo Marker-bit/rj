@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
       },
       {
         status: 400,
-      },
+      }
     );
   }
   const data = await request.json();
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
       {
         error: "Пользователь с таким именем уже существует",
       },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
         {
           error: message,
         },
-        { status: 400 },
+        { status: 400 }
       );
       /* [
         {
@@ -112,7 +112,7 @@ export async function POST(request: NextRequest) {
   (await cookies()).set(
     sessionCookie.name,
     sessionCookie.value,
-    sessionCookie.attributes,
+    sessionCookie.attributes
   );
-  return new NextResponse(null, { status: 200 });
+  return NextResponse.json({ id: createdUser.id }, { status: 200 });
 }

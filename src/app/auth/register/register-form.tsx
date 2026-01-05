@@ -23,6 +23,7 @@ import { z } from "zod";
 import { Loader } from "@/components/ui/loader";
 import { registerSchema } from "@/lib/validation/schemas";
 import { validateRequest } from "@/lib/validate-request";
+import posthog from "posthog-js";
 
 export function RegisterForm() {
   const [usernameFound, setUsernameFound] = useState<boolean | null>(null);
@@ -53,6 +54,14 @@ export function RegisterForm() {
         method: "POST",
       });
       if (res.ok) {
+        try {
+          const data = await res.json();
+          if (posthog.__loaded) {
+            posthog.identify(data.id);
+          }
+        } catch (error) {
+          console.error("Failed to identify user with PostHog:", error);
+        }
         router.push("/home");
       } else {
         const data = await res.json();
@@ -77,7 +86,7 @@ export function RegisterForm() {
         .then((data) => {
           setUsernameFound(data.found);
         }),
-    200,
+    200
   );
 
   return (
