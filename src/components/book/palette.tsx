@@ -1,14 +1,14 @@
 "use client";
 
-import { setBookColor } from "@/lib/actions/books";
-import { backgroundColors } from "@/lib/colors";
-import { cn } from "@/lib/utils";
 import { BackgroundColor } from "@prisma/client";
-import { AnimatePresence, motion } from "motion/react";
 import { Check, PaletteIcon } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { setBookColor } from "@/lib/actions/books";
+import { backgroundColors } from "@/lib/colors";
+import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 

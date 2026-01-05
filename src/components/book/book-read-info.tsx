@@ -1,22 +1,22 @@
 "use client";
 
+import { differenceInDays, endOfDay, formatDate, startOfDay } from "date-fns";
+import { ru } from "date-fns/locale";
+import { ChevronLeft, ChevronRight, XIcon } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
+import useMeasure from "react-use-measure";
+import type { Book } from "@/lib/api-types";
+import { getEventDays } from "@/lib/stats";
+import { cn, declOfNum } from "@/lib/utils";
+import { Button } from "../ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogTitle,
 } from "../ui/dialog";
-import { cn, dateToString, declOfNum } from "@/lib/utils";
-import { Button } from "../ui/button";
-import { ChevronLeft, ChevronRight, XIcon } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
-import useMeasure from "react-use-measure";
 import { DayChart } from "./day-chart";
-import { Book } from "@/lib/api-types";
-import { getEventDays } from "@/lib/stats";
-import { differenceInDays, endOfDay, formatDate, startOfDay } from "date-fns";
-import { ru } from "date-fns/locale";
 
 type Step = {
   title: string;

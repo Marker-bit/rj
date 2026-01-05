@@ -1,12 +1,3 @@
-import { ChatHistory } from "@/components/agent/chat-history";
-import { EmptyView } from "@/components/agent/empty-view";
-import {
-  MessageInput,
-  MessageInputRef,
-} from "@/components/agent/message-input";
-import { useToolSelection } from "@/components/agent/message-input/tool-selector";
-import { Button } from "@/components/ui/button";
-import { MyUIMessage } from "@/lib/ai/message";
 import { useChat } from "@ai-sdk/react";
 import {
   DefaultChatTransport,
@@ -15,7 +6,16 @@ import {
 } from "ai";
 import { XIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useRef, useState } from "react";
+import { useRef } from "react";
+import { ChatHistory } from "@/components/agent/chat-history";
+import { EmptyView } from "@/components/agent/empty-view";
+import {
+  MessageInput,
+  type MessageInputRef,
+} from "@/components/agent/message-input";
+import { useToolSelection } from "@/components/agent/message-input/tool-selector";
+import { Button } from "@/components/ui/button";
+import type { MyUIMessage } from "@/lib/ai/message";
 
 export function AgentPopover({
   isOpen,

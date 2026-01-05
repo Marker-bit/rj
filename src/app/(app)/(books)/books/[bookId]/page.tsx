@@ -1,10 +1,10 @@
+import { ChevronLeft } from "lucide-react";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 import { BookView } from "@/components/book/book-view";
 import { Button } from "@/components/ui/button";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
-import { ChevronLeft } from "lucide-react";
-import Link from "next/link";
-import { notFound } from "next/navigation";
 
 export default async function Page(props: {
   params: Promise<{ bookId: string }>;

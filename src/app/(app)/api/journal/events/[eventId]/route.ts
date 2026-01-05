@@ -1,8 +1,8 @@
+import { type NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { NextRequest, NextResponse } from "next/server";
 
 export async function DELETE(
-  req: NextRequest,
+  _req: NextRequest,
   props: { params: Promise<{ eventId: string }> },
 ) {
   const params = await props.params;

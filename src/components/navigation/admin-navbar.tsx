@@ -1,5 +1,6 @@
 "use client";
 
+import type { User } from "lucia";
 import {
   BookHeartIcon,
   BookIcon,
@@ -8,7 +9,10 @@ import {
   MessageCircleQuestion,
   Users,
 } from "lucide-react";
-
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -21,11 +25,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { User } from "lucia";
-import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Suspense } from "react";
 import { ModeToggle } from "../mode-toggle";
 import { Skeleton } from "../ui/skeleton";
 import UserMenu from "./bars/user-menu";

@@ -1,6 +1,6 @@
 import Image from "next/image";
-import { LoginButton } from "./login-button";
 import { use } from "react";
+import { LoginButton } from "./login-button";
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 

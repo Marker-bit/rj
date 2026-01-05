@@ -1,3 +1,9 @@
+import type { Book as PrismaBook } from "@prisma/client";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { ArrowRightIcon, Loader, PlusIcon, TrashIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
 import {
   InputGroup,
@@ -14,13 +20,6 @@ import {
 } from "@/lib/actions/collections";
 import type { Book } from "@/lib/api-types";
 import { declOfNum } from "@/lib/utils";
-import type { Book as PrismaBook } from "@prisma/client";
-import { Collection } from "@prisma/client";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowRightIcon, Loader, PlusIcon, TrashIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
 import { Button } from "../../ui/button";
 import { Checkbox } from "../../ui/checkbox";
 import { DialogHeader, DialogTitle } from "../../ui/dialog";
@@ -126,17 +125,28 @@ export function BookCollectionsModal({
           </div>
         ) : (
           <div className="flex flex-col gap-2">
-            {collectionsData &&
-              collectionsData.map(
-                (collection: {
-                  id: string;
-                  name: string;
-                  books: PrismaBook[];
-                }) => (
-                  <div
-                    className="border-input has-data-[state=checked]:border-primary/50 relative flex w-full items-start gap-2 rounded-md border p-4 shadow-xs outline-none"
-                    key={collection.id}
-                    onClick={() =>
+            {collectionsData?.map(
+              (collection: {
+                id: string;
+                name: string;
+                books: PrismaBook[];
+              }) => (
+                <div
+                  className="border-input has-data-[state=checked]:border-primary/50 relative flex w-full items-start gap-2 rounded-md border p-4 shadow-xs outline-none"
+                  key={collection.id}
+                  onClick={() =>
+                    setSelectedCollections(
+                      selectedCollections.includes(collection.id)
+                        ? selectedCollections.filter((c) => c !== collection.id)
+                        : [...selectedCollections, collection.id],
+                    )
+                  }
+                >
+                  <Checkbox
+                    id={collection.id}
+                    aria-describedby={`${collection.id}-description`}
+                    checked={selectedCollections.includes(collection.id)}
+                    onCheckedChange={() =>
                       setSelectedCollections(
                         selectedCollections.includes(collection.id)
                           ? selectedCollections.filter(
@@ -145,50 +155,36 @@ export function BookCollectionsModal({
                           : [...selectedCollections, collection.id],
                       )
                     }
-                  >
-                    <Checkbox
-                      id={collection.id}
-                      aria-describedby={`${collection.id}-description`}
-                      checked={selectedCollections.includes(collection.id)}
-                      onCheckedChange={() =>
-                        setSelectedCollections(
-                          selectedCollections.includes(collection.id)
-                            ? selectedCollections.filter(
-                                (c) => c !== collection.id,
-                              )
-                            : [...selectedCollections, collection.id],
-                        )
-                      }
-                    />
-                    <div className="grid grow gap-2">
-                      <Label>{collection.name}</Label>
-                      <p
-                        id={`${collection.id}-description`}
-                        className="text-muted-foreground text-xs"
-                      >
-                        {collection.books.length}{" "}
-                        {declOfNum(collection.books.length, [
-                          "книга",
-                          "книги",
-                          "книг",
-                        ])}
-                      </p>
-                    </div>
-                    <Button
-                      size="icon"
-                      variant="outline"
-                      className="top-2 right-2"
-                      disabled={deleteInProgress}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        runDeleteCollection(collection.id);
-                      }}
+                  />
+                  <div className="grid grow gap-2">
+                    <Label>{collection.name}</Label>
+                    <p
+                      id={`${collection.id}-description`}
+                      className="text-muted-foreground text-xs"
                     >
-                      <TrashIcon />
-                    </Button>
+                      {collection.books.length}{" "}
+                      {declOfNum(collection.books.length, [
+                        "книга",
+                        "книги",
+                        "книг",
+                      ])}
+                    </p>
                   </div>
-                ),
-              )}
+                  <Button
+                    size="icon"
+                    variant="outline"
+                    className="top-2 right-2"
+                    disabled={deleteInProgress}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      runDeleteCollection(collection.id);
+                    }}
+                  >
+                    <TrashIcon />
+                  </Button>
+                </div>
+              ),
+            )}
             <form
               onSubmit={(e) => {
                 e.preventDefault();

@@ -1,12 +1,12 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
-import { setAI } from "@/lib/actions/users";
-import { BadgeCheck, SparklesIcon } from "lucide-react";
+import { SparklesIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+import { setAI } from "@/lib/actions/users";
 
 export default function AIAllowButton({
   userId,

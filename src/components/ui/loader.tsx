@@ -11,7 +11,7 @@ export function Loader({
   white?: boolean;
 }) {
   return (
-    <div className={"like-svg " + className}>
+    <div className={`like-svg ${className}`}>
       <div className={styles.sonnerspinner}>
         {Array(12)
           .fill(0)

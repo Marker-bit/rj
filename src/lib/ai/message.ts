@@ -1,13 +1,13 @@
-import { toolSetForUser } from "@/lib/ai/tools/toolset";
 import {
-  InferUITools,
+  type InferUITools,
   isToolUIPart,
-  TextUIPart,
-  ToolUIPart,
-  UIDataTypes,
-  UIMessage,
-  UIMessagePart,
+  type TextUIPart,
+  type ToolUIPart,
+  type UIDataTypes,
+  type UIMessage,
+  type UIMessagePart,
 } from "ai";
+import type { toolSetForUser } from "@/lib/ai/tools/toolset";
 
 export type MyUIMessage = UIMessage<
   unknown,

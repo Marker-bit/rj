@@ -1,10 +1,20 @@
 "use client";
 
+import { BackgroundColor } from "@prisma/client";
+import Fuse from "fuse.js";
+import {
+  ArrowRightIcon,
+  BookMinus,
+  Calendar,
+  Percent,
+  SearchIcon,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { BookView } from "@/components/book/book-view";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -13,19 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Book } from "@/lib/api-types";
-import { BackgroundColor } from "@prisma/client";
-import Fuse from "fuse.js";
-import {
-  ArrowRightIcon,
-  BookMinus,
-  Calendar,
-  Percent,
-  Search,
-  SearchIcon,
-} from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import type { Book } from "@/lib/api-types";
 
 export function BookList({ books }: { books: Book[] }) {
   const [notStarted, _setNotStarted] = useState(false);
@@ -93,7 +91,7 @@ export function BookList({ books }: { books: Book[] }) {
   useEffect(() => {
     search();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchText, books, notStarted]);
+  }, [search]);
 
   const outlinedBooks = filteredBooks.filter(
     (book: Book) => book.background !== BackgroundColor.NONE,

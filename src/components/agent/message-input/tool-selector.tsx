@@ -1,3 +1,6 @@
+import { CheckIcon, WrenchIcon } from "lucide-react";
+import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -8,9 +11,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toolViews } from "@/lib/ai/tools/toolset";
-import { CheckIcon, WrenchIcon } from "lucide-react";
-import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
 
 type AllowedTool = keyof typeof toolViews;
 type AllowedTools = AllowedTool[];

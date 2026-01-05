@@ -1,11 +1,11 @@
 "use client";
 
-import { cn, declOfNum } from "@/lib/utils";
-import { Book, ReadEvent, User } from "@prisma/client";
-import { ChevronDown, ChevronsUpDown } from "lucide-react";
-import Event from "./event";
-import { useState } from "react";
+import type { Book, ReadEvent, User } from "@prisma/client";
+import { ChevronDown } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
+import { useState } from "react";
+import { cn, declOfNum } from "@/lib/utils";
+import Event from "./event";
 
 export default function EventRepeat({
   events,

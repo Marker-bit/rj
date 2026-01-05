@@ -1,5 +1,4 @@
-import { generateBookData } from "@/lib/actions/ai";
-import { BanIcon, ImageIcon, ImageUpIcon } from "lucide-react";
+import { BanIcon, ImageUpIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { Spinner } from "./ui/spinner";

@@ -1,10 +1,9 @@
 "use client";
 
-import AddGroupLink from "@/components/dialogs/groups/add-group-link";
-import AddMember from "@/components/dialogs/groups/add-member";
-import { Button } from "@/components/ui/button";
 import { Link2 } from "lucide-react";
 import { useState } from "react";
+import AddGroupLink from "@/components/dialogs/groups/add-group-link";
+import { Button } from "@/components/ui/button";
 
 export function LinkMemberButton({
   group,

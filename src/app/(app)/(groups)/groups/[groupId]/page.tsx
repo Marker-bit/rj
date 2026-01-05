@@ -1,5 +1,17 @@
+import { GroupMemberRole } from "@prisma/client";
+import {
+  BadgeCheck,
+  BarChart2,
+  BarChartHorizontalBig,
+  Crown,
+  Shield,
+  User,
+  Users,
+} from "lucide-react";
+import Link from "next/link";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Tooltip,
   TooltipContent,
@@ -8,29 +20,13 @@ import {
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
 import { declOfNum } from "@/lib/utils";
-import { GroupMemberRole } from "@prisma/client";
-import {
-  BadgeCheck,
-  BarChart2,
-  BarChartHorizontalBig,
-  Book,
-  Crown,
-  Shield,
-  User,
-  Users,
-} from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { AddBookButton } from "./add-book-button";
+import { AddGroupButton } from "../add-group-button";
 import { AddMemberButton } from "./add-member-button";
-import { GroupBookView } from "./book-view";
+import Books from "./books";
 import { DeleteGroupButton } from "./delete-group-button";
 import { LeaveGroupButton } from "./leave-group-button";
 import { LinkMemberButton } from "./link-member-button";
 import { MemberActions } from "./member-actions";
-import { AddGroupButton } from "../add-group-button";
-import Books from "./books";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const dynamic = "force-dynamic";
 
@@ -127,19 +123,18 @@ export default async function Page(props: {
     },
   ];
 
-  const allBooks = group.groupBooks.map((b) => b.book).flat();
+  const allBooks = group.groupBooks.flatMap((b) => b.book);
 
-  let ratingDict: { [key: string]: number } = {};
+  const ratingDict: { [key: string]: number } = {};
 
-  group.members.forEach(
-    (m) =>
-      (ratingDict[m.user.id] = allBooks
-        .filter((b) => b.userId === m.user.id)
-        .map((book) => book.readEvents[0]?.pagesRead || 0)
-        .reduce((a, b) => a + b, 0)),
-  );
+  group.members.forEach((m) => {
+    ratingDict[m.user.id] = allBooks
+      .filter((b) => b.userId === m.user.id)
+      .map((book) => book.readEvents[0]?.pagesRead || 0)
+      .reduce((a, b) => a + b, 0);
+  });
 
-  const ratingKeys = new Array(...Object.keys(ratingDict));
+  const ratingKeys = [...Object.keys(ratingDict)];
 
   ratingKeys.sort((a, b) => ratingDict[b] - ratingDict[a]);
 
@@ -238,8 +233,8 @@ export default async function Page(props: {
                   <Avatar>
                     <AvatarImage src={member.user?.avatarUrl} />
                     <AvatarFallback>
-                      {member.user?.firstName && member.user?.firstName[0]}
-                      {member.user?.lastName && member.user?.lastName[0]}
+                      {member.user?.firstName?.[0]}
+                      {member.user?.lastName?.[0]}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col">
@@ -321,8 +316,8 @@ export default async function Page(props: {
                     <Avatar>
                       <AvatarImage src={member.user?.avatarUrl} />
                       <AvatarFallback>
-                        {member.user?.firstName && member.user?.firstName[0]}
-                        {member.user?.lastName && member.user?.lastName[0]}
+                        {member.user?.firstName?.[0]}
+                        {member.user?.lastName?.[0]}
                       </AvatarFallback>
                     </Avatar>
                     <div className="absolute bottom-0 right-0 flex size-4 translate-x-1/2 translate-y-1/2 items-center justify-center rounded-full border bg-white text-xs dark:bg-black">

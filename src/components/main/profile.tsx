@@ -1,8 +1,8 @@
-import { db } from "@/lib/db";
-import { validateRequest } from "@/lib/server-validate-request";
 import { BadgeCheck, ChevronRight, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { db } from "@/lib/db";
+import { validateRequest } from "@/lib/server-validate-request";
 
 export async function Profile() {
   const { user } = await validateRequest();

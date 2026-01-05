@@ -1,15 +1,15 @@
+import eslintParserTypeScript from "@typescript-eslint/parser";
+import next from "eslint-config-next";
 import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
 import nextTypescript from "eslint-config-next/typescript";
-import next from "eslint-config-next";
-import eslintParserTypeScript from "@typescript-eslint/parser";
 import eslintPluginBetterTailwindcss from "eslint-plugin-better-tailwindcss";
-import reactHooks from 'eslint-plugin-react-hooks';
+import reactHooks from "eslint-plugin-react-hooks";
 
 const eslintConfig = [
   ...nextCoreWebVitals,
   ...nextTypescript,
   ...next,
-  reactHooks.configs.flat['recommended-latest'],
+  reactHooks.configs.flat["recommended-latest"],
   {
     ignores: [
       "node_modules/**",
@@ -46,7 +46,7 @@ const eslintConfig = [
 
       // or configure rules individually
       "better-tailwindcss/enforce-consistent-line-wrapping": [
-        "none",
+        "off",
         { printWidth: 100 },
       ],
     },

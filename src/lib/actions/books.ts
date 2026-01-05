@@ -1,10 +1,10 @@
 "use server";
 
-import { BackgroundColor } from "@prisma/client";
+import type { BackgroundColor } from "@prisma/client";
+import { prettifyError, z } from "zod";
 import { fetchBooks } from "../books";
 import { db } from "../db";
 import { validateRequest } from "../server-validate-request";
-import { prettifyError, z } from "zod";
 
 export async function getBooks(
   orderBy: "percent" | "activity" = "percent",

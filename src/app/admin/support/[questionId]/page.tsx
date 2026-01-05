@@ -1,11 +1,10 @@
-import { Button } from "@/components/ui/button";
-import { db } from "@/lib/db";
 import Image from "next/image";
-import ReadButton from "./read-button";
+import { notFound } from "next/navigation";
 import AnswerQuestion from "@/app/(app)/support/answer-question";
+import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
 import QuestionButtons from "./question-buttons";
-import { notFound } from "next/navigation";
+import ReadButton from "./read-button";
 
 export default async function Page(props: {
   params: Promise<{ questionId: string }>;

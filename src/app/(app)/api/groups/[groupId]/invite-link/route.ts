@@ -1,10 +1,10 @@
-import { db } from "@/lib/db";
-import { validateRequest } from "@/lib/server-validate-request";
 import { GroupMemberRole } from "@prisma/client";
 import { NextResponse } from "next/server";
+import { db } from "@/lib/db";
+import { validateRequest } from "@/lib/server-validate-request";
 
 export async function POST(
-  request: Request,
+  _request: Request,
   props: { params: Promise<{ groupId: string }> },
 ) {
   const params = await props.params;

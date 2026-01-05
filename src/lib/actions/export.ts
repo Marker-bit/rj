@@ -1,11 +1,10 @@
 "use server";
 
 import { differenceInDays } from "date-fns";
-import { db } from "../db";
-import { exportDefaultItems } from "../export";
-import { validateRequest } from "../server-validate-request";
-
 import YAML from "yaml";
+import { db } from "../db";
+import type { exportDefaultItems } from "../export";
+import { validateRequest } from "../server-validate-request";
 
 type ExportDataType = (typeof exportDefaultItems)[number]["value"];
 
@@ -23,13 +22,18 @@ export async function exportData(requestedData: RequestedData) {
   const userDb = await db.user.findUnique({
     where: { id: user.id },
   });
-  if (userDb?.lastExport && differenceInDays(new Date(), userDb.lastExport) < 2) {
-    return { error: "Вы не можете экспортировать данные, 48 часов ещё не прошло" };
+  if (
+    userDb?.lastExport &&
+    differenceInDays(new Date(), userDb.lastExport) < 2
+  ) {
+    return {
+      error: "Вы не можете экспортировать данные, 48 часов ещё не прошло",
+    };
   }
 
   await db.user.update({
     where: { id: user.id },
-    data: { lastExport: new Date() }
+    data: { lastExport: new Date() },
   });
 
   let results = {};
@@ -55,7 +59,7 @@ export async function exportData(requestedData: RequestedData) {
             select: {
               id: true,
               title: true,
-              author: true
+              author: true,
             },
           },
         },

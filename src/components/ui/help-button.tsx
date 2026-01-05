@@ -1,11 +1,10 @@
 "use client";
 
-import type React from "react";
-
-import { Button } from "@/components/ui/button";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
+import type React from "react";
+import { useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent } from "@/components/ui/popover";
-import { useState, useRef } from "react";
 
 export function HelpButton({
   onClick,
@@ -25,8 +24,7 @@ export function HelpButton({
 
   const handleMouseUp = () => {
     if (pressStartTime.current) {
-      const pressDuration =
-        new Date().getTime() - pressStartTime.current.getTime();
+      const pressDuration = Date.now() - pressStartTime.current.getTime();
       pressStartTime.current = null;
 
       if (pressDuration >= 500) {
@@ -47,8 +45,7 @@ export function HelpButton({
 
   const handleTouchEnd = () => {
     if (pressStartTime.current) {
-      const pressDuration =
-        new Date().getTime() - pressStartTime.current.getTime();
+      const pressDuration = Date.now() - pressStartTime.current.getTime();
       pressStartTime.current = null;
 
       if (pressDuration >= 500) {

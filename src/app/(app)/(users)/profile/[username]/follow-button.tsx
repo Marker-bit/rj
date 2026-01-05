@@ -1,12 +1,12 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Loader } from "@/components/ui/loader";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { UserPlus, UserX } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Loader } from "@/components/ui/loader";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function FollowButton({
   username,
@@ -20,9 +20,9 @@ export default function FollowButton({
   useEffect(() => {
     fetch(`/api/profile/${username}`)
       .then((res) => res.json())
-      .then((res) => router.refresh());
+      .then((_res) => router.refresh());
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [username]);
+  }, [username, router.refresh]);
 
   const queryClient = useQueryClient();
 

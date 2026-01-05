@@ -1,9 +1,10 @@
-import { ToolSelector } from "@/components/agent/message-input/tool-selector";
-import { Button } from "@/components/ui/button";
-import { ChatStatus } from "ai";
+import type { ChatStatus } from "ai";
 import { SendIcon } from "lucide-react";
 import { useImperativeHandle, useRef, useState } from "react";
-const items = [
+import { ToolSelector } from "@/components/agent/message-input/tool-selector";
+import { Button } from "@/components/ui/button";
+
+const _items = [
   { label: "Next.js", value: "next" },
   { label: "Vite", value: "vite" },
   { label: "Astro", value: "astro" },

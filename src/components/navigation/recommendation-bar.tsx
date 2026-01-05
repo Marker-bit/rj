@@ -1,12 +1,12 @@
 "use client";
 
-import { saveBookFromRec } from "@/lib/actions/books";
-import { Recommendation } from "@prisma/client";
+import type { Recommendation } from "@prisma/client";
 import { BookHeartIcon, XIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { use, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { useLocalStorage, useReadLocalStorage } from "usehooks-ts";
+import { saveBookFromRec } from "@/lib/actions/books";
 import { Button } from "../ui/button";
 import { DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { DrawerDialog } from "../ui/drawer-dialog";
@@ -30,12 +30,12 @@ export default function RecommendationBar({
 
   const showableRec = useMemo(
     () => recommendationsSync?.find((r) => !dismissed.includes(r.id)),
-    [recommendationsSync, dismissed]
+    [recommendationsSync, dismissed],
   );
 
   const saveBook = async () => {
     setLoading(true);
-    const res = await saveBookFromRec(showableRec!.id);
+    const res = await saveBookFromRec(showableRec?.id);
     if (res?.error) {
       toast.error("Возникла проблема при добавлении книги", {
         description: res.error,

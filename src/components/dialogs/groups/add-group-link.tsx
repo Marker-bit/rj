@@ -1,14 +1,14 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { DrawerDialog } from "@/components/ui/drawer-dialog";
-import { Input } from "@/components/ui/input";
-import { Group, GroupInviteLink } from "@prisma/client";
+import type { Group, GroupInviteLink } from "@prisma/client";
 import { CopyIcon, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { DrawerDialog } from "@/components/ui/drawer-dialog";
+import { Input } from "@/components/ui/input";
 
 export default function AddGroupLink({
   open,

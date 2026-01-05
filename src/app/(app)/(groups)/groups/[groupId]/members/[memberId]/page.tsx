@@ -1,24 +1,23 @@
-import { Button } from "@/components/ui/button";
-import { db } from "@/lib/db";
-import { validateRequest } from "@/lib/server-validate-request";
-import { declOfNum } from "@/lib/utils";
 import {
   BookOpen,
   Check,
   ChevronLeft,
   UserCircle,
-  X,
   XCircle,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import ChangedInfo from "../../_components/changed-info";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { db } from "@/lib/db";
+import { validateRequest } from "@/lib/server-validate-request";
+import { declOfNum } from "@/lib/utils";
+import ChangedInfo from "../../_components/changed-info";
 
 export const dynamic = "force-dynamic";
 
@@ -107,8 +106,8 @@ export default async function Page(props: {
         <Avatar className="h-20 w-auto">
           <AvatarImage src={member.user?.avatarUrl} />
           <AvatarFallback>
-            {member.user?.firstName && member.user?.firstName[0]}
-            {member.user?.lastName && member.user?.lastName[0]}
+            {member.user?.firstName?.[0]}
+            {member.user?.lastName?.[0]}
           </AvatarFallback>
         </Avatar>
         <div className="flex flex-col">
@@ -141,7 +140,7 @@ export default async function Page(props: {
           Книги
         </div>
         <div className="mt-2 flex flex-col">
-          {booksSaved.map((book, i) => (
+          {booksSaved.map((book, _i) => (
             <div
               className="flex items-center gap-2 rounded-md p-2"
               key={book.id}

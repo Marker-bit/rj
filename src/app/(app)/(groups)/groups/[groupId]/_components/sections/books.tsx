@@ -1,14 +1,13 @@
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { GroupBookView } from "../../book-view";
-import { AddBookButton } from "../../add-book-button";
-import { Book, Group, GroupBook } from "@prisma/client";
+import type { Book, Group, GroupBook } from "@prisma/client";
+import type { User } from "lucia";
 import { BookIcon } from "lucide-react";
-import { User } from "lucia";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { AddBookButton } from "../../add-book-button";
+import { GroupBookView } from "../../book-view";
 
 export default function BooksSection({
   isMember,
   group,
-  myBooksFromGroup,
   user,
 }: {
   isMember: boolean;

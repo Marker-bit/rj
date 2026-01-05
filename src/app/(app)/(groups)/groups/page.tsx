@@ -1,12 +1,12 @@
-import { db } from "@/lib/db";
-import { validateRequest } from "@/lib/server-validate-request";
-import { AddGroupButton } from "./add-group-button";
-import { declOfNum } from "@/lib/utils";
+import { GroupMemberRole } from "@prisma/client";
+import { Crown, Shield } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { GroupMemberRole } from "@prisma/client";
-import { BookMinus, Crown, Shield, TriangleAlert, Users2 } from "lucide-react";
 import { GroupsEmpty } from "@/app/(app)/(groups)/groups/groups-empty";
+import { db } from "@/lib/db";
+import { validateRequest } from "@/lib/server-validate-request";
+import { declOfNum } from "@/lib/utils";
+import { AddGroupButton } from "./add-group-button";
 
 export const dynamic = "force-dynamic";
 

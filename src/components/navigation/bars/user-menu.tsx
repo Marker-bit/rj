@@ -1,5 +1,6 @@
 "use client";
 
+import type { User } from "lucia";
 import {
   BoltIcon,
   GalleryVertical,
@@ -9,7 +10,9 @@ import {
   Undo2Icon,
   UserIcon,
 } from "lucide-react";
-
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { use } from "react";
 import CheckMark from "@/components/checkmark";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -24,10 +27,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SimpleTooltip } from "@/components/ui/simple-tooltip";
 import { logOut } from "@/lib/actions/auth";
-import { User } from "lucia";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { use } from "react";
 import { Badge } from "../../ui/badge";
 
 export default function UserMenu({

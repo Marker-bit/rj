@@ -1,7 +1,7 @@
+import { GroupMemberRole } from "@prisma/client";
+import { type NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
-import { GroupMemberRole } from "@prisma/client";
-import { NextRequest, NextResponse } from "next/server";
 
 export async function PATCH(
   req: NextRequest,
@@ -74,7 +74,7 @@ export async function PATCH(
     );
   }
 
-  const updatedMember = await db.groupMember.update({
+  const _updatedMember = await db.groupMember.update({
     where: {
       id: params.memberId,
     },
@@ -89,7 +89,7 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  req: NextRequest,
+  _req: NextRequest,
   props: { params: Promise<{ groupId: string; memberId: string }> },
 ) {
   const params = await props.params;

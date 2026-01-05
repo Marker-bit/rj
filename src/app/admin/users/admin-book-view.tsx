@@ -1,11 +1,11 @@
+import type { Book } from "@prisma/client";
+import Image from "next/image";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { dateToString, declOfNum } from "@/lib/utils";
-import { Book } from "@prisma/client";
-import Image from "next/image";
 
 export default function AdminBookView({ book }: { book: Book }) {
   return (
@@ -37,13 +37,13 @@ export default function AdminBookView({ book }: { book: Book }) {
           <div className="space-y-1">
             <h2 className="font-semibold">
               {book.title}
-              {book.description && " - " + book.author}
+              {book.description && ` - ${book.author}`}
             </h2>
             <p className="text-muted-foreground text-sm line-clamp-2">
               {book.description || book.author}
             </p>
           </div>
-          
+
           {book.fields.length !== 0 && (
             <ul className="grid gap-3 text-xs">
               {book.fields.map((field) => (

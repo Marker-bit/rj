@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   Pagination,
   PaginationContent,
@@ -10,8 +10,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { ArrowLeft, ArrowRight } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function BookPagination({
   currentPage,

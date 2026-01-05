@@ -1,7 +1,7 @@
-import { validateRequest } from "@/lib/server-validate-request";
-import { db } from "@/lib/db";
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { db } from "@/lib/db";
+import { validateRequest } from "@/lib/server-validate-request";
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -20,7 +20,7 @@ const bookSchema = z.object({
 });
 
 export async function GET(
-  req: NextRequest,
+  _req: NextRequest,
   props: { params: Promise<{ bookId: string }> },
 ) {
   const params = await props.params;
@@ -88,7 +88,7 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  req: NextRequest,
+  _req: NextRequest,
   props: { params: Promise<{ bookId: string }> },
 ) {
   const params = await props.params;

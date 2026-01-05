@@ -27,6 +27,6 @@ export async function Stats() {
       readAt: "asc",
     },
   });
-  
+
   return <MainChart events={events} profile={profile} />;
 }

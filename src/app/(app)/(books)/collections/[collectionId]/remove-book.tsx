@@ -1,11 +1,11 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Book, Collection } from "@prisma/client";
+import type { Book, Collection } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
-import { Loader, Minus, Plus } from "lucide-react";
+import { Loader, Minus } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 export function RemoveBook({
   book,

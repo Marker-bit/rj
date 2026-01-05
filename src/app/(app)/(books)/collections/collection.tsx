@@ -1,6 +1,6 @@
-import { Book, Collection } from "@prisma/client";
-import { CollectionButtons } from "./collection-buttons";
+import type { Book, Collection } from "@prisma/client";
 import { declOfNum } from "@/lib/utils";
+import { CollectionButtons } from "./collection-buttons";
 
 export async function CollectionView({
   collection,

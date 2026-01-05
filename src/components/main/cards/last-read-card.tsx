@@ -1,9 +1,9 @@
-import { Button } from "@/components/ui/button";
-import { getLastReadBook } from "@/lib/books";
-import { validateRequest } from "@/lib/server-validate-request";
 import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { getLastReadBook } from "@/lib/books";
+import { validateRequest } from "@/lib/server-validate-request";
 
 export default async function LastReadCard() {
   const { user } = await validateRequest();
@@ -44,7 +44,11 @@ export default async function LastReadCard() {
             В книге {lastReadBook.title} - {lastReadBook.author}
           </div>
         </div>
-        <Button variant="outline" asChild className="ml-auto absolute top-4 right-4">
+        <Button
+          variant="outline"
+          asChild
+          className="ml-auto absolute top-4 right-4"
+        >
           <Link href={`/books?bookId=${lastReadBook.id}`}>
             <div className="hidden sm:block">Открыть</div>
             <ArrowUpRight className="size-4" />

@@ -1,12 +1,12 @@
+import { useMutation } from "@tanstack/react-query";
+import { endOfDay, isToday, startOfDay } from "date-fns";
+import { ru } from "date-fns/locale";
+import { useMemo, useRef, useState } from "react";
+import { toast } from "sonner";
 import { PagesButtonGroup } from "@/components/dialogs/books/read/pages-button-group";
 import { Calendar } from "@/components/ui/calendar";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
-import { useMutation } from "@tanstack/react-query";
-import { endOfDay, isToday, startOfDay } from "date-fns";
-import { ru } from "date-fns/locale";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { toast } from "sonner";
 
 export function DateReadModal({
   isOpen,
@@ -105,7 +105,7 @@ export function DateReadModal({
               toast.error("Количество страниц должно быть больше 0");
               return;
             }
-            if (isNaN(changePages)) {
+            if (Number.isNaN(changePages)) {
               toast.error("Количество страниц должно быть числом");
               return;
             }

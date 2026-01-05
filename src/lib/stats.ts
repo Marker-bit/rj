@@ -1,4 +1,4 @@
-import { ReadEvent } from "@prisma/client";
+import type { ReadEvent } from "@prisma/client";
 import {
   addDays,
   addWeeks,
@@ -6,7 +6,6 @@ import {
   isSameDay,
   startOfWeek,
   subDays,
-  subWeeks,
 } from "date-fns";
 
 export const goodNumbers = [

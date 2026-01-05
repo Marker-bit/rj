@@ -1,13 +1,6 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Book as DbBook, ReadEvent } from "@prisma/client";
+import type { Book as DbBook, ReadEvent } from "@prisma/client";
 import {
   endOfDay,
   format,
@@ -20,33 +13,40 @@ import { ru } from "date-fns/locale";
 import { BookMinus, ChevronDownIcon, ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { DateRange } from "react-day-picker";
+import type { DateRange } from "react-day-picker";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { EventView } from "./EventView";
 
 export default function JournalView({
   events,
 }: {
-  events: (ReadEvent & { book: DbBook })[]
+  events: (ReadEvent & { book: DbBook })[];
 }) {
-  const today = new Date()
-  const [dates, setDates] = useState<DateRange | undefined>()
+  const today = new Date();
+  const [dates, setDates] = useState<DateRange | undefined>();
 
   const filtered = events.filter((event) => {
-    if (!dates) return true
+    if (!dates) return true;
     if (dates.from && dates.to) {
       return isWithinInterval(event.readAt, {
         start: startOfDay(dates.from),
         end: endOfDay(dates.to),
-      })
+      });
     }
     if (dates.from) {
-      return !isBefore(event.readAt, dates.from)
+      return !isBefore(event.readAt, dates.from);
     }
     if (dates.to) {
-      return !isAfter(event.readAt, dates.to)
+      return !isAfter(event.readAt, dates.to);
     }
-    return true
-  })
+    return true;
+  });
 
   return (
     <div className="max-sm:mb-[15vh]">
@@ -79,7 +79,7 @@ export default function JournalView({
               selected={dates}
               captionLayout="dropdown"
               onSelect={(range) => {
-                setDates(range)
+                setDates(range);
               }}
               weekStartsOn={1}
               locale={ru}
@@ -102,16 +102,16 @@ export default function JournalView({
         )}
         {filtered.map(
           (event: {
-            id: string
-            bookId: string
-            book: DbBook
-            pagesRead: number
-            readAt: string | Date
+            id: string;
+            bookId: string;
+            book: DbBook;
+            pagesRead: number;
+            readAt: string | Date;
           }) => (
             <EventView event={event} key={event.id} />
-          )
+          ),
         )}
       </div>
     </div>
-  )
+  );
 }

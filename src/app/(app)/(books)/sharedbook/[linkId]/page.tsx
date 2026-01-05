@@ -1,11 +1,11 @@
+import Image from "next/image";
+import Link from "next/link";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
 import { declOfNum } from "@/lib/utils";
-import Image from "next/image";
-import Link from "next/link";
 import { CloneButton } from "./clone-button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default async function Page(props: {
   params: Promise<{ linkId: string }>;
@@ -68,8 +68,8 @@ export default async function Page(props: {
                 <Avatar>
                   <AvatarImage src={book.user?.avatarUrl} />
                   <AvatarFallback>
-                    {book.user?.firstName && book.user?.firstName[0]}
-                    {book.user?.lastName && book.user?.lastName[0]}
+                    {book.user?.firstName?.[0]}
+                    {book.user?.lastName?.[0]}
                   </AvatarFallback>
                 </Avatar>
                 {book.userId === user?.id ? (

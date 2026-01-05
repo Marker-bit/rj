@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 import { cookies } from "next/headers";
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
@@ -16,7 +16,7 @@ export async function proxy(request: NextRequest) {
     "/sitemap.xml",
     "/rjrj.png",
     "/manifest.webmanifest",
-    "/manifest.json"
+    "/manifest.json",
   ];
   if (
     !(await cookies()).get("auth_session") &&

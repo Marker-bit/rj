@@ -1,6 +1,6 @@
-import { BookView } from "@/components/agent/book-view";
-import { ToolOutputView, ToolView } from "@/lib/ai/tools/types";
 import { PlusIcon } from "lucide-react";
+import { BookView } from "@/components/agent/book-view";
+import type { ToolOutputView, ToolView } from "@/lib/ai/tools/types";
 
 const CreateBookView: ToolOutputView<"createBook"> = ({ input, output }) => {
   return (

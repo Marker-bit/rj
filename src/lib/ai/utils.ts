@@ -1,4 +1,4 @@
-import { UIMessage } from "ai";
+import type { UIMessage } from "ai";
 
 export function getCopyableMessageText(message: UIMessage): string {
   const textPart = message.parts.find((part) => part.type === "text");

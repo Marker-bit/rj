@@ -1,17 +1,11 @@
-import {
-  PASSWORD_MESSAGE,
-  PASSWORD_REGEX,
-  USERNAME_MESSAGE,
-  USERNAME_REGEX,
-} from "@/lib/api-validate";
+import { hash } from "@node-rs/argon2";
+import { cookies } from "next/headers";
+import { type NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { lucia } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
 import { registerSchema } from "@/lib/validation/schemas";
-import { hash } from "@node-rs/argon2";
-import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
 
 export async function POST(request: NextRequest) {
   const { user: currentUser } = await validateRequest();
@@ -23,7 +17,7 @@ export async function POST(request: NextRequest) {
       },
       {
         status: 400,
-      }
+      },
     );
   }
   const data = await request.json();
@@ -41,7 +35,7 @@ export async function POST(request: NextRequest) {
       {
         error: "Пользователь с таким именем уже существует",
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -54,7 +48,7 @@ export async function POST(request: NextRequest) {
         {
           error: message,
         },
-        { status: 400 }
+        { status: 400 },
       );
       /* [
         {
@@ -112,7 +106,7 @@ export async function POST(request: NextRequest) {
   (await cookies()).set(
     sessionCookie.name,
     sessionCookie.value,
-    sessionCookie.attributes
+    sessionCookie.attributes,
   );
   return NextResponse.json({ id: createdUser.id }, { status: 200 });
 }

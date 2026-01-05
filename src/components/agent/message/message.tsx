@@ -1,14 +1,14 @@
+import { type ChatAddToolApproveResponseFunction, isTextUIPart } from "ai";
+import { Fragment } from "react";
+import { Streamdown } from "streamdown";
 import { MessageContainer } from "@/components/agent/message/message-container";
 import { MessageContextMenu } from "@/components/agent/message/message-context-menu";
 import { MessageRole } from "@/components/agent/message/message-role";
 import { ToolCall } from "@/components/agent/tool-call";
-import { groupMessageParts, MyUIMessage } from "@/lib/ai/message";
+import { groupMessageParts, type MyUIMessage } from "@/lib/ai/message";
 import { toolViews } from "@/lib/ai/tools/toolset";
-import { ToolId } from "@/lib/ai/tools/types";
+import type { ToolId } from "@/lib/ai/tools/types";
 import { cn } from "@/lib/utils";
-import { ChatAddToolApproveResponseFunction, isTextUIPart } from "ai";
-import { Fragment } from "react";
-import { Streamdown } from "streamdown";
 
 export function Message({
   message,

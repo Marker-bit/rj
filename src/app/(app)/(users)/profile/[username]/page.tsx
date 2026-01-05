@@ -1,11 +1,10 @@
-import Image from "next/image";
+import type { Metadata, ResolvingMetadata } from "next";
+import { redirect } from "next/navigation";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
 import FollowButton from "./follow-button";
 import { UserTabs } from "./user-tabs";
-import { redirect } from "next/navigation";
-import { Metadata, ResolvingMetadata } from "next";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type Props = {
   params: Promise<{ username: string }>;
@@ -100,8 +99,8 @@ export default async function Page(props: {
         <Avatar className="size-20">
           <AvatarImage src={user?.avatarUrl} />
           <AvatarFallback>
-            {user?.firstName && user?.firstName[0]}
-            {user?.lastName && user?.lastName[0]}
+            {user?.firstName?.[0]}
+            {user?.lastName?.[0]}
           </AvatarFallback>
         </Avatar>
         <div className="flex flex-col">

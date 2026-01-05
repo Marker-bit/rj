@@ -1,11 +1,11 @@
 "use client";
 
+import type { ReadEvent } from "@prisma/client";
+import type { User } from "lucia";
+import { Flame } from "lucide-react";
+import { useEffect, useState } from "react";
 import { getStreak, goodNumbers } from "@/lib/stats";
 import { declOfNum } from "@/lib/utils";
-import { ReadEvent } from "@prisma/client";
-import { User } from "lucia";
-import { Flame, PartyPopper } from "lucide-react";
-import { useEffect, useState } from "react";
 
 const happyWords = [
   "Так держать!",

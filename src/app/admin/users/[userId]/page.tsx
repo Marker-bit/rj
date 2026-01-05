@@ -1,10 +1,10 @@
+import { Ban } from "lucide-react";
+import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { db } from "@/lib/db";
-import { BadgeCheck, Ban, KeyRound } from "lucide-react";
-import { notFound } from "next/navigation";
+import AIAllowButton from "./ai-allow-button";
 import BadgeCheckButton from "./badge-check-button";
 import PasswordUpdateButton from "./password-update";
-import AIAllowButton from "./ai-allow-button";
 
 export default async function Page(props: {
   params: Promise<{ userId: string }>;

@@ -1,6 +1,4 @@
-import { getStreak } from "@/lib/stats";
-import { declOfNum } from "@/lib/utils";
-import { ReadEvent, User } from "@prisma/client";
+import type { ReadEvent, User } from "@prisma/client";
 import {
   addHours,
   differenceInDays,
@@ -18,6 +16,8 @@ import {
   UsersIcon,
 } from "lucide-react";
 import Link from "next/link";
+import { getStreak } from "@/lib/stats";
+import { declOfNum } from "@/lib/utils";
 
 export async function Stats({
   profile,
@@ -64,14 +64,14 @@ export async function Stats({
   date.setHours(0, 0, 0, 0);
   const [startOfWeek, _] = startAndEndOfWeek();
 
-  let booksStats: Record<string, Record<string, number>> = {};
-  let booksStatsNum: Record<string, number> = {};
-  let readWeek: Record<string, number> = {};
+  const booksStats: Record<string, Record<string, number>> = {};
+  const booksStatsNum: Record<string, number> = {};
+  const readWeek: Record<string, number> = {};
   let readWeekSum = 0;
-  let currentWeek: Record<string, Record<string, number>> = {};
-  let currentWeekNum: Record<string, number> = {};
+  const currentWeek: Record<string, Record<string, number>> = {};
+  const currentWeekNum: Record<string, number> = {};
   const { streak } = getStreak(events);
-  let readSpeed = [];
+  const readSpeed = [];
   const readBooks = books.filter((book) =>
     book.readEvents.find((event) => event.pagesRead >= book.pages),
   );
@@ -160,75 +160,73 @@ export async function Stats({
   }
 
   return (
-    <>
-      <div id="stats" className="grid grid-cols-2 gap-2 p-2">
-        <div className="flex items-center gap-1 rounded-md border p-2">
-          <CalendarRange className="size-6" />
-          <div className="flex flex-col">
-            <div className="font-bold">{streak}</div>
-            <div className="-mt-1 text-xs lowercase text-muted-foreground/70">
-              {declOfNum(streak, ["день", "дня", "дней"])} подряд
-            </div>
+    <div id="stats" className="grid grid-cols-2 gap-2 p-2">
+      <div className="flex items-center gap-1 rounded-md border p-2">
+        <CalendarRange className="size-6" />
+        <div className="flex flex-col">
+          <div className="font-bold">{streak}</div>
+          <div className="-mt-1 text-xs lowercase text-muted-foreground/70">
+            {declOfNum(streak, ["день", "дня", "дней"])} подряд
           </div>
         </div>
-        <div className="flex items-center gap-1 rounded-md border p-2">
-          <BookOpen className="size-6" />
-          <div className="flex flex-col">
-            <div className="font-bold">{readWeekSum}</div>
-            <div className="-mt-1 text-xs lowercase text-muted-foreground/70">
-              {declOfNum(readWeekSum, [
-                "страница прочитана",
-                "страницы прочитаны",
-                "страниц прочитано",
-              ])}{" "}
-              за последнюю неделю
-            </div>
+      </div>
+      <div className="flex items-center gap-1 rounded-md border p-2">
+        <BookOpen className="size-6" />
+        <div className="flex flex-col">
+          <div className="font-bold">{readWeekSum}</div>
+          <div className="-mt-1 text-xs lowercase text-muted-foreground/70">
+            {declOfNum(readWeekSum, [
+              "страница прочитана",
+              "страницы прочитаны",
+              "страниц прочитано",
+            ])}{" "}
+            за последнюю неделю
           </div>
         </div>
-        <div className="col-span-2 flex items-center gap-1 rounded-md border p-2">
-          <BookCheck className="size-6" />
+      </div>
+      <div className="col-span-2 flex items-center gap-1 rounded-md border p-2">
+        <BookCheck className="size-6" />
+        <div className="flex flex-col">
+          <div className="font-bold">{readBooks.length}</div>
+          <div className="-mt-1 text-xs lowercase text-muted-foreground/70">
+            {declOfNum(streak, [
+              "прочитанная книга",
+              "прочитанные книги",
+              "прочитанных книг",
+            ])}
+          </div>
+        </div>
+      </div>
+      <Link href="/friends">
+        <div className="flex items-center gap-1 rounded-md border p-2 transition-colors hover:bg-muted">
+          <Users2 className="size-6" />
           <div className="flex flex-col">
-            <div className="font-bold">{readBooks.length}</div>
+            <div className="font-bold">{profile.follower.length}</div>
             <div className="-mt-1 text-xs lowercase text-muted-foreground/70">
-              {declOfNum(streak, [
-                "прочитанная книга",
-                "прочитанные книги",
-                "прочитанных книг",
+              {declOfNum(profile.follower.length, [
+                "подписка",
+                "подписки",
+                "подписок",
               ])}
             </div>
           </div>
         </div>
-        <Link href="/friends">
-          <div className="flex items-center gap-1 rounded-md border p-2 transition-colors hover:bg-muted">
-            <Users2 className="size-6" />
-            <div className="flex flex-col">
-              <div className="font-bold">{profile.follower.length}</div>
-              <div className="-mt-1 text-xs lowercase text-muted-foreground/70">
-                {declOfNum(profile.follower.length, [
-                  "подписка",
-                  "подписки",
-                  "подписок",
-                ])}
-              </div>
+      </Link>
+      <Link href="/followers">
+        <div className="flex items-center gap-1 rounded-md border p-2 transition-colors hover:bg-muted">
+          <UsersIcon className="size-6" />
+          <div className="flex flex-col">
+            <div className="font-bold">{profile.following.length}</div>
+            <div className="-mt-1 text-xs lowercase text-muted-foreground/70">
+              {declOfNum(profile.following.length, [
+                "подписчик",
+                "подписчика",
+                "подписчиков",
+              ])}
             </div>
           </div>
-        </Link>
-        <Link href="/followers">
-          <div className="flex items-center gap-1 rounded-md border p-2 transition-colors hover:bg-muted">
-            <UsersIcon className="size-6" />
-            <div className="flex flex-col">
-              <div className="font-bold">{profile.following.length}</div>
-              <div className="-mt-1 text-xs lowercase text-muted-foreground/70">
-                {declOfNum(profile.following.length, [
-                  "подписчик",
-                  "подписчика",
-                  "подписчиков",
-                ])}
-              </div>
-            </div>
-          </div>
-        </Link>
-      </div>
-    </>
+        </div>
+      </Link>
+    </div>
   );
 }
