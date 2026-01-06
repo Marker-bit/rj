@@ -33,7 +33,7 @@ export default function SupportQuestionCard({
   );
 
   return (
-    <div className="group relative flex w-full flex-col overflow-hidden rounded-xl border p-4">
+    <div className="group relative flex w-full flex-col items-start overflow-hidden rounded-xl border p-4">
       {/* <div className="flex items-center gap-2 text-muted-foreground">
         от
         <Image
@@ -84,6 +84,7 @@ export default function SupportQuestionCard({
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
+            className="w-full"
           >
             <div className="mt-2 flex flex-col gap-2">
               {question.answers.map((answer) => (

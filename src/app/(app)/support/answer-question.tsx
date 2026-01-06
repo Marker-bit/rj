@@ -59,7 +59,7 @@ export default function AnswerQuestion({ questionId }: { questionId: string }) {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Textarea disabled={loading} {...field} />
+                <Textarea placeholder="Комментарий" disabled={loading} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
