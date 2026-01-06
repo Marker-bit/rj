@@ -32,7 +32,7 @@ export function DrawerDialog({
 
   return (
     <Drawer {...props}>
-      <DrawerContent>{children}</DrawerContent>
+      <DrawerContent className="p-4 pt-0">{children}</DrawerContent>
     </Drawer>
   );
 }

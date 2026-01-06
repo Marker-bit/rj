@@ -33,7 +33,13 @@ export function BookCollectionsModal({
   setOpen: (v: boolean) => void;
   book: Book;
 }) {
+  const [newCollectionTitle, setNewCollectionTitle] = useState("");
+  const [selectedCollections, setSelectedCollections] = useState(
+    book.collections.map((c) => c.id)
+  );
   const router = useRouter();
+  const queryClient = useQueryClient();
+
   const {
     data: collectionsData,
     isLoading: collectionsLoading,
@@ -51,11 +57,20 @@ export function BookCollectionsModal({
       return collections;
     },
   });
-
-  const [selectedCollections, setSelectedCollections] = useState(
-    book.collections.map((c) => c.id)
-  );
-  const queryClient = useQueryClient();
+  const createMutation = useMutation({
+    mutationFn: (name: string) => createCollection(name),
+    onSuccess: (res) => {
+      queryClient.invalidateQueries({ queryKey: ["collections"] });
+      if (res.error) {
+        toast.error("Произошла ошибка при создании коллекции", {
+          description: res.error,
+        });
+        return;
+      }
+      toast.success(res.message);
+      setNewCollectionTitle("");
+    },
+  });
   const updateMutation = useMutation({
     mutationFn: () =>
       fetch(`/api/books/${book.id}/collections`, {
@@ -73,39 +88,20 @@ export function BookCollectionsModal({
       router.refresh();
     },
   });
-
-  const [newCollectionTitle, setNewCollectionTitle] = useState("");
-  const [newCollectionLoading, setNewCollectionLoading] = useState(false);
-
-  const runAction = async () => {
-    setNewCollectionLoading(true);
-    const res = await createCollection(newCollectionTitle);
-    if (res.error) {
-      toast.error("Произошла ошибка при создании коллекции", {
-        description: res.error,
-      });
-      return;
-    }
-    toast.success(res.message);
-    setNewCollectionTitle("");
-    setNewCollectionLoading(false);
-  };
-
-  const runDeleteCollection = async (id: string) => {
-    setDeleteInProgress(true);
-    const res = await deleteCollection(id);
-    if (res.error) {
-      toast.error("Произошла ошибка при удалении коллекции", {
-        description: res.error,
-      });
-      return;
-    }
-    toast.success(res.message);
-    router.refresh();
-    setDeleteInProgress(false);
-  };
-
-  const [deleteInProgress, setDeleteInProgress] = useState(false);
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => deleteCollection(id),
+    onSuccess: (res) => {
+      queryClient.invalidateQueries({ queryKey: ["collections"] });
+      if (res.error) {
+        toast.error("Произошла ошибка при создании коллекции", {
+          description: res.error,
+        });
+        return;
+      }
+      toast.success(res.message);
+      setNewCollectionTitle("");
+    },
+  });
 
   return (
     <DrawerDialog open={open} onOpenChange={setOpen} className="min-w-[50vw]">
@@ -134,7 +130,7 @@ export function BookCollectionsModal({
                 // biome-ignore lint/a11y/noStaticElementInteractions: can't be a button
                 // biome-ignore lint/a11y/useKeyWithClickEvents: can't be a button
                 <div
-                  className="border-input has-data-[state=checked]:border-primary/50 relative flex w-full items-start gap-2 rounded-md border p-4 shadow-xs outline-none"
+                  className="border-input has-data-[state=checked]:border-primary/50 relative flex w-full items-start gap-2 rounded-2xl border p-4 shadow-xs outline-none"
                   key={collection.id}
                   onClick={() =>
                     setSelectedCollections(
@@ -176,13 +172,18 @@ export function BookCollectionsModal({
                     size="icon"
                     variant="outline"
                     className="top-2 right-2"
-                    disabled={deleteInProgress}
+                    disabled={deleteMutation.isPending}
                     onClick={(e) => {
                       e.stopPropagation();
-                      runDeleteCollection(collection.id);
+                      deleteMutation.mutate(collection.id);
                     }}
                   >
-                    <TrashIcon />
+                    {deleteMutation.isPending &&
+                    deleteMutation.variables === collection.id ? (
+                      <Spinner />
+                    ) : (
+                      <TrashIcon />
+                    )}
                   </Button>
                 </div>
               )
@@ -190,7 +191,7 @@ export function BookCollectionsModal({
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                runAction();
+                createMutation.mutate(newCollectionTitle);
               }}
             >
               <InputGroup>
@@ -208,9 +209,13 @@ export function BookCollectionsModal({
                     title="Создать"
                     size="icon-xs"
                     type="submit"
-                    disabled={newCollectionLoading}
+                    disabled={createMutation.isPending}
                   >
-                    {newCollectionLoading ? <Spinner /> : <ArrowRightIcon />}
+                    {createMutation.isPending ? (
+                      <Spinner />
+                    ) : (
+                      <ArrowRightIcon />
+                    )}
                   </InputGroupButton>
                 </InputGroupAddon>
               </InputGroup>
@@ -218,7 +223,11 @@ export function BookCollectionsModal({
             <Button
               className="mt-2 gap-2"
               onClick={() => updateMutation.mutate()}
-              disabled={updateMutation.isPending || deleteInProgress}
+              disabled={
+                createMutation.isPending ||
+                updateMutation.isPending ||
+                deleteMutation.isPending
+              }
             >
               {updateMutation.isPending && (
                 <Loader className="size-4 animate-spin" />
