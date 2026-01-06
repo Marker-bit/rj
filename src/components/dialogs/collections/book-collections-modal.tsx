@@ -53,7 +53,7 @@ export function BookCollectionsModal({
   });
 
   const [selectedCollections, setSelectedCollections] = useState(
-    book.collections.map((c) => c.id),
+    book.collections.map((c) => c.id)
   );
   const queryClient = useQueryClient();
   const updateMutation = useMutation({
@@ -131,6 +131,8 @@ export function BookCollectionsModal({
                 name: string;
                 books: PrismaBook[];
               }) => (
+                // biome-ignore lint/a11y/noStaticElementInteractions: can't be a button
+                // biome-ignore lint/a11y/useKeyWithClickEvents: can't be a button
                 <div
                   className="border-input has-data-[state=checked]:border-primary/50 relative flex w-full items-start gap-2 rounded-md border p-4 shadow-xs outline-none"
                   key={collection.id}
@@ -138,7 +140,7 @@ export function BookCollectionsModal({
                     setSelectedCollections(
                       selectedCollections.includes(collection.id)
                         ? selectedCollections.filter((c) => c !== collection.id)
-                        : [...selectedCollections, collection.id],
+                        : [...selectedCollections, collection.id]
                     )
                   }
                 >
@@ -150,9 +152,9 @@ export function BookCollectionsModal({
                       setSelectedCollections(
                         selectedCollections.includes(collection.id)
                           ? selectedCollections.filter(
-                              (c) => c !== collection.id,
+                              (c) => c !== collection.id
                             )
-                          : [...selectedCollections, collection.id],
+                          : [...selectedCollections, collection.id]
                       )
                     }
                   />
@@ -183,7 +185,7 @@ export function BookCollectionsModal({
                     <TrashIcon />
                   </Button>
                 </div>
-              ),
+              )
             )}
             <form
               onSubmit={(e) => {

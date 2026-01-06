@@ -11,10 +11,10 @@ import {
   BookOpenTextIcon,
   CalendarDays,
   Edit,
-  Edit2,
   Eye,
   EyeOff,
   Info,
+  Layers2Icon,
   Link2,
   Share,
   Trash,
@@ -158,8 +158,9 @@ export function BookView({
   // }
 
   const color =
-    book.background !== BackgroundColor.NONE &&
-    backgroundColors.find((bg) => bg.type === book.background);
+    book.background !== BackgroundColor.NONE
+      ? backgroundColors.find((bg) => bg.type === book.background)
+      : null;
 
   const fieldsData =
     typeof book.fields === "string"
@@ -393,7 +394,7 @@ export function BookView({
                   size="icon"
                   onClick={() => setCollectionsOpen(true)}
                 >
-                  <Edit2 className="size-4" />
+                  <Layers2Icon className="size-4" />
                 </Button>
               </SimpleTooltip>
             </div>
