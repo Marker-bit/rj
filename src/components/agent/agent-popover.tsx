@@ -6,6 +6,7 @@ import {
 } from "ai";
 import { XIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
+import posthog from "posthog-js";
 import { useRef } from "react";
 import { ChatHistory } from "@/components/agent/chat-history";
 import { EmptyView } from "@/components/agent/empty-view";
@@ -122,7 +123,12 @@ export function AgentPopover({
       <MessageInput
         ref={ref}
         status={status}
-        onSend={(message) => sendMessage({ text: message })}
+        onSend={(message) => {
+          sendMessage({ text: message });
+          posthog.capture("ai_message_sent", {
+            text: message,
+          });
+        }}
       />
     </div>
   );
