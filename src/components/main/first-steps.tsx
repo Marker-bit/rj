@@ -58,7 +58,7 @@ export default async function FirstSteps() {
               className={cn(
                 "flex size-8 min-w-8 min-h-8 max-w-8 max-h-8 items-center justify-center rounded-full",
                 createdBook
-                  ? "bg-green-500 text-white"
+                  ? "bg-primary text-white dark:text-black"
                   : "bg-zinc-200 dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-700",
               )}
             >

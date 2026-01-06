@@ -140,7 +140,7 @@ export function BookForm({
                     onUploadBegin={(_fileName) => {
                       setFileUploading(true);
                     }}
-                    className="ut-button:bg-blue-500 ut-button:ut-readying:bg-blue-500/50 ut-button:px-4 ut-button:ut-uploading:bg-blue-500/50"
+                    className="ut-button:bg-primary ut-button:ut-readying:bg-primary/50 ut-button:px-4 ut-button:ut-uploading:bg-primary/50 ut-button:dark:text-black"
                   />
                 </div>
               )}
