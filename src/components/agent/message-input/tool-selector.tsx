@@ -43,7 +43,7 @@ export function ToolSelector() {
           <WrenchIcon />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent className="w-64">
         <DropdownMenuGroup>
           <DropdownMenuLabel>Разрешенные инструменты</DropdownMenuLabel>
           {Object.entries(toolViews).map(([key, value]) => (
