@@ -145,18 +145,6 @@ export function BookView({
 
   const lastEvent = book.readEvents[0];
 
-  // if (book.groupBook) {
-  //   book = {
-  //     ...book,
-  //     groupBook: book.groupBook,
-  //     groupBookId: book.groupBookId,
-  //     title: book.groupBook.title,
-  //     author: book.groupBook.author,
-  //     pages: book.groupBook.pages,
-  //     coverUrl: book.groupBook.coverUrl,
-  //   }
-  // }
-
   const color =
     book.background !== BackgroundColor.NONE
       ? backgroundColors.find((bg) => bg.type === book.background)
