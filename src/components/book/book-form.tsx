@@ -275,7 +275,7 @@ export function AddBookDialog({
       <DialogHeader>
         <DialogTitle>Добавить книгу</DialogTitle>
       </DialogHeader>
-      <div className="p-4">
+      <div className="p-4 pt-0 mt-4 overflow-auto">
         <BookForm
           onSuccess={(book) => {
             posthog.capture("book_created", {

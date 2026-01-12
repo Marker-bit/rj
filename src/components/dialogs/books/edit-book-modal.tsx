@@ -111,7 +111,10 @@ export function EditBookModal({
         </DialogTitle>
       </DialogHeader>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-2 overflow-y-auto"
+        >
           <FormField
             control={form.control}
             name="coverUrl"
