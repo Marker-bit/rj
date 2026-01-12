@@ -1,5 +1,5 @@
+import type { LucideIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { LucideIcon } from "lucide-react";
 
 export function IconBadge({
   icon: Icon,

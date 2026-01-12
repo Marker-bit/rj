@@ -1,6 +1,6 @@
+import { type NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
-import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(
   req: NextRequest,
@@ -23,7 +23,7 @@ export async function POST(
     return NextResponse.json({ error: "Цвет не указан" }, { status: 400 });
   }
 
-  const updateBook = await db.book.update({
+  const _updateBook = await db.book.update({
     where: {
       id: bookId,
       userId: user.id,

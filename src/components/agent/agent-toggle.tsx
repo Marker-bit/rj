@@ -1,7 +1,7 @@
-import { Button } from "@/components/ui/button";
 import { SparklesIcon, XIcon } from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
-import { MouseEventHandler } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import type { MouseEventHandler } from "react";
+import { Button } from "@/components/ui/button";
 
 export function AgentToggle({
   isOpen,

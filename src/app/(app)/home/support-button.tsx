@@ -1,9 +1,8 @@
-import { Badge } from "@/components/ui/badge";
+import { MessageCircleQuestion } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
-import { MessageCircleQuestion } from "lucide-react";
-import Link from "next/link";
 
 export default async function SupportButton() {
   const { user } = await validateRequest();

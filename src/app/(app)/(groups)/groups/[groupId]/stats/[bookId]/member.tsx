@@ -1,28 +1,16 @@
 "use client";
 
+import type { Book, GroupBook, GroupMember, User } from "@prisma/client";
+import { BadgeCheck, Check, UserSquare2, X } from "lucide-react";
+import Link from "next/link";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  Book,
-  GroupBook,
-  GroupMember,
-  GroupMemberRole,
-  User,
-} from "@prisma/client";
-import { BadgeCheck, Check, UserSquare2, X } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
 import ChangedInfo from "../../_components/changed-info";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export function MemberInfo({
   member,
@@ -49,8 +37,8 @@ export function MemberInfo({
         <Avatar>
           <AvatarImage src={member.user?.avatarUrl} />
           <AvatarFallback>
-            {member.user?.firstName && member.user?.firstName[0]}
-            {member.user?.lastName && member.user?.lastName[0]}
+            {member.user?.firstName?.[0]}
+            {member.user?.lastName?.[0]}
           </AvatarFallback>
         </Avatar>
         <div className="absolute bottom-0 right-0 flex size-4 translate-x-1/2 translate-y-1/2 items-center justify-center rounded-full border bg-white text-xs dark:bg-black">

@@ -1,12 +1,11 @@
 import "@/app/globals.css";
-import { Agent } from "@/components/agent/agent";
+import { startOfToday } from "date-fns";
+import type React from "react";
 import { AgentSuspense } from "@/components/agent/agent-suspense";
 import NavBar from "@/components/navigation/navbar";
 import RecommendationBar from "@/components/navigation/recommendation-bar";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
-import { endOfToday, startOfToday } from "date-fns";
-import React from "react";
 
 export default async function Layout({
   children,

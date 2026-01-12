@@ -1,10 +1,10 @@
+import { Suspense } from "react";
 import BooksCard from "@/components/main/cards/books-card";
 import LastReadCard from "@/components/main/cards/last-read-card";
 import FirstSteps from "@/components/main/first-steps";
 import { Stats } from "@/components/main/stats";
 import { StreakInfo } from "@/components/main/streak-info";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Suspense } from "react";
 
 export default function Home() {
   return (
@@ -16,10 +16,18 @@ export default function Home() {
             <Suspense fallback={<></>}>
               <FirstSteps />
             </Suspense>
-            <Suspense fallback={<Skeleton className="rounded-md h-full min-h-60 w-full" />}>
+            <Suspense
+              fallback={
+                <Skeleton className="rounded-md h-full min-h-60 w-full" />
+              }
+            >
               <StreakInfo />
             </Suspense>
-            <Suspense fallback={<Skeleton className="rounded-md h-full min-h-60 w-full" />}>
+            <Suspense
+              fallback={
+                <Skeleton className="rounded-md h-full min-h-60 w-full" />
+              }
+            >
               <LastReadCard />
             </Suspense>
           </div>
@@ -36,9 +44,7 @@ export default function Home() {
             <BooksCard />
           </Suspense>
           <Suspense
-            fallback={
-              <Skeleton className="rounded-md h-[300px] w-full" />
-            }
+            fallback={<Skeleton className="rounded-md h-[300px] w-full" />}
           >
             <Stats />
           </Suspense>

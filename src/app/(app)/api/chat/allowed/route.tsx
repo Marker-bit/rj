@@ -1,6 +1,6 @@
+import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
-import { NextResponse } from "next/server";
 
 export async function GET() {
   const { user } = await validateRequest();

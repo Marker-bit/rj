@@ -1,10 +1,10 @@
-import * as React from "react";
+import type * as React from "react";
 
 import { useMediaQuery } from "usehooks-ts";
+import type { Drawer as DrawerPrimitive } from "vaul";
+import { AlertDialog, AlertDialogContent } from "@/components/ui/alert-dialog";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
-import { Drawer as DrawerPrimitive } from "vaul";
-import { AlertDialog, AlertDialogContent } from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
 
 export function DrawerDialog({
@@ -20,24 +20,20 @@ export function DrawerDialog({
 
   if (isDesktop) {
     return (
-      <>
-        <Dialog {...props}>
-          <DialogContent
-            className={cn("w-fit max-h-screen overflow-auto", className)}
-          >
-            {children}
-          </DialogContent>
-        </Dialog>
-      </>
+      <Dialog {...props}>
+        <DialogContent
+          className={cn("w-fit max-h-screen overflow-auto", className)}
+        >
+          {children}
+        </DialogContent>
+      </Dialog>
     );
   }
 
   return (
-    <>
-      <Drawer {...props}>
-        <DrawerContent>{children}</DrawerContent>
-      </Drawer>
-    </>
+    <Drawer {...props}>
+      <DrawerContent className="p-4 pt-0">{children}</DrawerContent>
+    </Drawer>
   );
 }
 

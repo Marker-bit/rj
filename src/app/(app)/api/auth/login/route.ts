@@ -1,9 +1,9 @@
+import { verify } from "@node-rs/argon2";
+import { cookies } from "next/headers";
+import { type NextRequest, NextResponse } from "next/server";
 import { lucia } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
 import { validateRequest } from "@/lib/server-validate-request";
-import { verify } from "@node-rs/argon2";
 
 export async function POST(request: NextRequest) {
   const data = await request.json();
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
         sessionCookie.attributes,
       );
 
-      return NextResponse.json(null, { status: 200 });
+      return NextResponse.json({ id: user.id }, { status: 200 });
     } else {
       return NextResponse.json(
         {
@@ -72,7 +72,7 @@ export async function PATCH(request: NextRequest) {
   return NextResponse.json(updatedUser);
 }
 
-export async function DELETE(request: NextRequest) {
+export async function DELETE(_request: NextRequest) {
   const { session } = await validateRequest();
   if (!session) {
     return NextResponse.json({

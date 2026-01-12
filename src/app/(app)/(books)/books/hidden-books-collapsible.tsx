@@ -1,3 +1,4 @@
+import { ChevronDown } from "lucide-react";
 import { BookView } from "@/components/book/book-view";
 import { Button } from "@/components/ui/button";
 import {
@@ -5,8 +6,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { Book } from "@/lib/api-types";
-import { ChevronDown } from "lucide-react";
+import type { Book } from "@/lib/api-types";
 
 export default function HiddenBooksCollapsible({
   hiddenBooks,

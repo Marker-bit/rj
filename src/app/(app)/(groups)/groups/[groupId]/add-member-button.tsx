@@ -1,9 +1,9 @@
 "use client";
 
-import AddMember from "@/components/dialogs/groups/add-member";
-import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useState } from "react";
+import AddMember from "@/components/dialogs/groups/add-member";
+import { Button } from "@/components/ui/button";
 
 export function AddMemberButton({
   group,

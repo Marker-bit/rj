@@ -1,7 +1,7 @@
+import { GroupMemberRole } from "@prisma/client";
+import { type NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
-import { GroupMemberRole } from "@prisma/client";
-import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   const { user } = await validateRequest();
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
       ...data,
     },
   });
-  const member = await db.groupMember.create({
+  const _member = await db.groupMember.create({
     data: {
       role: GroupMemberRole.CREATOR,
       userId: user.id,

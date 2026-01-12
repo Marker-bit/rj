@@ -1,5 +1,14 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import posthog from "posthog-js";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -11,15 +20,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { Loader } from "@/components/ui/loader";
-import { useEffect } from "react";
 import { validateRequest } from "@/lib/validate-request";
 
 const formSchema = z.object({
@@ -53,6 +54,14 @@ export function LoginForm() {
         method: "POST",
       });
       if (res.ok) {
+        try {
+          const data = await res.json();
+          if (posthog.__loaded) {
+            posthog.identify(data.id);
+          }
+        } catch (error) {
+          console.error("Failed to identify user with PostHog:", error);
+        }
         router.replace("/home");
         toast.success("Вы успешно авторизовались");
       } else {

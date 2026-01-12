@@ -1,10 +1,10 @@
+import { BarChartHorizontalBig, ChevronLeft } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
-import { BarChartHorizontalBig, ChevronLeft } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
 import { MemberInfo } from "./member";
 
 export const dynamic = "force-dynamic";
@@ -61,7 +61,7 @@ export default async function Page(props: {
     return null;
   }
 
-  const stats = [
+  const _stats = [
     {
       title: "Читающих участников",
       description: "Участников, добавивших себе эту книгу",
@@ -70,7 +70,7 @@ export default async function Page(props: {
     },
   ];
 
-  let ratingDict: Record<string, number | null> = {};
+  const ratingDict: Record<string, number | null> = {};
 
   group.members.forEach((m) => {
     const book = groupBook.book.find((b) => b.userId === m.userId);
@@ -83,7 +83,7 @@ export default async function Page(props: {
           : book.readEvents[0].pagesRead;
   });
 
-  const ratingKeys = new Array(...Object.keys(ratingDict));
+  const ratingKeys = [...Object.keys(ratingDict)];
 
   ratingKeys.sort((a, b) => (ratingDict[b] || 0) - (ratingDict[a] || 0));
 
@@ -205,7 +205,7 @@ export default async function Page(props: {
               group={group}
               pages={ratingDict[member.userId]}
               savedBook={
-                groupBook.book.find((b) => b.userId === member.userId)!
+                groupBook.book.find((b) => b.userId === member.userId)
               }
             />
           ))}

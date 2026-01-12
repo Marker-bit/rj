@@ -1,17 +1,17 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { DrawerDialog } from "@/components/ui/drawer-dialog";
 import {
-  GroupBookSuggestion,
-  GroupMember,
+  type GroupBookSuggestion,
+  type GroupMember,
   GroupMemberRole,
 } from "@prisma/client";
 import { BookUser } from "lucide-react";
 import { useState } from "react";
-import { Suggestion } from "./suggestion";
+import { Button } from "@/components/ui/button";
+import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { DrawerDialog } from "@/components/ui/drawer-dialog";
 import { SuggestBook } from "./suggest-book";
+import { Suggestion } from "./suggestion";
 
 export function BookSuggestions({
   suggestions,

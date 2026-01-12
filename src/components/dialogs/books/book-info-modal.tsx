@@ -1,26 +1,25 @@
-import { DrawerDialog } from "@/components/ui/drawer-dialog";
+import type { Collection, ReadEvent } from "@prisma/client";
 import {
   BookOpen,
   BookOpenCheck,
   BookOpenTextIcon,
   ChevronDown,
   Edit,
-  Loader,
   Pencil,
   Share,
   Trash,
 } from "lucide-react";
 import Image from "next/image";
-import { Button } from "../../ui/button";
-import { dateToString, declOfNum } from "@/lib/utils";
-import { Badge } from "../../ui/badge";
-import { Collection, ReadEvent } from "@prisma/client";
-import { DialogTitle } from "@/components/ui/dialog";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { DialogTitle } from "@/components/ui/dialog";
+import { DrawerDialog } from "@/components/ui/drawer-dialog";
+import { dateToString, declOfNum } from "@/lib/utils";
+import { Badge } from "../../ui/badge";
+import { Button } from "../../ui/button";
 
 export function BookInfoModal({
   open,

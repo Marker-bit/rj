@@ -1,11 +1,6 @@
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { validateRequest } from "@/lib/server-validate-request";
-import { BookOpen, Menu } from "lucide-react";
-import Link from "next/link";
-import UserMenu from "./user-menu";
 import AdminNavBar from "@/components/navigation/admin-navbar";
 import { db } from "@/lib/db";
+import { validateRequest } from "@/lib/server-validate-request";
 
 export default async function Layout({
   children,

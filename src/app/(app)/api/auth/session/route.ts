@@ -1,8 +1,8 @@
 import { cookies } from "next/headers";
+import { type NextRequest, NextResponse } from "next/server";
 import { lucia } from "@/lib/auth";
-import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
+export async function GET(_req: NextRequest) {
   const sessionId =
     (await cookies()).get(lucia.sessionCookieName)?.value ?? null;
   if (!sessionId) {
@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
   const result = await lucia.validateSession(sessionId);
   // next.js throws when you attempt to set cookie when rendering page
   try {
-    if (result.session && result.session.fresh) {
+    if (result.session?.fresh) {
       const sessionCookie = lucia.createSessionCookie(result.session.id);
       (await cookies()).set(
         sessionCookie.name,

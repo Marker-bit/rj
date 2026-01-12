@@ -1,5 +1,15 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import posthog from "posthog-js";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { useDebounceCallback } from "usehooks-ts";
+import type { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -11,18 +21,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation } from "@tanstack/react-query";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { useDebounceCallback } from "usehooks-ts";
-import { z } from "zod";
 import { Loader } from "@/components/ui/loader";
-import { registerSchema } from "@/lib/validation/schemas";
 import { validateRequest } from "@/lib/validate-request";
+import { registerSchema } from "@/lib/validation/schemas";
 
 export function RegisterForm() {
   const [usernameFound, setUsernameFound] = useState<boolean | null>(null);
@@ -53,6 +54,14 @@ export function RegisterForm() {
         method: "POST",
       });
       if (res.ok) {
+        try {
+          const data = await res.json();
+          if (posthog.__loaded) {
+            posthog.identify(data.id);
+          }
+        } catch (error) {
+          console.error("Failed to identify user with PostHog:", error);
+        }
         router.push("/home");
       } else {
         const data = await res.json();

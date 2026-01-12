@@ -1,5 +1,5 @@
+import { type NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   const username = req.nextUrl.searchParams.get("username");

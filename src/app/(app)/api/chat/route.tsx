@@ -1,9 +1,9 @@
+import { openrouter } from "@openrouter/ai-sdk-provider";
+import { convertToModelMessages, streamText, type UIMessage } from "ai";
+import type { NextRequest } from "next/server";
 import { toolSetForUser } from "@/lib/ai/tools/toolset";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
-import { openrouter } from "@openrouter/ai-sdk-provider";
-import { convertToModelMessages, streamText, UIMessage } from "ai";
-import { NextRequest } from "next/server";
 
 // Allow streaming responses up to 30 seconds
 export const maxDuration = 30;
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
   }: { messages: UIMessage[]; allowedTools?: string[] } = await req.json();
 
   const toolSet = Object.fromEntries(
-    Object.entries(toolSetForUser(user)).filter(([key, value]) =>
+    Object.entries(toolSetForUser(user)).filter(([key, _value]) =>
       allowedTools?.includes(key),
     ),
   );

@@ -1,7 +1,6 @@
-import { validateRequest } from "@/lib/server-validate-request";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
-import { UploadThingError } from "uploadthing/server";
-import { UTApi } from "uploadthing/server";
+import { UploadThingError, UTApi } from "uploadthing/server";
+import { validateRequest } from "@/lib/server-validate-request";
 
 const f = createUploadthing();
 

@@ -1,5 +1,5 @@
-import { validateRequest } from "@/lib/server-validate-request";
 import { redirect } from "next/navigation";
+import { validateRequest } from "@/lib/server-validate-request";
 
 export default async function Page() {
   const { user } = await validateRequest();

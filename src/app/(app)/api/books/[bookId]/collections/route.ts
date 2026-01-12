@@ -1,6 +1,6 @@
-import { validateRequest } from "@/lib/server-validate-request";
+import { type NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { NextRequest, NextResponse } from "next/server";
+import { validateRequest } from "@/lib/server-validate-request";
 
 export async function PATCH(
   req: NextRequest,

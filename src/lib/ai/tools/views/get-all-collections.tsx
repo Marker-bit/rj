@@ -1,8 +1,7 @@
-import { BookView } from "@/components/agent/book-view";
+import { LayersIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { ToolOutputView, ToolView } from "@/lib/ai/tools/types";
+import type { ToolOutputView, ToolView } from "@/lib/ai/tools/types";
 import { declOfNum } from "@/lib/utils";
-import { BookIcon, LayersIcon, ListOrderedIcon } from "lucide-react";
 
 const CollectionsOutputView: ToolOutputView<"getAllCollections"> = ({
   output,

@@ -1,11 +1,11 @@
-import { Button } from "@/components/ui/button";
-import { Loader } from "@/components/ui/loader";
-import { markAsRead } from "@/lib/actions/support";
-import { AnswerRead, SupportAnswer, User } from "@prisma/client";
+import type { AnswerRead, SupportAnswer, User } from "@prisma/client";
 import { CheckCheck } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Loader } from "@/components/ui/loader";
+import { markAsRead } from "@/lib/actions/support";
 
 export default function QuestionAnswer({
   answer,

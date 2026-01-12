@@ -1,5 +1,9 @@
 "use client";
 
+import { KeyRound } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,11 +18,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { setPassword, setVerification } from "@/lib/actions/users";
-import { BadgeCheck, KeyRound } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { toast } from "sonner";
+import { setPassword } from "@/lib/actions/users";
 
 export default function PasswordUpdateButton({ userId }: { userId: string }) {
   const [loading, setLoading] = useState(false);

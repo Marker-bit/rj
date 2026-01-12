@@ -1,7 +1,7 @@
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
-import { CreateCollection } from "./create-collection";
 import { CollectionView } from "./collection";
+import { CreateCollection } from "./create-collection";
 
 export const dynamic = "force-dynamic";
 

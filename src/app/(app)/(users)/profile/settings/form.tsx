@@ -1,11 +1,21 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { SharePeople } from "@prisma/client";
+import { useMutation } from "@tanstack/react-query";
+import { useDropzone } from "@uploadthing/react";
+import type { User as LuciaUser } from "lucia";
 import { Check, LogOut, Plus, X } from "lucide-react";
+import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import {
+  generateClientDropzoneAccept,
+  generatePermittedFileTypes,
+} from "uploadthing/client";
+import { useLocalStorage } from "usehooks-ts";
 import { z } from "zod";
-
 import { CropImage } from "@/components/crop-image";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,21 +36,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useUploadThing } from "@/components/uploadthing";
-import { cn } from "@/lib/utils";
-import { useMutation } from "@tanstack/react-query";
-import { useDropzone } from "@uploadthing/react";
-import Image from "next/image";
-import {
-  generateClientDropzoneAccept,
-  generatePermittedFileTypes,
-} from "uploadthing/client";
-import { toast } from "sonner";
-import { User as LuciaUser } from "lucia";
-import { SharePeople } from "@prisma/client";
 import { Switch } from "@/components/ui/switch";
+import { useUploadThing } from "@/components/uploadthing";
 import ExportDataButton from "@/components/users/export-data-button";
-import { useLocalStorage } from "usehooks-ts";
+import { cn } from "@/lib/utils";
 
 const formSchema = z.object({
   username: z
@@ -138,7 +137,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
       form.setValue("avatarUrl", res[0].ufsUrl);
       setUploadProgress(null);
     },
-    onUploadError: (err) => {
+    onUploadError: (_err) => {
       toast.error("Произошла ошибка при загрузке файла");
     },
     onUploadBegin: () => {

@@ -1,3 +1,12 @@
+import { subMonths } from "date-fns";
+import {
+  ArrowUpRight,
+  BookCopy,
+  BookOpen,
+  CreditCard,
+  MessageCircleQuestion,
+} from "lucide-react";
+import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,15 +26,6 @@ import {
 } from "@/components/ui/table";
 import { db } from "@/lib/db";
 import { declOfNum } from "@/lib/utils";
-import { subMonths } from "date-fns";
-import {
-  ArrowUpRight,
-  BookCopy,
-  BookOpen,
-  CreditCard,
-  MessageCircleQuestion,
-} from "lucide-react";
-import Link from "next/link";
 import BookMenu from "./book-menu";
 
 export const dynamic = "force-dynamic";
@@ -183,8 +183,8 @@ export default async function Page() {
                               alt="аватарка"
                             />
                             <AvatarFallback>
-                              {book.user.firstName && book.user.firstName[0]}
-                              {book.user.lastName && book.user.lastName[0]}
+                              {book.user.firstName?.[0]}
+                              {book.user.lastName?.[0]}
                             </AvatarFallback>
                           </Avatar>
                           <div>
@@ -251,8 +251,8 @@ export default async function Page() {
                   <Avatar className="hidden size-9 sm:flex">
                     <AvatarImage src={user.avatarUrl} alt="Аватар" />
                     <AvatarFallback>
-                      {user.firstName && user.firstName[0]}
-                      {user.lastName && user.lastName[0]}
+                      {user.firstName?.[0]}
+                      {user.lastName?.[0]}
                     </AvatarFallback>
                   </Avatar>
                   <div className="grid gap-1">

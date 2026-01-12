@@ -32,11 +32,11 @@ export async function editRecommendation(
     startsOn: Date;
     endsOn: Date;
     published: boolean;
-  }
+  },
 ) {
   await db.recommendation.update({
     where: {
-      id
+      id,
     },
     data: {
       ...info,

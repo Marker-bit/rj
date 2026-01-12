@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
-import { SettingsForm } from "./form";
+import { Button } from "@/components/ui/button";
 import { validateRequest } from "@/lib/server-validate-request";
+import { SettingsForm } from "./form";
 
 export default async function SettingsPage() {
   const { user } = await validateRequest();

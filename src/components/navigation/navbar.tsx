@@ -1,7 +1,12 @@
 "use client";
 
+import type { ReadEvent } from "@prisma/client";
+import type { User } from "lucia";
 import { BarChartBig, BookIcon, HouseIcon, Menu, Users } from "lucide-react";
-
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -14,14 +19,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ReadEvent } from "@prisma/client";
-import { User } from "lucia";
-import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Suspense } from "react";
 import { ModeToggle } from "../mode-toggle";
 import { Skeleton } from "../ui/skeleton";
+import { Tabs } from "../ui/vercel-tabs";
 import NewspaperButton from "./bars/newspaper-button";
 import { StreakButton } from "./bars/streak-button";
 import UserMenu from "./bars/user-menu";
@@ -42,6 +42,7 @@ export default function NavBar({
 }) {
   const pathname = usePathname();
   const isActive = (href: string) => href === pathname;
+  const router = useRouter();
 
   return (
     <header className="border-b px-4 md:px-6 sticky top-0 z-50 bg-background/50 backdrop-blur-xl">
@@ -104,31 +105,16 @@ export default function NavBar({
           </div>
         </div>
         {/* Middle area */}
-        <NavigationMenu className="max-md:hidden">
-          <NavigationMenuList className="gap-2">
-            {navigationLinks.map((link, index) => {
-              const Icon = link.icon;
-              return (
-                <NavigationMenuItem key={index}>
-                  <NavigationMenuLink
-                    className="text-foreground hover:text-primary flex-row items-center gap-2 py-1.5 font-medium"
-                    render={
-                      <Link href={link.href}>
-                        <Icon
-                          size={16}
-                          className="text-muted-foreground/80"
-                          aria-hidden="true"
-                        />
-                        <span>{link.label}</span>
-                      </Link>
-                    }
-                    active={isActive(link.href)}
-                  />
-                </NavigationMenuItem>
-              );
-            })}
-          </NavigationMenuList>
-        </NavigationMenu>
+        <Tabs
+          tabs={navigationLinks.map((link) => ({
+            id: link.href,
+            label: link.label,
+            href: link.href,
+            icon: link.icon,
+          }))}
+          className="max-md:hidden"
+          // onTabChange={(tabId) => router.push(tabId)}
+        />
         {/* Right side */}
         <div className="flex flex-1 items-center justify-end gap-2">
           <Suspense fallback={<Skeleton className="h-9 w-14 rounded-full" />}>

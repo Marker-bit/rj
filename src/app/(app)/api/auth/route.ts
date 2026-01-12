@@ -1,10 +1,10 @@
+import { hash, verify } from "@node-rs/argon2";
+import { cookies } from "next/headers";
+import { type NextRequest, NextResponse } from "next/server";
 import { USERNAME_MESSAGE, USERNAME_REGEX } from "@/lib/api-validate";
 import { lucia } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
-import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
-import { hash, verify } from "@node-rs/argon2";
 
 export async function POST(request: NextRequest) {
   const data = await request.json();
@@ -126,7 +126,7 @@ export async function PATCH(request: NextRequest) {
   return NextResponse.json(updatedUser);
 }
 
-export async function DELETE(request: NextRequest) {
+export async function DELETE(_request: NextRequest) {
   const { session } = await validateRequest();
   if (!session) {
     return NextResponse.json({

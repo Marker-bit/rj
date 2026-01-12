@@ -1,8 +1,8 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { GroupBook } from "@prisma/client";
+import type { GroupBook } from "@prisma/client";
 import { Download } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export function ExportBooksButton({ books }: { books: GroupBook[] }) {
   const downloadFile = (text: string, filename: string, type: string) => {

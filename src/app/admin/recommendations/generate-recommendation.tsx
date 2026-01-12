@@ -1,19 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { DrawerDialog } from "@/components/ui/drawer-dialog";
-import { IconBadge } from "@/components/ui/icon-badge";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { SimpleTooltip } from "@/components/ui/simple-tooltip";
-import { Textarea } from "@/components/ui/textarea";
-import { addRecommendation } from "@/lib/actions/recommendations";
 import { addDays, startOfToday } from "date-fns";
 import {
   BoltIcon,
@@ -29,9 +15,23 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { type FormEvent, useState } from "react";
 import { toast } from "sonner";
 import { useCopyToClipboard, useLocalStorage } from "usehooks-ts";
+import { Button } from "@/components/ui/button";
+import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { DrawerDialog } from "@/components/ui/drawer-dialog";
+import { IconBadge } from "@/components/ui/icon-badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { SimpleTooltip } from "@/components/ui/simple-tooltip";
+import { Textarea } from "@/components/ui/textarea";
+import { addRecommendation } from "@/lib/actions/recommendations";
 
 const DEFAULT_PROMPT = `Сгенерируй рекомендацию какой-нибудь существующей книги для школьников 10+ (выбери конкретную аудиторию, например девочки 13+ (пример не бери)).`;
 
@@ -149,7 +149,7 @@ export default function GenerateRecommendation() {
     { recommendation: Rec; cost: number } | { error: string }
   >();
   const router = useRouter();
-  const [copiedText, copyToClipboard] = useCopyToClipboard();
+  const [_copiedText, copyToClipboard] = useCopyToClipboard();
 
   const runAction = async (evt: FormEvent) => {
     evt.preventDefault();
@@ -247,6 +247,7 @@ export default function GenerateRecommendation() {
                     href="https://openrouter.ai/settings/keys"
                     target="_blank"
                     className="underline"
+                    rel="noopener"
                   >
                     тут
                   </a>

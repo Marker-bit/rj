@@ -1,7 +1,9 @@
 "use client";
 
+import type { ReadEvent } from "@prisma/client";
+import { differenceInDays } from "date-fns";
+import type { User } from "lucia";
 import { Area, AreaChart } from "recharts";
-
 import {
   Card,
   CardAction,
@@ -13,9 +15,6 @@ import {
 import { ChartContainer } from "@/components/ui/chart";
 import { getDays2, getStreak } from "@/lib/stats";
 import { declOfNum } from "@/lib/utils";
-import { ReadEvent } from "@prisma/client";
-import { differenceInDays } from "date-fns";
-import { User } from "lucia";
 import { ConfettiButton } from "./confetti-button";
 
 export default function StreakBlock({

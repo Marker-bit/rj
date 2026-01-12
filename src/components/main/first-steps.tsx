@@ -1,9 +1,7 @@
+import { Check } from "lucide-react";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
 import { cn } from "@/lib/utils";
-import { Check } from "lucide-react";
-import Link from "next/link";
-import { Button } from "../ui/button";
 import {
   Card,
   CardContent,
@@ -11,7 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import AddBookButton from "@/app/(app)/(books)/books/button";
 
 export default async function FirstSteps() {
   const { user } = await validateRequest();
@@ -61,7 +58,7 @@ export default async function FirstSteps() {
               className={cn(
                 "flex size-8 min-w-8 min-h-8 max-w-8 max-h-8 items-center justify-center rounded-full",
                 createdBook
-                  ? "bg-green-500 text-white"
+                  ? "bg-primary text-white dark:text-black"
                   : "bg-zinc-200 dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-700",
               )}
             >

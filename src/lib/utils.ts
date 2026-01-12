@@ -1,8 +1,8 @@
 import { type ClassValue, clsx } from "clsx";
 import { formatRelative } from "date-fns";
 import { ru } from "date-fns/locale";
+import type { PixelCrop } from "react-image-crop";
 import { twMerge } from "tailwind-merge";
-import { PixelCrop } from "react-image-crop";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

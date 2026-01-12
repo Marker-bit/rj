@@ -1,11 +1,7 @@
-import { ToolConfirmation } from "@/components/agent/tool-confirmation";
-import { TextShimmer } from "@/components/ui/text-shimmer";
-import { ToolView } from "@/lib/ai/tools/types";
-import { cn } from "@/lib/utils";
-import {
+import type {
   ChatAddToolApproveResponseFunction,
   UITool,
-  UIToolInvocation
+  UIToolInvocation,
 } from "ai";
 import {
   ChevronRightIcon,
@@ -13,10 +9,14 @@ import {
   Loader2Icon,
   ShieldQuestionIcon,
   TriangleAlertIcon,
-  XIcon
+  XIcon,
 } from "lucide-react";
-import { AnimatePresence, motion, Variants } from "motion/react";
+import { AnimatePresence, motion, type Variants } from "motion/react";
 import { useEffect, useState } from "react";
+import { ToolConfirmation } from "@/components/agent/tool-confirmation";
+import { TextShimmer } from "@/components/ui/text-shimmer";
+import type { ToolView } from "@/lib/ai/tools/types";
+import { cn } from "@/lib/utils";
 
 const iconVariants: Variants = {
   initial: { scale: 0.5, opacity: 0, filter: "blur(4px)" },

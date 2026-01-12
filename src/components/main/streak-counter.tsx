@@ -1,11 +1,11 @@
 "use client";
 
-import { getDays, getStreak, goodNumbers } from "@/lib/stats";
-import { capitalizeFirstLetter, cn, declOfNum } from "@/lib/utils";
-import { ReadEvent } from "@prisma/client";
+import type { ReadEvent } from "@prisma/client";
 import { addDays, differenceInDays, format, startOfWeek } from "date-fns";
 import { ru } from "date-fns/locale";
-import { User } from "lucia";
+import type { User } from "lucia";
+import { getDays, getStreak, goodNumbers } from "@/lib/stats";
+import { capitalizeFirstLetter, cn, declOfNum } from "@/lib/utils";
 import {
   HoverCard,
   HoverCardContent,

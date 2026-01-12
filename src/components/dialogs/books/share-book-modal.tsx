@@ -1,3 +1,7 @@
+import { CheckIcon, CopyIcon, LinkIcon, Settings, Trash } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
 import {
   Empty,
@@ -14,11 +18,7 @@ import {
 } from "@/components/ui/input-group";
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard";
 import { deleteBookLink } from "@/lib/actions/books";
-import { Book } from "@/lib/api-types";
-import { CheckIcon, CopyIcon, LinkIcon, Settings, Trash } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { toast } from "sonner";
+import type { Book } from "@/lib/api-types";
 import { Button } from "../../ui/button";
 import { DialogHeader, DialogTitle } from "../../ui/dialog";
 import { Loader } from "../../ui/loader";
@@ -32,7 +32,7 @@ export function ShareBookModal({
   setOpen: (v: boolean) => void;
   book: Book;
 }) {
-  const [copyLink, setCopyLink] = useState<string>();
+  const [_copyLink, _setCopyLink] = useState<string>();
   // const [link, setLink] = useState("");
   // useEffect(() => {
   //   setLink(`${window.location.origin}/books/${book.id}`);
@@ -61,7 +61,7 @@ export function ShareBookModal({
     toast.promise(
       async () => {
         setLoading(true);
-        const resp = await deleteBookLink(id);
+        const _resp = await deleteBookLink(id);
         setLoading(false);
         router.refresh();
       },

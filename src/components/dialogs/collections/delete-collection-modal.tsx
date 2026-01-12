@@ -1,16 +1,16 @@
 "use client";
 
-import { DrawerDialog } from "@/components/ui/drawer-dialog";
-import { deleteCollection } from "@/lib/actions/collections";
-import { declOfNum } from "@/lib/utils";
-import { Book, Collection } from "@prisma/client";
+import type { Book, Collection } from "@prisma/client";
+import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { DrawerDialog } from "@/components/ui/drawer-dialog";
+import { Loader } from "@/components/ui/loader";
+import { deleteCollection } from "@/lib/actions/collections";
+import { declOfNum } from "@/lib/utils";
 import { Button } from "../../ui/button";
 import { DialogDescription, DialogHeader, DialogTitle } from "../../ui/dialog";
-import { Loader } from "@/components/ui/loader";
-import { Trash } from "lucide-react";
 
 export function DeleteCollectionModal({
   open,

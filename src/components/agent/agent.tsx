@@ -1,8 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { AgentPopover } from "@/components/agent/agent-popover";
 import { AgentToggle } from "@/components/agent/agent-toggle";
-import { useState } from "react";
 
 export function Agent() {
   const [isOpen, setIsOpen] = useState(false);

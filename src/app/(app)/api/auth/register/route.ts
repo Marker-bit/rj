@@ -1,17 +1,11 @@
-import {
-  PASSWORD_MESSAGE,
-  PASSWORD_REGEX,
-  USERNAME_MESSAGE,
-  USERNAME_REGEX,
-} from "@/lib/api-validate";
+import { hash } from "@node-rs/argon2";
+import { cookies } from "next/headers";
+import { type NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { lucia } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
 import { registerSchema } from "@/lib/validation/schemas";
-import { hash } from "@node-rs/argon2";
-import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
 
 export async function POST(request: NextRequest) {
   const { user: currentUser } = await validateRequest();
@@ -114,5 +108,5 @@ export async function POST(request: NextRequest) {
     sessionCookie.value,
     sessionCookie.attributes,
   );
-  return new NextResponse(null, { status: 200 });
+  return NextResponse.json({ id: createdUser.id }, { status: 200 });
 }

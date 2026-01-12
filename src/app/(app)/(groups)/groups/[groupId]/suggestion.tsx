@@ -1,11 +1,11 @@
-import { Button } from "@/components/ui/button";
-import { Loader } from "@/components/ui/loader";
-import { GroupBookSuggestion, GroupMemberRole } from "@prisma/client";
+import { type GroupBookSuggestion, GroupMemberRole } from "@prisma/client";
 import { Plus } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Loader } from "@/components/ui/loader";
 
 export function Suggestion({
   suggestion,

@@ -1,4 +1,7 @@
-import { ToolId, ToolView } from "@/lib/ai/tools/types";
+import { tool } from "ai";
+import type { User } from "lucia";
+import z from "zod";
+import type { ToolId, ToolView } from "@/lib/ai/tools/types";
 import { createBookToolView } from "@/lib/ai/tools/views/create-book";
 import { createCollectionToolView } from "@/lib/ai/tools/views/create-collection";
 import { deleteBookToolView } from "@/lib/ai/tools/views/delete-book";
@@ -7,9 +10,6 @@ import { getAllBooksToolView } from "@/lib/ai/tools/views/get-all-books";
 import { getAllCollectionsToolView } from "@/lib/ai/tools/views/get-all-collections";
 import { fetchBooks } from "@/lib/books";
 import { db } from "@/lib/db";
-import { tool } from "ai";
-import { User } from "lucia";
-import z from "zod";
 
 export const toolSetForUser = (user: User) => ({
   getAllBooks: tool({

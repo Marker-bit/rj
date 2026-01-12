@@ -1,22 +1,5 @@
 "use client";
 
-import { BookInfoModal } from "@/components/dialogs/books/book-info-modal";
-import { DateReadModal } from "@/components/dialogs/books/read/date-read-modal";
-import { EditBookModal } from "@/components/dialogs/books/edit-book-modal";
-import { BookCollectionsModal } from "@/components/dialogs/collections/book-collections-modal";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { DrawerDialog } from "@/components/ui/drawer-dialog";
-import { IconBadge } from "@/components/ui/icon-badge";
-import { SimpleTooltip } from "@/components/ui/simple-tooltip";
-import { Book } from "@/lib/api-types";
-import { backgroundColors } from "@/lib/colors";
-import { cn, dateToString, declOfNum } from "@/lib/utils";
 import { BackgroundColor } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { endOfDay, isToday } from "date-fns";
@@ -28,10 +11,10 @@ import {
   BookOpenTextIcon,
   CalendarDays,
   Edit,
-  Edit2,
   Eye,
   EyeOff,
   Info,
+  Layers2Icon,
   Link2,
   Share,
   Trash,
@@ -41,19 +24,33 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import posthog from "posthog-js";
 import { useState } from "react";
 import { toast } from "sonner";
+import { BookInfoModal } from "@/components/dialogs/books/book-info-modal";
+import { EditBookModal } from "@/components/dialogs/books/edit-book-modal";
+import { DateReadModal } from "@/components/dialogs/books/read/date-read-modal";
+import { BookCollectionsModal } from "@/components/dialogs/collections/book-collections-modal";
+import { Button } from "@/components/ui/button";
+import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { DrawerDialog } from "@/components/ui/drawer-dialog";
+import { IconBadge } from "@/components/ui/icon-badge";
+import { SimpleTooltip } from "@/components/ui/simple-tooltip";
+import type { Book } from "@/lib/api-types";
+import { backgroundColors } from "@/lib/colors";
+import { cn, dateToString, declOfNum } from "@/lib/utils";
+import { DeleteBookModal } from "../dialogs/books/delete-book-modal";
 import { DateDoneModal } from "../dialogs/books/read/date-done-modal";
 import { ShareBookModal } from "../dialogs/books/share-book-modal";
 import { HelpButton } from "../ui/help-button";
-import { Loader } from "../ui/loader";
-import BookReadInfo from "./book-read-info";
-import Palette from "./palette";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from "../ui/hover-card";
+import { Loader } from "../ui/loader";
+import BookReadInfo from "./book-read-info";
+import Palette from "./palette";
 
 export const dynamic = "force-dynamic";
 
@@ -118,20 +115,6 @@ export function BookView({
     },
   });
 
-  const deleteMutation = useMutation({
-    mutationFn: () =>
-      fetch(`/api/books/${book.id}/`, {
-        method: "DELETE",
-      }),
-    onSuccess: () => {
-      setDeleteDialogOpen(false);
-      setActionsDrawerOpen(false);
-      toast.success("Книга удалена");
-      onUpdate?.();
-      router.refresh();
-    },
-  });
-
   const hideMutation = useMutation({
     mutationFn: () => fetch(`/api/books/${book.id}/hide`, { method: "POST" }),
     onSuccess: () => {
@@ -144,21 +127,10 @@ export function BookView({
 
   const lastEvent = book.readEvents[0];
 
-  // if (book.groupBook) {
-  //   book = {
-  //     ...book,
-  //     groupBook: book.groupBook,
-  //     groupBookId: book.groupBookId,
-  //     title: book.groupBook.title,
-  //     author: book.groupBook.author,
-  //     pages: book.groupBook.pages,
-  //     coverUrl: book.groupBook.coverUrl,
-  //   }
-  // }
-
   const color =
-    book.background !== BackgroundColor.NONE &&
-    backgroundColors.find((bg) => bg.type === book.background);
+    book.background !== BackgroundColor.NONE
+      ? backgroundColors.find((bg) => bg.type === book.background)
+      : null;
 
   const fieldsData =
     typeof book.fields === "string"
@@ -169,36 +141,23 @@ export function BookView({
 
   return (
     <>
-      <DrawerDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <DialogHeader>
-          <DialogTitle>Вы уверены?</DialogTitle>
-          <DialogDescription>
-            Вы удалите книгу &quot;{book.title}&quot; без возможности возврата.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="mt-2 flex gap-2 max-sm:flex-col md:ml-auto md:w-fit">
-          <Button onClick={() => setDeleteDialogOpen(false)} variant="outline">
-            Отмена
-          </Button>
-
-          <Button
-            variant="destructive"
-            onClick={() => deleteMutation.mutate()}
-            disabled={deleteMutation.isPending}
-          >
-            {deleteMutation.isPending && (
-              <Loader white className="mr-2 size-4" />
-            )}
-            Удалить
-          </Button>
-        </div>
-      </DrawerDialog>
+      <DeleteBookModal
+        book={book}
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        onSuccess={() => {
+          setDeleteDialogOpen(false);
+          setActionsDrawerOpen(false);
+          onUpdate?.();
+          router.refresh();
+        }}
+      />
       <div
         className={cn(
           "group relative flex flex-col gap-2 overflow-hidden rounded-md border p-2 transition-shadow hover:shadow-sm",
           book.background !== BackgroundColor.NONE &&
             "my-2 outline-8 outline-solid",
-          color && color.outline,
+          color?.outline,
         )}
         id={`book-${book.id}`}
       >
@@ -213,11 +172,6 @@ export function BookView({
             width: `${((lastEvent?.pagesRead || 0) / book.pages) * 100}%`,
           }}
         />
-        {/* {book.background !== BackgroundColor.NONE && (
-        <div
-          className={cn("absolute left-0 top-0 h-full w-[2%] -z-10", color)}
-        />
-      )} */}
 
         <DrawerDialog
           open={descriptionDrawerOpen}
@@ -271,7 +225,15 @@ export function BookView({
           open={editOpen}
           setOpen={setEditOpen}
           book={book}
-          onUpdate={onUpdate}
+          onUpdate={(newBook) => {
+            posthog.capture("edited_book", {
+              title: newBook.title,
+              author: newBook.author,
+              oldTitle: book.title,
+              oldAuthor: book.author,
+            });
+            onUpdate?.();
+          }}
         />
         <BookReadInfo
           open={bookReadOpen}
@@ -339,6 +301,7 @@ export function BookView({
                         onClick={() => undoEventMutation.mutate()}
                         disabled={undoEventMutation.isPending}
                         className="ml-1"
+                        type="button"
                       >
                         {undoEventMutation.isPending ? (
                           <Loader className="size-3" />
@@ -374,9 +337,12 @@ export function BookView({
             </div>
             <div className="flex flex-wrap gap-1">
               {book.collections.map((collection) => (
-                <Badge key={collection.id} variant="outline">
+                <div
+                  key={collection.id}
+                  className="h-full rounded-4xl border px-4 py-2"
+                >
                   {collection.name}
-                </Badge>
+                </div>
               ))}
               <SimpleTooltip text="Добавить в коллекцию">
                 <Button
@@ -384,7 +350,7 @@ export function BookView({
                   size="icon"
                   onClick={() => setCollectionsOpen(true)}
                 >
-                  <Edit2 className="size-4" />
+                  <Layers2Icon className="size-4" />
                 </Button>
               </SimpleTooltip>
             </div>

@@ -1,8 +1,8 @@
+import type { NextRequest } from "next/server";
 import { db } from "@/lib/db";
-import { NextRequest } from "next/server";
 
 export async function GET(
-  req: NextRequest,
+  _req: NextRequest,
   props: { params: Promise<{ collectionId: string }> },
 ) {
   const collection = await db.collection.findUnique({

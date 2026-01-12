@@ -1,9 +1,9 @@
+import { ArrowRightIcon } from "lucide-react";
+import type { ComponentPropsWithRef } from "react";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
-import { ArrowRightIcon } from "lucide-react";
-import { ComponentPropsWithRef } from "react";
 
 export const PagesButtonGroup = ({
   value,
@@ -46,7 +46,7 @@ export const PagesButtonGroup = ({
       </ButtonGroup>
       <p className="mt-2 text-sm text-muted-foreground">
         {value !== "" &&
-          !isNaN(value) &&
+          !Number.isNaN(value) &&
           lastPages &&
           `Относительно прошлого: ${value - lastPages}`}
       </p>
