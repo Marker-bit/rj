@@ -8,7 +8,7 @@ const f = createUploadthing();
 export const ourFileRouter = {
   bookCover: f({ image: { maxFileSize: "8MB" } })
     // Set permissions and file types for this FileRoute
-    .middleware(async ({ req }) => {
+    .middleware(async () => {
       // This code runs on your server before upload
       const { user } = await validateRequest();
 
@@ -33,7 +33,7 @@ export const ourFileRouter = {
 
     //   return { userId: user.id };
     // })
-    .onUploadComplete(async ({ metadata, file }) => {
+    .onUploadComplete(async ({ file }) => {
       // console.log("Upload complete for userId:", metadata.userId);
 
       console.log("file url", file.ufsUrl);

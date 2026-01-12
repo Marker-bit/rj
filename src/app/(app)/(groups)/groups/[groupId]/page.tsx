@@ -134,7 +134,7 @@ export default async function Page(props: {
       .reduce((a, b) => a + b, 0);
   });
 
-  const ratingKeys = [...Object.keys(ratingDict)];
+  const ratingKeys = Object.keys(ratingDict);
 
   ratingKeys.sort((a, b) => ratingDict[b] - ratingDict[a]);
 
