@@ -1,10 +1,8 @@
 import posthog from "posthog-js";
 
-if (!process.env.NEXT_PUBLIC_POSTHOG_KEY) {
-  throw new Error("Missing NEXT_PUBLIC_POSTHOG_KEY");
+if (process.env.NEXT_PUBLIC_POSTHOG_KEY) {
+  posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
+    api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+    defaults: "2025-11-30",
+  });
 }
-
-posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY, {
-  api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
-  defaults: "2025-11-30",
-});
