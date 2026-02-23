@@ -5,6 +5,7 @@ import FirstSteps from "@/components/main/first-steps";
 import { Stats } from "@/components/main/stats";
 import { StreakInfo } from "@/components/main/streak-info";
 import { Skeleton } from "@/components/ui/skeleton";
+import { NewWebsiteWarning } from "@/components/new-website-warning";
 
 export default function Home() {
   return (
@@ -13,9 +14,12 @@ export default function Home() {
         <div className="m-2 flex items-center text-5xl font-black">Главная</div>
         <div className="flex flex-col gap-2">
           <div className="grid lg:grid-cols-2 gap-2">
-            <Suspense fallback={<></>}>
-              <FirstSteps />
-            </Suspense>
+            <div className="flex flex-col gap-2">
+              <NewWebsiteWarning className="w-full max-w-full" />
+              <Suspense fallback={<></>}>
+                <FirstSteps />
+              </Suspense>
+            </div>
             <Suspense
               fallback={
                 <Skeleton className="rounded-md h-full min-h-60 w-full" />
