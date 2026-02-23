@@ -16,17 +16,5 @@ services:
     ports:
       - 8080:8080
 
-  app:
-    build: .
-    ports:
-      - "3000:80"
-    depends_on:
-      - db
-    # env_file:
-    #   - .docker.env
-    environment:
-      DB_PRISMA_URL: "postgresql://test:example@db:5432/rj?schema=public"
-      DB_URL_NON_POOLING: "postgresql://test:example@db:5432/rj?schema=public"
-
 volumes:
   pgdata:

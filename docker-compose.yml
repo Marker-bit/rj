@@ -1,40 +1,23 @@
 services:
-  reverse-proxy:
-    image: traefik:v3.1
-    command:
-      - "--api.insecure=true"
-      - "--providers.docker"
-    ports:
-      - "80:80"
-      - "8081:8080"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-  
   db:
     image: postgres
     restart: always
     environment:
-      POSTGRES_USER: test
-      POSTGRES_PASSWORD: example
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: rj
     ports:
       - 5433:5432
     healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "test", "-p", "5432",  "-d", "rj" ]
+      test: ["CMD", "pg_isready", "-U", "test", "-p", "5432", "-d", "rj"]
       interval: 10s
       timeout: 5s
       retries: 5
     volumes:
       - pgdata:/var/lib/postgresql/data
 
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 8080:8080
-
   rj:
-    image: ghcr.io/marker-bit/rj:prod
+    image: tgit.markerbit.dev/markerbit/rj:latest
     depends_on:
       db:
         condition: service_healthy
@@ -44,15 +27,12 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
-    deploy:
-      mode: replicated
-      replicas: 3
     restart: always
-    labels:
-      - "traefik.http.routers.rj.rule=Host(`rj.markerbit.ru`)"
     environment:
-      DB_PRISMA_URL: "postgresql://test:example@db:5432/rj?schema=public"
-      DB_URL_NON_POOLING: "postgresql://test:example@db:5432/rj?schema=public"
+      DB_PRISMA_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/rj?schema=public"
+      DB_URL_NON_POOLING: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/rj?schema=public"
+    ports:
+      - 3000:80
 
 volumes:
   pgdata:

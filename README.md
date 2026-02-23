@@ -7,16 +7,23 @@ Reading Journal is an app made in Next.js for reading fans.
 1. Next.js
 2. Typescript
 3. Prisma
-4. Shadcn/ui
+4. shadcn/ui
 5. Tailwind CSS
 
 ## Installation
 
-1. `npm install` - install npm dependecies
-2. Fill `.env` file
-3. `npx prisma db push` - push schema to database
-4. `npm run dev` - start server
+### Prerequisites
+
+Docker with Compose plugin should be installed.
+
+### Setup
+
+1. `git clone https://tgit.markerbit.dev/markerbit/rj.git` - clone the repo
+2. `cp .env.example .env && micro .env` - copy and edit the environment variables
+3. `docker compose up -d` - deploy the app
+
+The app will be available on [localhost:3000](http://localhost:3000).
 
 ## Author
 
-[Marker-bit](https://github.com/marker-bit)
+[Marker-bit](https://tgit.markerbit.dev/markerbit)

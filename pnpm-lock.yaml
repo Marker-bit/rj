@@ -33,6 +33,9 @@ importers:
       '@dicebear/core':
         specifier: ^9.2.4
         version: 9.2.4
+      '@giof/react-umami':
+        specifier: ^2.6.12
+        version: 2.6.12(react@19.2.3)
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.65.0(react@19.2.3))
@@ -758,6 +761,11 @@ packages:
 
   '@floating-ui/utils@0.2.9':
     resolution: {integrity: sha512-MDWhGtE+eHw5JW7lq4qhc5yRLS11ERl1c7Z6Xd0a58DozHES6EnNNwUWbMiG4J9Cgj053Bhk8zvlhFYKVhULwg==}
+
+  '@giof/react-umami@2.6.12':
+    resolution: {integrity: sha512-7DGTfX0r5W5lrPaD0rX6G8WUXIXP8DXtepfKW1gHGJkuNPXngF/AkMs4wS3uslFTn9BCSlCtiOxqqD6nYQnQpA==}
+    peerDependencies:
+      react: ^18.0.0 || ^19.0.0
 
   '@hono/node-server@1.19.7':
     resolution: {integrity: sha512-vUcD0uauS7EU2caukW8z5lJKtoGMokxNbJtBiwHgpqxEXokaHCBkQUmCHhjFB1VUTWdqj25QoMkMKzgjq+uhrw==}
@@ -6893,6 +6901,10 @@ snapshots:
   '@floating-ui/utils@0.2.10': {}
 
   '@floating-ui/utils@0.2.9': {}
+
+  '@giof/react-umami@2.6.12(react@19.2.3)':
+    dependencies:
+      react: 19.2.3
 
   '@hono/node-server@1.19.7(hono@4.11.3)':
     dependencies:

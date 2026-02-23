@@ -11,8 +11,9 @@ import { QueryProvider } from "@/components/providers/query-client-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import ClientUmamiAnalytics from "@/components/umami-analytics";
 
-const nunitoSans = Nunito_Sans({variable:'--font-sans'});
+const nunitoSans = Nunito_Sans({ variable: "--font-sans" });
 
 const font = Inter({ subsets: ["latin"] });
 
@@ -175,6 +176,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const isVercel = process.env.VERCEL === "1";
+
   return (
     <html lang="en" suppressHydrationWarning className={nunitoSans.variable}>
       <body
@@ -193,8 +196,17 @@ export default async function RootLayout({
                 routerConfig={extractRouterConfig(ourFileRouter)}
               />
               {children}
-              <Analytics />
-              <SpeedInsights />
+              {isVercel ? (
+                <>
+                  <Analytics />
+                  <SpeedInsights />
+                </>
+              ) : (
+                <ClientUmamiAnalytics
+                  dryRun={process.env.NODE_ENV === "development"}
+                  debug={process.env.NODE_ENV === "development"}
+                />
+              )}
               <Toaster />
               <ReactQueryDevtools
                 initialIsOpen={false}
