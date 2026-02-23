@@ -27,12 +27,6 @@ const nextConfig = {
         port: "",
         pathname: "/**",
       },
-      {
-        protocol: "https",
-        hostname: "*.labirint.ru",
-        port: "",
-        pathname: "/**",
-      },
     ],
   },
   experimental: {
