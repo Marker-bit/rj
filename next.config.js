@@ -17,17 +17,20 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: `${process.env.UPLOADTHING_APP_ID}.ufs.sh`,
+        hostname: "*.ufs.sh",
+        port: "",
         pathname: "/**",
       },
       {
         protocol: "https",
         hostname: "utfs.io",
+        port: "",
         pathname: "/**",
       },
       {
         protocol: "https",
         hostname: "*.labirint.ru",
+        port: "",
         pathname: "/**",
       },
     ],
