@@ -1,4 +1,3 @@
-// components/ClientUmamiAnalytics.tsx
 "use client";
 
 import dynamic from "next/dynamic";

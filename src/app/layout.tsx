@@ -205,6 +205,8 @@ export default async function RootLayout({
                 <ClientUmamiAnalytics
                   dryRun={process.env.NODE_ENV === "development"}
                   debug={process.env.NODE_ENV === "development"}
+                  websiteId={process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID}
+                  src={process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL}
                 />
               )}
               <Toaster />
