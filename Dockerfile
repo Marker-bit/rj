@@ -18,7 +18,7 @@ WORKDIR /app
 
 COPY package.json pnpm-lock.yaml ./
 COPY prisma ./prisma/
-RUN pnpm install --frozen-lockfile --prefer-frozen-lockfile && pnpm dlx prisma generate
+RUN pnpm install --frozen-lockfile --prefer-frozen-lockfile && pnpm exec prisma generate
 
 # Builder
 FROM base AS builder
@@ -56,4 +56,4 @@ ENV PORT 80
 ENV HOSTNAME "0.0.0.0"
 
 # Run the nextjs app
-CMD ["npm", "run", "deploy"]
+CMD ["node", "server.js"]
