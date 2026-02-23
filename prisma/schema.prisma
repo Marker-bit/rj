@@ -9,14 +9,9 @@ generator json {
   provider = "prisma-json-types-generator"
 }
 
-// datasource db {
-//   provider = "sqlite"
-//   url      = "file:./dev.db"
-// }
-
 datasource db {
-  provider  = "postgresql"
-  url       = env("DB_PRISMA_URL")
+  provider = "postgresql"
+  url      = env("DB_PRISMA_URL")
 }
 
 enum SharePeople {
@@ -48,8 +43,8 @@ model User {
   following Follow[]      @relation("FollowingToUser")
   memberOf  GroupMember[]
 
-  verified Boolean @default(false)
-  admin    Boolean @default(false)
+  verified  Boolean @default(false)
+  admin     Boolean @default(false)
   aiEnabled Boolean @default(false)
 
   Group            Group?            @relation(fields: [groupId], references: [id])
