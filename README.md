@@ -1,3 +1,9 @@
+# ⚠️ No more commits will be made here
+
+The project is transitioning to a self-hosted [Forgejo instance](https://tgit.markerbit.dev), so you can now access the source code [here](https://tgit.markerbit.dev/markerbit/rj).
+
+The domain of the project has also been changed. It's now [rj.markerbit.dev](https://rj.markerbit.dev) instead of [rjrj.ru](https://rjrj.ru).
+
 # Reading Journal
 
 Reading Journal is an app made in Next.js for reading fans.
