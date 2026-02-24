@@ -5,10 +5,10 @@ import { SharePeople } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { useDropzone } from "@uploadthing/react";
 import type { User as LuciaUser } from "lucia";
-import { Check, LogOut, Plus, X } from "lucide-react";
+import { Check, LogOut, Plus, PlusIcon, X, XIcon } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import {
   generateClientDropzoneAccept,
@@ -65,6 +65,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [disableRecs, setDisableRecs] = useLocalStorage("disableRecs", false);
   const [isClient, setIsClient] = useState(false);
+  const [fields, setFields] = useLocalStorage<string[]>("fields", []);
 
   useEffect(() => {
     setIsClient(true);
@@ -373,6 +374,44 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
                 </FormItem>
               )}
             />
+            <div className="flex flex-wrap gap-2 items-center justify-start">
+              <div className="font-semibold mr-4">Поля по умолчанию</div>
+              {fields.map((f, idx) => (
+                <div className="flex gap-2 w-40" key={idx}>
+                  <Input
+                    value={f}
+                    onChange={(evt) =>
+                      setFields((fields) => {
+                        fields[idx] = evt.target.value;
+                        return fields;
+                      })
+                    }
+                    placeholder={`Поле ${idx + 1}`}
+                  />
+                  <Button
+                    size="icon"
+                    variant="outline"
+                    type="button"
+                    onClick={() =>
+                      setFields((f) => {
+                        f.splice(idx, 1);
+                        return f;
+                      })
+                    }
+                  >
+                    <XIcon />
+                  </Button>
+                </div>
+              ))}
+              <Button
+                size="icon"
+                variant="outline"
+                type="button"
+                onClick={() => setFields((f) => [...f, ""])}
+              >
+                <PlusIcon />
+              </Button>
+            </div>
             <FormField
               control={form.control}
               name="hideActivity"

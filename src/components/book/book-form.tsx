@@ -1,10 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
-import { Plus, Trash, X } from "lucide-react";
+import { Plus, SettingsIcon, Trash, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import posthog from "posthog-js";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type { z } from "zod";
@@ -28,12 +28,14 @@ import { DialogHeader, DialogTitle } from "../ui/dialog";
 import { DrawerDialog } from "../ui/drawer-dialog";
 import { Loader } from "../ui/loader";
 import { ScanDialog } from "./scan-dialog";
+import { useReadLocalStorage } from "usehooks-ts";
 
 export function BookForm({
   onSuccess,
 }: {
   onSuccess?: (book: z.input<typeof bookSchema>) => void;
 }) {
+  const defaultFields = useReadLocalStorage<string[]>("fields");
   const form = useForm<z.input<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
     defaultValues: {
@@ -61,6 +63,15 @@ export function BookForm({
     name: "fields",
     control: form.control,
   });
+
+  useEffect(() => {
+    if (Array.isArray(defaultFields)) {
+      form.setValue(
+        "fields",
+        defaultFields.map((d) => ({ title: d, value: "" })),
+      );
+    }
+  }, [defaultFields]);
 
   async function onSubmit(values: z.input<typeof bookSchema>) {
     setLoading(true);
@@ -201,14 +212,19 @@ export function BookForm({
           )}
         />
         <div className="flex flex-col gap-2">
-          {fields.map((field, index) => (
-            <FormItem key={field.id}>
-              <FormLabel className={cn(index !== 0 ? "sr-only" : "mt-2")}>
-                Поля
-              </FormLabel>
-              <FormDescription className={cn(index !== 0 && "sr-only")}>
+          <div className="flex justify-between items-center">
+            <div className="flex flex-col gap-1">
+              <FormLabel className="mt-2">Поля</FormLabel>
+              <FormDescription>
                 Добавьте дополнительные поля с информацией о книге.
               </FormDescription>
+            </div>
+            {/*<Button type="button" size="icon" variant="ghost">
+              <SettingsIcon />
+            </Button>*/}
+          </div>
+          {fields.map((field, index) => (
+            <FormItem key={field.id}>
               <FormControl>
                 <div className="flex flex-col items-center gap-2 sm:flex-row">
                   <FormField
@@ -234,7 +250,7 @@ export function BookForm({
                   <Button
                     type="button"
                     variant="outline"
-                    size="sm"
+                    size="icon"
                     onClick={() => remove(index)}
                   >
                     <X className="size-4" />
