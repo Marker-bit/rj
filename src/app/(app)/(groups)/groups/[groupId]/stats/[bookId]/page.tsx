@@ -204,9 +204,7 @@ export default async function Page(props: {
               groupBook={groupBook}
               group={group}
               pages={ratingDict[member.userId]}
-              savedBook={
-                groupBook.book.find((b) => b.userId === member.userId)
-              }
+              savedBook={groupBook.book.find((b) => b.userId === member.userId)}
             />
           ))}
         </div>

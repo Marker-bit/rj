@@ -34,8 +34,9 @@ export default function RecommendationBar({
   );
 
   const saveBook = async () => {
+    if (!showableRec?.id) return;
     setLoading(true);
-    const res = await saveBookFromRec(showableRec?.id);
+    const res = await saveBookFromRec(showableRec.id);
     if (res?.error) {
       toast.error("Возникла проблема при добавлении книги", {
         description: res.error,

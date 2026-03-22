@@ -98,7 +98,7 @@ export function ChatHistory({
       <div
         className={cn(
           "absolute bottom-0 left-0 flex items-end justify-center pointer-events-none z-10 w-full transition-opacity h-20",
-          isAtBottom ? "opacity-0" : "opacity-100"
+          isAtBottom ? "opacity-0" : "opacity-100",
         )}
       >
         <div
@@ -113,7 +113,7 @@ export function ChatHistory({
             isAtBottom
               ? "pointer-events-none scale-90"
               : "pointer-events-auto scale-100",
-            "dark:bg-neutral-800! rounded-full transition-transform origin-bottom mb-2"
+            "dark:bg-neutral-800! rounded-full transition-transform origin-bottom mb-2",
           )}
           size="sm"
           variant="outline"
@@ -163,8 +163,6 @@ export function ChatHistory({
             (status === "streaming" &&
               messages.length > 0 &&
               messages.at(-1)?.parts.at(-1) &&
-              // biome-ignore lint/style/noNonNullAssertion: it's obvious
-              // biome-ignore lint/suspicious/noNonNullAssertedOptionalChain: has to be like this
               isToolUIPart(messages.at(-1)?.parts.at(-1)!))) && (
             <motion.div
               initial={{

@@ -1,5 +1,6 @@
 import { ChevronLeft, UserX } from "lucide-react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { FriendView } from "@/components/users/friend-view";
 import { db } from "@/lib/db";
@@ -10,9 +11,7 @@ export const dynamic = "force-dynamic";
 export default async function FriendsPage() {
   const { user } = await validateRequest();
   if (!user) {
-    return new Response(null, {
-      status: 401,
-    });
+    redirect("/auth");
   }
   const friends = await db.user.findMany({
     where: {

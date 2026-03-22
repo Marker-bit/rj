@@ -37,7 +37,6 @@ export async function GET(
       <div style={{ opacity: 0.5, fontSize: 40, marginBottom: 20 }}>
         Читательский дневник
       </div>
-      {/** biome-ignore lint/performance/noImgElement: this is an OG */}
       <img
         alt="Avatar"
         width="256"

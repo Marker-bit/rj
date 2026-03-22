@@ -78,8 +78,8 @@ export default async function BooksPage(props: {
               </Button>
             </SimpleTooltip>
           </div>
-          <BookList books={books?.filter((b) => !b.isHidden)} />
-          {hiddenBooks?.length > 0 && (
+          <BookList books={books?.filter((b) => !b.isHidden) ?? []} />
+          {(hiddenBooks?.length ?? 0) > 0 && (
             <HiddenBooksCollapsible hiddenBooks={hiddenBooks!} />
           )}
         </div>

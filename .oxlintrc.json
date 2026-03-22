@@ -1,0 +1,21 @@
+{
+  "plugins": ["react", "nextjs", "typescript", "jsx-a11y"],
+  "categories": {
+    "correctness": "warn",
+    "suspicious": "warn",
+    "perf": "warn"
+  },
+  "rules": {
+    "react/exhaustive-deps": "warn",
+    "react/no-array-index-key": "warn",
+    "react/button-has-type": "warn",
+    "react/react-in-jsx-scope": "off"
+  },
+  "ignorePatterns": [
+    "node_modules/",
+    ".next/",
+    "out/",
+    "build/",
+    "next-env.d.ts"
+  ]
+}

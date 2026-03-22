@@ -21,11 +21,14 @@ export function DeleteBookModal({
   onOpenChange: (open: boolean) => void;
   onSuccess?: () => void;
 }) {
-  const options = deleteMutationOptions(book.id)
-  const deleteMutation = useMutation({...options, onSuccess: (...props) => {
-    options.onSuccess?.(...props);
-    onSuccess?.();
-  }});
+  const options = deleteMutationOptions(book.id);
+  const deleteMutation = useMutation({
+    ...options,
+    onSuccess: (...props) => {
+      options.onSuccess?.(...props);
+      onSuccess?.();
+    },
+  });
 
   return (
     <DrawerDialog open={open} onOpenChange={onOpenChange}>

@@ -106,7 +106,7 @@ const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
                     "px-3 py-2 cursor-pointer transition-colors duration-300 h-[30px] flex gap-2 items-center",
                     index === activeIndex
                       ? "text-[#0e0e10] dark:text-white"
-                      : "text-[#0e0f1199] dark:text-[#ffffff99]"
+                      : "text-[#0e0f1199] dark:text-[#ffffff99]",
                   )}
                 >
                   {tab.icon && (
@@ -122,7 +122,7 @@ const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
         </div>
       </div>
     );
-  }
+  },
 );
 Tabs.displayName = "Tabs";
 
