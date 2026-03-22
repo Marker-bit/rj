@@ -17,6 +17,7 @@ export async function POST(
   }
 
   const data = await req.json();
+  const { title, author, pages, description, coverUrl } = data;
   const member = await db.groupMember.findFirstOrThrow({
     where: {
       userId: user.id,
@@ -38,7 +39,11 @@ export async function POST(
     data: {
       groupBooks: {
         create: {
-          ...data,
+          title,
+          author,
+          pages,
+          description,
+          coverUrl,
           addedById: member.id,
         },
       },

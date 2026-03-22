@@ -17,6 +17,7 @@ export async function PATCH(
   }
 
   const data = await req.json();
+  const { title, author, pages, description, coverUrl } = data;
 
   await db.groupBook.update({
     where: {
@@ -34,7 +35,11 @@ export async function PATCH(
       },
     },
     data: {
-      ...data,
+      title,
+      author,
+      pages,
+      description,
+      coverUrl,
     },
   });
 

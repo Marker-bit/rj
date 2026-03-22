@@ -59,12 +59,29 @@ export async function PATCH(request: NextRequest) {
   }
 
   const data = await request.json();
+  const {
+    firstName,
+    lastName,
+    avatarUrl,
+    shareFollowers,
+    shareSubscriptions,
+    shareStats,
+    hideActivity,
+    aiEnabled,
+  } = data;
   const updatedUser = await db.user.update({
     where: {
       id: user.id,
     },
     data: {
-      ...data,
+      firstName,
+      lastName,
+      avatarUrl,
+      shareFollowers,
+      shareSubscriptions,
+      shareStats,
+      hideActivity,
+      aiEnabled,
       active: true,
     },
   });

@@ -12,9 +12,10 @@ export async function POST(req: NextRequest) {
   }
 
   const data = await req.json();
+  const { title } = data;
   const group = await db.group.create({
     data: {
-      ...data,
+      title,
     },
   });
   const _member = await db.groupMember.create({
