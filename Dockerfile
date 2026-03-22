@@ -1,14 +1,8 @@
 FROM node:20-alpine AS base
 
-
-
 ### Dependencies ###
 FROM base AS deps
-RUN apk add --no-cache libc6-compat git
-
-
-
-# Setup pnpm environment
+RUN apk add --no-cache libc6-compat
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
@@ -18,11 +12,16 @@ WORKDIR /app
 
 COPY package.json pnpm-lock.yaml ./
 COPY prisma ./prisma/
-RUN pnpm install --frozen-lockfile --prefer-frozen-lockfile && pnpm exec prisma generate
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+    pnpm install --frozen-lockfile --prod --ignore-scripts && \
+    cp -r node_modules /prod_modules && \
+    pnpm install --frozen-lockfile --ignore-scripts
+RUN pnpm exec prisma generate
 
 # Builder
 FROM base AS builder
-
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 RUN corepack prepare pnpm@latest --activate
 
@@ -32,28 +31,24 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN pnpm build
 
-
 ### Production image runner ###
 FROM base AS runner
 
-# Set NODE_ENV to production
-ENV NODE_ENV production
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
-# Disable Next.js telemetry
-# Learn more here: https://nextjs.org/telemetry
-ENV NEXT_TELEMETRY_DISABLED 1
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
 
-# Automatically leverage output traces to reduce image size
-# https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY ./prisma ./prisma
 
-# Exposed port (for orchestrators and dynamic reverse proxies)
-EXPOSE 80
-ENV PORT 80
-ENV HOSTNAME "0.0.0.0"
+USER nextjs
 
-# Run the nextjs app
+EXPOSE 80
+ENV PORT=80
+ENV HOSTNAME="0.0.0.0"
+
 CMD ["node", "server.js"]

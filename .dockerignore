@@ -1,12 +1,19 @@
-# Not needed as we are bundling the whole app
 node_modules
-.env
-# Log files
-logs
+.next
+.git
+.vscode
+.github
+.pnpm-store
 *.log
 npm-debug.log*
 pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.next
-.git
+.env
+.env.*
+docker-compose*.yml
+Dockerfile
+.dockerignore
+biome.json
+deprecated.eslint.config.mjs
+README.md
