@@ -8,7 +8,11 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
 import { Loader } from "@/components/ui/loader";
 
@@ -48,6 +52,9 @@ export function DateDoneModal({
     <DrawerDialog open={isOpen} onOpenChange={handleClose}>
       <DialogHeader className="mb-2">
         <DialogTitle>Отметить книгу прочитанной</DialogTitle>
+        <DialogDescription>
+          Выберите дату, когда книга была прочитана полностью.
+        </DialogDescription>
       </DialogHeader>
       <div className="flex flex-col gap-2">
         <Calendar

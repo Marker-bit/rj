@@ -5,7 +5,11 @@ import { useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { PagesButtonGroup } from "@/components/dialogs/books/read/pages-button-group";
 import { Calendar } from "@/components/ui/calendar";
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
 
 export function DateReadModal({
@@ -70,6 +74,9 @@ export function DateReadModal({
     <DrawerDialog open={isOpen} onOpenChange={handleClose}>
       <DialogHeader className="mb-2">
         <DialogTitle>Отметить прочтение</DialogTitle>
+        <DialogDescription>
+          Выберите дату и укажите, до какой страницы вы дочитали.
+        </DialogDescription>
       </DialogHeader>
       <div className="flex flex-col gap-2">
         <Calendar

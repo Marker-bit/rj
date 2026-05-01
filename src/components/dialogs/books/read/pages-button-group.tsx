@@ -23,7 +23,7 @@ export const PagesButtonGroup = ({
         <Input
           type="number"
           min={1}
-          autoFocus
+          aria-label="Количество прочитанных страниц"
           {...props}
           disabled={isPending}
           value={value}
