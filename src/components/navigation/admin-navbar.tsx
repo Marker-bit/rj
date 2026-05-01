@@ -9,7 +9,6 @@ import {
   MessageCircleQuestion,
   Users,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Suspense } from "react";
@@ -28,6 +27,11 @@ import {
 import { ModeToggle } from "../mode-toggle";
 import { Skeleton } from "../ui/skeleton";
 import UserMenu from "./bars/user-menu";
+import {
+  type BuildInfo,
+  LogoWithBuildTooltip,
+  MobileBuildFooter,
+} from "./build-badge";
 
 const navigationLinks = [
   { href: "/admin", label: "Главная", icon: HouseIcon },
@@ -43,8 +47,10 @@ const navigationLinks = [
 
 export default function AdminNavBar({
   auth,
+  build,
 }: {
   auth: Promise<{ user: User; unread: number } | { user: null; unread: null }>;
+  build: BuildInfo;
 }) {
   const pathname = usePathname();
   const isActive = (href: string) => href === pathname;
@@ -65,7 +71,7 @@ export default function AdminNavBar({
                 <Menu className="text-muted-foreground" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent align="start" className="w-36 p-1 md:hidden">
+            <PopoverContent align="start" className="w-48 p-1 md:hidden">
               <NavigationMenu className="max-w-none *:w-full">
                 <NavigationMenuList className="flex-col items-start gap-0 md:gap-2">
                   {navigationLinks.map((link) => {
@@ -91,22 +97,15 @@ export default function AdminNavBar({
                   })}
                 </NavigationMenuList>
               </NavigationMenu>
+              <MobileBuildFooter build={build} />
             </PopoverContent>
           </Popover>
           {/* Logo */}
           <div className="flex items-center">
-            <Link
-              href="/home"
-              className="hover:bg-muted-foreground/10 p-1 rounded-lg transition"
-            >
-              <Image
-                src="/icon.png"
-                alt="logo"
-                width={32}
-                height={32}
-                className="h-8 w-8"
-              />
-            </Link>
+            <LogoWithBuildTooltip
+              build={build}
+              className="hover:bg-muted-foreground/10"
+            />
           </div>
         </div>
         {/* Middle area */}

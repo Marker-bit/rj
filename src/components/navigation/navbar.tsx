@@ -3,7 +3,6 @@
 import type { ReadEvent } from "@prisma/client";
 import type { User } from "lucia";
 import { BarChartBig, BookIcon, HouseIcon, Menu, Users } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Suspense } from "react";
@@ -23,6 +22,11 @@ import { ModeToggle } from "../mode-toggle";
 import { Skeleton } from "../ui/skeleton";
 import { Tabs } from "../ui/vercel-tabs";
 import NewspaperButton from "./bars/newspaper-button";
+import {
+  type BuildInfo,
+  LogoWithBuildTooltip,
+  MobileBuildFooter,
+} from "./build-badge";
 import { StreakButton } from "./bars/streak-button";
 import UserMenu from "./bars/user-menu";
 
@@ -36,9 +40,11 @@ const navigationLinks = [
 export default function NavBar({
   events,
   auth,
+  build,
 }: {
   events: Promise<ReadEvent[]>;
   auth: Promise<{ user: User; unread: number } | { user: null; unread: null }>;
+  build: BuildInfo;
 }) {
   const pathname = usePathname();
   const isActive = (href: string) => href === pathname;
@@ -59,7 +65,7 @@ export default function NavBar({
                 <Menu className="text-muted-foreground" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent align="start" className="w-36 p-1 md:hidden">
+            <PopoverContent align="start" className="w-44 p-1 md:hidden">
               <NavigationMenu className="max-w-none *:w-full">
                 <NavigationMenuList className="flex-col items-start gap-0 md:gap-2">
                   {navigationLinks.map((link) => {
@@ -85,22 +91,12 @@ export default function NavBar({
                   })}
                 </NavigationMenuList>
               </NavigationMenu>
+              <MobileBuildFooter build={build} />
             </PopoverContent>
           </Popover>
           {/* Logo */}
           <div className="flex items-center">
-            <Link
-              href="/home"
-              className="hover:bg-accent p-1 rounded-lg transition shrink-0"
-            >
-              <Image
-                src="/icon.png"
-                alt="logo"
-                width={32}
-                height={32}
-                className="h-8 w-8"
-              />
-            </Link>
+            <LogoWithBuildTooltip build={build} className="hover:bg-accent" />
           </div>
         </div>
         {/* Middle area */}

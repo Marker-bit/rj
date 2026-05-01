@@ -4,6 +4,7 @@ import type React from "react";
 import { AgentGate } from "@/components/agent/agent-gate";
 import NavBar from "@/components/navigation/navbar";
 import RecommendationBar from "@/components/navigation/recommendation-bar";
+import { getBuildInfo } from "@/lib/build-info";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
 
@@ -75,10 +76,11 @@ export default async function Layout({
   });
 
   const aiEnabled = authResult.then(({ user }) => user?.aiEnabled ?? false);
+  const build = getBuildInfo();
 
   return (
     <div>
-      <NavBar events={events} auth={auth} />
+      <NavBar events={events} auth={auth} build={build} />
       <RecommendationBar recommendations={recommendationsAvailable} />
       <div className="w-full overflow-auto">{children}</div>
       <AgentGate aiEnabled={aiEnabled} />

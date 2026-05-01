@@ -32,5 +32,7 @@ jobs:
           tags: |
             tgit.markerbit.dev/markerbit/rj:latest
             tgit.markerbit.dev/markerbit/rj:${{ github.sha }}
+          build-args: |
+            COMMIT_SHA=${{ github.sha }}
           cache-from: type=registry,ref=tgit.markerbit.dev/markerbit/rj:cache
           cache-to: type=registry,ref=tgit.markerbit.dev/markerbit/rj:cache,mode=max

@@ -18,6 +18,8 @@ RUN pnpm exec prisma generate
 
 # Builder
 FROM base AS builder
+ARG COMMIT_SHA
+ENV NEXT_PUBLIC_COMMIT_SHA=$COMMIT_SHA
 
 WORKDIR /app
 
