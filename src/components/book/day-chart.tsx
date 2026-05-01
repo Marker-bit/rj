@@ -28,6 +28,33 @@ export function DayChart({
     ...item,
     date: new Date(item.date),
   }));
+  const formatChartDate = (value: Date | string | number) => {
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+      return "";
+    }
+
+    return format(date, "dd.MM");
+  };
+  const formatTooltipDate = (
+    _value: Date | string | number,
+    payload?: { payload?: { date?: Date | string | number } }[],
+  ) => {
+    const date = payload?.[0]?.payload?.date;
+
+    if (date === undefined) {
+      return "";
+    }
+
+    const normalizedDate = new Date(date);
+
+    if (Number.isNaN(normalizedDate.getTime())) {
+      return "";
+    }
+
+    return dateToString(normalizedDate);
+  };
 
   return (
     <ChartContainer config={chartConfig}>
@@ -38,18 +65,14 @@ export function DayChart({
           tickLine={false}
           tickMargin={10}
           axisLine={false}
-          tickFormatter={(value: Date | string | number) =>
-            format(new Date(value), "dd.MM")
-          }
+          tickFormatter={formatChartDate}
         />
         <YAxis tickLine={false} tickMargin={10} dataKey="pagesRead" />
         <ChartTooltip
           content={
             <ChartTooltipContent
               label="date"
-              labelFormatter={(value: Date | string | number) =>
-                dateToString(new Date(value))
-              }
+              labelFormatter={formatTooltipDate}
             />
           }
         />
