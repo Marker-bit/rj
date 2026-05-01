@@ -26,10 +26,10 @@ export function StreakCounter({
     startOfWeek(new Date(), { weekStartsOn: 1 }),
   );
   const currentWeekStart = startOfWeek(new Date(), { weekStartsOn: 1 });
-  const weekDays = days.map((pages, dayIndex) => {
+  const weekDays = Array.from({ length: 7 }, (_, dayIndex) => {
     const weekDate = addDays(currentWeekStart, dayIndex);
     return {
-      pages,
+      pages: days[dayIndex] ?? 0,
       date: weekDate,
       key: weekDate.toISOString(),
     };
@@ -70,11 +70,7 @@ export function StreakCounter({
                   />
 
                   <p className="text-xs md:hidden">
-                    {format(
-                      weekDay.date,
-                      "EEE",
-                      { locale: ru },
-                    ).slice(0, 2)}
+                    {format(weekDay.date, "EEE", { locale: ru }).slice(0, 2)}
                   </p>
                   <p className="text-xs md:hidden">{weekDay.pages}</p>
                 </div>
@@ -86,11 +82,7 @@ export function StreakCounter({
                   </div>
 
                   {capitalizeFirstLetter(
-                    format(
-                      weekDay.date,
-                      "EEEE",
-                      { locale: ru },
-                    ),
+                    format(weekDay.date, "EEEE", { locale: ru }),
                   )}
                 </div>
               </HoverCardContent>

@@ -40,6 +40,13 @@ export function StreakButton({
     weekStartsOn: 1,
   });
   const nowDay = differenceInDays(new Date(), weekStart);
+  const weekDays = Array.from({ length: 7 }, (_, dayIndex) => {
+    const date = addDays(weekStart, dayIndex);
+    return {
+      date,
+      pages: days[dayIndex] ?? 0,
+    };
+  });
 
   return (
     <Popover>
@@ -56,8 +63,7 @@ export function StreakButton({
       </SimpleTooltip>
       <PopoverContent className="w-fit">
         <div className="flex gap-2">
-          {days.map((pages, dayIndex) => {
-            const date = addDays(weekStart, dayIndex);
+          {weekDays.map(({ date, pages }, dayIndex) => {
             const daysPassed = differenceInDays(startOfDay(new Date()), date);
 
             return (
@@ -104,7 +110,8 @@ export function StreakButton({
                   <div className="text-primary-foreground/70">
                     {format(date, "d MMMM", { locale: ru, weekStartsOn: 1 })}
                   </div>
-                  {pages} {declOfNum(pages, ["страница", "страницы", "страниц"])}
+                  {pages}{" "}
+                  {declOfNum(pages, ["страница", "страницы", "страниц"])}
                 </TooltipContent>
               </Tooltip>
             );
