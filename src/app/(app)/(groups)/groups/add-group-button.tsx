@@ -3,7 +3,7 @@
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { DialogTitle } from "@/components/ui/dialog";
+import { DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
 import { CreateGroupForm } from "./create-group-form";
 
@@ -14,6 +14,10 @@ export function AddGroupButton() {
     <>
       <DrawerDialog open={open} onOpenChange={setOpen} className="sm:w-[425px]">
         <DialogTitle className="hidden">Создать группу</DialogTitle>
+        <DialogDescription className="hidden">
+          Создайте группу чтения, чтобы читать книги вместе с другими
+          пользователями.
+        </DialogDescription>
         <CreateGroupForm />
       </DrawerDialog>
       <Button onClick={() => setOpen(true)}>

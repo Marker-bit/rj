@@ -235,8 +235,8 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Имя пользователя</FormLabel>
-                  <FormControl>
-                    <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2">
+                    <FormControl>
                       <Input
                         {...field}
                         onChange={(e) => {
@@ -257,15 +257,15 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
                             });
                         }}
                       />
-                      {usernameFound === true && (
-                        <X className="size-8 text-red-500" />
-                      )}
-                      {usernameFound === false && (
-                        <Check className="size-8 text-green-500" />
-                      )}
-                      {usernameFound === null && <Loader className="size-8" />}
-                    </div>
-                  </FormControl>
+                    </FormControl>
+                    {usernameFound === true && (
+                      <X className="size-8 text-red-500" />
+                    )}
+                    {usernameFound === false && (
+                      <Check className="size-8 text-green-500" />
+                    )}
+                    {usernameFound === null && <Loader className="size-8" />}
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}

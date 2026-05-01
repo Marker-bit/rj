@@ -8,7 +8,11 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
 import {
   Form,
@@ -70,6 +74,9 @@ export default function AskQuestion() {
       <DrawerDialog open={open} onOpenChange={setOpen} className="min-w-[50vw]">
         <DialogHeader>
           <DialogTitle>Задать вопрос</DialogTitle>
+          <DialogDescription>
+            Опишите вопрос или проблему, чтобы отправить её в поддержку.
+          </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">

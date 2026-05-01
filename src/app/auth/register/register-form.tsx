@@ -126,8 +126,8 @@ export function RegisterForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Имя пользователя</FormLabel>
-              <FormControl>
-                <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-1">
+                <FormControl>
                   <Input
                     placeholder="ivan.ivanov"
                     {...field}
@@ -136,15 +136,14 @@ export function RegisterForm() {
                       fetchUsername(e.target.value);
                     }}
                   />
+                </FormControl>
 
-                  {usernameFound === true && (
-                    <div className="text-xs">
-                      Пользователь с таким именем уже существует, выберите
-                      другое
-                    </div>
-                  )}
-                </div>
-              </FormControl>
+                {usernameFound === true && (
+                  <div className="text-xs">
+                    Пользователь с таким именем уже существует, выберите другое
+                  </div>
+                )}
+              </div>
               <FormDescription>
                 По этому имени пользователя вас можно будет найти в поиске.
               </FormDescription>
