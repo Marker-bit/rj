@@ -1,7 +1,7 @@
 import "@/app/globals.css";
 import { startOfToday } from "date-fns";
 import type React from "react";
-import { AgentSuspense } from "@/components/agent/agent-suspense";
+import { AgentGate } from "@/components/agent/agent-gate";
 import NavBar from "@/components/navigation/navbar";
 import RecommendationBar from "@/components/navigation/recommendation-bar";
 import { db } from "@/lib/db";
@@ -12,7 +12,9 @@ export default async function Layout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const auth = validateRequest().then(async ({ user }) => {
+  const authResult = validateRequest();
+
+  const auth = authResult.then(async ({ user }) => {
     if (!user) {
       return { user: null, unread: null };
     }
@@ -30,7 +32,7 @@ export default async function Layout({
     });
     return { user, unread };
   });
-  const events = validateRequest().then(({ user }) =>
+  const events = authResult.then(({ user }) =>
     user
       ? db.readEvent.findMany({
           where: {
@@ -48,7 +50,7 @@ export default async function Layout({
       : [],
   );
 
-  const recommendationsAvailable = validateRequest().then(async ({ user }) => {
+  const recommendationsAvailable = authResult.then(async ({ user }) => {
     if (!user) {
       return null;
     }
@@ -72,25 +74,14 @@ export default async function Layout({
     return res;
   });
 
-  const aiEnabled = validateRequest().then(async ({ user }) => {
-    if (!user) {
-      return false;
-    }
-
-    const res = await db.user.findUniqueOrThrow({
-      where: {
-        id: user.id,
-      },
-    });
-    return res.aiEnabled;
-  });
+  const aiEnabled = authResult.then(({ user }) => user?.aiEnabled ?? false);
 
   return (
     <div>
       <NavBar events={events} auth={auth} />
       <RecommendationBar recommendations={recommendationsAvailable} />
       <div className="w-full overflow-auto">{children}</div>
-      <AgentSuspense aiEnabled={aiEnabled} />
+      <AgentGate aiEnabled={aiEnabled} />
     </div>
   );
 }

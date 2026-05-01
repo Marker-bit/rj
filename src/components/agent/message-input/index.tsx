@@ -4,12 +4,6 @@ import { useImperativeHandle, useRef, useState } from "react";
 import { ToolSelector } from "@/components/agent/message-input/tool-selector";
 import { Button } from "@/components/ui/button";
 
-const _items = [
-  { label: "Next.js", value: "next" },
-  { label: "Vite", value: "vite" },
-  { label: "Astro", value: "astro" },
-];
-
 export type MessageInputRef = {
   setMessage: (message: string) => void;
 };

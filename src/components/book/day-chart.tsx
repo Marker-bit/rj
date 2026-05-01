@@ -1,6 +1,6 @@
 "use client";
 
-import { format, subDays } from "date-fns";
+import { format } from "date-fns";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import {
   type ChartConfig,
@@ -11,16 +11,6 @@ import {
 import { dateToString } from "@/lib/utils";
 
 export const description = "A bar chart";
-
-const _chartData = [
-  { date: subDays(new Date(), 1), pagesRead: 100 },
-  { date: new Date(), pagesRead: 186 },
-  // { month: "February", pagesRead: 305 },
-  // { month: "March", pagesRead: 237 },
-  // { month: "April", pagesRead: 73 },
-  // { month: "May", pagesRead: 209 },
-  // { month: "June", pagesRead: 214 },
-];
 
 const chartConfig = {
   pagesRead: {
@@ -34,23 +24,32 @@ export function DayChart({
 }: {
   data: { date: Date; pagesRead: number }[];
 }) {
+  const chartData = data.map((item) => ({
+    ...item,
+    date: new Date(item.date),
+  }));
+
   return (
     <ChartContainer config={chartConfig}>
-      <BarChart accessibilityLayer data={data}>
+      <BarChart accessibilityLayer data={chartData}>
         <CartesianGrid vertical={false} />
         <XAxis
           dataKey="date"
           tickLine={false}
           tickMargin={10}
           axisLine={false}
-          tickFormatter={(value: Date) => format(value, "dd.MM")}
+          tickFormatter={(value: Date | string | number) =>
+            format(new Date(value), "dd.MM")
+          }
         />
         <YAxis tickLine={false} tickMargin={10} dataKey="pagesRead" />
         <ChartTooltip
           content={
             <ChartTooltipContent
               label="date"
-              labelFormatter={(value: Date) => dateToString(value)}
+              labelFormatter={(value: Date | string | number) =>
+                dateToString(new Date(value))
+              }
             />
           }
         />

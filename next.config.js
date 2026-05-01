@@ -35,9 +35,6 @@ const nextConfig = {
     },
   },
   pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
-  typescript: {
-    ignoreBuildErrors: true,
-  },
   // experimental: {
   //   turbo: {
   //     resolveExtensions: [

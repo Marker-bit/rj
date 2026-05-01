@@ -23,7 +23,7 @@ export async function POST(
     return NextResponse.json({ error: "Цвет не указан" }, { status: 400 });
   }
 
-  const _updateBook = await db.book.update({
+  await db.book.update({
     where: {
       id: bookId,
       userId: user.id,

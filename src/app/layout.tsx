@@ -1,16 +1,14 @@
-import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Inter, Nunito_Sans } from "next/font/google";
 import "@/app/globals.css";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "@/app/(app)/api/uploadthing/core";
+import { Analytics } from "@/components/analytics";
 import { QueryProvider } from "@/components/providers/query-client-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import ClientUmamiAnalytics from "@/components/umami-analytics";
 
 const nunitoSans = Nunito_Sans({ variable: "--font-sans" });
 
@@ -78,19 +76,7 @@ export default async function RootLayout({
                 routerConfig={extractRouterConfig(ourFileRouter)}
               />
               {children}
-              {isVercel ? (
-                <>
-                  <Analytics />
-                  <SpeedInsights />
-                </>
-              ) : (
-                <ClientUmamiAnalytics
-                  dryRun={process.env.NODE_ENV === "development"}
-                  debug={process.env.NODE_ENV === "development"}
-                  websiteId={process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID}
-                  src={process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL}
-                />
-              )}
+              <Analytics isVercel={isVercel} />
               <Toaster />
             </TooltipProvider>
           </ThemeProvider>

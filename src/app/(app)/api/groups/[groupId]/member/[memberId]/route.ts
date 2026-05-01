@@ -78,7 +78,7 @@ export async function PATCH(
     );
   }
 
-  const _updatedMember = await db.groupMember.update({
+  await db.groupMember.update({
     where: {
       id: params.memberId,
     },

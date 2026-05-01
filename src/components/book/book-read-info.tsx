@@ -40,7 +40,7 @@ export default function BookReadInfo({
   const [currentStep, setCurrentStep] = useState(0);
   const [direction, setDirection] = useState<-1 | 0 | 1>(0);
   const chartData = useMemo(
-    () => getEventDays(book.readEvents.toReversed()),
+    () => getEventDays([...book.readEvents].reverse()),
     [book.readEvents],
   );
 
@@ -53,7 +53,10 @@ export default function BookReadInfo({
           startOfDay(firstEvent.readAt),
         ) + 1
       : 1;
-  const avg = chartData.reduce((a, b) => a + b.pagesRead, 0) / chartData.length;
+  const avg =
+    chartData.length > 0
+      ? chartData.reduce((a, b) => a + b.pagesRead, 0) / chartData.length
+      : 0;
 
   const steps: Step[] = [
     {
@@ -98,6 +101,12 @@ export default function BookReadInfo({
     setIsClient(true);
   }, []);
 
+  useEffect(() => {
+    if (currentStep >= steps.length) {
+      setCurrentStep(Math.max(steps.length - 1, 0));
+    }
+  }, [currentStep, steps.length]);
+
   const close = () => {
     setOpen(false);
     if (window.location.search) {
@@ -106,6 +115,10 @@ export default function BookReadInfo({
   };
 
   if (!isClient) {
+    return null;
+  }
+
+  if (!step) {
     return null;
   }
 

@@ -28,6 +28,7 @@ export const lucia = new Lucia(adapter, {
       verified: attributes.verified,
       admin: attributes.admin,
       hideActivity: attributes.hideActivity,
+      aiEnabled: attributes.aiEnabled,
     };
   },
 });
@@ -51,4 +52,5 @@ interface DatabaseUserAttributes {
   verified: boolean;
   admin: boolean;
   hideActivity: boolean;
+  aiEnabled: boolean;
 }

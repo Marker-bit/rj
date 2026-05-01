@@ -61,7 +61,7 @@ export function ShareBookModal({
     toast.promise(
       async () => {
         setLoading(true);
-        const _resp = await deleteBookLink(id);
+        await deleteBookLink(id);
         setLoading(false);
         router.refresh();
       },

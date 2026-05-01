@@ -47,11 +47,14 @@ export default async function Page() {
         <PasteRecommendation />
       </div>
       <div className="flex flex-col gap-2 w-full max-w-full">
-        {recommendations.map((r) => (
-          <div
-            key={r.id}
-            className="flex flex-col items-start gap-2 border p-4 rounded-xl"
-          >
+        {recommendations.map((r) => {
+          const createdBooksCount = r["_count"].createdBooks;
+
+          return (
+            <div
+              key={r.id}
+              className="flex flex-col items-start gap-2 border p-4 rounded-xl"
+            >
             <div className="text-2xl font-bold -mb-2 wrap-anywhere">
               {r.slogan}
             </div>
@@ -97,8 +100,8 @@ export default async function Page() {
                 {differenceInDays(r.endsOn, r.startsOn) + 1} дн.)
               </IconBadge>
               <IconBadge icon={BookIcon} variant="outline">
-                {r._count.createdBooks}{" "}
-                {declOfNum(r._count.createdBooks, ["книга", "книги", "книг"])}
+                {createdBooksCount}{" "}
+                {declOfNum(createdBooksCount, ["книга", "книги", "книг"])}
               </IconBadge>
             </div>
             <div className="flex gap-2 flex-wrap">
@@ -107,8 +110,9 @@ export default async function Page() {
               <DuplicateRecommendationButton recommendationId={r.id} />
               <CopyRecommendationButton recommendation={r} />
             </div>
-          </div>
-        ))}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

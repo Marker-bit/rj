@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
       title,
     },
   });
-  const _member = await db.groupMember.create({
+  await db.groupMember.create({
     data: {
       role: GroupMemberRole.CREATOR,
       userId: user.id,

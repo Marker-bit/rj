@@ -1,4 +1,4 @@
-import type { Metadata, ResolvingMetadata } from "next";
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { db } from "@/lib/db";
@@ -13,14 +13,9 @@ type Props = {
 
 export async function generateMetadata(
   props: Props,
-  parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const params = await props.params;
   const username = params.username;
-  const before = await parent;
-
-  // optionally access and extend (rather than replace) parent metadata
-  const _previousImages = before.openGraph?.images || [];
 
   return {
     title: `@${username} на RJ`,

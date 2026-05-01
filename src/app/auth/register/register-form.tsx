@@ -56,7 +56,7 @@ export function RegisterForm() {
       if (res.ok) {
         try {
           const data = await res.json();
-          if (posthog.__loaded) {
+          if (posthog["__loaded"]) {
             posthog.identify(data.id);
           }
         } catch (error) {

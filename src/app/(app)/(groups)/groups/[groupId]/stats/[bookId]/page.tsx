@@ -61,15 +61,6 @@ export default async function Page(props: {
     return null;
   }
 
-  const _stats = [
-    {
-      title: "Читающих участников",
-      description: "Участников, добавивших себе эту книгу",
-      value: groupBook.book.length,
-      max: group.members.length,
-    },
-  ];
-
   const ratingDict: Record<string, number | null> = {};
 
   group.members.forEach((m) => {

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 
 import { type Area, getCroppedImg } from "@/lib/crop/utils";
 import "react-image-crop/dist/ReactCrop.css";
@@ -25,7 +25,6 @@ export function CropImage({
   onSelect: (file: File) => void;
 }) {
   const [imgSrc, setImgSrc] = useState("");
-  const _previewCanvasRef = useRef<HTMLCanvasElement>(null);
   const [cropData, setCropData] = React.useState<Area | null>(null);
 
   const reader = new FileReader();

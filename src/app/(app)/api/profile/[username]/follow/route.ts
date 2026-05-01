@@ -35,7 +35,7 @@ export async function POST(
     );
   }
 
-  const _follow = await db.follow.create({
+  await db.follow.create({
     data: {
       firstId: currentUser.id,
       secondId: user.id,
