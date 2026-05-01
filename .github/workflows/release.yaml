@@ -27,6 +27,9 @@ jobs:
         id: context
         env:
           INPUT_TAG: ${{ inputs.tag }}
+          RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+          SERVER_URL: ${{ github.server_url }}
         run: |
           set -euo pipefail
 
@@ -37,6 +40,30 @@ jobs:
           fi
 
           git fetch --force --tags
+
+          if [ -z "${RELEASE_TOKEN:-}" ]; then
+            echo "Set a RELEASE_TOKEN repository secret with permission to create releases." >&2
+            exit 1
+          fi
+
+          release_api_url="${SERVER_URL%/}/api/v1/repos/${REPOSITORY}/releases/tags/${tag}"
+          release_status="$(
+            curl -sS -o release-check.json -w "%{http_code}" \
+              -H "Authorization: token $RELEASE_TOKEN" \
+              "$release_api_url"
+          )"
+
+          if [ "$release_status" = "200" ]; then
+            echo "Release $tag already exists; skipping draft creation."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [ "$release_status" != "404" ]; then
+            echo "Failed to check release $tag. HTTP $release_status:" >&2
+            cat release-check.json >&2
+            exit 1
+          fi
 
           if git rev-parse -q --verify "refs/tags/${tag}" >/dev/null; then
             target_commit="$(git rev-list -n 1 "$tag")"
@@ -55,6 +82,7 @@ jobs:
           fi
 
           {
+            echo "skip=false"
             echo "tag=$tag"
             echo "previous_tag=$previous_tag"
             echo "range=$range"
@@ -67,6 +95,7 @@ jobs:
           fi
 
       - name: Generate changelog draft
+        if: steps.context.outputs.skip != 'true'
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_MODEL: ${{ secrets.OPENAI_MODEL }}
@@ -152,6 +181,7 @@ jobs:
           PY
 
       - name: Create draft Forgejo release
+        if: steps.context.outputs.skip != 'true'
         env:
           RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
           RELEASE_TAG: ${{ steps.context.outputs.tag }}
