@@ -4,7 +4,6 @@
 
 @import "uploadthing/tw/v4";
 
-@import "shadcn/tailwind.css";
 @source "../node_modules/@uploadthing/react/dist";
 
 @custom-variant dark (&:is(.dark *));
