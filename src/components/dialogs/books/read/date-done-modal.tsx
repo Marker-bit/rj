@@ -33,9 +33,9 @@ export function DateDoneModal({
   const days: Date[] = [];
 
   for (const event of book.readEvents) {
-    const date = startOfDay(event.readAt);
-    if (!days.includes(date)) {
-      days.push(date);
+    const eventDate = startOfDay(event.readAt);
+    if (!days.includes(eventDate)) {
+      days.push(eventDate);
     }
   }
 

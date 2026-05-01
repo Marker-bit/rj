@@ -68,10 +68,10 @@ export default function AdminNavBar({
             <PopoverContent align="start" className="w-36 p-1 md:hidden">
               <NavigationMenu className="max-w-none *:w-full">
                 <NavigationMenuList className="flex-col items-start gap-0 md:gap-2">
-                  {navigationLinks.map((link, index) => {
+                  {navigationLinks.map((link) => {
                     const Icon = link.icon;
                     return (
-                      <NavigationMenuItem key={index} className="w-full">
+                      <NavigationMenuItem key={link.href} className="w-full">
                         <NavigationMenuLink
                           className="flex-row items-center gap-2 py-1.5"
                           render={
@@ -112,10 +112,10 @@ export default function AdminNavBar({
         {/* Middle area */}
         <NavigationMenu className="max-md:hidden">
           <NavigationMenuList className="gap-2">
-            {navigationLinks.map((link, index) => {
+            {navigationLinks.map((link) => {
               const Icon = link.icon;
               return (
-                <NavigationMenuItem key={index}>
+                <NavigationMenuItem key={link.href}>
                   <NavigationMenuLink
                     className="text-foreground hover:text-primary flex-row items-center gap-2 py-1.5 font-medium"
                     render={

@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
-import { Plus, SettingsIcon, Trash, X } from "lucide-react";
+import { Plus, Trash, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import posthog from "posthog-js";
@@ -22,7 +22,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { UploadButton } from "@/components/uploadthing";
 import { createBook } from "@/lib/actions/books";
-import { cn } from "@/lib/utils";
 import { bookSchema } from "@/lib/validation/schemas";
 import { DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { DrawerDialog } from "../ui/drawer-dialog";
@@ -71,7 +70,7 @@ export function BookForm({
         defaultFields.map((d) => ({ title: d, value: "" })),
       );
     }
-  }, [defaultFields]);
+  }, [defaultFields, form]);
 
   async function onSubmit(values: z.input<typeof bookSchema>) {
     setLoading(true);
@@ -223,16 +222,16 @@ export function BookForm({
               <SettingsIcon />
             </Button>*/}
           </div>
-          {fields.map((field, index) => (
-            <FormItem key={field.id}>
+          {fields.map((formField, index) => (
+            <FormItem key={formField.id}>
               <FormControl>
                 <div className="flex flex-col items-center gap-2 sm:flex-row">
                   <FormField
                     control={form.control}
                     name={`fields.${index}.title`}
-                    render={({ field }) => (
+                    render={({ field: titleField }) => (
                       <FormItem className="w-full">
-                        <Input {...field} placeholder="Название поля" />
+                        <Input {...titleField} placeholder="Название поля" />
                         <FormMessage />
                       </FormItem>
                     )}
@@ -240,9 +239,9 @@ export function BookForm({
                   <FormField
                     control={form.control}
                     name={`fields.${index}.value`}
-                    render={({ field }) => (
+                    render={({ field: valueField }) => (
                       <FormItem className="w-full">
-                        <Input {...field} placeholder="Значение поля" />
+                        <Input {...valueField} placeholder="Значение поля" />
                         <FormMessage />
                       </FormItem>
                     )}

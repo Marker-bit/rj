@@ -19,6 +19,7 @@ import {
 import { DayChart } from "./day-chart";
 
 type Step = {
+  id: string;
   title: string;
   description?: string;
   highlightedText?: string;
@@ -56,11 +57,13 @@ export default function BookReadInfo({
 
   const steps: Step[] = [
     {
+      id: "finished",
       title: "Поздравляем, вы прочитали эту книгу!",
       description: "Вся информация о ней",
     },
     firstEvent && lastEvent
       ? {
+          id: "dates",
           title: "Вы читали",
           highlightedText: `с ${formatDate(firstEvent.readAt, "d MMMM, yyyy", { locale: ru })} по ${formatDate(lastEvent.readAt, "d MMMM, yyyy", { locale: ru })}`,
           highlightedTextDescription: `Всего вы читали ${readingTime} ${declOfNum(
@@ -70,6 +73,7 @@ export default function BookReadInfo({
         }
       : undefined,
     {
+      id: "average",
       title: "В среднем, вы читали",
       highlightedText: `${avg.toFixed(1)} ${declOfNum(Math.floor(avg), [
         "страницу",
@@ -79,6 +83,7 @@ export default function BookReadInfo({
       highlightedTextDescription: "в день",
     },
     {
+      id: "chart",
       title: "Вот количество страниц, прочитанных в книге",
       description: "Показан каждый день от первого до последнего",
       component: <DayChart data={chartData} />,
@@ -112,16 +117,17 @@ export default function BookReadInfo({
           Вся информация о чтении книги
         </DialogDescription>
         <div className="flex items-center justify-center w-full gap-1">
-          {steps.map((_, i) => (
+          {steps.map((stepItem, stepIndex) => (
             <button
-              key={i}
+              key={stepItem.id}
+              type="button"
               className={cn(
                 "h-2 rounded-full transition-all duration-300 cursor-pointer",
-                currentStep === i
+                currentStep === stepIndex
                   ? "bg-primary w-6"
                   : "bg-primary/30 w-2 hover:bg-primary/50",
               )}
-              onClick={() => setCurrentStep(i)}
+              onClick={() => setCurrentStep(stepIndex)}
             />
           ))}
         </div>
@@ -144,12 +150,12 @@ export default function BookReadInfo({
                 animate="active"
                 exit="exit"
                 variants={{
-                  initial: (direction) => {
-                    return { x: `${110 * direction}%`, opacity: 0 };
+                  initial: (animationDirection) => {
+                    return { x: `${110 * animationDirection}%`, opacity: 0 };
                   },
                   active: { x: "0%", opacity: 1 },
-                  exit: (direction) => {
-                    return { x: `${-110 * direction}%`, opacity: 0 };
+                  exit: (animationDirection) => {
+                    return { x: `${-110 * animationDirection}%`, opacity: 0 };
                   },
                 }}
                 transition={{ duration: 0.5, type: "spring", bounce: 0 }}

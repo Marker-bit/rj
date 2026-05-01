@@ -27,9 +27,9 @@ export function MessageInput({
   const inputRef = useRef<HTMLInputElement>(null);
 
   useImperativeHandle(ref, () => ({
-    setMessage: (message: string) => {
+    setMessage: (nextMessage: string) => {
       inputRef.current?.focus();
-      setMessage(message);
+      setMessage(nextMessage);
     },
   }));
 

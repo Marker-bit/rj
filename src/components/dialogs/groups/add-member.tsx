@@ -40,6 +40,7 @@ export default function AddMember({
             ({ second: friend }: any) =>
               group.members.every((m: any) => m.userId !== friend.id) && (
                 <button
+                  type="button"
                   key={friend.id}
                   className="flex items-center gap-2 rounded-xl p-2 hover:bg-neutral-100 dark:hover:bg-neutral-900"
                   onClick={() => {

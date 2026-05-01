@@ -37,6 +37,7 @@ export async function GET(
       <div style={{ opacity: 0.5, fontSize: 40, marginBottom: 20 }}>
         Читательский дневник
       </div>
+      {/* oxlint-disable-next-line eslint-plugin-next(no-img-element) */}
       <img
         alt="Avatar"
         width="256"

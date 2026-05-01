@@ -14,7 +14,7 @@ import {
 
 export function StreakCounter({
   events,
-  user,
+  user: _user,
 }: {
   events: ReadEvent[];
   user: User;
@@ -25,6 +25,15 @@ export function StreakCounter({
     new Date(),
     startOfWeek(new Date(), { weekStartsOn: 1 }),
   );
+  const currentWeekStart = startOfWeek(new Date(), { weekStartsOn: 1 });
+  const weekDays = days.map((pages, dayIndex) => {
+    const weekDate = addDays(currentWeekStart, dayIndex);
+    return {
+      pages,
+      date: weekDate,
+      key: weekDate.toISOString(),
+    };
+  });
 
   // if (
   //   (streak % 50 !== 0 && user.id !== "clsqfrmec000013rgpmmb8eok") ||
@@ -45,40 +54,40 @@ export function StreakCounter({
               declOfNum(days[nowDay], ["страницу", "страницы", "страниц"])}
         </p>
         <div className="grid grid-cols-7 gap-2 self-start max-sm:self-center">
-          {Array.from({ length: 7 }).map((_, i) => (
-            <HoverCard key={i} openDelay={100} closeDelay={100}>
+          {weekDays.map((weekDay, dayIndex) => (
+            <HoverCard key={weekDay.key} openDelay={100} closeDelay={100}>
               <HoverCardTrigger asChild>
                 <div className="flex flex-col items-center gap-1">
                   <div
-                    key={i}
                     className={cn(
                       "size-8 rounded-xl",
-                      days[i] === 0
+                      weekDay.pages === 0
                         ? "bg-zinc-300 dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-700"
                         : "bg-green-300 dark:bg-green-700 border border-green-500",
-                      nowDay === i && "border-4 border-black dark:border-white",
+                      nowDay === dayIndex &&
+                        "border-4 border-black dark:border-white",
                     )}
                   />
 
                   <p className="text-xs md:hidden">
                     {format(
-                      addDays(startOfWeek(new Date(), { weekStartsOn: 1 }), i),
+                      weekDay.date,
                       "EEE",
                       { locale: ru },
                     ).slice(0, 2)}
                   </p>
-                  <p className="text-xs md:hidden">{days[i]}</p>
+                  <p className="text-xs md:hidden">{weekDay.pages}</p>
                 </div>
               </HoverCardTrigger>
               <HoverCardContent className="w-80">
                 <div className="flex items-center justify-between space-x-4">
                   <div className="flex size-8 items-center justify-center rounded-full bg-green-300 dark:bg-green-700">
-                    {days[i]}
+                    {weekDay.pages}
                   </div>
 
                   {capitalizeFirstLetter(
                     format(
-                      addDays(startOfWeek(new Date(), { weekStartsOn: 1 }), i),
+                      weekDay.date,
                       "EEEE",
                       { locale: ru },
                     ),

@@ -12,7 +12,7 @@ export function FileArea({
   onSubmit: (file: File) => void;
   isLoading: boolean;
 }) {
-  const areaRef = useRef<HTMLDivElement>(null);
+  const areaRef = useRef<HTMLButtonElement>(null);
   const [isDragging, setIsDragging] = useState<
     "false" | "allowed" | "not-allowed"
   >("false");
@@ -39,10 +39,10 @@ export function FileArea({
   };
 
   return (
-    <div
+    <button
+      type="button"
       className="rounded-lg h-40 w-full flex flex-col border items-center justify-center data-[dragging]:border-blue-500 data-[dragging]:text-blue-500 data-[dragging]:border-dashed data-[dragging]:border-2 data-[notallowed]:text-red-500 data-[notallowed]:border-red-500 select-none data-[active]:cursor-pointer data-[active]:hover:bg-accent/20 transition-[background-color]"
       ref={areaRef}
-      role="button"
       onClick={openFilePicker}
       onDragEnter={(e) => {
         if (isLoading) return;
@@ -87,6 +87,7 @@ export function FileArea({
       data-dragging={isDragging === "allowed" || undefined}
       data-notallowed={isDragging === "not-allowed" || undefined}
       data-active={!isLoading || undefined}
+      disabled={isLoading}
     >
       <div className="flex flex-col items-center justify-center px-4 py-3 text-center">
         <div
@@ -112,6 +113,6 @@ export function FileArea({
           <p className="text-xs opacity-60">Максимальный размер: {maxMB}МБ</p>
         )}
       </div>
-    </div>
+    </button>
   );
 }

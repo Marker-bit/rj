@@ -76,7 +76,7 @@ export function MemberActions({
   //   }
   // }
 
-  const changeRole = async (role: GroupMemberRole) => {
+  const changeRole = async (nextRole: GroupMemberRole) => {
     toast.promise(
       async () => {
         const resp = await fetch(`/api/groups/${groupId}/member/${member.id}`, {
@@ -84,7 +84,7 @@ export function MemberActions({
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ role }),
+          body: JSON.stringify({ role: nextRole }),
         });
         const res = await resp.json();
         if (res.error) {

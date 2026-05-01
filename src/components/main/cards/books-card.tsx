@@ -125,6 +125,7 @@ export default function BooksCard() {
                     <div className="flex grow justify-between gap-3">
                       <p className="text-sm">Книг ещё нет</p>
                       <button
+                        type="button"
                         className="group text-sm font-medium whitespace-nowrap cursor-pointer"
                         onClick={() => setOpen(true)}
                       >

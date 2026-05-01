@@ -15,8 +15,8 @@ export default function Page() {
         <p className="text-lg">A: {q.answer}</p>
       </div> */}
       <Accordion type="multiple">
-        {faq.map((q, i) => (
-          <AccordionItem key={i} value={`item-${i}`}>
+        {faq.map((q) => (
+          <AccordionItem key={q.question} value={q.question}>
             <AccordionTrigger>{q.question}</AccordionTrigger>
             <AccordionContent>{q.answer}</AccordionContent>
           </AccordionItem>

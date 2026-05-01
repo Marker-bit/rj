@@ -43,8 +43,12 @@ export async function PATCH(
     );
   }
 
-  const userMember = group.members.find((member) => member.userId === user.id);
-  const member = group.members.find((member) => member.id === params.memberId);
+  const userMember = group.members.find(
+    (groupMember) => groupMember.userId === user.id,
+  );
+  const member = group.members.find(
+    (groupMember) => groupMember.id === params.memberId,
+  );
   const body = (await req.json()) as { role: GroupMemberRole };
 
   if (userMember?.role !== GroupMemberRole.CREATOR) {
@@ -128,8 +132,12 @@ export async function DELETE(
     );
   }
 
-  const userMember = group.members.find((member) => member.userId === user.id);
-  const member = group.members.find((member) => member.id === params.memberId);
+  const userMember = group.members.find(
+    (groupMember) => groupMember.userId === user.id,
+  );
+  const member = group.members.find(
+    (groupMember) => groupMember.id === params.memberId,
+  );
 
   if (
     userMember?.role === GroupMemberRole.MODERATOR &&

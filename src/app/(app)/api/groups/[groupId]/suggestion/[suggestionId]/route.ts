@@ -41,7 +41,9 @@ export async function POST(
       { status: 404 },
     );
   }
-  const member = group.members.find((member) => member.userId === user.id);
+  const member = group.members.find(
+    (groupMember) => groupMember.userId === user.id,
+  );
 
   if (!member) {
     return NextResponse.json(

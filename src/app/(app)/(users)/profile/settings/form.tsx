@@ -8,7 +8,7 @@ import type { User as LuciaUser } from "lucia";
 import { Check, LogOut, Plus, PlusIcon, X, XIcon } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import {
   generateClientDropzoneAccept,
@@ -66,6 +66,11 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
   const [disableRecs, setDisableRecs] = useLocalStorage("disableRecs", false);
   const [isClient, setIsClient] = useState(false);
   const [fields, setFields] = useLocalStorage<string[]>("fields", []);
+  const defaultFields = fields.map((value, fieldIndex) => ({
+    value,
+    storageIndex: fieldIndex,
+    key: `${value}-${fieldIndex}`,
+  }));
 
   useEffect(() => {
     setIsClient(true);
@@ -376,26 +381,30 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
             />
             <div className="flex flex-wrap gap-2 items-center justify-start">
               <div className="font-semibold mr-4">Поля по умолчанию</div>
-              {fields.map((f, idx) => (
-                <div className="flex gap-2 w-40" key={idx}>
+              {defaultFields.map((defaultField) => (
+                <div className="flex gap-2 w-40" key={defaultField.key}>
                   <Input
-                    value={f}
+                    value={defaultField.value}
                     onChange={(evt) =>
-                      setFields((fields) => {
-                        fields[idx] = evt.target.value;
-                        return fields;
+                      setFields((currentFields) => {
+                        const nextFields = [...currentFields];
+                        nextFields[defaultField.storageIndex] =
+                          evt.target.value;
+                        return nextFields;
                       })
                     }
-                    placeholder={`Поле ${idx + 1}`}
+                    placeholder={`Поле ${defaultField.storageIndex + 1}`}
                   />
                   <Button
                     size="icon"
                     variant="outline"
                     type="button"
                     onClick={() =>
-                      setFields((f) => {
-                        f.splice(idx, 1);
-                        return f;
+                      setFields((currentFields) => {
+                        return currentFields.filter(
+                          (_, fieldIndex) =>
+                            fieldIndex !== defaultField.storageIndex,
+                        );
                       })
                     }
                   >
@@ -407,7 +416,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
                 size="icon"
                 variant="outline"
                 type="button"
-                onClick={() => setFields((f) => [...f, ""])}
+                onClick={() => setFields((currentFields) => [...currentFields, ""])}
               >
                 <PlusIcon />
               </Button>

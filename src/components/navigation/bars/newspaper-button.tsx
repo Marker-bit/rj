@@ -77,6 +77,7 @@ export default function NewspaperButton() {
               </p>
             </div>
             <button
+              type="button"
               className="text-xs font-medium hover:underline"
               onClick={handleNavigation}
             >

@@ -8,7 +8,7 @@ import {
 import React, { useRef } from "react";
 
 export function ContainerScroll({
-  titleComponent,
+  titleComponent: _titleComponent,
   children,
 }: {
   titleComponent: string | React.ReactNode;

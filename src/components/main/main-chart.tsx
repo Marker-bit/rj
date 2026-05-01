@@ -36,7 +36,7 @@ const chartConfig = {
 
 export default function MainChart({
   events,
-  profile,
+  profile: _profile,
 }: {
   events: any[];
   profile: any;

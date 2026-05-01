@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 export function DrawerDialog({
   children,
   className,
-  title,
+  title: _title,
   ...props
 }: React.ComponentProps<typeof DrawerPrimitive.Root> & {
   className?: string;

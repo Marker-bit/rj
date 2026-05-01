@@ -51,7 +51,7 @@ export function Message({
             if (!Array.isArray(partGroup) && isTextUIPart(partGroup)) {
               return (
                 <Streamdown
-                  key={idx}
+                  key={`text-${partGroup.text}`}
                   isAnimating={isStreaming}
                   className={idx !== 0 ? "mt-2" : ""}
                 >
@@ -61,7 +61,11 @@ export function Message({
             }
             if (Array.isArray(partGroup)) {
               return (
-                <Fragment key={idx}>
+                <Fragment
+                  key={`tools-${partGroup
+                    .map((part) => part.toolCallId)
+                    .join("-")}`}
+                >
                   <div className="h-2" />
                   {partGroup.map((part, index) => {
                     const toolName = part.type.slice(5);

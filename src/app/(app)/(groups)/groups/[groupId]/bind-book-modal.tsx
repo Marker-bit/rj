@@ -24,8 +24,8 @@ export default function BindBookModal({
 
   useEffect(() => {
     const updateBooks = async () => {
-      const books = await getBooks();
-      setBooks(books);
+      const availableBooks = await getBooks();
+      setBooks(availableBooks);
     };
 
     updateBooks();
@@ -63,6 +63,7 @@ export default function BindBookModal({
         <div className="flex flex-col gap-4">
           {books.map((book) => (
             <button
+              type="button"
               className="flex flex-col gap-1"
               onClick={() => bindBook(book.id)}
               key={book.id}

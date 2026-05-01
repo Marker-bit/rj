@@ -1,5 +1,9 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
+const answerSkeletons = Array.from({ length: 5 }, (_, index) => ({
+  id: `support-answer-skeleton-${index}`,
+}));
+
 export default function Loading() {
   return (
     <div className="m-2 flex flex-col space-y-2">
@@ -7,8 +11,8 @@ export default function Loading() {
       <Skeleton className="h-10 w-56 rounded-md" />
       <Skeleton className="h-16 w-full rounded-xl" />
 
-      {Array.from({ length: 5 }).map((_, i) => (
-        <Skeleton className="h-32 w-full rounded-xl" key={`skeleton-${i}`} />
+      {answerSkeletons.map((skeleton) => (
+        <Skeleton className="h-32 w-full rounded-xl" key={skeleton.id} />
       ))}
     </div>
   );

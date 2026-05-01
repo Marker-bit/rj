@@ -75,12 +75,13 @@ export function BookInfoModal({
               )}
             </div>
             {book.description && (
-              <pre
-                className="relative mt-2 cursor-pointer line-clamp-5 overflow-hidden text-wrap font-sans text-black/70 dark:text-white/70"
+              <button
+                type="button"
+                className="relative mt-2 line-clamp-5 cursor-pointer overflow-hidden text-left text-wrap font-sans text-black/70 dark:text-white/70"
                 onClick={() => setDescriptionDrawerOpen(true)}
               >
                 {book.description}
-              </pre>
+              </button>
             )}
           </div>
         </div>

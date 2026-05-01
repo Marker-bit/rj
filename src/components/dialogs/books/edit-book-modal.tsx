@@ -227,8 +227,8 @@ export function EditBookModal({
             )}
           />
           <div>
-            {fields.map((field, index) => (
-              <FormItem key={field.id}>
+            {fields.map((formField, index) => (
+              <FormItem key={formField.id}>
                 <FormLabel className={cn(index !== 0 && "sr-only")}>
                   Поля
                 </FormLabel>
@@ -240,9 +240,9 @@ export function EditBookModal({
                     <FormField
                       control={form.control}
                       name={`fields.${index}.title`}
-                      render={({ field }) => (
+                      render={({ field: titleField }) => (
                         <FormItem className="w-full">
-                          <Input {...field} placeholder="Название поля" />
+                          <Input {...titleField} placeholder="Название поля" />
                           <FormMessage />
                         </FormItem>
                       )}
@@ -250,9 +250,9 @@ export function EditBookModal({
                     <FormField
                       control={form.control}
                       name={`fields.${index}.value`}
-                      render={({ field }) => (
+                      render={({ field: valueField }) => (
                         <FormItem className="w-full">
-                          <Input {...field} placeholder="Значение поля" />
+                          <Input {...valueField} placeholder="Значение поля" />
                           <FormMessage />
                         </FormItem>
                       )}

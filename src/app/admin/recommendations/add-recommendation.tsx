@@ -393,7 +393,7 @@ export function PasteRecommendation() {
     try {
       const res = await addRecommendation(JSON.parse(copiedText));
       toast.success(res.message);
-    } catch (_e) {
+    } catch {
       toast.error("Возникла проблема при вставке рекомендации");
     }
     setLoading(false);

@@ -54,47 +54,48 @@ const useCredenzaContext = () => {
 
 const Credenza = ({ children, ...props }: RootCredenzaProps) => {
   const isDesktop = !useIsMobile();
-  const Credenza = isDesktop ? Dialog : Drawer;
+  const CredenzaComponent = isDesktop ? Dialog : Drawer;
+  const contextValue = React.useMemo(() => ({ isDesktop }), [isDesktop]);
 
   return (
-    <CredenzaContext.Provider value={{ isDesktop }}>
-      <Credenza {...props} {...(!isDesktop && { autoFocus: true })}>
+    <CredenzaContext.Provider value={contextValue}>
+      <CredenzaComponent {...props} {...(!isDesktop && { autoFocus: true })}>
         {children}
-      </Credenza>
+      </CredenzaComponent>
     </CredenzaContext.Provider>
   );
 };
 
 const CredenzaTrigger = ({ className, children, ...props }: CredenzaProps) => {
   const { isDesktop } = useCredenzaContext();
-  const CredenzaTrigger = isDesktop ? DialogTrigger : DrawerTrigger;
+  const TriggerComponent = isDesktop ? DialogTrigger : DrawerTrigger;
 
   return (
-    <CredenzaTrigger className={className} {...props}>
+    <TriggerComponent className={className} {...props}>
       {children}
-    </CredenzaTrigger>
+    </TriggerComponent>
   );
 };
 
 const CredenzaClose = ({ className, children, ...props }: CredenzaProps) => {
   const { isDesktop } = useCredenzaContext();
-  const CredenzaClose = isDesktop ? DialogClose : DrawerClose;
+  const CloseComponent = isDesktop ? DialogClose : DrawerClose;
 
   return (
-    <CredenzaClose className={className} {...props}>
+    <CloseComponent className={className} {...props}>
       {children}
-    </CredenzaClose>
+    </CloseComponent>
   );
 };
 
 const CredenzaContent = ({ className, children, ...props }: CredenzaProps) => {
   const { isDesktop } = useCredenzaContext();
-  const CredenzaContent = isDesktop ? DialogContent : DrawerContent;
+  const ContentComponent = isDesktop ? DialogContent : DrawerContent;
 
   return (
-    <CredenzaContent className={className} {...props}>
+    <ContentComponent className={className} {...props}>
       {children}
-    </CredenzaContent>
+    </ContentComponent>
   );
 };
 
@@ -104,34 +105,34 @@ const CredenzaDescription = ({
   ...props
 }: CredenzaProps) => {
   const { isDesktop } = useCredenzaContext();
-  const CredenzaDescription = isDesktop ? DialogDescription : DrawerDescription;
+  const DescriptionComponent = isDesktop ? DialogDescription : DrawerDescription;
 
   return (
-    <CredenzaDescription className={className} {...props}>
+    <DescriptionComponent className={className} {...props}>
       {children}
-    </CredenzaDescription>
+    </DescriptionComponent>
   );
 };
 
 const CredenzaHeader = ({ className, children, ...props }: CredenzaProps) => {
   const { isDesktop } = useCredenzaContext();
-  const CredenzaHeader = isDesktop ? DialogHeader : DrawerHeader;
+  const HeaderComponent = isDesktop ? DialogHeader : DrawerHeader;
 
   return (
-    <CredenzaHeader className={className} {...props}>
+    <HeaderComponent className={className} {...props}>
       {children}
-    </CredenzaHeader>
+    </HeaderComponent>
   );
 };
 
 const CredenzaTitle = ({ className, children, ...props }: CredenzaProps) => {
   const { isDesktop } = useCredenzaContext();
-  const CredenzaTitle = isDesktop ? DialogTitle : DrawerTitle;
+  const TitleComponent = isDesktop ? DialogTitle : DrawerTitle;
 
   return (
-    <CredenzaTitle className={className} {...props}>
+    <TitleComponent className={className} {...props}>
       {children}
-    </CredenzaTitle>
+    </TitleComponent>
   );
 };
 
@@ -145,12 +146,12 @@ const CredenzaBody = ({ className, children, ...props }: CredenzaProps) => {
 
 const CredenzaFooter = ({ className, children, ...props }: CredenzaProps) => {
   const { isDesktop } = useCredenzaContext();
-  const CredenzaFooter = isDesktop ? DialogFooter : DrawerFooter;
+  const FooterComponent = isDesktop ? DialogFooter : DrawerFooter;
 
   return (
-    <CredenzaFooter className={className} {...props}>
+    <FooterComponent className={className} {...props}>
       {children}
-    </CredenzaFooter>
+    </FooterComponent>
   );
 };
 

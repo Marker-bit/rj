@@ -21,6 +21,7 @@ export default function EventRepeat({
       <Event event={events[0]} />
       <div className="flex items-center gap-2 rounded-xl border p-2">
         <button
+          type="button"
           className={cn(
             "flex size-12 p-2 items-center justify-center rounded-full border text-zinc-400 dark:text-zinc-600",
           )}

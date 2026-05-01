@@ -1,3 +1,4 @@
+/* oxlint-disable eslint-plugin-jsx-a11y(prefer-tag-over-role) */
 import type {
   ChatAddToolApproveResponseFunction,
   UITool,
@@ -59,13 +60,23 @@ export function ToolCall<TOOL extends UITool>({
     }
   }, [toolCall.state]);
 
+  const toggleExpanded = () => setIsExpanded((expanded) => !expanded);
+
   return (
     <div
       className={cn(
         "flex gap-2 items-stretch cursor-pointer group/tool-call",
         isLast && "pb-2",
       )}
-      onClick={() => setIsExpanded((a) => !a)}
+      onClick={toggleExpanded}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          toggleExpanded();
+        }
+      }}
+      role="button"
+      tabIndex={0}
     >
       <div className="flex flex-col w-6 shrink-0">
         <motion.div

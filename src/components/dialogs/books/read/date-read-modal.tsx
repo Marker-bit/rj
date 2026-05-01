@@ -49,14 +49,14 @@ export function DateReadModal({
   const input = useRef<HTMLInputElement>(null);
 
   const days = useMemo(() => {
-    const days: Date[] = [];
+    const eventDays: Date[] = [];
     for (const event of book.readEvents) {
-      const date = startOfDay(event.readAt);
-      if (!days.includes(date)) {
-        days.push(date);
+      const eventDate = startOfDay(event.readAt);
+      if (!eventDays.includes(eventDate)) {
+        eventDays.push(eventDate);
       }
     }
-    return days;
+    return eventDays;
   }, [book]);
 
   const handleClose = (b: boolean) => {

@@ -60,8 +60,8 @@ export async function Stats({
     const sunday = endOfISOWeek(new Date());
     return [monday, sunday];
   };
-  const date = new Date();
-  date.setHours(0, 0, 0, 0);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
   const [startOfWeek, _] = startAndEndOfWeek();
 
   const booksStats: Record<string, Record<string, number>> = {};
@@ -79,7 +79,7 @@ export async function Stats({
   if (events) {
     // events?.reverse();
     for (const event of events) {
-      const date = new Date(event.readAt);
+      const eventDate = new Date(event.readAt);
       if (!currentWeek[event.bookId]) {
         currentWeek[event.bookId] = {};
       }
@@ -88,24 +88,24 @@ export async function Stats({
       );
       const beforeEventIndex = currentBook.indexOf(event) - 1;
       const beforeEvent = currentBook[beforeEventIndex];
-      const day = getDay(date).toString();
+      const day = getDay(eventDate).toString();
       if (beforeEvent) {
         let beforeEventDate = new Date(beforeEvent.readAt);
-        if (differenceInDays(date, beforeEventDate) >= 1) {
-          beforeEventDate = max([addHours(date, -5), beforeEventDate]);
+        if (differenceInDays(eventDate, beforeEventDate) >= 1) {
+          beforeEventDate = max([addHours(eventDate, -5), beforeEventDate]);
         }
-        const minuteDifference = differenceInMinutes(date, beforeEventDate);
+        const minuteDifference = differenceInMinutes(eventDate, beforeEventDate);
         const pageDifference = event.pagesRead - (beforeEvent?.pagesRead ?? 0);
         readSpeed.push(pageDifference / minuteDifference);
       }
-      if (date >= startOfWeek) {
+      if (eventDate >= startOfWeek) {
         if (event.pagesRead > (currentWeek[event.bookId][day] ?? 0)) {
-          const currentBook = events.filter(
+          const currentWeekBook = events.filter(
             (evt: any) => evt.bookId === event.bookId,
           );
-          const beforeEventIndex = currentBook.indexOf(event) - 1;
+          const beforeWeekEventIndex = currentWeekBook.indexOf(event) - 1;
           const beforeEventPages =
-            currentBook[beforeEventIndex]?.pagesRead ?? 0;
+            currentWeekBook[beforeWeekEventIndex]?.pagesRead ?? 0;
           if (!currentWeek[event.bookId][day]) {
             currentWeek[event.bookId][day] = 0;
           }
@@ -124,11 +124,12 @@ export async function Stats({
         booksStats[event.bookId] = {}; // date.getDay().toString()
       }
       if (event.pagesRead > (booksStats[event.bookId][day] ?? 0)) {
-        const currentBook = events.filter(
+        const currentStatsBook = events.filter(
           (evt: any) => evt.bookId === event.bookId,
         );
-        const beforeEventIndex = currentBook.indexOf(event) - 1;
-        const beforeEventPages = currentBook[beforeEventIndex]?.pagesRead ?? 0;
+        const beforeStatsEventIndex = currentStatsBook.indexOf(event) - 1;
+        const beforeEventPages =
+          currentStatsBook[beforeStatsEventIndex]?.pagesRead ?? 0;
         if (!booksStats[event.bookId][day]) {
           booksStats[event.bookId][day] = 0;
         }

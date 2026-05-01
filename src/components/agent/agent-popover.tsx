@@ -35,9 +35,11 @@ export function AgentPopover({
     regenerate,
     addToolApprovalResponse,
   } = useChat<MyUIMessage>({
-    sendAutomaticallyWhen: ({ messages }) =>
-      lastAssistantMessageIsCompleteWithToolCalls({ messages }) ||
-      lastAssistantMessageIsCompleteWithApprovalResponses({ messages }),
+    sendAutomaticallyWhen: ({ messages: nextMessages }) =>
+      lastAssistantMessageIsCompleteWithToolCalls({ messages: nextMessages }) ||
+      lastAssistantMessageIsCompleteWithApprovalResponses({
+        messages: nextMessages,
+      }),
     transport: new DefaultChatTransport({
       prepareSendMessagesRequest: ({ ...data }) => {
         return {

@@ -1,3 +1,4 @@
+/* oxlint-disable eslint-plugin-jsx-a11y(prefer-tag-over-role) */
 import type { Book as PrismaBook } from "@prisma/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowRightIcon, Loader, PlusIcon, TrashIcon } from "lucide-react";
@@ -130,6 +131,9 @@ export function BookCollectionsModal({
                 <div
                   className="border-input has-data-[state=checked]:border-primary/50 relative flex w-full items-start gap-2 rounded-2xl border p-4 shadow-xs outline-none"
                   key={collection.id}
+                  role="checkbox"
+                  tabIndex={0}
+                  aria-checked={selectedCollections.includes(collection.id)}
                   onClick={() =>
                     setSelectedCollections(
                       selectedCollections.includes(collection.id)
@@ -137,6 +141,18 @@ export function BookCollectionsModal({
                         : [...selectedCollections, collection.id],
                     )
                   }
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      setSelectedCollections(
+                        selectedCollections.includes(collection.id)
+                          ? selectedCollections.filter(
+                              (c) => c !== collection.id,
+                            )
+                          : [...selectedCollections, collection.id],
+                      );
+                    }
+                  }}
                 >
                   <Checkbox
                     id={collection.id}
@@ -167,6 +183,7 @@ export function BookCollectionsModal({
                     </p>
                   </div>
                   <Button
+                    type="button"
                     size="icon"
                     variant="outline"
                     className="top-2 right-2"

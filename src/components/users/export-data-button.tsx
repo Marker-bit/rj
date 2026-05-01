@@ -87,8 +87,8 @@ export default function ExportDataButton({
                     checked={item.checked}
                     onCheckedChange={(checked) => {
                       if (checked === "indeterminate") checked = false;
-                      setItems((items) =>
-                        items.map((a) =>
+                      setItems((currentItems) =>
+                        currentItems.map((a) =>
                           a.value === item.value ? { ...a, checked } : a,
                         ),
                       );
@@ -108,7 +108,9 @@ export default function ExportDataButton({
             <Label htmlFor={id}>Формат данных</Label>
             <Select
               value={format}
-              onValueChange={(format) => setFormat(format as "json" | "yaml")}
+              onValueChange={(nextFormat) =>
+                setFormat(nextFormat as "json" | "yaml")
+              }
             >
               <SelectTrigger id={id}>
                 <SelectValue placeholder="Выберите формат" />

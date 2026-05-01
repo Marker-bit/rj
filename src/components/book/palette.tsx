@@ -47,6 +47,7 @@ export default function Palette({
       <PopoverContent className="overflow-hidden">
         <div className="flex flex-wrap gap-2">
           <button
+            type="button"
             className="flex items-center rounded-xl border p-2"
             onClick={() => setColor(BackgroundColor.NONE)}
           >
@@ -65,6 +66,7 @@ export default function Palette({
           </button>
           {backgroundColors.map((color) => (
             <button
+              type="button"
               className="flex items-center rounded-xl border p-2"
               onClick={() => setColor(color.type)}
               key={color.type}

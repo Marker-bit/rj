@@ -12,23 +12,23 @@ export default async function Layout({
   if (!user) return null;
   if (!user.admin) return null;
 
-  const auth = validateRequest().then(async ({ user }) => {
-    if (!user) {
+  const auth = validateRequest().then(async ({ user: authUser }) => {
+    if (!authUser) {
       return { user: null, unread: null };
     }
     const unread = await db.supportAnswer.count({
       where: {
         read: {
           none: {
-            userId: user?.id,
+            userId: authUser.id,
           },
         },
         question: {
-          fromUserId: user?.id,
+          fromUserId: authUser.id,
         },
       },
     });
-    return { user, unread };
+    return { user: authUser, unread };
   });
 
   return (

@@ -22,9 +22,10 @@ export function EmptyView({
         новую и изменить существующую.
       </div>
       <div className="flex flex-col gap-1 mt-2">
-        {options.map((option, index) => (
+        {options.map((option) => (
           <button
-            key={index}
+            key={option}
+            type="button"
             onClick={() => setMessage(option)}
             className="border rounded-xl px-4 py-0.5 text-muted-foreground hover:text-foreground hover:bg-accent transition-all text-sm"
           >

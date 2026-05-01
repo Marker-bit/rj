@@ -56,22 +56,22 @@ export function StreakButton({
       </SimpleTooltip>
       <PopoverContent className="w-fit">
         <div className="flex gap-2">
-          {Array.from({ length: 7 }).map((_, i) => {
-            const date = addDays(weekStart, i);
+          {days.map((pages, dayIndex) => {
+            const date = addDays(weekStart, dayIndex);
             const daysPassed = differenceInDays(startOfDay(new Date()), date);
 
             return (
-              <Tooltip key={i}>
+              <Tooltip key={date.toISOString()}>
                 <TooltipTrigger asChild>
                   <div className="flex flex-col items-center gap-1">
                     <div
                       className={cn(
                         "size-8 rounded-xl",
-                        days[i] === 0
+                        pages === 0
                           ? "bg-zinc-300 dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-700"
                           : "bg-green-300 dark:bg-green-700 border border-green-500",
                         weekPadding === 0 &&
-                          nowDay === i &&
+                          nowDay === dayIndex &&
                           "border-4 border-black dark:border-white",
                       )}
                     />
@@ -83,7 +83,7 @@ export function StreakButton({
                         }),
                       ).slice(0, 2)}
                     </p>
-                    <p className="text-xs">{days[i]}</p>
+                    <p className="text-xs">{pages}</p>
                   </div>
                 </TooltipTrigger>
                 <TooltipContent className="text-center">
@@ -104,8 +104,7 @@ export function StreakButton({
                   <div className="text-primary-foreground/70">
                     {format(date, "d MMMM", { locale: ru, weekStartsOn: 1 })}
                   </div>
-                  {days[i]}{" "}
-                  {declOfNum(days[i], ["страница", "страницы", "страниц"])}
+                  {pages} {declOfNum(pages, ["страница", "страницы", "страниц"])}
                 </TooltipContent>
               </Tooltip>
             );
@@ -113,6 +112,7 @@ export function StreakButton({
         </div>
         <div className="flex gap-2 items-center justify-between mt-2">
           <button
+            type="button"
             onClick={() => setWeekPadding((w) => w - 1)}
             className="text-xs font-medium hover:underline disabled:no-underline disabled:opacity-50"
           >
@@ -130,6 +130,7 @@ export function StreakButton({
                   ])} назад`}
           </div>
           <button
+            type="button"
             className="text-xs font-medium hover:underline disabled:no-underline disabled:opacity-50"
             disabled={weekPadding === 0}
             onClick={() => setWeekPadding((w) => w + 1)}
