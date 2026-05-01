@@ -38,12 +38,20 @@ jobs:
 
           git fetch --force --tags
 
-          target_commit="$(git rev-list -n 1 "$tag")"
-          previous_tag="$(git tag --merged "$tag" --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$' | grep -F -x -v "$tag" | head -n 1 || true)"
-          if [ -n "$previous_tag" ]; then
-            range="${previous_tag}..${tag}"
+          if git rev-parse -q --verify "refs/tags/${tag}" >/dev/null; then
+            target_commit="$(git rev-list -n 1 "$tag")"
+            history_ref="$tag"
           else
-            range="${tag}"
+            target_commit="$GITHUB_SHA"
+            history_ref="$target_commit"
+            echo "Tag $tag does not exist yet; drafting release from $target_commit."
+          fi
+
+          previous_tag="$(git tag --merged "$history_ref" --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$' | grep -F -x -v "$tag" | head -n 1 || true)"
+          if [ -n "$previous_tag" ]; then
+            range="${previous_tag}..${history_ref}"
+          else
+            range="$history_ref"
           fi
 
           {
