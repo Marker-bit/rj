@@ -94,7 +94,7 @@ export function CreateCollection() {
                 <FormItem>
                   <FormLabel>Название</FormLabel>
                   <FormControl>
-                    <Input {...field} autoFocus />
+                    <Input {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

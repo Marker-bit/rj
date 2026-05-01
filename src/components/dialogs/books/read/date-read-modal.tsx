@@ -22,7 +22,7 @@ export function DateReadModal({
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
   onSuccess?: () => void;
-  book: { readEvents: { readAt: Date }[]; id: string };
+  book: { readEvents: { readAt: Date }[]; id: string; pages: number };
   lastEvent?: { pagesRead: number };
 }) {
   const readDateMutation = useMutation({
@@ -124,6 +124,7 @@ export function DateReadModal({
             setValue={setChangePages}
             isPending={readDateMutation.isPending}
             lastPages={lastEvent?.pagesRead}
+            max={book.pages}
           />
         </form>
       </div>
