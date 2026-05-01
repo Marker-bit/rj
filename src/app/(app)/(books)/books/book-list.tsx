@@ -10,7 +10,7 @@ import {
   SearchIcon,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { BookView } from "@/components/book/book-view";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -65,17 +65,23 @@ export function BookList({ books }: { books: Book[] }) {
     router.replace(`?${searchParams.toString()}`);
   }
 
-  let filteredBooks = books;
+  const filteredBooks = useMemo(() => {
+    if (!notStarted) {
+      return books;
+    }
 
-  if (notStarted) {
-    filteredBooks = filteredBooks.filter((book: Book) => {
+    return books.filter((book: Book) => {
       return book.readEvents.length !== 0;
     });
-  }
+  }, [books, notStarted]);
 
-  const fuse = new Fuse(filteredBooks, {
-    keys: ["title", "author"],
-  });
+  const fuse = useMemo(
+    () =>
+      new Fuse(filteredBooks, {
+        keys: ["title", "author"],
+      }),
+    [filteredBooks],
+  );
 
   function search(evt?: any) {
     if (evt !== undefined) {
@@ -87,11 +93,6 @@ export function BookList({ books }: { books: Book[] }) {
     }
     setSearchResults(fuse.search(searchText).map((result) => result.item));
   }
-
-  useEffect(() => {
-    search();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search]);
 
   const outlinedBooks = filteredBooks.filter(
     (book: Book) => book.background !== BackgroundColor.NONE,

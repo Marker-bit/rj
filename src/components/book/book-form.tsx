@@ -24,7 +24,7 @@ import { UploadButton } from "@/components/uploadthing";
 import { createBook } from "@/lib/actions/books";
 import { cn } from "@/lib/utils";
 import { bookSchema } from "@/lib/validation/schemas";
-import { DialogHeader, DialogTitle } from "../ui/dialog";
+import { DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { DrawerDialog } from "../ui/drawer-dialog";
 import { Loader } from "../ui/loader";
 import { ScanDialog } from "./scan-dialog";
@@ -290,6 +290,9 @@ export function AddBookDialog({
     <DrawerDialog open={open} onOpenChange={setOpen} className="min-w-[50vw]">
       <DialogHeader>
         <DialogTitle>Добавить книгу</DialogTitle>
+        <DialogDescription>
+          Заполните информацию о книге, чтобы добавить её в дневник.
+        </DialogDescription>
       </DialogHeader>
       <div className="p-4 pt-0 mt-4 overflow-auto">
         <BookForm

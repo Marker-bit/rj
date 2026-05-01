@@ -10,6 +10,7 @@ export function HelpButton({
   onClick,
   helpText,
   children,
+  "aria-label": ariaLabel,
   ...props
 }: Omit<React.ComponentPropsWithRef<typeof Button>, "onClick"> & {
   helpText: string;
@@ -65,6 +66,7 @@ export function HelpButton({
           onMouseLeave={handleMouseLeave}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
+          aria-label={ariaLabel ?? helpText}
           {...props}
         >
           {children}
