@@ -38,6 +38,9 @@ export async function proxy(request: NextRequest) {
   const notProtectedRoutes = [
     "/",
     "/auth",
+    "/auth/login",
+    "/auth/register",
+    "/auth/reset-password",
     "/favicon.png",
     "/privacy-policy",
     "/terms-of-service",
@@ -51,9 +54,6 @@ export async function proxy(request: NextRequest) {
   ];
   if (
     !(await cookies()).get("auth_session") &&
-    pathname !== "/auth" &&
-    pathname !== "/" &&
-    pathname !== "/favicon.png" &&
     !notProtectedRoutes.includes(pathname)
   ) {
     return NextResponse.redirect(new URL("/auth", request.url));

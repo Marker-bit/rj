@@ -3,7 +3,6 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Inter, Nunito_Sans } from "next/font/google";
 import "@/app/globals.css";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "@/app/(app)/api/uploadthing/core";
@@ -16,158 +15,41 @@ import ClientUmamiAnalytics from "@/components/umami-analytics";
 const nunitoSans = Nunito_Sans({ variable: "--font-sans" });
 
 const font = Inter({ subsets: ["latin"] });
+const siteUrl = "https://rj.markerbit.dev";
+const iconSizes = [72, 96, 128, 144, 152, 192, 384, 512] as const;
+const icons = iconSizes.map((size) => ({
+  url: `/images/icons/icon-${size}x${size}.png`,
+  sizes: `${size}x${size}`,
+  type: "image/png",
+}));
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://rjrj.ru/"),
+  metadataBase: new URL(siteUrl),
   title: "Читательский дневник",
   description: "Читательский дневник - социальная сеть для читателей",
-  manifest: "https://rjrj.ru/manifest.json",
+  manifest: "/manifest.webmanifest",
   twitter: {
     card: "summary_large_image",
-    title: "Reading Journal",
-    description: "A service for reading fans",
-    images: ["https://rjrj.ru/og.png"],
+    title: "Читательский дневник",
+    description: "Социальная сеть для читателей",
+    images: ["/og.png"],
   },
   openGraph: {
     title: "Читательский дневник",
-    description: "Читательский дневник",
-    url: "https://rjrj.ru/",
-    images: ["https://rjrj.ru/og.png"],
+    description: "Социальная сеть для читателей",
+    url: siteUrl,
+    images: ["/og.png"],
   },
   appLinks: {
     web: {
-      url: "https://rjrj.ru/",
+      url: siteUrl,
     },
   },
   creator: "Mark Pentus",
   keywords: ["rj", "reading journal", "reading", "journal"],
   icons: {
-    apple: [
-      {
-        url: "https://rjrj.ru/images/icons/icon-72x72.png",
-        sizes: "72x72",
-        type: "image/png",
-      },
-      {
-        url: "https://rjrj.ru/images/icons/icon-96x96.png",
-        sizes: "96x96",
-        type: "image/png",
-      },
-      {
-        url: "https://rjrj.ru/images/icons/icon-128x128.png",
-        sizes: "128x128",
-        type: "image/png",
-      },
-      {
-        url: "https://rjrj.ru/images/icons/icon-144x144.png",
-        sizes: "144x144",
-        type: "image/png",
-      },
-      {
-        url: "https://rjrj.ru/images/icons/icon-152x152.png",
-        sizes: "152x152",
-        type: "image/png",
-      },
-      {
-        url: "https://rjrj.ru/images/icons/icon-192x192.png",
-        sizes: "192x192",
-        type: "image/png",
-      },
-      {
-        url: "https://rjrj.ru/images/icons/icon-384x384.png",
-        sizes: "384x384",
-        type: "image/png",
-      },
-      {
-        url: "https://rjrj.ru/images/icons/icon-512x512.png",
-        sizes: "512x512",
-        type: "image/png",
-      },
-    ],
-    other: [
-      {
-        url: "https://rjrj.ru/images/icons/icon-72x72.png",
-        sizes: "72x72",
-        type: "image/png",
-      },
-      {
-        url: "https://rjrj.ru/images/icons/icon-96x96.png",
-        sizes: "96x96",
-        type: "image/png",
-      },
-      {
-        url: "https://rjrj.ru/images/icons/icon-128x128.png",
-        sizes: "128x128",
-        type: "image/png",
-      },
-      {
-        url: "https://rjrj.ru/images/icons/icon-144x144.png",
-        sizes: "144x144",
-        type: "image/png",
-      },
-      {
-        url: "https://rjrj.ru/images/icons/icon-152x152.png",
-        sizes: "152x152",
-        type: "image/png",
-      },
-      {
-        url: "https://rjrj.ru/images/icons/icon-192x192.png",
-        sizes: "192x192",
-        type: "image/png",
-      },
-      {
-        url: "https://rjrj.ru/images/icons/icon-384x384.png",
-        sizes: "384x384",
-        type: "image/png",
-      },
-      {
-        url: "https://rjrj.ru/images/icons/icon-512x512.png",
-        sizes: "512x512",
-        type: "image/png",
-      },
-    ],
-    icon: [
-      {
-        url: "https://rjrj.ru/images/icons/icon-72x72.png",
-        sizes: "72x72",
-        type: "image/png",
-      },
-      {
-        url: "https://rjrj.ru/images/icons/icon-96x96.png",
-        sizes: "96x96",
-        type: "image/png",
-      },
-      {
-        url: "https://rjrj.ru/images/icons/icon-128x128.png",
-        sizes: "128x128",
-        type: "image/png",
-      },
-      {
-        url: "https://rjrj.ru/images/icons/icon-144x144.png",
-        sizes: "144x144",
-        type: "image/png",
-      },
-      {
-        url: "https://rjrj.ru/images/icons/icon-152x152.png",
-        sizes: "152x152",
-        type: "image/png",
-      },
-      {
-        url: "https://rjrj.ru/images/icons/icon-192x192.png",
-        sizes: "192x192",
-        type: "image/png",
-      },
-      {
-        url: "https://rjrj.ru/images/icons/icon-384x384.png",
-        sizes: "384x384",
-        type: "image/png",
-      },
-      {
-        url: "https://rjrj.ru/images/icons/icon-512x512.png",
-        sizes: "512x512",
-        type: "image/png",
-      },
-    ],
+    apple: icons,
+    icon: icons,
   },
 };
 
@@ -179,7 +61,7 @@ export default async function RootLayout({
   const isVercel = process.env.VERCEL === "1";
 
   return (
-    <html lang="en" suppressHydrationWarning className={nunitoSans.variable}>
+    <html lang="ru" suppressHydrationWarning className={nunitoSans.variable}>
       <body
         className={`${font.className} overflow-x-hidden`}
         vaul-drawer-wrapper=""
@@ -210,10 +92,6 @@ export default async function RootLayout({
                 />
               )}
               <Toaster />
-              <ReactQueryDevtools
-                initialIsOpen={false}
-                buttonPosition="top-left"
-              />
             </TooltipProvider>
           </ThemeProvider>
         </QueryProvider>
