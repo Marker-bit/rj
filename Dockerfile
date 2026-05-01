@@ -1,41 +1,35 @@
 FROM node:20-alpine AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+ENV NEXT_TELEMETRY_DISABLED=1
+RUN corepack enable && corepack prepare pnpm@10.32.1 --activate
 
 ### Dependencies ###
 FROM base AS deps
 RUN apk add --no-cache libc6-compat
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
-RUN corepack prepare pnpm@latest --activate
 
 WORKDIR /app
 
 COPY package.json pnpm-lock.yaml ./
 COPY prisma ./prisma/
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
-    pnpm install --frozen-lockfile --prod --ignore-scripts && \
-    cp -r node_modules /prod_modules && \
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store,sharing=locked \
     pnpm install --frozen-lockfile --ignore-scripts
 RUN pnpm exec prisma generate
 
 # Builder
 FROM base AS builder
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
-RUN corepack prepare pnpm@latest --activate
 
 WORKDIR /app
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN pnpm build
+RUN --mount=type=cache,id=next-cache,target=/app/.next/cache,sharing=locked \
+    pnpm build
 
 ### Production image runner ###
 FROM base AS runner
 
 ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
