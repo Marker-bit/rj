@@ -20,29 +20,18 @@ import { DrawerDialog } from "@/components/ui/drawer-dialog";
 import { dateToString, declOfNum } from "@/lib/utils";
 import { Badge } from "../../ui/badge";
 import { Button } from "../../ui/button";
+import { BookDialog } from "@/components/book/book-view";
 
 export function BookInfoModal({
   open,
   setOpen,
   book,
-  setDescriptionDrawerOpen,
-  setEditOpen,
-  setDeleteDialogOpen,
-  setDateOpen,
-  setShareOpen,
-  setDoneOpen,
-  setCollectionsOpen,
+  setActiveDialog,
 }: {
   open: boolean;
   setOpen: (b: boolean) => void;
   book: any;
-  setDescriptionDrawerOpen: (b: boolean) => void;
-  setEditOpen: (b: boolean) => void;
-  setDeleteDialogOpen: (b: boolean) => void;
-  setDateOpen: (b: boolean) => void;
-  setCollectionsOpen: (b: boolean) => void;
-  setDoneOpen: (b: boolean) => void;
-  setShareOpen: (b: boolean) => void;
+  setActiveDialog: (dialog: BookDialog | null) => void;
 }) {
   const lastEvent = book.readEvents[0];
 
@@ -78,7 +67,7 @@ export function BookInfoModal({
               <button
                 type="button"
                 className="relative mt-2 line-clamp-5 cursor-pointer overflow-hidden text-left text-wrap font-sans text-black/70 dark:text-white/70"
-                onClick={() => setDescriptionDrawerOpen(true)}
+                onClick={() => setActiveDialog("description")}
               >
                 {book.description}
               </button>
@@ -142,7 +131,10 @@ export function BookInfoModal({
               <h4 className="text-lg">{collection.name}</h4>
             </div>
           ))}
-          <Button variant="outline" onClick={() => setCollectionsOpen(true)}>
+          <Button
+            variant="outline"
+            onClick={() => setActiveDialog("collections")}
+          >
             <Pencil /> Редактировать коллекции
           </Button>
         </div>
@@ -150,7 +142,7 @@ export function BookInfoModal({
           <Button
             className="gap-2"
             variant="outline"
-            onClick={() => setShareOpen(true)}
+            onClick={() => setActiveDialog("share")}
           >
             <Share />
             Поделиться
@@ -158,7 +150,7 @@ export function BookInfoModal({
           <Button
             className="gap-2"
             variant="outline"
-            onClick={() => setEditOpen(true)}
+            onClick={() => setActiveDialog("edit")}
             // disabled={book.groupBookId}
           >
             <Edit />
@@ -166,7 +158,7 @@ export function BookInfoModal({
           </Button>
           <Button
             variant="destructive"
-            onClick={() => setDeleteDialogOpen(true)}
+            onClick={() => setActiveDialog("delete")}
           >
             <Trash />
             Удалить
@@ -176,7 +168,7 @@ export function BookInfoModal({
               <Button
                 className="gap-2"
                 variant="outline"
-                onClick={() => setDoneOpen(true)}
+                onClick={() => setActiveDialog("done")}
               >
                 <BookOpenCheck />
                 Прочитана
@@ -184,7 +176,7 @@ export function BookInfoModal({
               <Button
                 className="gap-2"
                 variant="outline"
-                onClick={() => setDateOpen(true)}
+                onClick={() => setActiveDialog("read")}
               >
                 <BookOpenTextIcon />
                 Отметить прочтение

@@ -49,7 +49,7 @@ export default async function LastReadCard() {
           asChild
           className="ml-auto absolute top-4 right-4"
         >
-          <Link href={`/books?bookId=${lastReadBook.id}`}>
+          <Link href={`/books/${lastReadBook.id}`}>
             <div className="hidden sm:block">Открыть</div>
             <ArrowUpRight className="size-4" />
           </Link>

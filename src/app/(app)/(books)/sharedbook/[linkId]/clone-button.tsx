@@ -28,7 +28,7 @@ export function CloneButton({ linkId }: { linkId: string }) {
         description: "Теперь вы можете её читать",
         action: {
           label: "Перейти",
-          onClick: () => router.push(`/books?bookId=${data.bookId}`),
+          onClick: () => router.push(`/books/${data.bookId}`),
         },
       });
       router.refresh();

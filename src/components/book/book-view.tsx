@@ -54,6 +54,17 @@ import Palette from "./palette";
 
 export const dynamic = "force-dynamic";
 
+export type BookDialog =
+  | "info"
+  | "description"
+  | "edit"
+  | "delete"
+  | "read"
+  | "done"
+  | "collections"
+  | "share"
+  | "stats";
+
 export function BookView({
   book,
   onUpdate,
@@ -65,15 +76,9 @@ export function BookView({
   history?: boolean;
   initialReadOpen?: boolean;
 }) {
-  const [editOpen, setEditOpen] = useState(false);
-  const [dateOpen, setDateOpen] = useState(false);
-  const [doneOpen, setDoneOpen] = useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [actionsDrawerOpen, setActionsDrawerOpen] = useState(false);
-  const [descriptionDrawerOpen, setDescriptionDrawerOpen] = useState(false);
-  const [collectionsOpen, setCollectionsOpen] = useState(false);
-  const [shareBookOpen, setShareBookOpen] = useState(false);
-  const [bookReadOpen, setBookReadOpen] = useState(initialReadOpen);
+  const [activeDialog, setActiveDialog] = useState<BookDialog | null>(
+    initialReadOpen ? "stats" : null,
+  );
   const router = useRouter();
 
   const undoEventMutation = useMutation({
@@ -85,8 +90,6 @@ export function BookView({
       toast.success("Событие отменено");
       onUpdate?.();
       router.refresh();
-      // router.push(`/books?bookId=${book.id}`)
-      // router.refresh()
     },
   });
 
@@ -106,8 +109,7 @@ export function BookView({
     },
     onSuccess: () => {
       toast.success("Книга отмечена как прочитанная");
-      setDoneOpen(false);
-      setActionsDrawerOpen(false);
+      setActiveDialog(null);
       onUpdate?.();
       router.refresh();
       router.push(`/books/history?bookReadId=${book.id}`);
@@ -118,7 +120,7 @@ export function BookView({
   const hideMutation = useMutation({
     mutationFn: () => fetch(`/api/books/${book.id}/hide`, { method: "POST" }),
     onSuccess: () => {
-      setActionsDrawerOpen(false);
+      setActiveDialog(null);
       toast.success("Книга скрыта");
       onUpdate?.();
       router.refresh();
@@ -139,15 +141,17 @@ export function BookView({
         ? book.fields
         : [];
 
+  const genSetOpen = (dialog: BookDialog | null) => (open: boolean) =>
+    setActiveDialog(open ? dialog : null);
+
   return (
     <>
       <DeleteBookModal
         book={book}
-        open={deleteDialogOpen}
-        onOpenChange={setDeleteDialogOpen}
+        open={activeDialog === "delete"}
+        onOpenChange={(dialog) => setActiveDialog(dialog ? "delete" : null)}
         onSuccess={() => {
-          setDeleteDialogOpen(false);
-          setActionsDrawerOpen(false);
+          setActiveDialog(null);
           onUpdate?.();
           router.refresh();
         }}
@@ -174,8 +178,10 @@ export function BookView({
         />
 
         <DrawerDialog
-          open={descriptionDrawerOpen}
-          onOpenChange={setDescriptionDrawerOpen}
+          open={activeDialog === "description"}
+          onOpenChange={(dialog) =>
+            setActiveDialog(dialog ? "description" : null)
+          }
         >
           <DialogHeader>
             <DialogTitle>Описание</DialogTitle>
@@ -183,32 +189,26 @@ export function BookView({
           <pre className="font-sans">{book.description}</pre>
         </DrawerDialog>
         <BookInfoModal
-          open={actionsDrawerOpen}
-          setOpen={setActionsDrawerOpen}
+          open={activeDialog === "info"}
+          setOpen={genSetOpen("info")}
           book={book}
-          setDescriptionDrawerOpen={setDescriptionDrawerOpen}
-          setEditOpen={setEditOpen}
-          setDeleteDialogOpen={setDeleteDialogOpen}
-          setDateOpen={setDateOpen}
-          setCollectionsOpen={setCollectionsOpen}
-          setDoneOpen={setDoneOpen}
-          setShareOpen={setShareBookOpen}
+          setActiveDialog={setActiveDialog}
         />
         <BookCollectionsModal
-          open={collectionsOpen}
-          setOpen={setCollectionsOpen}
+          open={activeDialog === "collections"}
+          setOpen={genSetOpen("collections")}
           book={book}
         />
         <ShareBookModal
-          open={shareBookOpen}
-          setOpen={setShareBookOpen}
+          open={activeDialog === "share"}
+          setOpen={genSetOpen("share")}
           book={book}
         />
         <DateReadModal
-          isOpen={dateOpen}
-          setIsOpen={setDateOpen}
+          isOpen={activeDialog === "read"}
+          setIsOpen={genSetOpen("read")}
           onSuccess={() => {
-            setActionsDrawerOpen(false);
+            setActiveDialog(null);
             onUpdate?.();
             router.refresh();
           }}
@@ -216,14 +216,14 @@ export function BookView({
           lastEvent={lastEvent}
         />
         <DateDoneModal
-          isOpen={doneOpen}
-          setIsOpen={setDoneOpen}
+          isOpen={activeDialog === "done"}
+          setIsOpen={genSetOpen("done")}
           readDoneMutation={doneMutation}
           book={book}
         />
         <EditBookModal
-          open={editOpen}
-          setOpen={setEditOpen}
+          open={activeDialog === "edit"}
+          setOpen={genSetOpen("edit")}
           book={book}
           onUpdate={(newBook) => {
             posthog.capture("edited_book", {
@@ -236,8 +236,8 @@ export function BookView({
           }}
         />
         <BookReadInfo
-          open={bookReadOpen}
-          setOpen={setBookReadOpen}
+          open={activeDialog === "stats"}
+          setOpen={genSetOpen("stats")}
           book={book}
         />
         <div className="flex items-start gap-2">
@@ -326,7 +326,7 @@ export function BookView({
               {book.links.length !== 0 && (
                 <IconBadge
                   variant="outline"
-                  onClick={() => setShareBookOpen(true)}
+                  onClick={() => setActiveDialog("share")}
                   className="cursor-pointer"
                   icon={Link2}
                 >
@@ -348,7 +348,7 @@ export function BookView({
                 <Button
                   variant="outline"
                   size="icon"
-                  onClick={() => setCollectionsOpen(true)}
+                  onClick={() => setActiveDialog("collections")}
                 >
                   <Layers2Icon className="size-4" />
                 </Button>
@@ -361,7 +361,7 @@ export function BookView({
             className="gap-2"
             variant="outline"
             size="icon"
-            onClick={() => setActionsDrawerOpen(true)}
+            onClick={() => setActiveDialog("info")}
             helpText="Больше информации об этой книге"
           >
             <Info className="size-4" />
@@ -371,7 +371,7 @@ export function BookView({
               <HelpButton
                 className="gap-2"
                 variant="outline"
-                onClick={() => setDoneOpen(true)}
+                onClick={() => setActiveDialog("done")}
                 helpText="Отметить книгу прочитанной в определённую дату"
               >
                 <BookOpenCheck className="size-4" />
@@ -380,7 +380,7 @@ export function BookView({
               <HelpButton
                 className="gap-2"
                 variant="outline"
-                onClick={() => setDateOpen(true)}
+                onClick={() => setActiveDialog("read")}
                 helpText="Отметить прочтение определённого количества страниц книги в некоторую дату"
               >
                 <BookOpenTextIcon className="size-4" />
@@ -391,7 +391,7 @@ export function BookView({
           <HelpButton
             className="gap-2"
             variant="outline"
-            onClick={() => setShareBookOpen(true)}
+            onClick={() => setActiveDialog("share")}
             helpText="Создайте ссылки на книгу, чтобы другие могли скопировать её себе"
           >
             <Share className="size-4" />
@@ -401,8 +401,8 @@ export function BookView({
             <HelpButton
               className="gap-2"
               variant="outline"
-              onClick={() => setBookReadOpen(true)}
-              helpText="Создайте ссылки на книгу, чтобы другие могли скопировать её себе"
+              onClick={() => setActiveDialog("stats")}
+              helpText="Посмотреть статистику прочтения книги"
             >
               <BarChart className="size-4" />
               <div className="max-sm:hidden">Статистика</div>
@@ -447,7 +447,7 @@ export function BookView({
                 size="icon"
                 variant="outline"
                 className="size-fit p-1"
-                onClick={() => setEditOpen(true)}
+                onClick={() => setActiveDialog("edit")}
               >
                 <Edit className="size-4" />
               </Button>
@@ -457,7 +457,7 @@ export function BookView({
                 size="icon"
                 variant="outline"
                 className="size-fit p-1"
-                onClick={() => setDeleteDialogOpen(true)}
+                onClick={() => setActiveDialog("delete")}
               >
                 <Trash className="size-4" />
               </Button>

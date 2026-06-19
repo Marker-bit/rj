@@ -49,7 +49,7 @@ export async function fetchBooks(
   };
   const compareBooksByActivity = (a: Book, b: Book) => {
     const aTime = a.readEvents[0]?.readAt.getTime() || a.createdAt.getTime();
-    const bTime = b.readEvents[0]?.readAt.getTime() || a.createdAt.getTime();
+    const bTime = b.readEvents[0]?.readAt.getTime() ?? b.createdAt.getTime();
 
     if (aTime === undefined && bTime === undefined) return 0;
     if (aTime === undefined) return 1;

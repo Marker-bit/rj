@@ -3,39 +3,17 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BookView } from "@/components/book/book-view";
 import { Button } from "@/components/ui/button";
-import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
+import { fetchBook } from "@/lib/books";
 
 export default async function Page(props: {
   params: Promise<{ bookId: string }>;
 }) {
-  const params = await props.params;
+  const { bookId } = await props.params;
   const { user } = await validateRequest();
   if (!user) return null;
 
-  const book = await db.book.findUnique({
-    where: {
-      id: params.bookId,
-      userId: user.id,
-    },
-    include: {
-      readEvents: {
-        orderBy: [
-          { pagesRead: "desc" },
-          {
-            readAt: "desc",
-          },
-        ],
-      },
-      collections: true,
-      groupBook: {
-        include: {
-          group: true,
-        },
-      },
-      links: true,
-    },
-  });
+  const book = await fetchBook(bookId, user.id);
   if (!book) return notFound();
 
   return (
