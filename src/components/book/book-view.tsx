@@ -1,32 +1,5 @@
 "use client";
 
-import { BackgroundColor } from "@prisma/client";
-import { useMutation } from "@tanstack/react-query";
-import { endOfDay, isToday } from "date-fns";
-import {
-  BarChart,
-  BookIcon,
-  BookOpen,
-  BookOpenCheck,
-  BookOpenTextIcon,
-  CalendarDays,
-  Edit,
-  Eye,
-  EyeOff,
-  Info,
-  Layers2Icon,
-  Link2,
-  Share,
-  Trash,
-  Undo,
-  Users,
-} from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import posthog from "posthog-js";
-import { useState } from "react";
-import { toast } from "sonner";
 import { BookInfoModal } from "@/components/dialogs/books/book-info-modal";
 import { EditBookModal } from "@/components/dialogs/books/edit-book-modal";
 import { DateReadModal } from "@/components/dialogs/books/read/date-read-modal";
@@ -39,6 +12,27 @@ import { SimpleTooltip } from "@/components/ui/simple-tooltip";
 import type { Book } from "@/lib/api-types";
 import { backgroundColors } from "@/lib/colors";
 import { cn, dateToString, declOfNum } from "@/lib/utils";
+import { BackgroundColor } from "@prisma/client";
+import {
+  BarChart,
+  BookIcon,
+  BookOpen,
+  BookOpenCheck,
+  BookOpenTextIcon,
+  CalendarDays,
+  Edit,
+  Info,
+  Layers2Icon,
+  Link2,
+  Share,
+  Trash,
+  Users,
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import posthog from "posthog-js";
+import { useState } from "react";
 import { DeleteBookModal } from "../dialogs/books/delete-book-modal";
 import { DateDoneModal } from "../dialogs/books/read/date-done-modal";
 import { ShareBookModal } from "../dialogs/books/share-book-modal";
@@ -48,8 +42,9 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "../ui/hover-card";
-import { Loader } from "../ui/loader";
 import BookReadInfo from "./book-read-info";
+import { HideBookButton } from "./buttons/hide-book";
+import { UndoEventButton } from "./buttons/undo-event-button";
 import Palette from "./palette";
 
 export const dynamic = "force-dynamic";
@@ -81,52 +76,6 @@ export function BookView({
   );
   const router = useRouter();
 
-  const undoEventMutation = useMutation({
-    mutationFn: () =>
-      fetch(`/api/books/${book.id}/undo`, {
-        method: "DELETE",
-      }),
-    onSuccess: () => {
-      toast.success("Событие отменено");
-      onUpdate?.();
-      router.refresh();
-    },
-  });
-
-  const doneMutation = useMutation({
-    mutationFn: async ({ readAt }: { readAt?: Date }) => {
-      await fetch(`/api/books/${book.id}/read/`, {
-        method: "POST",
-        body: JSON.stringify({
-          pages: book.pages,
-          readAt: readAt
-            ? isToday(readAt)
-              ? new Date()
-              : endOfDay(readAt)
-            : new Date(),
-        }),
-      });
-    },
-    onSuccess: () => {
-      toast.success("Книга отмечена как прочитанная");
-      setActiveDialog(null);
-      onUpdate?.();
-      router.refresh();
-      router.push(`/books/history?bookReadId=${book.id}`);
-      // router.refresh()
-    },
-  });
-
-  const hideMutation = useMutation({
-    mutationFn: () => fetch(`/api/books/${book.id}/hide`, { method: "POST" }),
-    onSuccess: () => {
-      setActiveDialog(null);
-      toast.success("Книга скрыта");
-      onUpdate?.();
-      router.refresh();
-    },
-  });
-
   const lastEvent = book.readEvents[0];
 
   const color =
@@ -149,7 +98,7 @@ export function BookView({
       <DeleteBookModal
         book={book}
         open={activeDialog === "delete"}
-        onOpenChange={(dialog) => setActiveDialog(dialog ? "delete" : null)}
+        onOpenChange={genSetOpen("delete")}
         onSuccess={() => {
           setActiveDialog(null);
           onUpdate?.();
@@ -218,8 +167,13 @@ export function BookView({
         <DateDoneModal
           isOpen={activeDialog === "done"}
           setIsOpen={genSetOpen("done")}
-          readDoneMutation={doneMutation}
           book={book}
+          onDone={() => {
+            setActiveDialog(null);
+            onUpdate?.();
+            router.refresh();
+            router.push(`/books/history?bookReadId=${book.id}`);
+          }}
         />
         <EditBookModal
           open={activeDialog === "edit"}
@@ -264,19 +218,13 @@ export function BookView({
               ) : lastEvent.pagesRead === book.pages ? (
                 <>
                   <IconBadge icon={BookOpenCheck}>Прочитана</IconBadge>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => undoEventMutation.mutate()}
-                    disabled={undoEventMutation.isPending}
-                    className="size-fit p-1"
-                  >
-                    {undoEventMutation.isPending ? (
-                      <Loader className="size-4" />
-                    ) : (
-                      <Undo className="size-4" />
-                    )}
-                  </Button>
+                  <UndoEventButton
+                    bookId={book.id}
+                    onDone={() => {
+                      onUpdate?.();
+                      router.refresh();
+                    }}
+                  />
                   <IconBadge variant="secondary" icon={BookOpen}>
                     {book.pages}{" "}
                     {declOfNum(book.pages, ["страница", "страницы", "страниц"])}{" "}
@@ -297,18 +245,13 @@ export function BookView({
                   <IconBadge variant="outline" icon={CalendarDays}>
                     {dateToString(new Date(lastEvent.readAt))}
                     <SimpleTooltip text="Отменить событие">
-                      <button
-                        onClick={() => undoEventMutation.mutate()}
-                        disabled={undoEventMutation.isPending}
-                        className="ml-1"
-                        type="button"
-                      >
-                        {undoEventMutation.isPending ? (
-                          <Loader className="size-3" />
-                        ) : (
-                          <Undo className="size-3" />
-                        )}
-                      </button>
+                      <UndoEventButton
+                        bookId={book.id}
+                        onDone={() => {
+                          onUpdate?.();
+                          router.refresh();
+                        }}
+                      />
                     </SimpleTooltip>
                   </IconBadge>
                 </>
@@ -407,39 +350,18 @@ export function BookView({
               <BarChart className="size-4" />
               <div className="max-sm:hidden">Статистика</div>
             </HelpButton>
-          )}{" "}
-          {!history &&
-            (book.isHidden ? (
-              <HelpButton
-                className="gap-2"
-                variant="outline"
-                onClick={() => hideMutation.mutate()}
-                disabled={hideMutation.isPending}
-                helpText="Переместить эту книгу в обычный список книг"
-              >
-                {hideMutation.isPending ? (
-                  <Loader className="size-4" />
-                ) : (
-                  <Eye className="size-4" />
-                )}
-                <div className="max-sm:hidden">Показать</div>
-              </HelpButton>
-            ) : (
-              <HelpButton
-                className="gap-2"
-                variant="outline"
-                onClick={() => hideMutation.mutate()}
-                disabled={hideMutation.isPending}
-                helpText="Переместить эту книгу в самый низ, например, чтобы отложить её чтение на будущее"
-              >
-                {hideMutation.isPending ? (
-                  <Loader className="size-4" />
-                ) : (
-                  <EyeOff className="size-4" />
-                )}
-                <div className="max-sm:hidden">Скрыть</div>
-              </HelpButton>
-            ))}
+          )}
+          {!history && (
+            <HideBookButton
+              bookId={book.id}
+              isHidden={book.isHidden}
+              onDone={() => {
+                setActiveDialog(null);
+                onUpdate?.();
+                router.refresh();
+              }}
+            />
+          )}
           <Palette background={book.background} bookId={book.id} />
           <div className="absolute top-0 right-0 m-2 flex scale-0 gap-2 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
             <SimpleTooltip text="Отредактировать книгу">

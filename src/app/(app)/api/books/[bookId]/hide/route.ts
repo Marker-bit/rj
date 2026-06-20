@@ -41,5 +41,5 @@ export async function POST(
     },
   });
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ hidden: !book.isHidden });
 }

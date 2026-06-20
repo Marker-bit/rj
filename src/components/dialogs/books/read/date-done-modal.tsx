@@ -1,11 +1,5 @@
 "use client";
 
-import confetti from "canvas-confetti";
-import { startOfDay } from "date-fns";
-import { ru } from "date-fns/locale";
-import { Save } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -15,20 +9,31 @@ import {
 } from "@/components/ui/dialog";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
 import { Loader } from "@/components/ui/loader";
+import { doneMutationOptions } from "@/lib/mutations/books";
+import { useMutation } from "@tanstack/react-query";
+import confetti from "canvas-confetti";
+import { startOfDay } from "date-fns";
+import { ru } from "date-fns/locale";
+import { Save } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export function DateDoneModal({
   isOpen,
   setIsOpen,
-  readDoneMutation,
   book,
+  onDone,
 }: {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
-  readDoneMutation: any;
-  book: { readEvents: { readAt: Date }[] };
+  book: { id: string; pages: number; readEvents: { readAt: Date }[] };
+  onDone: () => void;
 }) {
   const today = new Date();
   const [date, setDate] = useState<Date | undefined>(today);
+  const readDoneMutation = useMutation(
+    doneMutationOptions(book.id, book.pages),
+  );
 
   const days: Date[] = [];
 
@@ -82,7 +87,7 @@ export function DateDoneModal({
             toast.error("Вы не выбрали дату");
             return;
           }
-          await readDoneMutation.mutate({ readAt: date });
+          await readDoneMutation.mutateAsync({ readAt: date });
 
           confetti({
             particleCount: 100,
@@ -91,6 +96,7 @@ export function DateDoneModal({
               y: evt.screenY / window.innerHeight,
             },
           });
+          onDone();
         }}
         className="w-fit max-sm:w-full"
       >
