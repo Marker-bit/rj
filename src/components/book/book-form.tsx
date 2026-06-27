@@ -31,8 +31,10 @@ import { useReadLocalStorage } from "usehooks-ts";
 
 export function BookForm({
   onSuccess,
+  isEdit = false,
 }: {
   onSuccess?: (book: z.input<typeof bookSchema>) => void;
+  isEdit?: boolean;
 }) {
   const defaultFields = useReadLocalStorage<string[]>("fields");
   const form = useForm<z.input<typeof bookSchema>>({
@@ -62,6 +64,8 @@ export function BookForm({
     name: "fields",
     control: form.control,
   });
+
+  const pages = form.watch("pages");
 
   useEffect(() => {
     if (Array.isArray(defaultFields)) {

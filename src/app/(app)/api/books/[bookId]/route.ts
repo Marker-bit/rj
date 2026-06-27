@@ -59,7 +59,7 @@ export async function PATCH(
       status: 401,
     });
   }
-  const data = await req.json();
+  const { clamp, ...data } = await req.json();
 
   const d = bookSchema.safeParse(data);
   if (!d.success) {
@@ -72,16 +72,53 @@ export async function PATCH(
       },
     );
   }
+
+  const originalBook = await db.book.findUniqueOrThrow({
+    where: {
+      id: bookId,
+      userId: user.id,
+    },
+  });
+
   const updateBook = await db.book.update({
     where: {
       id: bookId,
       userId: user.id,
     },
     data: {
-      ...data,
+      ...d.data,
       userId: user.id,
     },
   });
+
+  if (clamp && originalBook.pages !== updateBook.pages) {
+    const bookEvents = await db.readEvent.findMany({
+      where: {
+        bookId: updateBook.id,
+      },
+    });
+
+    console.log(bookEvents);
+
+    if (bookEvents.length > 0) {
+      await db.$transaction(
+        bookEvents.map((event) => {
+          // console.log(
+          //   event.pagesRead,
+          //   Math.round((event.pagesRead / originalBook.pages) * d.data.pages),
+          // );
+          return db.readEvent.update({
+            where: { id: event.id },
+            data: {
+              pagesRead: Math.round(
+                (event.pagesRead / originalBook.pages) * d.data.pages,
+              ),
+            },
+          });
+        }),
+      );
+    }
+  }
   return NextResponse.json(updateBook, {
     status: 200,
   });

@@ -1,7 +1,15 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { Book } from "@prisma/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Edit, Loader, Plus, Trash, X } from "lucide-react";
+import {
+  AlertTriangleIcon,
+  Edit,
+  InfoIcon,
+  Loader,
+  Plus,
+  Trash,
+  X,
+} from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -24,6 +32,14 @@ import {
 import { Input } from "../../ui/input";
 import { Textarea } from "../../ui/textarea";
 import { UploadButton } from "../../uploadthing";
+import {
+  Alert,
+  AlertAction,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert";
+import { Calligraph } from "calligraph";
+import { AnimatePresence, motion } from "motion/react";
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -53,6 +69,7 @@ export function EditBookModal({
   onUpdate?: (book: z.infer<typeof bookSchema>) => void;
 }) {
   const queryClient = useQueryClient();
+  const [clamp, setClamp] = useState(true);
   const [fileUploading, setFileUploading] = useState(false);
 
   const fieldsData =
@@ -73,6 +90,8 @@ export function EditBookModal({
     },
   });
 
+  const pages = form.watch("pages");
+
   const { fields, append, remove } = useFieldArray({
     name: "fields",
     control: form.control,
@@ -84,7 +103,7 @@ export function EditBookModal({
     mutationFn: (values: z.input<typeof bookSchema>) =>
       fetch(`/api/books/${book.id}/`, {
         method: "PATCH",
-        body: JSON.stringify(values),
+        body: JSON.stringify({ ...values, clamp }),
       }),
     onSuccess: (_, values) => {
       queryClient.invalidateQueries({
@@ -210,6 +229,76 @@ export function EditBookModal({
                   <Input {...field} type="number" />
                 </FormControl>
                 <FormMessage />
+                <AnimatePresence>
+                  {pages != book.pages && (
+                    <motion.div
+                      initial={{
+                        opacity: 0,
+                        height: 0,
+                        filter: "blur(8px)",
+                      }}
+                      animate={{
+                        opacity: 1,
+                        height: "auto",
+                        filter: "blur(0px)",
+                      }}
+                      exit={{
+                        opacity: 0,
+                        height: 0,
+                        filter: "blur(8px)",
+                      }}
+                      className="origin-top"
+                    >
+                      <Alert className="border-blue-200 bg-blue-50 text-blue-900 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-50">
+                        <InfoIcon />
+                        <AlertTitle>Вы изменили количество страниц</AlertTitle>
+                        <AlertDescription className="text-black/60 dark:text-white/60 whitespace-normal">
+                          <AnimatePresence mode="wait">
+                            {clamp ? (
+                              <motion.p
+                                key="clamp-on"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.2 }}
+                              >
+                                Чтобы избежать ошибок, данные о прочитанных
+                                страницах будут пересчитаны под новое количество
+                                страниц в книге.
+                              </motion.p>
+                            ) : (
+                              <motion.p
+                                key="clamp-off"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.2 }}
+                              >
+                                Данные о прочитанных страницах <b>не</b> будут
+                                пересчитаны под новое количество страниц в
+                                книге, так как вы отключили автоматический
+                                пересчет.
+                              </motion.p>
+                            )}
+                          </AnimatePresence>
+                        </AlertDescription>
+                        <AlertAction>
+                          <Button
+                            size="xs"
+                            variant="ghost"
+                            className="hover:bg-black/10 dark:hover:bg-white/10"
+                            type="button"
+                            onClick={() => setClamp((c) => !c)}
+                          >
+                            <Calligraph>
+                              {clamp ? "Не менять события" : "Менять события"}
+                            </Calligraph>
+                          </Button>
+                        </AlertAction>
+                      </Alert>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </FormItem>
             )}
           />
