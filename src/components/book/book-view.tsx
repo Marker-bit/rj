@@ -12,7 +12,7 @@ import { SimpleTooltip } from "@/components/ui/simple-tooltip";
 import type { Book } from "@/lib/api-types";
 import { backgroundColors } from "@/lib/colors";
 import { cn, dateToString, declOfNum } from "@/lib/utils";
-import { BackgroundColor } from "@prisma/client";
+import { BackgroundColor, BookStatus } from "@prisma/client";
 import {
   BarChart,
   BookIcon,
@@ -46,6 +46,7 @@ import BookReadInfo from "./book-read-info";
 import { HideBookButton } from "./buttons/hide-book";
 import { UndoEventButton } from "./buttons/undo-event-button";
 import Palette from "./palette";
+import { ArchiveBookButton } from "./buttons/archive-book";
 
 export const dynamic = "force-dynamic";
 
@@ -351,10 +352,21 @@ export function BookView({
               <div className="max-sm:hidden">Статистика</div>
             </HelpButton>
           )}
-          {!history && (
+          {!history && book.status !== BookStatus.ARCHIVED && (
             <HideBookButton
               bookId={book.id}
-              isHidden={book.isHidden}
+              isHidden={book.status === BookStatus.HIDDEN}
+              onDone={() => {
+                setActiveDialog(null);
+                onUpdate?.();
+                router.refresh();
+              }}
+            />
+          )}
+          {!history && book.status !== BookStatus.HIDDEN && (
+            <ArchiveBookButton
+              bookId={book.id}
+              isArchived={book.status === BookStatus.ARCHIVED}
               onDone={() => {
                 setActiveDialog(null);
                 onUpdate?.();

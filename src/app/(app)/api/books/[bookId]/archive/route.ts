@@ -39,9 +39,11 @@ export async function POST(
     },
     data: {
       status:
-        book.status === BookStatus.HIDDEN ? BookStatus.NONE : BookStatus.HIDDEN,
+        book.status === BookStatus.ARCHIVED
+          ? BookStatus.NONE
+          : BookStatus.ARCHIVED,
     },
   });
 
-  return NextResponse.json({ hidden: book.status !== BookStatus.HIDDEN });
+  return NextResponse.json({ archived: book.status !== BookStatus.ARCHIVED });
 }

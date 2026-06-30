@@ -1,7 +1,8 @@
 import { HelpButton } from "@/components/ui/help-button";
+import { Spinner } from "@/components/ui/spinner";
 import { hideMutationOptions } from "@/lib/mutations/books";
 import { useMutation } from "@tanstack/react-query";
-import { Eye, EyeOff, Loader } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 
 export function HideBookButton({
   bookId,
@@ -23,7 +24,7 @@ export function HideBookButton({
       helpText="Переместить эту книгу в обычный список книг"
     >
       {hideMutation.isPending ? (
-        <Loader className="size-4" />
+        <Spinner className="size-4" />
       ) : (
         <Eye className="size-4" />
       )}
@@ -38,7 +39,7 @@ export function HideBookButton({
       helpText="Переместить эту книгу в самый низ, например, чтобы отложить её чтение на будущее"
     >
       {hideMutation.isPending ? (
-        <Loader className="size-4" />
+        <Spinner className="size-4" />
       ) : (
         <EyeOff className="size-4" />
       )}

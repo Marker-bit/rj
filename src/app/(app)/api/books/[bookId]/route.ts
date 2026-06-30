@@ -103,10 +103,6 @@ export async function PATCH(
     if (bookEvents.length > 0) {
       await db.$transaction(
         bookEvents.map((event) => {
-          // console.log(
-          //   event.pagesRead,
-          //   Math.round((event.pagesRead / originalBook.pages) * d.data.pages),
-          // );
           return db.readEvent.update({
             where: { id: event.id },
             data: {

@@ -106,6 +106,12 @@ enum BackgroundColor {
   GREEN
 }
 
+enum BookStatus {
+  NONE
+  HIDDEN
+  ARCHIVED
+}
+
 model Book {
   id          String       @id @default(cuid())
   title       String
@@ -122,7 +128,7 @@ model Book {
 
   background BackgroundColor @default(NONE)
 
-  isHidden Boolean @default(false)
+  status BookStatus @default(NONE)
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String

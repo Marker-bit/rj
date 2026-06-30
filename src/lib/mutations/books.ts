@@ -49,3 +49,16 @@ export const hideMutationOptions = (bookId: string) =>
     onSuccess: (data) =>
       toast.success(`Книга ${data.hidden ? "скрыта" : "показана"}`),
   });
+
+export const archiveMutationOptions = (bookId: string) =>
+  mutationOptions({
+    mutationFn: () =>
+      apiFetch<{ archived: boolean }>(`/api/books/${bookId}/archive`, {
+        method: "POST",
+        type: "json",
+      }),
+    onSuccess: (data) =>
+      toast.success(
+        `Книга ${data.archived ? "архивирована" : "возвращена из архива"}`,
+      ),
+  });

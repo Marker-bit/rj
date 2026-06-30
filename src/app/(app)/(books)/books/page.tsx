@@ -1,4 +1,4 @@
-import { ArrowRightIcon, HistoryIcon } from "lucide-react";
+import { ArchiveIcon, ArrowRightIcon, HistoryIcon } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { SimpleTooltip } from "@/components/ui/simple-tooltip";
@@ -7,6 +7,7 @@ import { validateRequest } from "@/lib/server-validate-request";
 import { BookList } from "./book-list";
 import AddBookButton from "./button";
 import HiddenBooksCollapsible from "./hidden-books-collapsible";
+import { BookStatus } from "@prisma/client";
 
 export default async function BooksPage(props: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -27,7 +28,7 @@ export default async function BooksPage(props: {
     orderBy: sort as "percent" | "activity",
   });
 
-  const hiddenBooks = books?.filter((b) => b.isHidden);
+  const hiddenBooks = books?.filter((b) => b.status === BookStatus.HIDDEN);
 
   return (
     <div className="p-2">
@@ -55,8 +56,30 @@ export default async function BooksPage(props: {
               </Link>
             </Button>
           </SimpleTooltip>
+          <SimpleTooltip
+            className="max-w-45"
+            text="Здесь хранятся все ваши архивированные книги"
+          >
+            <Button className="group" variant="secondary" asChild>
+              <Link href="/books/archive">
+                <ArchiveIcon
+                  className="opacity-60"
+                  size={16}
+                  aria-hidden="true"
+                />
+                Архив
+                <ArrowRightIcon
+                  className="opacity-60 transition-transform group-hover:translate-x-0.5"
+                  size={16}
+                  aria-hidden="true"
+                />
+              </Link>
+            </Button>
+          </SimpleTooltip>
         </div>
-        <BookList books={books?.filter((b) => !b.isHidden) ?? []} />
+        <BookList
+          books={books?.filter((b) => b.status === BookStatus.NONE) ?? []}
+        />
         {(hiddenBooks?.length ?? 0) > 0 && (
           <HiddenBooksCollapsible hiddenBooks={hiddenBooks!} />
         )}

@@ -1,3 +1,4 @@
+import { BookStatus } from "@prisma/client";
 import type { Book } from "./api-types";
 import { db } from "./db";
 
@@ -5,16 +6,19 @@ type FetchBooksOptions =
   | {
       orderBy: "percent" | "activity";
     }
-  | { history: true };
+  | { history: true }
+  | { archive: true };
 
 export async function fetchBooks(
   userId: string,
   options: FetchBooksOptions = { orderBy: "percent" },
 ) {
   const isHistory = "history" in options;
+  const isArchive = "archive" in options;
   let books = await db.book.findMany({
     where: {
       userId: userId,
+      status: isArchive ? BookStatus.ARCHIVED : BookStatus.NONE,
     },
     include: {
       readEvents: {
@@ -57,10 +61,15 @@ export async function fetchBooks(
 
     return bTime - aTime;
   };
+  if (isArchive) {
+    return books;
+  }
   books = books.filter((b) =>
     isHistory
       ? b.readEvents.find((e) => e.pagesRead === b.pages)
-      : !b.readEvents.find((e) => e.pagesRead === b.pages),
+      : isArchive
+        ? b.status === BookStatus.ARCHIVED
+        : !b.readEvents.find((e) => e.pagesRead === b.pages),
   );
   books.sort(
     isHistory
