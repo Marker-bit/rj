@@ -18,7 +18,11 @@ export async function fetchBooks(
   let books = await db.book.findMany({
     where: {
       userId: userId,
-      status: isArchive ? BookStatus.ARCHIVED : BookStatus.NONE,
+      status: isArchive
+        ? BookStatus.ARCHIVED
+        : {
+            not: BookStatus.ARCHIVED,
+          },
     },
     include: {
       readEvents: {
