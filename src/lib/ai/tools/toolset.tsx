@@ -32,17 +32,19 @@ export const toolSetForUser = (user: User) => ({
       // await new Promise((resolve) => setTimeout(resolve, 10000));
       const books = await fetchBooks(user.id, {
         orderBy: orderBy,
+        all: true,
       });
       return books.map((book) => ({
         id: book.id,
         title: book.title,
         author: book.author,
         pages: book.pages,
-        lastEvent: book.readEvents[0] ?? null,
+        lastEvent: book.readEvents.at(0),
         collections: book.collections.map((collection) => ({
           id: collection.id,
           name: collection.name,
         })),
+        isRead: book.readEvents.at(0)?.pagesRead === book.pages,
       }));
     },
   }),

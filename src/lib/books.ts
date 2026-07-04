@@ -5,6 +5,7 @@ import { db } from "./db";
 type FetchBooksOptions =
   | {
       orderBy: "percent" | "activity";
+      all?: boolean;
     }
   | { history: true }
   | { archive: true };
@@ -15,14 +16,17 @@ export async function fetchBooks(
 ) {
   const isHistory = "history" in options;
   const isArchive = "archive" in options;
+  const all = !isHistory && !isArchive && options.all;
   let books = await db.book.findMany({
     where: {
       userId: userId,
-      status: isArchive
-        ? BookStatus.ARCHIVED
-        : {
-            not: BookStatus.ARCHIVED,
-          },
+      status: all
+        ? undefined
+        : isArchive
+          ? BookStatus.ARCHIVED
+          : {
+              not: BookStatus.ARCHIVED,
+            },
     },
     include: {
       readEvents: {
@@ -68,13 +72,13 @@ export async function fetchBooks(
   if (isArchive) {
     return books;
   }
-  books = books.filter((b) =>
-    isHistory
-      ? b.readEvents.find((e) => e.pagesRead === b.pages)
-      : isArchive
-        ? b.status === BookStatus.ARCHIVED
+  if (!all) {
+    books = books.filter((b) =>
+      isHistory
+        ? b.readEvents.find((e) => e.pagesRead === b.pages)
         : !b.readEvents.find((e) => e.pagesRead === b.pages),
-  );
+    );
+  }
   books.sort(
     isHistory
       ? compareBooksByActivity
