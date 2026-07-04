@@ -53,7 +53,7 @@ export function ScanDialog({
   setOpen: (open: boolean) => void;
   reset: ReturnType<typeof useForm<z.input<typeof bookSchema>>>["reset"];
 }) {
-  const [isLoading, setIsLoading] = useState(false);
+  const [loadingStatus, setLoadingStatus] = useState<string | null>(null);
   const [data, setData] = useState<Awaited<
     ReturnType<typeof generateBookData>
   > | null>(null);
@@ -74,9 +74,10 @@ export function ScanDialog({
           </DialogDescription>
         </DialogHeader>
         <FileArea
-          isLoading={isLoading}
+          isLoading={loadingStatus !== null}
+          loadingStatus={loadingStatus ?? undefined}
           onSubmit={async (file) => {
-            setIsLoading(true);
+            setLoadingStatus("Сжимаем изображение...");
             try {
               const compressed = await prepareScanImage(file);
               if (compressed.size > MAX_SCAN_IMAGE_BYTES) {
@@ -93,6 +94,7 @@ export function ScanDialog({
               }
 
               const b64 = await fileToBase64(compressed);
+              setLoadingStatus("Отправляем ИИ...");
               const result = await generateBookData(b64);
               if (!result?.book) {
                 toast.error("Не удалось извлечь информацию о книге.");
@@ -101,7 +103,7 @@ export function ScanDialog({
             } catch {
               toast.error("Не удалось отсканировать книгу.");
             } finally {
-              setIsLoading(false);
+              setLoadingStatus(null);
             }
           }}
           maxMB={20}

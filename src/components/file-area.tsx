@@ -2,15 +2,18 @@ import { BanIcon, ImageUpIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { Spinner } from "./ui/spinner";
+import { motion, AnimatePresence } from "motion/react";
 
 export function FileArea({
   maxMB,
   onSubmit,
   isLoading,
+  loadingStatus,
 }: {
   maxMB: number;
   onSubmit: (file: File) => void;
   isLoading: boolean;
+  loadingStatus?: string;
 }) {
   const areaRef = useRef<HTMLButtonElement>(null);
   const [isDragging, setIsDragging] = useState<
@@ -114,11 +117,24 @@ export function FileArea({
             <ImageUpIcon className="size-4 opacity-60" />
           )}
         </div>
-        <p className="mb-1.5 text-sm font-semibold">
-          {isLoading
-            ? "Загрузка..."
-            : "Перетяните картинку сюда или нажмите чтобы выбрать"}
-        </p>
+        {isLoading ? (
+          <AnimatePresence mode="popLayout">
+            <motion.p
+              className="text-sm font-semibold"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              key={loadingStatus ?? "Загрузка..."}
+            >
+              {loadingStatus ?? "Загрузка..."}
+            </motion.p>
+          </AnimatePresence>
+        ) : (
+          <p className="text-sm font-semibold">
+            Перетяните картинку сюда или нажмите чтобы выбрать
+          </p>
+        )}
+
         {!isLoading && (
           <p className="text-xs opacity-60">Максимальный размер: {maxMB}МБ</p>
         )}
