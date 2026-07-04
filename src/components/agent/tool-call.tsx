@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { AnimatePresence, motion, type Variants } from "motion/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { ToolConfirmation } from "@/components/agent/tool-confirmation";
 import { TextShimmer } from "@/components/ui/text-shimmer";
 import type { ToolId, ToolView } from "@/lib/ai/tools/types";
@@ -46,6 +46,8 @@ const BOOK_DATA_MUTATION_TOOLS = new Set<ToolId>([
   "addBookEvent",
   "undoBookEvent",
 ]);
+
+const refreshedToolCallIds = new Set<string>();
 
 const unique = (values: (string | undefined)[]) =>
   Array.from(
@@ -94,7 +96,6 @@ export function ToolCall<TOOL extends UITool>({
 }) {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const invalidatedRef = useRef(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
   const texts = toolView.texts;
@@ -124,7 +125,7 @@ export function ToolCall<TOOL extends UITool>({
       return;
     }
 
-    if (invalidatedRef.current) {
+    if (refreshedToolCallIds.has(toolCall.toolCallId)) {
       return;
     }
 
@@ -138,7 +139,7 @@ export function ToolCall<TOOL extends UITool>({
       return;
     }
 
-    invalidatedRef.current = true;
+    refreshedToolCallIds.add(toolCall.toolCallId);
 
     const affectedBookIds = getAffectedBookIds(toolName, input, output ?? {});
     const affectedCollectionIds = getAffectedCollectionIds(
@@ -168,6 +169,7 @@ export function ToolCall<TOOL extends UITool>({
     toolCall.input,
     toolCall.output,
     toolCall.state,
+    toolCall.toolCallId,
     toolName,
   ]);
 

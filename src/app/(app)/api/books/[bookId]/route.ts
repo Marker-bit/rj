@@ -2,22 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
-
-const bookSchema = z.object({
-  title: z.string().min(1),
-  author: z.string().min(1),
-  pages: z.coerce.number().min(1),
-  description: z.string().optional(),
-  coverUrl: z.string().optional(),
-  fields: z.array(
-    z.object({
-      title: z.string({ error: "Название поля обязательно" }),
-      value: z.string({
-        error: "Значение поля обязательно",
-      }),
-    }),
-  ),
-});
+import { bookSchema } from "@/lib/validation/schemas";
 
 export async function GET(
   _req: NextRequest,

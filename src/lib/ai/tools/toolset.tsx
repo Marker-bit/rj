@@ -14,6 +14,8 @@ import { addBookEventToolView } from "./views/add-book-event";
 import { endOfDay, isToday } from "date-fns";
 import { getBookByIdToolView } from "./views/get-book-by-id";
 import { undoBookEventToolView } from "./views/undo-book-event";
+import { bookSchema } from "@/lib/validation/schemas";
+import { editBookToolView } from "./views/edit-book";
 
 export const toolSetForUser = (user: User) => ({
   getAllBooks: tool({
@@ -88,6 +90,36 @@ export const toolSetForUser = (user: User) => ({
           pages,
           userId: user.id,
         },
+      });
+
+      return { success: true };
+    },
+    needsApproval: true,
+  }),
+  editBook: tool({
+    description: "Редактировать книгу",
+    inputSchema: z.object({
+      id: z.string().describe("Идентификатор"),
+      values: bookSchema
+        .extend({
+          status: z
+            .enum(["NONE", "HIDDEN", "ARCHIVED"])
+            .describe(
+              "Статус книги - скрытая или в архиве (отложенная на будущее)",
+            ),
+        })
+        .omit({
+          coverUrl: true,
+        })
+        .partial(),
+    }),
+    execute: async ({ id, values }) => {
+      await db.book.update({
+        where: {
+          id,
+          userId: user.id,
+        },
+        data: values,
       });
 
       return { success: true };
@@ -339,6 +371,7 @@ export const toolViews: Record<ToolId, ToolView> = {
   getAllBooks: getAllBooksToolView,
   getBookById: getBookByIdToolView,
   createBook: createBookToolView,
+  editBook: editBookToolView,
   deleteBook: deleteBookToolView,
   createCollection: createCollectionToolView,
   deleteCollection: deleteCollectionToolView,
