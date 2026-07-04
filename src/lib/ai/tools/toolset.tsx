@@ -12,6 +12,8 @@ import { fetchBooks } from "@/lib/books";
 import { db } from "@/lib/db";
 import { addBookEventToolView } from "./views/add-book-event";
 import { endOfDay, isToday } from "date-fns";
+import { getBookByIdToolView } from "./views/get-book-by-id";
+import { undoBookEventToolView } from "./views/undo-book-event";
 
 export const toolSetForUser = (user: User) => ({
   getAllBooks: tool({
@@ -40,6 +42,31 @@ export const toolSetForUser = (user: User) => ({
           name: collection.name,
         })),
       }));
+    },
+  }),
+  getBookById: tool({
+    description:
+      "Информация об одной книге пользователя (включая события чтения)",
+    inputSchema: z.object({
+      id: z.string().describe("Идентификатор книги"),
+    }),
+    execute: async ({ id }) => {
+      const book = await db.book.findUnique({
+        where: {
+          id,
+          userId: user.id,
+        },
+        include: {
+          collections: true,
+          readEvents: {
+            orderBy: {
+              pagesRead: "asc",
+            },
+          },
+        },
+      });
+
+      return book;
     },
   }),
   createBook: tool({
@@ -277,16 +304,47 @@ export const toolSetForUser = (user: User) => ({
     },
     needsApproval: true,
   }),
+  undoBookEvent: tool({
+    description: "Отменить прочтение книги",
+    inputSchema: z.object({
+      id: z.string().describe("Идентификатор книги"),
+      eventId: z.string().describe("Идентификатор события"),
+    }),
+    execute: async ({ id, eventId }) => {
+      const readEvent = await db.readEvent.findFirst({
+        where: {
+          id: eventId,
+          book: {
+            id,
+            userId: user.id,
+          },
+        },
+      });
+
+      if (!readEvent) {
+        return { success: false, error: "Книга не найдена" };
+      }
+
+      await db.readEvent.delete({ where: { id: readEvent.id } });
+
+      return {
+        success: true,
+      };
+    },
+    needsApproval: true,
+  }),
 });
 
 export const toolViews: Record<ToolId, ToolView> = {
   getAllBooks: getAllBooksToolView,
+  getBookById: getBookByIdToolView,
   createBook: createBookToolView,
   deleteBook: deleteBookToolView,
   createCollection: createCollectionToolView,
   deleteCollection: deleteCollectionToolView,
   getAllCollections: getAllCollectionsToolView,
   addBookEvent: addBookEventToolView,
+  undoBookEvent: undoBookEventToolView,
 };
 
 // export const tools = Object.fromEntries(

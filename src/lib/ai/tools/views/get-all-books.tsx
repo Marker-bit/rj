@@ -1,4 +1,4 @@
-import { BookIcon, ListOrderedIcon } from "lucide-react";
+import { BookCopyIcon, BookIcon, ListOrderedIcon } from "lucide-react";
 import { BookView } from "@/components/agent/book-view";
 import type { ToolOutputView, ToolView } from "@/lib/ai/tools/types";
 import { declOfNum } from "@/lib/utils";
@@ -47,6 +47,6 @@ export const getAllBooksToolView: ToolView<"getAllBooks"> = {
     successText: "Просмотрел книги",
     approvalText: "Хочет просмотреть книги",
   },
-  icon: BookIcon,
+  icon: BookCopyIcon,
   outputView: BookOutputView,
 };

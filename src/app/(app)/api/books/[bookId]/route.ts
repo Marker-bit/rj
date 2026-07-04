@@ -36,6 +36,9 @@ export async function GET(
       id: bookId,
       userId: user.id,
     },
+    include: {
+      readEvents: true,
+    },
   });
   if (!book) {
     return new NextResponse(null, {

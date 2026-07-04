@@ -33,6 +33,7 @@ const BOOK_DATA_MUTATION_TOOLS = new Set([
   "createCollection",
   "deleteCollection",
   "addBookEvent",
+  "undoBookEvent",
 ]);
 
 export function ToolCall<TOOL extends UITool>({
