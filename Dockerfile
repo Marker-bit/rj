@@ -12,7 +12,7 @@ WORKDIR /app
 
 COPY package.json pnpm-lock.yaml ./
 COPY prisma ./prisma/
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store,sharing=locked \
+RUN --mount=type=cache,id=s/5081a2db-f18f-4416-bec2-ccfe549c9f4a-/pnpm/store,target=/pnpm/store,sharing=locked \
     pnpm install --frozen-lockfile --ignore-scripts
 RUN pnpm exec prisma generate
 
@@ -25,7 +25,7 @@ WORKDIR /app
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN --mount=type=cache,id=next-cache,target=/app/.next/cache,sharing=locked \
+RUN --mount=type=cache,id=s/5081a2db-f18f-4416-bec2-ccfe549c9f4a-/app/.next/cache,target=/app/.next/cache,sharing=locked \
     pnpm build
 
 ### Production image runner ###
