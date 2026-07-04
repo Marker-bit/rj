@@ -17,7 +17,7 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   rj:
-    image: tgit.markerbit.dev/markerbit/rj:latest
+    image: ghcr.io/marker-bit/rj:latest
     depends_on:
       db:
         condition: service_healthy

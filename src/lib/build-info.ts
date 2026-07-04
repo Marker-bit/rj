@@ -1,4 +1,4 @@
-const repositoryUrl = "https://tgit.markerbit.dev/markerbit/rj";
+const repositoryUrl = "https://github.com/Marker-bit/rj";
 
 const commit =
   process.env.NEXT_PUBLIC_COMMIT_SHA ||
@@ -9,7 +9,8 @@ const commit =
 export function getBuildInfo() {
   const isProduction = process.env.NODE_ENV === "production";
   const shortCommit = commit?.slice(0, 7);
-  const url = isProduction && commit ? `${repositoryUrl}/commit/${commit}` : null;
+  const url =
+    isProduction && commit ? `${repositoryUrl}/commit/${commit}` : null;
 
   return {
     label: isProduction && shortCommit ? shortCommit : "dev",

@@ -12,6 +12,9 @@ on:
         required: true
         type: string
 
+permissions:
+  contents: write
+
 jobs:
   draft-release:
     runs-on: ubuntu-latest
@@ -27,9 +30,7 @@ jobs:
         id: context
         env:
           INPUT_TAG: ${{ inputs.tag }}
-          RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-          REPOSITORY: ${{ github.repository }}
-          SERVER_URL: ${{ github.server_url }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
 
@@ -41,28 +42,10 @@ jobs:
 
           git fetch --force --tags
 
-          if [ -z "${RELEASE_TOKEN:-}" ]; then
-            echo "Set a RELEASE_TOKEN repository secret with permission to create releases." >&2
-            exit 1
-          fi
-
-          release_api_url="${SERVER_URL%/}/api/v1/repos/${REPOSITORY}/releases/tags/${tag}"
-          release_status="$(
-            curl -sS -o release-check.json -w "%{http_code}" \
-              -H "Authorization: token $RELEASE_TOKEN" \
-              "$release_api_url"
-          )"
-
-          if [ "$release_status" = "200" ]; then
+          if gh release view "$tag" >/dev/null 2>&1; then
             echo "Release $tag already exists; skipping draft creation."
             echo "skip=true" >> "$GITHUB_OUTPUT"
             exit 0
-          fi
-
-          if [ "$release_status" != "404" ]; then
-            echo "Failed to check release $tag. HTTP $release_status:" >&2
-            cat release-check.json >&2
-            exit 1
           fi
 
           if git rev-parse -q --verify "refs/tags/${tag}" >/dev/null; then
@@ -180,47 +163,24 @@ jobs:
               file.write(body.rstrip() + "\n")
           PY
 
-      - name: Create draft Forgejo release
+      - name: Create draft GitHub release
         if: steps.context.outputs.skip != 'true'
         env:
-          RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ steps.context.outputs.tag }}
           TARGET_COMMIT: ${{ steps.context.outputs.target_commit }}
-          REPOSITORY: ${{ github.repository }}
-          SERVER_URL: ${{ github.server_url }}
         run: |
           set -euo pipefail
 
-          if [ -z "${RELEASE_TOKEN:-}" ]; then
-            echo "Set a RELEASE_TOKEN repository secret with permission to create releases." >&2
-            exit 1
+          args=(
+            --draft
+            --title "$RELEASE_TAG"
+            --notes-file release-notes.md
+            --target "$TARGET_COMMIT"
+          )
+
+          if [ "${RELEASE_TAG#*-}" != "$RELEASE_TAG" ]; then
+            args+=(--prerelease)
           fi
 
-          api_url="${SERVER_URL%/}/api/v1/repos/${REPOSITORY}/releases"
-
-          python3 <<'PY'
-          import json
-          import os
-
-          with open("release-notes.md", encoding="utf-8") as file:
-              body = file.read()
-
-          tag = os.environ["RELEASE_TAG"]
-          payload = {
-              "tag_name": tag,
-              "target_commitish": os.environ["TARGET_COMMIT"],
-              "name": tag,
-              "body": body,
-              "draft": True,
-              "prerelease": "-" in tag,
-          }
-
-          with open("release-payload.json", "w", encoding="utf-8") as file:
-              json.dump(payload, file)
-          PY
-
-          curl --fail-with-body \
-            -X POST "$api_url" \
-            -H "Authorization: token $RELEASE_TOKEN" \
-            -H "Content-Type: application/json" \
-            --data @release-payload.json
+          gh release create "$RELEASE_TAG" "${args[@]}"

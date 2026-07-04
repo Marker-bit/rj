@@ -18,7 +18,7 @@ Docker with Compose plugin should be installed.
 
 ### Setup
 
-1. `git clone https://tgit.markerbit.dev/markerbit/rj.git` - clone the repo
+1. `git clone https://github.com/Marker-bit/rj.git` - clone the repo
 2. `cp .env.example .env && micro .env` - copy and edit the environment variables
 3. `docker compose up -d` - deploy the app
 
@@ -26,4 +26,4 @@ The app will be available on [localhost:3000](http://localhost:3000).
 
 ## Author
 
-[Marker-bit](https://tgit.markerbit.dev/markerbit)
+[Marker-bit](https://github.com/Marker-bit)

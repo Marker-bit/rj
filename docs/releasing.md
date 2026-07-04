@@ -1,6 +1,6 @@
 # Releasing
 
-Releases are drafted from SemVer tags. The workflow creates a draft Forgejo
+Releases are drafted from SemVer tags. The workflow creates a draft GitHub
 release so it can be reviewed before publishing.
 
 ## Versioning
@@ -12,7 +12,6 @@ release so it can be reviewed before publishing.
 
 ## Required Secrets
 
-- `RELEASE_TOKEN`: Forgejo token with permission to create releases.
 - `OPENAI_API_KEY`: optional. When present, release notes are AI-drafted.
 - `OPENAI_MODEL`: optional. Overrides the changelog model.
 
@@ -32,6 +31,6 @@ The release workflow will:
 1. Find the previous SemVer tag reachable from the new tag.
 2. Collect non-merge commits between the previous tag and the new tag.
 3. Generate `release-notes.md`.
-4. Create a draft Forgejo release for review.
+4. Create a draft GitHub release for review.
 
-Review the draft in Forgejo, edit the changelog if needed, then publish it.
+Review the draft on GitHub, edit the changelog if needed, then publish it.
