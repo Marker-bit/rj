@@ -21,13 +21,13 @@ export function EmptyView({
         Искусственный интеллект поможет вам найти подходящую книгу, добавить
         новую и изменить существующую.
       </div>
-      <div className="flex flex-col gap-1 mt-2">
+      <div className="flex flex-col items-center gap-2 mt-2">
         {options.map((option) => (
           <button
             key={option}
             type="button"
             onClick={() => setMessage(option)}
-            className="border rounded-xl px-4 py-0.5 text-muted-foreground hover:text-foreground hover:bg-accent transition-all text-sm"
+            className="border rounded-xl px-4 py-2 text-muted-foreground hover:text-foreground hover:bg-accent transition-all text-sm"
           >
             {option}
           </button>

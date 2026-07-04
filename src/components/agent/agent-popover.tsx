@@ -4,10 +4,10 @@ import {
   lastAssistantMessageIsCompleteWithApprovalResponses,
   lastAssistantMessageIsCompleteWithToolCalls,
 } from "ai";
-import { XIcon } from "lucide-react";
+import { Maximize2Icon, Minimize2Icon, XIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import posthog from "posthog-js";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { ChatHistory } from "@/components/agent/chat-history";
 import { EmptyView } from "@/components/agent/empty-view";
 import {
@@ -17,6 +17,7 @@ import {
 import { useToolSelection } from "@/components/agent/message-input/tool-selector";
 import { Button } from "@/components/ui/button";
 import type { MyUIMessage } from "@/lib/ai/message";
+import { cn } from "@/lib/utils";
 
 export function AgentPopover({
   isOpen,
@@ -25,6 +26,8 @@ export function AgentPopover({
   isOpen: boolean;
   onClose: () => void;
 }) {
+  const [isFullHeight, setIsFullHeight] = useState(false);
+
   const ref = useRef<MessageInputRef>(null);
 
   const {
@@ -54,19 +57,33 @@ export function AgentPopover({
 
   return (
     <div
-      className="border bg-popover text-popover-foreground rounded-md origin-bottom-right data-[hidden]:opacity-0 data-[hidden]:scale-95 transition-all h-[30rem] max-h-[30rem] w-80 grid grid-rows-[auto_1fr_auto] overflow-y-hidden"
+      className={cn(
+        "border bg-popover text-popover-foreground rounded-md origin-bottom-right data-hidden:opacity-0 data-hidden:scale-95 transition-all h-screen grid grid-rows-[auto_1fr_auto] overflow-y-hidden",
+        isFullHeight ? "w-100" : "w-80",
+      )}
+      style={{ maxHeight: isFullHeight ? "calc(100vh - 140px)" : "30rem" }}
       data-hidden={!isOpen || undefined}
     >
       <div className="p-1 pl-3 pr-2 border-b flex items-center justify-between shrink-0">
         <div className="font-medium text-sm">Чат с ИИ</div>
-        <Button
-          size="icon-sm"
-          variant="ghost"
-          className="size-6"
-          onClick={onClose}
-        >
-          <XIcon />
-        </Button>
+        <div className="flex gap-2 items-center">
+          <Button
+            size="icon-sm"
+            variant="ghost"
+            className="size-6"
+            onClick={() => setIsFullHeight((a) => !a)}
+          >
+            {isFullHeight ? <Minimize2Icon /> : <Maximize2Icon />}
+          </Button>
+          <Button
+            size="icon-sm"
+            variant="ghost"
+            className="size-6"
+            onClick={onClose}
+          >
+            <XIcon />
+          </Button>
+        </div>
       </div>
       <div className="h-full relative flex flex-col min-h-0 overflow-x-hidden">
         <AnimatePresence mode="popLayout">

@@ -37,6 +37,7 @@ export function ToolConfirmation({
             addToolApprovalResponse({
               id: invocation.approval.id,
               approved: false,
+              reason: "Пользователь отклонил выполнение инструмента.",
             });
           }
         }}
