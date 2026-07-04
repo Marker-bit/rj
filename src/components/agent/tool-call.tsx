@@ -27,7 +27,18 @@ const iconVariants: Variants = {
   exit: { scale: 0.5, opacity: 0, filter: "blur(4px)" },
 };
 
-const BOOK_DATA_MUTATION_TOOLS = new Set([
+type BookDataMutationOutput = {
+  success?: boolean;
+  book?: { id?: string };
+  collection?: { id?: string; books?: { id?: string }[] };
+};
+
+type BookDataMutationInput = {
+  id?: string;
+  bookIds?: string[];
+};
+
+const BOOK_DATA_MUTATION_TOOLS = new Set<ToolId>([
   "createBook",
   "deleteBook",
   "createCollection",
@@ -35,6 +46,38 @@ const BOOK_DATA_MUTATION_TOOLS = new Set([
   "addBookEvent",
   "undoBookEvent",
 ]);
+
+const unique = (values: (string | undefined)[]) =>
+  Array.from(
+    new Set(values.filter((value): value is string => Boolean(value))),
+  );
+
+function getAffectedBookIds(
+  toolName: ToolId,
+  input: BookDataMutationInput,
+  output: BookDataMutationOutput,
+) {
+  if (toolName === "createCollection" || toolName === "deleteCollection") {
+    return unique([
+      ...(input.bookIds ?? []),
+      ...(output.collection?.books?.map((book) => book.id) ?? []),
+    ]);
+  }
+
+  return unique([input.id, output.book?.id]);
+}
+
+function getAffectedCollectionIds(
+  toolName: ToolId,
+  input: BookDataMutationInput,
+  output: BookDataMutationOutput,
+) {
+  if (toolName !== "createCollection" && toolName !== "deleteCollection") {
+    return [];
+  }
+
+  return unique([input.id, output.collection?.id]);
+}
 
 export function ToolCall<TOOL extends UITool>({
   toolName,
@@ -89,17 +132,44 @@ export function ToolCall<TOOL extends UITool>({
       return;
     }
 
-    const output = toolCall.output as { success?: boolean } | undefined;
+    const input = toolCall.input as BookDataMutationInput;
+    const output = toolCall.output as BookDataMutationOutput | undefined;
     if (output?.success === false) {
       return;
     }
 
     invalidatedRef.current = true;
 
+    const affectedBookIds = getAffectedBookIds(toolName, input, output ?? {});
+    const affectedCollectionIds = getAffectedCollectionIds(
+      toolName,
+      input,
+      output ?? {},
+    );
+
     void queryClient.invalidateQueries({ queryKey: ["books"] });
     void queryClient.invalidateQueries({ queryKey: ["events"] });
+    void queryClient.invalidateQueries({ queryKey: ["collections"] });
+
+    for (const bookId of affectedBookIds) {
+      void queryClient.invalidateQueries({ queryKey: ["book", bookId] });
+    }
+
+    for (const collectionId of affectedCollectionIds) {
+      void queryClient.invalidateQueries({
+        queryKey: ["collection", collectionId],
+      });
+    }
+
     router.refresh();
-  }, [queryClient, router, toolCall.output, toolCall.state, toolName]);
+  }, [
+    queryClient,
+    router,
+    toolCall.input,
+    toolCall.output,
+    toolCall.state,
+    toolName,
+  ]);
 
   const toggleExpanded = () => setIsExpanded((expanded) => !expanded);
 
