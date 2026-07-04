@@ -147,3 +147,68 @@ export const fileToBase64 = (file: File) =>
     reader.onload = () => resolve(reader.result as string);
     reader.onerror = reject;
   });
+
+type CompressImageOptions = {
+  maxWidth?: number;
+  maxHeight?: number;
+  quality?: number;
+  type?: "image/jpeg" | "image/webp";
+  preferOriginalBelowBytes?: number;
+};
+
+export async function compressImageFile(
+  file: File,
+  {
+    maxWidth = 1400,
+    maxHeight = 1400,
+    quality = 0.78,
+    type = "image/jpeg",
+    preferOriginalBelowBytes = 2.5 * 1024 * 1024,
+  }: CompressImageOptions = {},
+) {
+  if (!file.type.startsWith("image/")) {
+    return file;
+  }
+
+  const image = await createImageBitmap(file);
+  const scale = Math.min(1, maxWidth / image.width, maxHeight / image.height);
+  const width = Math.max(1, Math.round(image.width * scale));
+  const height = Math.max(1, Math.round(image.height * scale));
+
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    image.close();
+    return file;
+  }
+
+  ctx.drawImage(image, 0, 0, width, height);
+  image.close();
+
+  const blob = await new Promise<Blob | null>((resolve) => {
+    canvas.toBlob(resolve, type, quality);
+  });
+
+  if (!blob) {
+    return file;
+  }
+
+  if (file.size <= preferOriginalBelowBytes && blob.size >= file.size) {
+    return file;
+  }
+
+  return new File([blob], file.name.replace(/\.[^.]+$/u, ".jpg"), {
+    type,
+  });
+}
+
+export async function imageFileToCompressedBase64(
+  file: File,
+  options?: CompressImageOptions,
+) {
+  const compressed = await compressImageFile(file, options);
+  return fileToBase64(compressed);
+}

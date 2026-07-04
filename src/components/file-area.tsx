@@ -17,23 +17,36 @@ export function FileArea({
     "false" | "allowed" | "not-allowed"
   >("false");
 
+  const validateFile = (file: File) => {
+    if (!file.type.startsWith("image/")) {
+      toast.error("Выберите изображение");
+      return false;
+    }
+
+    if (file.size > maxMB * 1024 * 1024) {
+      toast.error(`Размер файла должен быть не больше ${maxMB}МБ`);
+      return false;
+    }
+
+    return true;
+  };
+
   const openFilePicker = () => {
     const input = document.createElement("input");
     input.type = "file";
+    input.accept = "image/*";
     input.onchange = () => {
       if (!input.files || input.files.length !== 1) {
         toast.error("Выберите ровно 1 файл");
         return;
       }
-      if (
-        !Array.from(input.files)
-          .map((a) => a.type.startsWith("image/"))
-          .every(Boolean)
-      ) {
-        toast.error("Выберите изображение");
+
+      const file = input.files[0];
+      if (!validateFile(file)) {
         return;
       }
-      onSubmit(input.files[0]);
+
+      onSubmit(file);
     };
     input.click();
   };
@@ -74,15 +87,12 @@ export function FileArea({
           toast.error("Перетяните ровно 1 файл");
           return;
         }
-        if (
-          !Array.from(e.dataTransfer.files)
-            .map((a) => a.type.startsWith("image/"))
-            .every(Boolean)
-        ) {
-          toast.error("Перетяните изображение");
+        const file = e.dataTransfer.files[0];
+        if (!validateFile(file)) {
           return;
         }
-        onSubmit(e.dataTransfer.files[0]);
+
+        onSubmit(file);
       }}
       data-dragging={isDragging === "allowed" || undefined}
       data-notallowed={isDragging === "not-allowed" || undefined}

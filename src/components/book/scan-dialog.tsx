@@ -4,7 +4,7 @@ import type { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type z from "zod";
 import { generateBookData } from "@/lib/actions/ai";
-import { fileToBase64 } from "@/lib/utils";
+import { compressImageFile, fileToBase64 } from "@/lib/utils";
 import type { bookSchema } from "@/lib/validation/schemas";
 import { FileArea } from "../file-area";
 import { Button } from "../ui/button";
@@ -17,6 +17,32 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { Table, TableBody, TableCell, TableRow } from "../ui/table";
+
+const MAX_SCAN_IMAGE_BYTES = 3 * 1024 * 1024;
+const SCAN_IMAGE_COMPRESSION_STEPS = [
+  { maxWidth: 1280, maxHeight: 1280, quality: 0.72 },
+  { maxWidth: 1100, maxHeight: 1100, quality: 0.64 },
+  { maxWidth: 900, maxHeight: 900, quality: 0.56 },
+];
+
+const formatMB = (bytes: number) => `${(bytes / 1024 / 1024).toFixed(1)}МБ`;
+
+async function prepareScanImage(file: File) {
+  const compressedImages = await Promise.all(
+    SCAN_IMAGE_COMPRESSION_STEPS.map((options) =>
+      compressImageFile(file, {
+        ...options,
+        preferOriginalBelowBytes: 0,
+      }),
+    ),
+  );
+
+  return (
+    compressedImages.find((image) => image.size <= MAX_SCAN_IMAGE_BYTES) ??
+    compressedImages.at(-1) ??
+    file
+  );
+}
 
 export function ScanDialog({
   open,
@@ -51,15 +77,34 @@ export function ScanDialog({
           isLoading={isLoading}
           onSubmit={async (file) => {
             setIsLoading(true);
-            const b64 = await fileToBase64(file);
-            const result = await generateBookData(b64);
-            if (!result?.book) {
-              toast.error("Не удалось извлечь информацию о книге.");
+            try {
+              const compressed = await prepareScanImage(file);
+              if (compressed.size > MAX_SCAN_IMAGE_BYTES) {
+                toast.error(
+                  `Не удалось сжать изображение меньше ${formatMB(MAX_SCAN_IMAGE_BYTES)}. Попробуйте обрезать фото.`,
+                );
+                return;
+              }
+
+              if (compressed.size < file.size) {
+                toast.info(
+                  `Изображение сжато: ${formatMB(file.size)} → ${formatMB(compressed.size)}`,
+                );
+              }
+
+              const b64 = await fileToBase64(compressed);
+              const result = await generateBookData(b64);
+              if (!result?.book) {
+                toast.error("Не удалось извлечь информацию о книге.");
+              }
+              setData(result);
+            } catch {
+              toast.error("Не удалось отсканировать книгу.");
+            } finally {
+              setIsLoading(false);
             }
-            setData(result);
-            setIsLoading(false);
           }}
-          maxMB={5}
+          maxMB={20}
         />
         {data !== null && data?.book !== null && (
           <>
