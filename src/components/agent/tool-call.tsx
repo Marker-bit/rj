@@ -4,6 +4,7 @@ import type {
   UITool,
   UIToolInvocation,
 } from "ai";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   ChevronRightIcon,
   ClockIcon,
@@ -13,10 +14,11 @@ import {
   XIcon,
 } from "lucide-react";
 import { AnimatePresence, motion, type Variants } from "motion/react";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import { ToolConfirmation } from "@/components/agent/tool-confirmation";
 import { TextShimmer } from "@/components/ui/text-shimmer";
-import type { ToolView } from "@/lib/ai/tools/types";
+import type { ToolId, ToolView } from "@/lib/ai/tools/types";
 import { cn } from "@/lib/utils";
 
 const iconVariants: Variants = {
@@ -25,17 +27,30 @@ const iconVariants: Variants = {
   exit: { scale: 0.5, opacity: 0, filter: "blur(4px)" },
 };
 
+const BOOK_DATA_MUTATION_TOOLS = new Set([
+  "createBook",
+  "deleteBook",
+  "createCollection",
+  "deleteCollection",
+  "addBookEvent",
+]);
+
 export function ToolCall<TOOL extends UITool>({
+  toolName,
   toolView,
   isLast = false,
   toolCall,
   addToolApprovalResponse,
 }: {
+  toolName: ToolId;
   toolView: ToolView;
   isLast?: boolean;
   toolCall: UIToolInvocation<TOOL>;
   addToolApprovalResponse: ChatAddToolApproveResponseFunction;
 }) {
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const invalidatedRef = useRef(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
   const texts = toolView.texts;
@@ -59,6 +74,31 @@ export function ToolCall<TOOL extends UITool>({
       setIsExpanded(true);
     }
   }, [toolCall.state]);
+
+  useEffect(() => {
+    if (toolCall.state !== "output-available") {
+      return;
+    }
+
+    if (invalidatedRef.current) {
+      return;
+    }
+
+    if (!BOOK_DATA_MUTATION_TOOLS.has(toolName)) {
+      return;
+    }
+
+    const output = toolCall.output as { success?: boolean } | undefined;
+    if (output?.success === false) {
+      return;
+    }
+
+    invalidatedRef.current = true;
+
+    void queryClient.invalidateQueries({ queryKey: ["books"] });
+    void queryClient.invalidateQueries({ queryKey: ["events"] });
+    router.refresh();
+  }, [queryClient, router, toolCall.output, toolCall.state, toolName]);
 
   const toggleExpanded = () => setIsExpanded((expanded) => !expanded);
 

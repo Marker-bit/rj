@@ -26,6 +26,7 @@ export function Message({
   canRegenerate: boolean;
 }) {
   const partGroups = groupMessageParts(message);
+  let textGroupNumber = 0;
 
   return (
     <div
@@ -49,9 +50,12 @@ export function Message({
           <MessageRole role={message.role} />
           {partGroups.map((partGroup, idx) => {
             if (!Array.isArray(partGroup) && isTextUIPart(partGroup)) {
+              const textKey = `text-${message.id}-${textGroupNumber}`;
+              textGroupNumber += 1;
+
               return (
                 <Streamdown
-                  key={`text-${partGroup.text}`}
+                  key={textKey}
                   isAnimating={isStreaming}
                   className={idx !== 0 ? "mt-2" : ""}
                 >
@@ -75,6 +79,7 @@ export function Message({
                     return (
                       <ToolCall
                         key={part.toolCallId}
+                        toolName={toolName as ToolId}
                         toolView={toolView}
                         isLast={index === partGroup.length - 1}
                         toolCall={part}

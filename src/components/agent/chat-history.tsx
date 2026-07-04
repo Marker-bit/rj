@@ -13,6 +13,12 @@ import type { MyUIMessage } from "@/lib/ai/message";
 import { cn } from "@/lib/utils";
 
 const MotionMessage = motion.create(Message);
+const BOTTOM_THRESHOLD_PX = 24;
+
+const hasVisibleText = (message?: MyUIMessage) =>
+  message?.parts.some(
+    (part) => part.type === "text" && part.text.trim().length > 0,
+  ) ?? false;
 
 export function ChatHistory({
   messages,
@@ -30,29 +36,64 @@ export function ChatHistory({
   addToolApprovalResponse: ChatAddToolApproveResponseFunction;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const isAtBottomRef = useRef(true);
   const [isAtBottom, setIsAtBottom] = useState(true);
 
-  const handleScroll = useCallback(() => {
-    if (containerRef.current) {
-      const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
-      setIsAtBottom(scrollTop + clientHeight >= scrollHeight);
+  const lastMessage = messages.at(-1);
+  const lastPart = lastMessage?.parts.at(-1);
+  const lastPartIsTool = lastPart ? isToolUIPart(lastPart) : false;
+  const showThinking =
+    status === "submitted" ||
+    (status === "streaming" &&
+      (!lastMessage ||
+        lastMessage.role === "user" ||
+        (lastMessage.role === "assistant" &&
+          (!hasVisibleText(lastMessage) || lastPartIsTool))));
+
+  const updateIsAtBottom = useCallback(() => {
+    const container = containerRef.current;
+    if (!container) {
+      return true;
     }
+
+    const distanceFromBottom =
+      container.scrollHeight - container.scrollTop - container.clientHeight;
+    const nextIsAtBottom = distanceFromBottom <= BOTTOM_THRESHOLD_PX;
+
+    isAtBottomRef.current = nextIsAtBottom;
+    setIsAtBottom(nextIsAtBottom);
+
+    return nextIsAtBottom;
   }, []);
 
-  const scrollToBottom = useCallback(() => {
-    if (containerRef.current) {
-      containerRef.current.scrollTo({
-        top: containerRef.current.scrollHeight,
-        behavior: "smooth",
-      });
+  const handleScroll = useCallback(() => {
+    updateIsAtBottom();
+  }, [updateIsAtBottom]);
+
+  const scrollToBottom = useCallback((behavior: ScrollBehavior = "smooth") => {
+    const container = containerRef.current;
+    if (!container) {
+      return;
     }
+
+    container.scrollTo({
+      top: container.scrollHeight,
+      behavior,
+    });
+    isAtBottomRef.current = true;
+    setIsAtBottom(true);
   }, []);
 
   useEffect(() => {
     const container = containerRef.current;
 
     const observer = new ResizeObserver((_entries) => {
-      handleScroll();
+      if (isAtBottomRef.current) {
+        scrollToBottom("auto");
+        return;
+      }
+
+      updateIsAtBottom();
     });
     const mutObserver = new MutationObserver((mutations) => {
       for (const mutation of mutations) {
@@ -79,19 +120,13 @@ export function ChatHistory({
         }
       }
     };
-  }, [handleScroll]);
+  }, [scrollToBottom, updateIsAtBottom]);
 
   useEffect(() => {
-    if (messages.length > 0) {
-      setTimeout(() => {
-        scrollToBottom();
-      }, 300);
+    if (isAtBottomRef.current) {
+      scrollToBottom("auto");
     }
-  }, [messages, scrollToBottom]);
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [scrollToBottom]);
+  }, [messages, status, scrollToBottom]);
 
   return (
     <>
@@ -117,7 +152,7 @@ export function ChatHistory({
           )}
           size="sm"
           variant="outline"
-          onClick={scrollToBottom}
+          onClick={() => scrollToBottom("smooth")}
         >
           <ChevronDownIcon />
           Прокрутить вниз
@@ -153,17 +188,17 @@ export function ChatHistory({
               message={message}
               onRegenerate={() => onRegenerate(message.id)}
               addToolApprovalResponse={addToolApprovalResponse}
-              isStreaming={status === "streaming"}
+              isStreaming={
+                status === "streaming" &&
+                message.role === "assistant" &&
+                message.id === lastMessage?.id
+              }
               canRegenerate={status !== "submitted" && status !== "streaming"}
             />
           ))}
         </AnimatePresence>
         <AnimatePresence>
-          {(status === "submitted" ||
-            (status === "streaming" &&
-              messages.length > 0 &&
-              messages.at(-1)?.parts.at(-1) &&
-              isToolUIPart(messages.at(-1)?.parts.at(-1)!))) && (
+          {showThinking && (
             <motion.div
               initial={{
                 scale: 0.6,

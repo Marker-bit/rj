@@ -31,9 +31,9 @@ export function groupMessageParts(message: MyUIMessage): PartGroup[] {
       if (currentGroup.length > 0) {
         groupedParts.push(currentGroup);
         currentGroup = [];
-      } else {
-        groupedParts.push(part);
       }
+
+      groupedParts.push(part);
     } else if (isToolUIPart(part)) {
       currentGroup.push(part);
     }

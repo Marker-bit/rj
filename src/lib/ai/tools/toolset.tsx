@@ -10,6 +10,8 @@ import { getAllBooksToolView } from "@/lib/ai/tools/views/get-all-books";
 import { getAllCollectionsToolView } from "@/lib/ai/tools/views/get-all-collections";
 import { fetchBooks } from "@/lib/books";
 import { db } from "@/lib/db";
+import { addBookEventToolView } from "./views/add-book-event";
+import { endOfDay, isToday } from "date-fns";
 
 export const toolSetForUser = (user: User) => ({
   getAllBooks: tool({
@@ -224,6 +226,57 @@ export const toolSetForUser = (user: User) => ({
       }));
     },
   }),
+  addBookEvent: tool({
+    description: "Отметить прочтение книги",
+    inputSchema: z.object({
+      id: z.string().describe("Идентификатор книги"),
+      pagesRead: z
+        .number()
+        .int()
+        .positive()
+        .describe("До какой страницы дошли"),
+      dateRead: z.iso.date().describe("Дата прочтения в ISO 8601 формате"),
+    }),
+    execute: async ({ id, pagesRead, dateRead }) => {
+      const book = await db.book.findFirst({
+        where: {
+          id,
+          userId: user.id,
+        },
+      });
+
+      if (!book) {
+        return { success: false, error: "Книга не найдена" };
+      }
+
+      if (pagesRead > book.pages) {
+        return {
+          success: false,
+          error: `Страница не может быть больше количества страниц в книге (${book.pages})`,
+        };
+      }
+
+      const date = new Date(dateRead);
+
+      const event = await db.readEvent.create({
+        data: {
+          bookId: book.id,
+          pagesRead,
+          readAt: isToday(date) ? new Date() : endOfDay(date),
+        },
+      });
+
+      return {
+        success: true,
+        event: {
+          id: event.id,
+          pagesRead: event.pagesRead,
+          readAt: event.readAt.toISOString(),
+        },
+      };
+    },
+    needsApproval: true,
+  }),
 });
 
 export const toolViews: Record<ToolId, ToolView> = {
@@ -233,6 +286,7 @@ export const toolViews: Record<ToolId, ToolView> = {
   createCollection: createCollectionToolView,
   deleteCollection: deleteCollectionToolView,
   getAllCollections: getAllCollectionsToolView,
+  addBookEvent: addBookEventToolView,
 };
 
 // export const tools = Object.fromEntries(
