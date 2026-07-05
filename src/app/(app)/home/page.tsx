@@ -14,12 +14,9 @@ export default function Home() {
         <div className="m-2 flex items-center text-5xl font-black">Главная</div>
         <div className="flex flex-col gap-2">
           <div className="grid lg:grid-cols-2 gap-2">
-            <div className="flex flex-col gap-2">
-              <NewWebsiteWarning className="w-full max-w-full" />
-              <Suspense fallback={<></>}>
-                <FirstSteps />
-              </Suspense>
-            </div>
+            <Suspense fallback={<></>}>
+              <FirstSteps />
+            </Suspense>
             <Suspense
               fallback={
                 <Skeleton className="rounded-md h-full min-h-60 w-full" />
