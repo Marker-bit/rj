@@ -13,7 +13,7 @@ export function BookView({
   pages,
   collections,
   coverUrl,
-  background,
+  background = BackgroundColor.NONE,
 }: {
   title: string;
   author: string;
