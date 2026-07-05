@@ -27,6 +27,9 @@ export function groupMessageParts(message: MyUIMessage): PartGroup[] {
   let currentGroup: ToolUIPart[] = [];
 
   for (const part of message.parts) {
+    if (part.type === "reasoning") {
+      continue;
+    }
     if (part.type === "text") {
       if (currentGroup.length > 0) {
         groupedParts.push(currentGroup);

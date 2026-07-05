@@ -10,6 +10,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { useQuery } from "@tanstack/react-query";
 import { Book, BookStatus } from "@prisma/client";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 const FieldView = ({
   label,
@@ -61,6 +62,15 @@ const EditBookView: ToolOutputView<"editBook"> = ({ input }) => {
     </div>
   ) : (
     <div className="flex flex-col gap-2">
+      {input.values.coverUrl && (
+        <Image
+          width={160}
+          height={80}
+          src={input.values.coverUrl}
+          alt="cover"
+          className="w-40 h-20 object-contain rounded-md"
+        />
+      )}
       <RemoteBookView bookId={input.id} />
       <div className="flex flex-col gap-1">
         <FieldView

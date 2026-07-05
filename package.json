@@ -74,6 +74,7 @@
     "effect": "^3.21.2",
     "embla-carousel-react": "^8.6.0",
     "fuse.js": "^7.3.0",
+    "googleapis": "^173.0.0",
     "input-otp": "^1.4.2",
     "lucia": "^3.2.2",
     "lucide-react": "^0.511.0",
@@ -118,10 +119,6 @@
     "tw-animate-css": "^1.3.2"
   },
   "pnpm": {
-    "overrides": {
-      "@types/react": "19.2.7",
-      "@types/react-dom": "19.2.3"
-    },
     "onlyBuiltDependencies": [
       "@prisma/client",
       "@prisma/engines",
@@ -134,5 +131,9 @@
       "sharp",
       "unrs-resolver"
     ]
+  },
+  "overrides": {
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3"
   }
 }

@@ -50,6 +50,15 @@ export function ChatHistory({
         (lastMessage.role === "assistant" &&
           (!hasVisibleText(lastMessage) || lastPartIsTool))));
 
+  const setAtBottom = useCallback((nextIsAtBottom: boolean) => {
+    if (isAtBottomRef.current === nextIsAtBottom) {
+      return;
+    }
+
+    isAtBottomRef.current = nextIsAtBottom;
+    setIsAtBottom(nextIsAtBottom);
+  }, []);
+
   const updateIsAtBottom = useCallback(() => {
     const container = containerRef.current;
     if (!container) {
@@ -60,29 +69,30 @@ export function ChatHistory({
       container.scrollHeight - container.scrollTop - container.clientHeight;
     const nextIsAtBottom = distanceFromBottom <= BOTTOM_THRESHOLD_PX;
 
-    isAtBottomRef.current = nextIsAtBottom;
-    setIsAtBottom(nextIsAtBottom);
+    setAtBottom(nextIsAtBottom);
 
     return nextIsAtBottom;
-  }, []);
+  }, [setAtBottom]);
 
   const handleScroll = useCallback(() => {
     updateIsAtBottom();
   }, [updateIsAtBottom]);
 
-  const scrollToBottom = useCallback((behavior: ScrollBehavior = "smooth") => {
-    const container = containerRef.current;
-    if (!container) {
-      return;
-    }
+  const scrollToBottom = useCallback(
+    (behavior: ScrollBehavior = "smooth") => {
+      const container = containerRef.current;
+      if (!container) {
+        return;
+      }
 
-    container.scrollTo({
-      top: container.scrollHeight,
-      behavior,
-    });
-    isAtBottomRef.current = true;
-    setIsAtBottom(true);
-  }, []);
+      container.scrollTo({
+        top: container.scrollHeight,
+        behavior,
+      });
+      setAtBottom(true);
+    },
+    [setAtBottom],
+  );
 
   useEffect(() => {
     const container = containerRef.current;

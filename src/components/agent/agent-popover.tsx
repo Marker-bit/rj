@@ -7,7 +7,7 @@ import {
 import { Maximize2Icon, Minimize2Icon, XIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import posthog from "posthog-js";
-import { useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { ChatHistory } from "@/components/agent/chat-history";
 import { EmptyView } from "@/components/agent/empty-view";
 import {
@@ -30,6 +30,30 @@ export function AgentPopover({
 
   const ref = useRef<MessageInputRef>(null);
 
+  const sendAutomaticallyWhen = useCallback(
+    ({ messages: nextMessages }: { messages: MyUIMessage[] }) =>
+      lastAssistantMessageIsCompleteWithToolCalls({ messages: nextMessages }) ||
+      lastAssistantMessageIsCompleteWithApprovalResponses({
+        messages: nextMessages,
+      }),
+    [],
+  );
+
+  const transport = useMemo(
+    () =>
+      new DefaultChatTransport({
+        prepareSendMessagesRequest: ({ ...data }) => {
+          return {
+            body: {
+              ...data,
+              allowedTools: useToolSelection.getState().allowedTools,
+            },
+          };
+        },
+      }),
+    [],
+  );
+
   const {
     messages,
     sendMessage,
@@ -38,21 +62,8 @@ export function AgentPopover({
     regenerate,
     addToolApprovalResponse,
   } = useChat<MyUIMessage>({
-    sendAutomaticallyWhen: ({ messages: nextMessages }) =>
-      lastAssistantMessageIsCompleteWithToolCalls({ messages: nextMessages }) ||
-      lastAssistantMessageIsCompleteWithApprovalResponses({
-        messages: nextMessages,
-      }),
-    transport: new DefaultChatTransport({
-      prepareSendMessagesRequest: ({ ...data }) => {
-        return {
-          body: {
-            ...data,
-            allowedTools: useToolSelection.getState().allowedTools,
-          },
-        };
-      },
-    }),
+    sendAutomaticallyWhen,
+    transport,
   });
 
   return (

@@ -1,21 +1,13 @@
 import { tool } from "ai";
 import type { User } from "lucia";
 import z from "zod";
-import type { ToolId, ToolView } from "@/lib/ai/tools/types";
-import { createBookToolView } from "@/lib/ai/tools/views/create-book";
-import { createCollectionToolView } from "@/lib/ai/tools/views/create-collection";
-import { deleteBookToolView } from "@/lib/ai/tools/views/delete-book";
-import { deleteCollectionToolView } from "@/lib/ai/tools/views/delete-collection";
-import { getAllBooksToolView } from "@/lib/ai/tools/views/get-all-books";
-import { getAllCollectionsToolView } from "@/lib/ai/tools/views/get-all-collections";
 import { fetchBooks } from "@/lib/books";
 import { db } from "@/lib/db";
-import { addBookEventToolView } from "./views/add-book-event";
 import { endOfDay, isToday } from "date-fns";
-import { getBookByIdToolView } from "./views/get-book-by-id";
-import { undoBookEventToolView } from "./views/undo-book-event";
 import { bookSchema } from "@/lib/validation/schemas";
-import { editBookToolView } from "./views/edit-book";
+import { searchBooks } from "@/lib/apis/books";
+import { utapi } from "@/app/(app)/api/uploadthing/core";
+import { description } from "@/components/book/day-chart";
 
 export const toolSetForUser = (user: User) => ({
   getAllBooks: tool({
@@ -45,6 +37,14 @@ export const toolSetForUser = (user: User) => ({
           name: collection.name,
         })),
         isRead: book.readEvents.at(0)?.pagesRead === book.pages,
+        hasCover:
+          book.coverUrl !== undefined &&
+          book.coverUrl !== "" &&
+          book.coverUrl !== null,
+        backgroundColor: book.background,
+        description: book.description,
+        fields: book.fields,
+        status: book.status,
       }));
     },
   }),
@@ -83,14 +83,38 @@ export const toolSetForUser = (user: User) => ({
         .min(1)
         .max(10000)
         .describe("Количество страниц в книге"),
+      coverUrl: z
+        .url()
+        .optional()
+        .describe("URL обложки книги (только books.google.com)"),
     }),
-    execute: async ({ title, author, pages }) => {
+    execute: async ({ title, author, pages, coverUrl }) => {
+      let coverUrlFinal: string | undefined;
+      if (coverUrl) {
+        const url = new URL(coverUrl);
+        if (url.hostname !== "books.google.com") {
+          throw new Error("URL обложки книги должен быть с books.google.com");
+        }
+
+        const result = await utapi.uploadFilesFromUrl({
+          url,
+          name: "cover.jpg",
+          customId: crypto.randomUUID(),
+        });
+
+        if (result.error) {
+          throw new Error(result.error.message);
+        }
+
+        coverUrlFinal = result.data.ufsUrl;
+      }
       await db.book.create({
         data: {
           title,
           author,
           pages,
           userId: user.id,
+          coverUrl: coverUrlFinal,
         },
       });
 
@@ -109,19 +133,39 @@ export const toolSetForUser = (user: User) => ({
             .describe(
               "Статус книги - скрытая или в архиве (отложенная на будущее)",
             ),
-        })
-        .omit({
-          coverUrl: true,
+          coverUrl: z
+            .url()
+            .optional()
+            .describe("URL обложки книги (только books.google.com)"),
         })
         .partial(),
     }),
     execute: async ({ id, values }) => {
+      let coverUrlFinal: string | undefined;
+      if (values.coverUrl) {
+        const url = new URL(values.coverUrl);
+        if (url.hostname !== "books.google.com") {
+          throw new Error("URL обложки книги должен быть с books.google.com");
+        }
+
+        const result = await utapi.uploadFilesFromUrl({
+          url,
+          name: "cover.jpg",
+          customId: crypto.randomUUID(),
+        });
+
+        if (result.error) {
+          throw new Error(result.error.message);
+        }
+
+        coverUrlFinal = result.data.ufsUrl;
+      }
       await db.book.update({
         where: {
           id,
           userId: user.id,
         },
-        data: values,
+        data: { ...values, coverUrl: coverUrlFinal },
       });
 
       return { success: true };
@@ -367,20 +411,17 @@ export const toolSetForUser = (user: User) => ({
     },
     needsApproval: true,
   }),
+  searchGoogleBooks: tool({
+    description:
+      "Искать в каталоге Google Books. Для поиска по ISBN, введите запрос в формате isbn:1234567",
+    inputSchema: z.object({
+      searchQuery: z.string().describe("Поисковый запрос"),
+    }),
+    execute: async ({ searchQuery }) => {
+      return searchBooks(searchQuery);
+    },
+  }),
 });
-
-export const toolViews: Record<ToolId, ToolView> = {
-  getAllBooks: getAllBooksToolView,
-  getBookById: getBookByIdToolView,
-  createBook: createBookToolView,
-  editBook: editBookToolView,
-  deleteBook: deleteBookToolView,
-  createCollection: createCollectionToolView,
-  deleteCollection: deleteCollectionToolView,
-  getAllCollections: getAllCollectionsToolView,
-  addBookEvent: addBookEventToolView,
-  undoBookEvent: undoBookEventToolView,
-};
 
 // export const tools = Object.fromEntries(
 //   Object.entries(allTools).map(([key, tool]) => [key, tool.tool]),

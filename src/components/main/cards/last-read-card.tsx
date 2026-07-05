@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { getLastReadBook } from "@/lib/books";
 import { validateRequest } from "@/lib/server-validate-request";
+import { ReadButton } from "./read-button";
 
 export default async function LastReadCard() {
   const { user } = await validateRequest();
@@ -35,7 +36,7 @@ export default async function LastReadCard() {
             />
           </div>
         )}
-        <div className="flex flex-col">
+        <div className="flex flex-col items-start">
           <div className="text-sm text-muted-foreground">
             Вы остановились на
           </div>
@@ -43,17 +44,16 @@ export default async function LastReadCard() {
           <div className="text-muted-foreground">
             В книге {lastReadBook.title} - {lastReadBook.author}
           </div>
+          <div className="flex gap-2 items-center mt-2">
+            <ReadButton book={lastReadBook} />
+            <Button variant="outline" asChild>
+              <Link href={`/books/${lastReadBook.id}`}>
+                <div className="hidden sm:block">Открыть</div>
+                <ArrowUpRight className="size-4" />
+              </Link>
+            </Button>
+          </div>
         </div>
-        <Button
-          variant="outline"
-          asChild
-          className="ml-auto absolute top-4 right-4"
-        >
-          <Link href={`/books/${lastReadBook.id}`}>
-            <div className="hidden sm:block">Открыть</div>
-            <ArrowUpRight className="size-4" />
-          </Link>
-        </Button>
       </div>
     </div>
   );

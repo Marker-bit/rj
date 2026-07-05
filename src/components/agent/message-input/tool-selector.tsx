@@ -10,7 +10,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { toolViews } from "@/lib/ai/tools/toolset";
+import { toolViews } from "@/lib/ai/tools/tool-views";
 
 type AllowedTool = keyof typeof toolViews;
 type AllowedTools = AllowedTool[];

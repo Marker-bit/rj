@@ -6,7 +6,7 @@ import { MessageContextMenu } from "@/components/agent/message/message-context-m
 import { MessageRole } from "@/components/agent/message/message-role";
 import { ToolCall } from "@/components/agent/tool-call";
 import { groupMessageParts, type MyUIMessage } from "@/lib/ai/message";
-import { toolViews } from "@/lib/ai/tools/toolset";
+import { toolViews } from "@/lib/ai/tools/tool-views";
 import type { ToolId } from "@/lib/ai/tools/types";
 import { cn } from "@/lib/utils";
 

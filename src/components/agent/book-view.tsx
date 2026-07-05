@@ -12,7 +12,7 @@ export function BookView({
 }: {
   title: string;
   author: string;
-  pages: number;
+  pages?: number;
   collections?: string[];
 }) {
   return (
@@ -20,7 +20,13 @@ export function BookView({
       <h2 className="text-sm font-semibold">{title}</h2>
       <div className="text-xs text-muted-foreground">{author}</div>
       <div className="text-xs text-muted-foreground">
-        {pages} {declOfNum(pages, ["страница", "страницы", "страниц"])}
+        {pages ? (
+          <>
+            {pages} {declOfNum(pages, ["страница", "страницы", "страниц"])}
+          </>
+        ) : (
+          "Неизвестное кол-во страниц"
+        )}
       </div>
       {collections && collections.length > 0 && (
         <div className="flex flex-wrap gap-2 mt-1">

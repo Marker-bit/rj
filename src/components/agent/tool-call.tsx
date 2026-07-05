@@ -113,6 +113,16 @@ export function ToolCall<TOOL extends UITool>({
             : texts.loadingText;
 
   const realIsLast = isLast && !isExpanded;
+  const canRenderOutputView =
+    toolCall.state === "output-available" ||
+    toolCall.state === "approval-requested" ||
+    toolCall.state === "approval-responded" ||
+    toolCall.state === "output-denied";
+  const errorText =
+    toolCall.state === "output-error"
+      ? ((toolCall as { errorText?: string }).errorText ??
+        "Не удалось выполнить инструмент")
+      : null;
 
   useEffect(() => {
     if (toolCall.state === "approval-requested") {
@@ -329,10 +339,16 @@ export function ToolCall<TOOL extends UITool>({
               className="origin-top-left text-sm whitespace-pre-wrap"
               transition={{ duration: 0.2 }}
             >
-              <toolView.outputView
-                input={toolCall.input as never}
-                output={toolCall.output as never}
-              />
+              {errorText ? (
+                <div className="max-w-72 rounded-md border border-destructive/40 bg-destructive/10 px-2 py-1 text-destructive">
+                  {errorText}
+                </div>
+              ) : canRenderOutputView ? (
+                <toolView.outputView
+                  input={toolCall.input as never}
+                  output={toolCall.output as never}
+                />
+              ) : null}
             </motion.div>
           )}
         </AnimatePresence>

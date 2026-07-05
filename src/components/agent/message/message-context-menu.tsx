@@ -23,7 +23,7 @@ export function MessageContextMenu({
   return (
     <ContextMenu>
       <ContextMenuTrigger {...props}>{children}</ContextMenuTrigger>
-      <ContextMenuContent>
+      <ContextMenuContent className="z-110">
         <ContextMenuItem
           onClick={() => {
             try {

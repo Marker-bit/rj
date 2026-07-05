@@ -123,7 +123,15 @@ export async function getLastReadBook(userId: string) {
       },
     },
     include: {
-      book: true,
+      book: {
+        include: {
+          readEvents: {
+            orderBy: {
+              readAt: "desc",
+            },
+          },
+        },
+      },
     },
     orderBy: {
       readAt: "desc",
