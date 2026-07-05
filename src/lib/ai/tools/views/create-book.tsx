@@ -4,7 +4,13 @@ import type { ToolOutputView, ToolView } from "@/lib/ai/tools/types";
 
 const CreateBookView: ToolOutputView<"createBook"> = ({ input }) => {
   return (
-    <BookView title={input.title} author={input.author} pages={input.pages} />
+    <BookView
+      coverUrl={input.coverUrl}
+      background={input.background}
+      title={input.title}
+      author={input.author}
+      pages={input.pages}
+    />
   );
 };
 

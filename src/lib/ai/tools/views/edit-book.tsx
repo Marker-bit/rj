@@ -1,16 +1,19 @@
 import {
   ArrowRightIcon,
   CircleAlertIcon,
+  MinusIcon,
   PencilIcon,
+  PlusIcon,
   TrashIcon,
 } from "lucide-react";
 import { RemoteBookView } from "@/components/agent/book-view";
 import type { ToolOutputView, ToolView } from "@/lib/ai/tools/types";
 import { Spinner } from "@/components/ui/spinner";
 import { useQuery } from "@tanstack/react-query";
-import { Book, BookStatus } from "@prisma/client";
+import { BackgroundColor, Book, BookStatus } from "@prisma/client";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { backgroundColors } from "@/lib/colors";
 
 const FieldView = ({
   label,
@@ -73,6 +76,34 @@ const EditBookView: ToolOutputView<"editBook"> = ({ input }) => {
       )}
       <RemoteBookView bookId={input.id} />
       <div className="flex flex-col gap-1">
+        {book.background !== input.values.background && (
+          <div className="flex gap-2 items-center">
+            <div className="font-semibold text-sm">Цвет: </div>
+            {book.background !== BackgroundColor.NONE && (
+              <div
+                className={cn(
+                  "size-8 rounded-md flex items-center justify-center",
+                  backgroundColors.find((c) => c.type === book.background)
+                    ?.color,
+                )}
+              >
+                <MinusIcon className="size-4 text-accent-foreground" />
+              </div>
+            )}
+            {input.values.background !== BackgroundColor.NONE && (
+              <div
+                className={cn(
+                  "size-8 rounded-md flex items-center justify-center",
+                  backgroundColors.find(
+                    (c) => c.type === input.values.background,
+                  )?.color,
+                )}
+              >
+                <PlusIcon className="size-4 text-accent-foreground" />
+              </div>
+            )}
+          </div>
+        )}
         <FieldView
           label="Название"
           originalValue={book.title}
@@ -100,6 +131,7 @@ const EditBookView: ToolOutputView<"editBook"> = ({ input }) => {
             input.values.status ? statuses[input.values.status] : undefined
           }
         />
+
         {input.values.fields !== undefined && (
           <div className="flex flex-col gap-2">
             <div className="font-semibold">Поля:</div>

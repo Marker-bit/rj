@@ -8,6 +8,7 @@ import { bookSchema } from "@/lib/validation/schemas";
 import { searchBooks } from "@/lib/apis/books";
 import { utapi } from "@/app/(app)/api/uploadthing/core";
 import { description } from "@/components/book/day-chart";
+import { BackgroundColor } from "@prisma/client";
 
 export const toolSetForUser = (user: User) => ({
   getAllBooks: tool({
@@ -87,8 +88,11 @@ export const toolSetForUser = (user: User) => ({
         .url()
         .optional()
         .describe("URL обложки книги (только books.google.com)"),
+      background: z
+        .enum(BackgroundColor)
+        .describe("Цвет фона книги - указывается пользователем, необязательно"),
     }),
-    execute: async ({ title, author, pages, coverUrl }) => {
+    execute: async ({ title, author, pages, coverUrl, background }) => {
       let coverUrlFinal: string | undefined;
       if (coverUrl) {
         const url = new URL(coverUrl);
@@ -115,6 +119,7 @@ export const toolSetForUser = (user: User) => ({
           pages,
           userId: user.id,
           coverUrl: coverUrlFinal,
+          background,
         },
       });
 
@@ -137,6 +142,11 @@ export const toolSetForUser = (user: User) => ({
             .url()
             .optional()
             .describe("URL обложки книги (только books.google.com)"),
+          background: z
+            .enum(BackgroundColor)
+            .describe(
+              "Цвет фона книги - указывается пользователем, необязательно",
+            ),
         })
         .partial(),
     }),

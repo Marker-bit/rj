@@ -42,13 +42,7 @@ export function ChatHistory({
   const lastMessage = messages.at(-1);
   const lastPart = lastMessage?.parts.at(-1);
   const lastPartIsTool = lastPart ? isToolUIPart(lastPart) : false;
-  const showThinking =
-    status === "submitted" ||
-    (status === "streaming" &&
-      (!lastMessage ||
-        lastMessage.role === "user" ||
-        (lastMessage.role === "assistant" &&
-          (!hasVisibleText(lastMessage) || lastPartIsTool))));
+  const showThinking = status === "submitted" || status === "streaming";
 
   const setAtBottom = useCallback((nextIsAtBottom: boolean) => {
     if (isAtBottomRef.current === nextIsAtBottom) {
@@ -233,7 +227,10 @@ export function ChatHistory({
               }}
               className="overflow-visible w-fit"
             >
-              <TextShimmer className="font-mono text-sm w-fit" duration={0.5}>
+              <TextShimmer
+                className="font-semibold text-sm w-fit"
+                duration={0.5}
+              >
                 Думает...
               </TextShimmer>
             </motion.div>
