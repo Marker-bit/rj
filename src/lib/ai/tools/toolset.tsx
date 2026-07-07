@@ -5,9 +5,8 @@ import { fetchBooks } from "@/lib/books";
 import { db } from "@/lib/db";
 import { endOfDay, isToday } from "date-fns";
 import { bookSchema } from "@/lib/validation/schemas";
-import { searchBooks } from "@/lib/apis/books";
+import { filterSchema, searchBooks } from "@/lib/apis/books";
 import { utapi } from "@/app/(app)/api/uploadthing/core";
-import { description } from "@/components/book/day-chart";
 import { BackgroundColor } from "@prisma/client";
 
 export const toolSetForUser = (user: User) => ({
@@ -90,9 +89,21 @@ export const toolSetForUser = (user: User) => ({
         .describe("URL обложки книги (только books.google.com)"),
       background: z
         .enum(BackgroundColor)
-        .describe("Цвет фона книги - указывается пользователем, необязательно"),
+        .describe(
+          "Цвет фона книги - указывается пользователем, необязательно. Не спрашивай пользователя о цвете, если он сам его не укажет.",
+        ),
+      fields: z
+        .array(
+          z.object({
+            title: z.string({ error: "Название поля обязательно" }),
+            value: z.string({
+              error: "Значение поля обязательно",
+            }),
+          }),
+        )
+        .describe("Поля книги - например, ISBN или Издательство"),
     }),
-    execute: async ({ title, author, pages, coverUrl, background }) => {
+    execute: async ({ title, author, pages, coverUrl, background, fields }) => {
       let coverUrlFinal: string | undefined;
       if (coverUrl) {
         const url = new URL(coverUrl);
@@ -120,6 +131,7 @@ export const toolSetForUser = (user: User) => ({
           userId: user.id,
           coverUrl: coverUrlFinal,
           background,
+          fields,
         },
       });
 
@@ -145,7 +157,7 @@ export const toolSetForUser = (user: User) => ({
           background: z
             .enum(BackgroundColor)
             .describe(
-              "Цвет фона книги - указывается пользователем, необязательно",
+              "Цвет фона книги - указывается пользователем, необязательно. Не спрашивай пользователя о цвете, если он сам его не укажет.",
             ),
         })
         .partial(),
@@ -423,16 +435,15 @@ export const toolSetForUser = (user: User) => ({
   }),
   searchGoogleBooks: tool({
     description:
-      "Искать в каталоге Google Books. Для поиска по ISBN, введите запрос в формате isbn:1234567",
+      "Искать в каталоге Google Books. Предпочтительнее использовать фильтры при поиске определённой книги",
     inputSchema: z.object({
-      searchQuery: z.string().describe("Поисковый запрос"),
+      query: z.union([
+        filterSchema.describe("Фильтры"),
+        z.string().describe("Простой текстовый запрос"),
+      ]),
     }),
-    execute: async ({ searchQuery }) => {
-      return searchBooks(searchQuery);
+    execute: async ({ query }) => {
+      return searchBooks(query);
     },
   }),
 });
-
-// export const tools = Object.fromEntries(
-//   Object.entries(allTools).map(([key, tool]) => [key, tool.tool]),
-// );

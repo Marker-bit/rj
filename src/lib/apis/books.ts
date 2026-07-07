@@ -1,3 +1,5 @@
+import z from "zod";
+
 export type GoogleBooksVolumesResponse = {
   kind: "books#volumes";
   items?: GoogleBooksVolume[];
@@ -125,9 +127,64 @@ export type GoogleBooksVolume = {
   };
 };
 
-export async function searchBooks(searchQuery: string) {
+const RETRYABLE_GOOGLE_BOOKS_STATUSES = new Set([408, 429, 500, 502, 503, 504]);
+const GOOGLE_BOOKS_RETRY_DELAYS_MS = [300, 900];
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+async function fetchGoogleBooksWithRetry(
+  url: string,
+  attempt = 0,
+): Promise<Response> {
+  const response = await fetch(url);
+
+  if (
+    response.ok ||
+    !RETRYABLE_GOOGLE_BOOKS_STATUSES.has(response.status) ||
+    attempt >= GOOGLE_BOOKS_RETRY_DELAYS_MS.length
+  ) {
+    return response;
+  }
+
+  await sleep(GOOGLE_BOOKS_RETRY_DELAYS_MS[attempt]);
+  return fetchGoogleBooksWithRetry(url, attempt + 1);
+}
+
+const filterObjectSchema = z.object({
+  intitle: z.string().optional().describe("Поиск по названию"),
+  inauthor: z.string().optional().describe("Поиск по автору"),
+  inpublisher: z.string().optional().describe("Поиск по издательству"),
+  subject: z.string().optional().describe("Поиск по категориям"),
+  isbn: z.string().optional().describe("Поиск по ISBN"),
+  lccn: z.string().optional().describe("Поиск по LCCN"),
+  oclc: z.string().optional().describe("Поиск по OCLC"),
+});
+
+export const filterSchema = filterObjectSchema.refine(
+  (filter) => Object.values(filter).some((value) => value?.trim()),
+  "Укажите хотя бы один фильтр поиска",
+);
+
+function buildQueryFromFilter(filter: z.infer<typeof filterSchema>): string {
+  const { intitle, inauthor, inpublisher, subject, isbn, lccn, oclc } = filter;
+  const parts: string[] = [];
+
+  if (intitle) parts.push(`intitle:${intitle}`);
+  if (inauthor) parts.push(`inauthor:${inauthor}`);
+  if (inpublisher) parts.push(`inpublisher:${inpublisher}`);
+  if (subject) parts.push(`subject:${subject}`);
+  if (isbn) parts.push(`isbn:${isbn}`);
+  if (lccn) parts.push(`lccn:${lccn}`);
+  if (oclc) parts.push(`oclc:${oclc}`);
+
+  return parts.join(" ");
+}
+
+export async function searchBooks(
+  filter: string | z.infer<typeof filterSchema>,
+) {
   const params = new URLSearchParams({
-    q: searchQuery,
+    q: typeof filter === "string" ? filter : buildQueryFromFilter(filter),
     maxResults: "10",
   });
 
@@ -135,9 +192,8 @@ export async function searchBooks(searchQuery: string) {
     params.set("key", process.env.BOOKS_API_KEY);
   }
 
-  const response = await fetch(
-    `https://www.googleapis.com/books/v1/volumes?${params}`,
-  );
+  const url = `https://www.googleapis.com/books/v1/volumes?${params}`;
+  const response = await fetchGoogleBooksWithRetry(url);
 
   if (!response.ok) {
     throw new Error(`Google Books request failed: ${response.status}`);

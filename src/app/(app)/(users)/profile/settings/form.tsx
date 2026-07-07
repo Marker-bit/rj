@@ -416,7 +416,9 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
                 size="icon"
                 variant="outline"
                 type="button"
-                onClick={() => setFields((currentFields) => [...currentFields, ""])}
+                onClick={() =>
+                  setFields((currentFields) => [...currentFields, ""])
+                }
               >
                 <PlusIcon />
               </Button>

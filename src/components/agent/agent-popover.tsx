@@ -16,6 +16,7 @@ import {
 } from "@/components/agent/message-input";
 import { useToolSelection } from "@/components/agent/message-input/tool-selector";
 import { Button } from "@/components/ui/button";
+import { useIsMobile } from "@/hooks/use-mobile";
 import type { MyUIMessage } from "@/lib/ai/message";
 import { cn } from "@/lib/utils";
 
@@ -27,6 +28,7 @@ export function AgentPopover({
   onClose: () => void;
 }) {
   const [isFullHeight, setIsFullHeight] = useState(false);
+  const isMobile = useIsMobile();
 
   const ref = useRef<MessageInputRef>(null);
 
@@ -47,6 +49,9 @@ export function AgentPopover({
             body: {
               ...data,
               allowedTools: useToolSelection.getState().allowedTools,
+              defaultFields: JSON.parse(
+                localStorage.getItem("defaultFields") ?? "[]",
+              ),
             },
           };
         },
@@ -69,10 +74,19 @@ export function AgentPopover({
   return (
     <div
       className={cn(
-        "border bg-popover text-popover-foreground rounded-md origin-bottom-right data-hidden:opacity-0 data-hidden:scale-95 transition-all h-screen grid grid-rows-[auto_1fr_auto] overflow-y-hidden",
+        "border bg-popover text-popover-foreground rounded-md origin-bottom-right data-hidden:opacity-0 data-hidden:scale-95 transition-all h-screen grid grid-rows-[auto_1fr_auto] overflow-hidden max-sm:w-full max-sm:rounded-none max-sm:border-0 max-sm:origin-bottom",
         isFullHeight ? "w-100" : "w-80",
       )}
-      style={{ maxHeight: isFullHeight ? "calc(100vh - 140px)" : "30rem" }}
+      style={{
+        height: isMobile
+          ? "calc(100dvh - env(safe-area-inset-top))"
+          : undefined,
+        maxHeight: isMobile
+          ? "calc(100dvh - env(safe-area-inset-top))"
+          : isFullHeight
+            ? "calc(100vh - 140px)"
+            : "30rem",
+      }}
       data-hidden={!isOpen || undefined}
     >
       <div className="p-1 pl-3 pr-2 border-b flex items-center justify-between shrink-0">
@@ -81,7 +95,7 @@ export function AgentPopover({
           <Button
             size="icon-sm"
             variant="ghost"
-            className="size-6"
+            className={cn("size-6", isMobile && "hidden")}
             onClick={() => setIsFullHeight((a) => !a)}
           >
             {isFullHeight ? <Minimize2Icon /> : <Maximize2Icon />}

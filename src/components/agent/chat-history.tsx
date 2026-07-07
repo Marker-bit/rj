@@ -1,8 +1,4 @@
-import {
-  type ChatAddToolApproveResponseFunction,
-  type ChatStatus,
-  isToolUIPart,
-} from "ai";
+import { type ChatAddToolApproveResponseFunction, type ChatStatus } from "ai";
 import { ChevronDownIcon, CircleAlertIcon, RotateCwIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -14,11 +10,6 @@ import { cn } from "@/lib/utils";
 
 const MotionMessage = motion.create(Message);
 const BOTTOM_THRESHOLD_PX = 24;
-
-const hasVisibleText = (message?: MyUIMessage) =>
-  message?.parts.some(
-    (part) => part.type === "text" && part.text.trim().length > 0,
-  ) ?? false;
 
 export function ChatHistory({
   messages,
@@ -40,8 +31,6 @@ export function ChatHistory({
   const [isAtBottom, setIsAtBottom] = useState(true);
 
   const lastMessage = messages.at(-1);
-  const lastPart = lastMessage?.parts.at(-1);
-  const lastPartIsTool = lastPart ? isToolUIPart(lastPart) : false;
   const showThinking = status === "submitted" || status === "streaming";
 
   const setAtBottom = useCallback((nextIsAtBottom: boolean) => {
@@ -163,7 +152,8 @@ export function ChatHistory({
         </Button>
       </div>
       <div
-        className="overflow-auto flex flex-col p-2 grow max-h-full min-h-0"
+        className="overflow-y-auto overflow-x-hidden overscroll-contain flex flex-col p-2 pb-6 grow max-h-full min-h-0 touch-pan-y"
+        style={{ WebkitOverflowScrolling: "touch" }}
         ref={containerRef}
         onScroll={handleScroll}
       >

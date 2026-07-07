@@ -31,7 +31,7 @@ export function Message({
   return (
     <div
       className={cn(
-        "flex w-full pb-2",
+        "flex w-full max-w-full pb-2",
         message.role === "user"
           ? "justify-end origin-top-right"
           : "justify-start origin-top-left",

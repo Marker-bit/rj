@@ -10,6 +10,7 @@ const CreateBookView: ToolOutputView<"createBook"> = ({ input }) => {
       title={input.title}
       author={input.author}
       pages={input.pages}
+      fields={input.fields}
     />
   );
 };

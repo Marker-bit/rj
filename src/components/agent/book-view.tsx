@@ -13,6 +13,7 @@ export function BookView({
   pages,
   collections,
   coverUrl,
+  fields,
   background = BackgroundColor.NONE,
 }: {
   title: string;
@@ -21,6 +22,7 @@ export function BookView({
   collections?: string[];
   coverUrl?: string;
   background?: BackgroundColor;
+  fields?: { title: string; value: string }[];
 }) {
   const color =
     background !== BackgroundColor.NONE
@@ -63,6 +65,21 @@ export function BookView({
                 {c}
               </Badge>
             ))}
+          </div>
+        )}
+        {fields && (
+          <div className="flex flex-col gap-2">
+            {/*<div className="font-semibold">Поля:</div>*/}
+            <div className="flex gap-2 items-center flex-wrap">
+              {fields.map((field) => (
+                <div
+                  key={field.title + field.value}
+                  className={cn("rounded-xl border px-2 py-1")}
+                >
+                  {field.title}: {field.value}
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>

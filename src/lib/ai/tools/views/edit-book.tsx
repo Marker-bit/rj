@@ -4,7 +4,6 @@ import {
   MinusIcon,
   PencilIcon,
   PlusIcon,
-  TrashIcon,
 } from "lucide-react";
 import { RemoteBookView } from "@/components/agent/book-view";
 import type { ToolOutputView, ToolView } from "@/lib/ai/tools/types";
@@ -90,18 +89,19 @@ const EditBookView: ToolOutputView<"editBook"> = ({ input }) => {
                 <MinusIcon className="size-4 text-accent-foreground" />
               </div>
             )}
-            {input.values.background !== BackgroundColor.NONE && (
-              <div
-                className={cn(
-                  "size-8 rounded-md flex items-center justify-center",
-                  backgroundColors.find(
-                    (c) => c.type === input.values.background,
-                  )?.color,
-                )}
-              >
-                <PlusIcon className="size-4 text-accent-foreground" />
-              </div>
-            )}
+            {input.values.background !== BackgroundColor.NONE &&
+              input.values.background && (
+                <div
+                  className={cn(
+                    "size-8 rounded-md flex items-center justify-center",
+                    backgroundColors.find(
+                      (c) => c.type === input.values.background,
+                    )?.color,
+                  )}
+                >
+                  <PlusIcon className="size-4 text-accent-foreground" />
+                </div>
+              )}
           </div>
         )}
         <FieldView
