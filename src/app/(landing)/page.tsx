@@ -12,25 +12,29 @@ export default function LandingPage({
   const { noRedirect } = use(searchParams);
 
   return (
-    <div className="flex flex-col items-center overflow-hidden py-10">
-      <div className="flex flex-col items-center gap-2">
-        <h1 className="my-10 text-4xl font-bold text-black dark:text-white md:text-[6rem]">
-          Читательский дневник
-        </h1>
-
-        <LoginButton noRedirect={noRedirect !== undefined} />
-      </div>
-      <div className="px-5 mt-4 w-full">
-        <p className="text-center text-xl">Как всё будет:</p>
-        <Image
-          src={`/rjrj.png`}
-          alt="hero"
-          height={910}
-          width={1900}
-          className="mx-auto w-full mt-5 rounded-2xl block border relative"
-          draggable={false}
-        />
-      </div>
-    </div>
+    <main className="flex h-dvh flex-col overflow-hidden bg-[#faf9f6] text-stone-950">
+      <section className="mx-auto flex w-full max-w-5xl flex-1 items-center justify-center px-6 text-center">
+        <div className="flex flex-col items-center">
+          <Image
+            src="/icon.png"
+            alt="Открытая книга с закладкой"
+            width={512}
+            height={512}
+            className="mb-4 h-auto w-20 object-contain sm:w-24"
+            priority
+          />
+          <h1 className="text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">
+            Читательский дневник
+          </h1>
+          <p className="mt-3 max-w-lg text-base leading-7 text-stone-600 sm:text-lg">
+            Храните книги, отмечайте прогресс и возвращайтесь к истории своего
+            чтения.
+          </p>
+          <div className="mt-5">
+            <LoginButton noRedirect={noRedirect !== undefined} />
+          </div>
+        </div>
+      </section>
+    </main>
   );
 }
