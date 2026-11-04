@@ -2,8 +2,8 @@
 
 import type { GroupBookSuggestion, GroupMember } from "@prisma/client";
 import Fuse from "fuse.js";
-import { BookIcon, Search } from "lucide-react";
-import { useEffect, useState } from "react";
+import { BookIcon, Search, X } from "lucide-react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -27,22 +27,22 @@ export default function Books({
   userId: string;
 }) {
   const [searchText, setSearchText] = useState("");
-  const [filteredBooks, setFilteredBooks] = useState<any[]>();
-  const search = new Fuse(group.groupBooks, {
-    keys: ["title", "author", "description"],
-  });
+  const search = useMemo(
+    () =>
+      new Fuse(group.groupBooks, {
+        keys: ["title", "author", "description"],
+      }),
+    [group.groupBooks],
+  );
+  const books = useMemo(
+    () =>
+      searchText
+        ? search.search(searchText).map((result) => result.item)
+        : group.groupBooks,
+    [group.groupBooks, search, searchText],
+  );
 
   const groupMember = group.members.find((member) => member.userId === userId);
-
-  useEffect(() => {
-    if (searchText) {
-      const res = search.search(searchText);
-      setFilteredBooks(res.map((result) => result.item));
-    } else {
-      setFilteredBooks(undefined);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchText, search.search]);
 
   if (!groupMember) {
     return null;
@@ -69,12 +69,34 @@ export default function Books({
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
         />
-        <Button variant="outline" size="icon">
-          <Search className="size-4" />
-        </Button>
+        {searchText ? (
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            aria-label="Очистить поиск"
+            onClick={() => setSearchText("")}
+          >
+            <X className="size-4" />
+          </Button>
+        ) : (
+          <span
+            role="img"
+            aria-label="Поиск"
+            className="inline-flex size-9 shrink-0 items-center justify-center rounded-md border border-input text-muted-foreground"
+          >
+            <Search className="size-4" />
+          </span>
+        )}
       </div>
       <ScrollArea className="h-[40vh]">
-        {(filteredBooks || group.groupBooks).map((book) => (
+        {books.length === 0 && (
+          <div className="flex items-center gap-3 rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
+            <BookIcon className="size-5" />
+            {searchText ? "Ничего не найдено" : "В группе пока нет книг"}
+          </div>
+        )}
+        {books.map((book) => (
           <GroupBookView groupBook={book} key={book.id} userId={userId} />
         ))}
         <ScrollBar orientation="vertical" />
