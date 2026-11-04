@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { db } from "@/lib/db";
@@ -20,7 +21,7 @@ export default async function Page(props: {
     },
   });
   if (!book) {
-    return null;
+    notFound();
   }
   return (
     <div className="p-2 max-sm:mb-[15vh]">
