@@ -30,6 +30,9 @@ import BookMenu from "./book-menu";
 
 export const dynamic = "force-dynamic";
 
+const percentOf = (part: number, total: number) =>
+  total === 0 ? "0.0" : ((part / total) * 100).toFixed(1);
+
 export default async function Page() {
   const readEvents = await db.readEvent.count();
 
@@ -41,7 +44,7 @@ export default async function Page() {
       },
     },
   });
-  const lastMonthPercent = ((lastMonthEvents / readEvents) * 100).toFixed(1);
+  const lastMonthPercent = percentOf(lastMonthEvents, readEvents);
 
   const books = await db.book.count();
   const lastMonthBooks = await db.book.count({
@@ -51,7 +54,7 @@ export default async function Page() {
       },
     },
   });
-  const lastMonthBooksPercent = ((lastMonthBooks / books) * 100).toFixed(1);
+  const lastMonthBooksPercent = percentOf(lastMonthBooks, books);
 
   const users = await db.user.count();
   const lastMonthUsers = await db.user.count({
@@ -61,7 +64,7 @@ export default async function Page() {
       },
     },
   });
-  const lastMonthUsersPercent = ((lastMonthUsers / users) * 100).toFixed(1);
+  const lastMonthUsersPercent = percentOf(lastMonthUsers, users);
 
   const supportTickets = await db.supportQuestion.count({
     where: { isDone: false },
