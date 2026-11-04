@@ -1,15 +1,14 @@
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { validateRequest } from "@/lib/server-validate-request";
+import { requireUser } from "@/lib/require-user";
 import { SettingsForm } from "./form";
 
 export default async function SettingsPage() {
-  const { user } = await validateRequest();
-  if (!user) return null;
+  const user = await requireUser();
   return (
     <div className="mb-20">
-      <div className="m-2 flex items-center gap-2 text-5xl font-black">
+      <div className="m-2 flex items-center gap-2 text-3xl font-bold">
         <Button variant="ghost" size="icon" asChild>
           <Link href="/profile">
             <ChevronLeft className="size-8" />
