@@ -5,10 +5,11 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { BadgeCheck, UserPlus, UserX } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { revalidate } from "@/lib/actions/revalidate";
 import { Badge } from "../ui/badge";
 import { Loader } from "../ui/loader";
 
@@ -20,7 +21,6 @@ export function FriendView({
   following?: boolean;
 }) {
   const queryClient = useQueryClient();
-  const router = useRouter();
   const userQuery = useQuery({
     queryKey: ["user", friend.username],
     queryFn: async () => {
@@ -38,26 +38,37 @@ export function FriendView({
       });
     });
   }, []);
-  const follow = () => {
+  const follow = async () => {
     setLoading(true);
-    fetch(`/api/profile/${friend.username}/follow`, {
-      method: following || userQuery.data?.following ? "DELETE" : "POST",
-    }).then(() => {
-      setLoading(false);
+    try {
+      const res = await fetch(`/api/profile/${friend.username}/follow`, {
+        method: following || userQuery.data?.following ? "DELETE" : "POST",
+      });
+      if (!res.ok) {
+        toast.error("Не удалось изменить подписку");
+        return;
+      }
       queryClient.invalidateQueries({
         queryKey: ["user", friend.username],
       });
       queryClient.invalidateQueries({
         queryKey: ["friends"],
       });
-      router.refresh();
-    });
+      await revalidate("profile");
+    } catch {
+      toast.error("Не удалось изменить подписку");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const followingRes = following || userQuery.data?.following;
   return (
-    <Link href={`/profile/${friend.username}`}>
-      <div className="group flex cursor-pointer items-center gap-2 rounded-md border p-4 transition-colors">
+    <div className="group flex cursor-pointer items-center gap-2 rounded-md border p-4 transition-colors">
+      <Link
+        href={`/profile/${friend.username}`}
+        className="flex min-w-0 flex-1 items-center gap-2"
+      >
         <Image
           src={friend.avatarUrl ? friend.avatarUrl : "/no-avatar.png"}
           alt="avatar"
@@ -75,46 +86,40 @@ export function FriendView({
           <div className="text-sm text-muted-foreground/70">
             @{friend.username}
           </div>
-          {currentUserId === friend.id ? (
-            <Badge className="w-fit">Вы</Badge>
-          ) : followingRes === undefined && userQuery.isPending ? (
-            <Skeleton className="h-10 w-48 rounded-md" />
-          ) : (
-            <Button
-              className="mt-2 w-fit gap-2"
-              onClick={(evt) => {
-                follow();
-                evt.preventDefault();
-              }}
-              disabled={loading}
-              variant={followingRes === true ? "outline" : "default"}
-            >
-              {followingRes === false ? (
-                <>
-                  {loading ? (
-                    <Loader invert={!followingRes} className="size-4" />
-                  ) : (
-                    <UserPlus className="size-4" />
-                  )}
-                  Подписаться
-                </>
-              ) : (
-                <>
-                  {loading ? (
-                    <Loader invert={!followingRes} className="size-4" />
-                  ) : (
-                    <UserX className="size-4" />
-                  )}
-                  Отменить подписку
-                </>
-              )}
-            </Button>
-          )}
+          {currentUserId === friend.id && <Badge className="w-fit">Вы</Badge>}
         </div>
-        {/* <button className="ml-auto">
-        <ChevronRight className="w-7 h-7 text-black/50 group-hover:text-black transition-colors" />
-      </button> */}
-      </div>
-    </Link>
+      </Link>
+      {currentUserId !== friend.id &&
+        (followingRes === undefined && userQuery.isPending ? (
+          <Skeleton className="h-10 w-48 rounded-md" />
+        ) : (
+          <Button
+            className="mt-2 w-fit gap-2"
+            onClick={() => void follow()}
+            disabled={loading}
+            variant={followingRes === true ? "outline" : "default"}
+          >
+            {followingRes === false ? (
+              <>
+                {loading ? (
+                  <Loader invert={!followingRes} className="size-4" />
+                ) : (
+                  <UserPlus className="size-4" />
+                )}
+                Подписаться
+              </>
+            ) : (
+              <>
+                {loading ? (
+                  <Loader invert={!followingRes} className="size-4" />
+                ) : (
+                  <UserX className="size-4" />
+                )}
+                Отписаться
+              </>
+            )}
+          </Button>
+        ))}
+    </div>
   );
 }

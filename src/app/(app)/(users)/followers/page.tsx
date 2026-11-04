@@ -4,14 +4,17 @@ import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { FriendView } from "@/components/users/friend-view";
 import { db } from "@/lib/db";
+import { pageMetadata } from "@/lib/page-metadata";
 import { validateRequest } from "@/lib/server-validate-request";
 
 export const dynamic = "force-dynamic";
 
+export const metadata = pageMetadata("Подписчики");
+
 export default async function FriendsPage() {
   const { user } = await validateRequest();
   if (!user) {
-    redirect("/auth");
+    redirect("/auth/login");
   }
   const friends = await db.user.findMany({
     where: {
@@ -28,7 +31,7 @@ export default async function FriendsPage() {
 
   return (
     <div>
-      <div className="m-2 flex items-center gap-2 text-5xl font-black">
+      <div className="m-2 flex items-center gap-2 text-3xl font-bold">
         <Link href="/">
           <Button variant="ghost" size="icon">
             <ChevronLeft className="size-8" />
@@ -48,7 +51,9 @@ export default async function FriendsPage() {
               <UserX className="size-10" />
               <div className="flex flex-col">
                 <div>У вас нет подписчиков</div>
-                <div className="text-xs text-black/50">Зовите друзей!</div>
+                <div className="text-xs text-muted-foreground">
+                  Подписчики появятся здесь.
+                </div>
               </div>
             </div>
           )}

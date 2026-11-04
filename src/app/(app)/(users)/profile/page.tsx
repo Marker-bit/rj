@@ -6,12 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Stats } from "@/components/users/stats";
 import { db } from "@/lib/db";
-import { validateRequest } from "@/lib/server-validate-request";
+import { requireUser } from "@/lib/require-user";
 import { CopyUrl } from "./CopyUrl";
 
 export default async function ProfilePage() {
-  const { user } = await validateRequest();
-  if (!user) return null;
+  const user = await requireUser();
 
   const userData = await db.user.findUniqueOrThrow({
     where: {
@@ -50,7 +49,7 @@ export default async function ProfilePage() {
 
   return (
     <div className="mb-[15vh]">
-      <div className="m-2 flex items-center gap-2 text-5xl font-black">
+      <div className="m-2 flex items-center gap-2 text-3xl font-bold">
         <Button variant="ghost" size="icon" asChild>
           <Link href="/">
             <ChevronLeft className="size-6" />
@@ -95,7 +94,7 @@ export default async function ProfilePage() {
           </div>
         }
       >
-        <Stats profile={userData} events={events} books={books} />
+        <Stats profile={userData} events={events} books={books} isOwnProfile />
       </Suspense>
     </div>
   );

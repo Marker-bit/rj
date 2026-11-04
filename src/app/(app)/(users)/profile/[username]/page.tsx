@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
@@ -11,9 +11,7 @@ type Props = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-export async function generateMetadata(
-  props: Props,
-): Promise<Metadata> {
+export async function generateMetadata(props: Props): Promise<Metadata> {
   const params = await props.params;
   const username = params.username;
 
@@ -41,7 +39,7 @@ export default async function Page(props: {
   const params = await props.params;
   const username = params.username;
   const { user: currentUser } = await validateRequest();
-  const user = await db.user.findFirstOrThrow({
+  const user = await db.user.findFirst({
     where: {
       username: {
         equals: username,
@@ -62,6 +60,7 @@ export default async function Page(props: {
       },
     },
   });
+  if (!user) notFound();
   const events = await db.readEvent.findMany({
     where: {
       book: {

@@ -86,7 +86,12 @@ export function UserTabs({
       {shareStats && (
         <div className="flex flex-col">
           <div className="text-3xl font-semibold">Статистика</div>
-          <Stats profile={user as any} events={events} books={books} />
+          <Stats
+            profile={user as any}
+            events={events}
+            books={books}
+            isOwnProfile={false}
+          />
         </div>
       )}
     </div>
