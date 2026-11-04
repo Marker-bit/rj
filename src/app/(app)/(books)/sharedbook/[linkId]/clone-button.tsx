@@ -6,6 +6,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Loader } from "@/components/ui/loader";
+import { revalidate } from "@/lib/actions/revalidate";
 
 export function CloneButton({ linkId }: { linkId: string }) {
   const [loading, setLoading] = useState(false);
@@ -31,7 +32,7 @@ export function CloneButton({ linkId }: { linkId: string }) {
           onClick: () => router.push(`/books/${data.bookId}`),
         },
       });
-      router.refresh();
+      void revalidate("books");
     }
     setLoading(false);
   };

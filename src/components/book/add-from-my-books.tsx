@@ -2,11 +2,11 @@
 
 import { Loader, Plus, Search } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { DialogHeader, DialogTitle } from "../ui/dialog";
 import { DrawerDialog } from "../ui/drawer-dialog";
+import { revalidate } from "@/lib/actions/revalidate";
 
 export function AddFromMyBooks({
   groupId,
@@ -17,7 +17,6 @@ export function AddFromMyBooks({
   open: boolean;
   setOpen: (open: boolean) => void;
 }) {
-  const router = useRouter();
   const [books, setBooks] = useState<any[]>();
   const [bookLoadingId, setBookLoadingId] = useState<string>();
   const [search, setSearch] = useState("");
@@ -89,7 +88,7 @@ export function AddFromMyBooks({
                 }).then(() => {
                   setBookLoadingId(undefined);
                   setOpen(false);
-                  router.refresh();
+                  void revalidate("books");
                 });
               }}
             >

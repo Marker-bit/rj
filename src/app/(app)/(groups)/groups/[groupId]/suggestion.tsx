@@ -1,11 +1,11 @@
 import { type GroupBookSuggestion, GroupMemberRole } from "@prisma/client";
 import { Plus } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Loader } from "@/components/ui/loader";
+import { revalidate } from "@/lib/actions/revalidate";
 
 export function Suggestion({
   suggestion,
@@ -15,7 +15,6 @@ export function Suggestion({
   role: GroupMemberRole;
 }) {
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   const onClick = () => {
     setLoading(true);
@@ -31,7 +30,7 @@ export function Suggestion({
           });
         } else {
           toast.success(res.message);
-          router.refresh();
+          void revalidate("groups");
         }
       });
   };

@@ -17,6 +17,7 @@ import {
 import { declOfNum } from "@/lib/utils";
 import { MoreActions } from "./more-actions";
 import RemoveBookDialog from "./remove-book-dialog";
+import { revalidate } from "@/lib/actions/revalidate";
 
 export function GroupBookView({
   groupBook,
@@ -44,13 +45,13 @@ export function GroupBookView({
     );
     const data = await res.json();
     setLoading(false);
-    router.refresh();
+    void revalidate("groups");
     toast("Книга добавлена", {
       description: "Теперь вы можете читать ее",
       action: {
         onClick: () => {
           router.push(`/books/${data.id}`);
-          router.refresh();
+          void revalidate("groups");
         },
         label: "Перейти",
       },
@@ -70,7 +71,7 @@ export function GroupBookView({
         },
       );
       setLoading(false);
-      router.refresh();
+      void revalidate("groups");
     } else {
       setRemoveDialogOpen(true);
     }

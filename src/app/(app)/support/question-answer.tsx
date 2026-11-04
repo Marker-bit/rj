@@ -1,11 +1,11 @@
 import type { AnswerRead, SupportAnswer, User } from "@prisma/client";
 import { CheckCheck } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Loader } from "@/components/ui/loader";
 import { markAsRead } from "@/lib/actions/support";
+import { revalidate } from "@/lib/actions/revalidate";
 
 export default function QuestionAnswer({
   answer,
@@ -18,12 +18,11 @@ export default function QuestionAnswer({
   currentUserId: string;
 }) {
   const [readLoading, setReadLoading] = useState(false);
-  const router = useRouter();
   const read = async () => {
     setReadLoading(true);
     await markAsRead(answer.id);
     setReadLoading(false);
-    router.refresh();
+    void revalidate("support");
   };
   return (
     <div

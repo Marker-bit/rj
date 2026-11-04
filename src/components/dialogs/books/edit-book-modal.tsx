@@ -11,7 +11,6 @@ import {
   X,
 } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -40,6 +39,7 @@ import {
 } from "@/components/ui/alert";
 import { Calligraph } from "calligraph";
 import { AnimatePresence, motion } from "motion/react";
+import { revalidate } from "@/lib/actions/revalidate";
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -97,8 +97,6 @@ export function EditBookModal({
     control: form.control,
   });
 
-  const router = useRouter();
-
   const editMutation = useMutation({
     mutationFn: (values: z.input<typeof bookSchema>) =>
       fetch(`/api/books/${book.id}/`, {
@@ -112,7 +110,7 @@ export function EditBookModal({
       queryClient.invalidateQueries({
         queryKey: ["events"],
       });
-      router.refresh();
+      void revalidate("books");
       onUpdate?.(values);
     },
   });

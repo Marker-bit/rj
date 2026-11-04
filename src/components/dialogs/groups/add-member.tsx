@@ -4,10 +4,10 @@ import type { Group } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import { Loader } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { DialogHeader, DialogTitle } from "../../ui/dialog";
 import { DrawerDialog } from "../../ui/drawer-dialog";
+import { revalidate } from "@/lib/actions/revalidate";
 
 export default function AddMember({
   open,
@@ -20,7 +20,6 @@ export default function AddMember({
     members: any[];
   };
 }) {
-  const router = useRouter();
   const [loading, setLoading] = useState<string>();
   const friendsQuery = useQuery({
     queryKey: ["friends"],
@@ -53,7 +52,7 @@ export default function AddMember({
                       .then(() => {
                         setOpen(false);
                         setLoading(undefined);
-                        router.refresh();
+                        void revalidate("groups");
                       });
                   }}
                 >

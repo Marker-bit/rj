@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MessageCircleQuestion } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -26,6 +25,7 @@ import { Input } from "@/components/ui/input";
 import { Loader } from "@/components/ui/loader";
 import { Textarea } from "@/components/ui/textarea";
 import { createQuestion } from "@/lib/actions/support";
+import { revalidate } from "@/lib/actions/revalidate";
 
 const formSchema = z.object({
   title: z
@@ -47,8 +47,6 @@ export default function AskQuestion() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const router = useRouter();
-
   async function onSubmit({ title, content }: z.infer<typeof formSchema>) {
     setLoading(true);
     const res = await createQuestion(title, content);
@@ -61,7 +59,7 @@ export default function AskQuestion() {
       toast.success(res.message);
       form.reset();
       setOpen(false);
-      router.refresh();
+      void revalidate("support");
     }
   }
 

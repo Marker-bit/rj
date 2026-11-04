@@ -15,7 +15,6 @@ import {
   Save,
   TrashIcon,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -48,6 +47,7 @@ import {
   editRecommendation,
 } from "@/lib/actions/recommendations";
 import { cn } from "@/lib/utils";
+import { revalidate } from "@/lib/actions/revalidate";
 
 const formSchema = z.object({
   slogan: z.string().min(1, "Слоган обязателен"),
@@ -85,7 +85,6 @@ export function AddRecommendation({
       published: recommendation?.published ?? false,
     },
   });
-  const router = useRouter();
 
   async function onSubmit(values: z.input<typeof formSchema>) {
     setLoading(true);
@@ -98,7 +97,7 @@ export function AddRecommendation({
     }
     setLoading(false);
     setOpen(false);
-    router.refresh();
+    void revalidate("admin");
   }
 
   return (
@@ -332,7 +331,6 @@ export function DeleteRecommendationButton({
   recommendationId: string;
 }) {
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   const runAction = async () => {
     setLoading(true);
@@ -345,7 +343,7 @@ export function DeleteRecommendationButton({
     // }
     if (res.message) {
       toast.success(res.message);
-      router.refresh();
+      void revalidate("admin");
     }
   };
 
@@ -363,7 +361,6 @@ export function DuplicateRecommendationButton({
   recommendationId: string;
 }) {
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   const runAction = async () => {
     setLoading(true);
@@ -371,7 +368,7 @@ export function DuplicateRecommendationButton({
     setLoading(false);
     if (res.message) {
       toast.success(res.message);
-      router.refresh();
+      void revalidate("admin");
     }
   };
 
@@ -385,7 +382,6 @@ export function DuplicateRecommendationButton({
 
 export function PasteRecommendation() {
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   const pasteRecommendation = async () => {
     setLoading(true);
@@ -397,7 +393,7 @@ export function PasteRecommendation() {
       toast.error("Возникла проблема при вставке рекомендации");
     }
     setLoading(false);
-    router.refresh();
+    void revalidate("admin");
     // if (res.message) {
     //   toast.success(res.message);
     // }

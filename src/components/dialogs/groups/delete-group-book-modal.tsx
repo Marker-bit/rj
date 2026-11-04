@@ -2,11 +2,11 @@
 
 import type { Group, GroupBook } from "@prisma/client";
 import { Loader } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
 import { Button } from "../../ui/button";
 import { DialogDescription, DialogHeader, DialogTitle } from "../../ui/dialog";
+import { revalidate } from "@/lib/actions/revalidate";
 
 export function DeleteGroupBookModal({
   open,
@@ -17,7 +17,6 @@ export function DeleteGroupBookModal({
   setOpen: (v: boolean) => void;
   book: GroupBook & { group: Group };
 }) {
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   function deleteBook() {
@@ -26,7 +25,7 @@ export function DeleteGroupBookModal({
       method: "DELETE",
     }).then(() => {
       setOpen(false);
-      router.refresh();
+      void revalidate("groups");
     });
   }
 

@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { deleteQuestion, markAsDone } from "@/lib/actions/support";
+import { revalidate } from "@/lib/actions/revalidate";
 
 export default function QuestionButtons({
   question,
@@ -43,7 +44,7 @@ export default function QuestionButtons({
         setLoading(true);
         await markAsDone(question.id, !question.isDone);
         setLoading(false);
-        router.refresh();
+        void revalidate("admin");
       },
       {
         loading: "Изменение статуса...",

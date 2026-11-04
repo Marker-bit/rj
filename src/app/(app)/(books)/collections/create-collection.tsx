@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -25,6 +24,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Loader } from "@/components/ui/loader";
 import { createCollection } from "@/lib/actions/collections";
+import { revalidate } from "@/lib/actions/revalidate";
 
 const formSchema = z.object({
   name: z.string().min(1, { error: "Поле обязательно для заполнения" }),
@@ -40,8 +40,6 @@ export function CreateCollection() {
     },
   });
 
-  const router = useRouter();
-
   async function onSubmit({ name }: z.infer<typeof formSchema>) {
     setLoading(true);
     const res = await createCollection(name);
@@ -53,7 +51,7 @@ export function CreateCollection() {
     }
     if (res.message && res.collection) {
       toast.success(res.message);
-      router.refresh();
+      void revalidate("collections");
       handleClose(false);
     }
   }

@@ -1,5 +1,4 @@
 import { CheckIcon, CopyIcon, LinkIcon, Settings, Trash } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
@@ -22,6 +21,7 @@ import type { Book } from "@/lib/api-types";
 import { Button } from "../../ui/button";
 import { DialogHeader, DialogTitle } from "../../ui/dialog";
 import { Loader } from "../../ui/loader";
+import { revalidate } from "@/lib/actions/revalidate";
 
 export function ShareBookModal({
   open,
@@ -38,7 +38,6 @@ export function ShareBookModal({
   //   setLink(`${window.location.origin}/books/${book.id}`);
   // }, [book.id]);
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
   const { copyToClipboard, isCopied } = useCopyToClipboard();
 
   const createLink = async () => {
@@ -49,7 +48,7 @@ export function ShareBookModal({
     const res = await resp.json();
     if (resp.ok) {
       setLoading(false);
-      router.refresh();
+      void revalidate("books");
     } else {
       toast.error("Возникла проблема при создании ссылки", {
         description: res.error,
@@ -63,7 +62,7 @@ export function ShareBookModal({
         setLoading(true);
         await deleteBookLink(id);
         setLoading(false);
-        router.refresh();
+        void revalidate("books");
       },
       {
         loading: "Удаление ссылки...",

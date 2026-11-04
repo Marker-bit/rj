@@ -1,13 +1,13 @@
 "use client";
 
 import type { GroupBook } from "@prisma/client";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
 import { Loader } from "@/components/ui/loader";
 import { declOfNum } from "@/lib/utils";
+import { revalidate } from "@/lib/actions/revalidate";
 
 export default function RemoveBookDialog({
   open,
@@ -25,7 +25,6 @@ export default function RemoveBookDialog({
     title: string;
   };
 }) {
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   return (
@@ -56,7 +55,7 @@ export default function RemoveBookDialog({
             );
             setLoading(false);
             setOpen(false);
-            router.refresh();
+            void revalidate("groups");
           }}
         >
           {loading ? <Loader white className="size-4" /> : "Удалить"}

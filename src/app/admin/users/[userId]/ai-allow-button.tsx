@@ -1,12 +1,12 @@
 "use client";
 
 import { SparklesIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { setAI } from "@/lib/actions/users";
+import { revalidate } from "@/lib/actions/revalidate";
 
 export default function AIAllowButton({
   userId,
@@ -16,7 +16,6 @@ export default function AIAllowButton({
   aiEnabled: boolean;
 }) {
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   const changeAI = async () => {
     toast.promise(
@@ -24,7 +23,7 @@ export default function AIAllowButton({
         setLoading(true);
         await setAI(userId, !aiEnabled);
         setLoading(false);
-        router.refresh();
+        void revalidate("admin");
       },
       {
         loading: "Подождите...",

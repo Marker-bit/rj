@@ -2,7 +2,6 @@
 import type { Book as PrismaBook } from "@prisma/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowRightIcon, Loader, PlusIcon, TrashIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
@@ -24,6 +23,7 @@ import { declOfNum } from "@/lib/utils";
 import { Button } from "../../ui/button";
 import { Checkbox } from "../../ui/checkbox";
 import { DialogHeader, DialogTitle } from "../../ui/dialog";
+import { revalidate } from "@/lib/actions/revalidate";
 
 export function BookCollectionsModal({
   open,
@@ -38,7 +38,6 @@ export function BookCollectionsModal({
   const [selectedCollections, setSelectedCollections] = useState(
     book.collections.map((c) => c.id),
   );
-  const router = useRouter();
   const queryClient = useQueryClient();
 
   const {
@@ -86,7 +85,7 @@ export function BookCollectionsModal({
       queryClient.invalidateQueries({
         queryKey: ["collections"],
       });
-      router.refresh();
+      void revalidate("collections");
     },
   });
   const deleteMutation = useMutation({

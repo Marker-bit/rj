@@ -4,8 +4,8 @@ import type { Book, Collection } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { Loader, Minus } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { revalidate } from "@/lib/actions/revalidate";
 
 export function RemoveBook({
   book,
@@ -16,7 +16,6 @@ export function RemoveBook({
     books: Book[];
   };
 }) {
-  const router = useRouter();
   const removeMutation = useMutation({
     mutationFn: () => {
       return fetch(`/api/collections/${collection.id}/remove-books`, {
@@ -25,7 +24,7 @@ export function RemoveBook({
       });
     },
     onSuccess: () => {
-      router.refresh();
+      void revalidate("collections");
     },
   });
   return (

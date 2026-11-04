@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -17,6 +16,7 @@ import {
 import { Loader } from "@/components/ui/loader";
 import { Textarea } from "@/components/ui/textarea";
 import { answerQuestion } from "@/lib/actions/support";
+import { revalidate } from "@/lib/actions/revalidate";
 
 const formSchema = z.object({
   content: z
@@ -33,8 +33,6 @@ export default function AnswerQuestion({ questionId }: { questionId: string }) {
   });
   const [loading, setLoading] = useState(false);
 
-  const router = useRouter();
-
   async function onSubmit({ content }: z.infer<typeof formSchema>) {
     setLoading(true);
     const res = await answerQuestion(questionId, content);
@@ -46,7 +44,7 @@ export default function AnswerQuestion({ questionId }: { questionId: string }) {
     } else {
       toast.success(res.message);
       form.reset();
-      router.refresh();
+      void revalidate("support");
     }
   }
 

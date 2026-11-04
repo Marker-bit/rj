@@ -1,11 +1,11 @@
 "use client";
 
 import { BadgeCheck } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { setVerification } from "@/lib/actions/users";
+import { revalidate } from "@/lib/actions/revalidate";
 
 export default function BadgeCheckButton({
   userId,
@@ -15,7 +15,6 @@ export default function BadgeCheckButton({
   isVerified: boolean;
 }) {
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   const changeVerification = async () => {
     toast.promise(
@@ -23,7 +22,7 @@ export default function BadgeCheckButton({
         setLoading(true);
         await setVerification(userId, !isVerified);
         setLoading(false);
-        router.refresh();
+        void revalidate("admin");
       },
       {
         loading: "Подождите...",

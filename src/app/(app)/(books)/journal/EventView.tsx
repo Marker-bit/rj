@@ -4,10 +4,10 @@ import type { Book } from "@prisma/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { BookOpen, BookOpenCheck, Loader, Undo } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { SimpleTooltip } from "@/components/ui/simple-tooltip";
 import { dateToString } from "@/lib/utils";
+import { revalidate } from "@/lib/actions/revalidate";
 
 export function EventView({
   event,
@@ -21,7 +21,6 @@ export function EventView({
   };
 }) {
   const queryClient = useQueryClient();
-  const router = useRouter();
   const undoMutation = useMutation({
     mutationFn: async () =>
       await fetch(`/api/journal/events/${event.id}`, {
@@ -34,7 +33,7 @@ export function EventView({
       queryClient.invalidateQueries({
         queryKey: ["books"],
       });
-      router.refresh();
+      void revalidate("books");
     },
   });
   return (

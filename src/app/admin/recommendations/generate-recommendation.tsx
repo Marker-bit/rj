@@ -14,7 +14,6 @@ import {
   SparklesIcon,
 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { type FormEvent, useState } from "react";
 import { toast } from "sonner";
 import { useCopyToClipboard, useLocalStorage } from "usehooks-ts";
@@ -32,6 +31,7 @@ import {
 import { SimpleTooltip } from "@/components/ui/simple-tooltip";
 import { Textarea } from "@/components/ui/textarea";
 import { addRecommendation } from "@/lib/actions/recommendations";
+import { revalidate } from "@/lib/actions/revalidate";
 
 const DEFAULT_PROMPT = `Сгенерируй рекомендацию какой-нибудь существующей книги для школьников 10+ (выбери конкретную аудиторию, например девочки 13+ (пример не бери)).`;
 
@@ -148,7 +148,6 @@ export default function GenerateRecommendation() {
   const [result, setResult] = useState<
     { recommendation: Rec; cost: number } | { error: string }
   >();
-  const router = useRouter();
   const [_copiedText, copyToClipboard] = useCopyToClipboard();
 
   const runAction = async (evt: FormEvent) => {
@@ -179,7 +178,7 @@ export default function GenerateRecommendation() {
       toast.success(res.message);
       setSaveLoading(false);
       setOpen(false);
-      router.refresh();
+      void revalidate("admin");
     }
   };
 
