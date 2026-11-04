@@ -50,7 +50,7 @@ export default function JournalView({
 
   return (
     <div className="max-sm:mb-[15vh]">
-      <div className="m-2 flex items-center gap-2 text-5xl font-black">
+      <div className="m-2 flex items-center gap-2 text-3xl font-bold">
         <Link href="/">
           <Button variant="ghost" size="icon">
             <ChevronLeft className="size-8" />
