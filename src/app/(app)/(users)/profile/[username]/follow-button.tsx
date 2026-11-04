@@ -1,76 +1,57 @@
 "use client";
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { UserPlus, UserX } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { UserMinus, UserPlus } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Loader } from "@/components/ui/loader";
-import { Skeleton } from "@/components/ui/skeleton";
+import { revalidate } from "@/lib/actions/revalidate";
 
 export default function FollowButton({
   username,
-  following,
+  following: initialFollowing,
 }: {
   username: string;
   following: boolean;
 }) {
-  const router = useRouter();
+  const [following, setFollowing] = useState(initialFollowing);
+  const [pending, setPending] = useState(false);
 
-  useEffect(() => {
-    fetch(`/api/profile/${username}`)
-      .then((res) => res.json())
-      .then((_res) => router.refresh());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [username, router.refresh]);
-
-  const queryClient = useQueryClient();
-
-  const followMutation = useMutation({
-    mutationFn: async () => {
-      return fetch(`/api/profile/${username}/follow`, {
+  async function toggleFollow() {
+    setPending(true);
+    try {
+      const response = await fetch(`/api/profile/${username}/follow`, {
         method: following ? "DELETE" : "POST",
       });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["user", username],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["friends"],
-      });
-      router.refresh();
-    },
-  });
 
-  return following === undefined ? (
-    <Skeleton className="h-10 w-48 rounded-md" />
-  ) : following ? (
+      if (!response.ok) {
+        throw new Error("follow request failed");
+      }
+
+      setFollowing((value) => !value);
+      await revalidate("profile");
+    } catch {
+      toast.error("Не удалось изменить подписку");
+    } finally {
+      setPending(false);
+    }
+  }
+
+  return (
     <Button
       className="w-fit gap-2"
-      onClick={() => followMutation.mutate()}
-      disabled={followMutation.isPending}
-      variant="outline"
+      onClick={toggleFollow}
+      disabled={pending}
+      variant={following ? "outline" : "default"}
     >
-      {followMutation.isPending ? (
-        <Loader className="size-4" />
-      ) : (
-        <UserX className="size-4" />
-      )}
-      Удалить из друзей
-    </Button>
-  ) : (
-    <Button
-      className="w-fit gap-2"
-      onClick={() => followMutation.mutate()}
-      disabled={followMutation.isPending}
-    >
-      {followMutation.isPending ? (
-        <Loader invert className="size-4" />
+      {pending ? (
+        <Loader invert={!following} className="size-4" />
+      ) : following ? (
+        <UserMinus className="size-4" />
       ) : (
         <UserPlus className="size-4" />
       )}
-      Добавить в друзья
+      {following ? "Отписаться" : "Подписаться"}
     </Button>
   );
 }

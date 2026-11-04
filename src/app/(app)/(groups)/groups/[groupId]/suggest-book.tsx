@@ -4,7 +4,6 @@ import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useMutation } from "@tanstack/react-query";
 import { Loader, Plus, Trash } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -22,6 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { UploadButton } from "@/components/uploadthing";
+import { revalidate } from "@/lib/actions/revalidate";
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -36,7 +36,6 @@ export function SuggestBook({ groupId }: { groupId: string }) {
   const form = useForm<z.infer<typeof bookSchema>>({
     resolver: standardSchemaResolver(bookSchema),
   });
-  const router = useRouter();
 
   const bookMutation = useMutation({
     mutationFn: (values: z.infer<typeof bookSchema>) =>
@@ -53,7 +52,7 @@ export function SuggestBook({ groupId }: { groupId: string }) {
         description: "",
       });
       setOpen(false);
-      router.refresh();
+      void revalidate("groups");
     },
   });
 

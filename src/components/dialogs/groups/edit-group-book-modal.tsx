@@ -3,7 +3,6 @@ import type { Group, GroupBook } from "@prisma/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Edit, Loader, Trash } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
@@ -20,6 +19,7 @@ import {
 import { Input } from "../../ui/input";
 import { Textarea } from "../../ui/textarea";
 import { UploadButton } from "../../uploadthing";
+import { revalidate } from "@/lib/actions/revalidate";
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -41,7 +41,6 @@ export function EditGroupBookModal({
   };
 }) {
   const queryClient = useQueryClient();
-  const router = useRouter();
   const form = useForm<z.input<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
     defaultValues: {
@@ -66,7 +65,7 @@ export function EditGroupBookModal({
       queryClient.invalidateQueries({
         queryKey: ["events"],
       });
-      router.refresh();
+      void revalidate("groups");
     },
   });
 

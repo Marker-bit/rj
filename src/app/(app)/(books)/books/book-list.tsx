@@ -11,7 +11,6 @@ import {
   Percent,
   SearchIcon,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { BookView } from "@/components/book/book-view";
 import { Badge } from "@/components/ui/badge";
@@ -25,7 +24,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
 import type { Book } from "@/lib/api-types";
 
 type StatusFilter = "all" | "planned" | "reading" | "finished";
@@ -43,14 +41,17 @@ function getBookStatus(book: Book): Exclude<StatusFilter, "all"> {
 export function BookList({ books }: { books: Book[] }) {
   const [notStarted, _setNotStarted] = useState(false);
   const [searchText, setSearchText] = useState("");
-  const [sort, _setSort] = useState<"percent" | "activity">();
+  const [sort, _setSort] = useState<"percent" | "activity">("percent");
   const [statusFilter, _setStatusFilter] = useState<StatusFilter>("all");
-  const router = useRouter();
 
   useEffect(() => {
     const localStorageNotStarted = localStorage.getItem("notStarted");
     const localStorageSort = localStorage.getItem("orderBy");
     const localStorageStatusFilter = localStorage.getItem("bookStatusFilter");
+    const storedSort = localStorageSort?.replace(/"/g, "");
+    if (storedSort === "percent" || storedSort === "activity") {
+      _setSort(storedSort);
+    }
     if (localStorageNotStarted) {
       _setNotStarted(JSON.parse(localStorageNotStarted));
     }
@@ -62,20 +63,7 @@ export function BookList({ books }: { books: Book[] }) {
     ) {
       _setStatusFilter(JSON.parse(localStorageStatusFilter));
     }
-    if (localStorageSort) {
-      const actualSort = JSON.parse(localStorageSort);
-      _setSort(actualSort);
-      const searchParams = new URLSearchParams(window.location.search);
-      searchParams.set("sort", actualSort);
-      router.replace(`?${searchParams.toString()}`);
-    } else {
-      _setSort("percent");
-      localStorage.setItem("orderBy", JSON.stringify("percent"));
-      const searchParams = new URLSearchParams(window.location.search);
-      searchParams.set("sort", "percent");
-      router.replace(`?${searchParams.toString()}`);
-    }
-  }, [router]);
+  }, []);
 
   function setNotStarted(value: boolean) {
     localStorage.setItem("notStarted", JSON.stringify(value));
@@ -85,9 +73,6 @@ export function BookList({ books }: { books: Book[] }) {
   function setSort(value: string) {
     localStorage.setItem("orderBy", JSON.stringify(value));
     _setSort(value as "percent" | "activity");
-    const searchParams = new URLSearchParams(window.location.search);
-    searchParams.set("sort", value);
-    router.replace(`?${searchParams.toString()}`);
   }
 
   function setStatusFilter(value: string) {
@@ -131,44 +116,42 @@ export function BookList({ books }: { books: Book[] }) {
     return nextBooks;
   }, [books, notStarted, statusFilter]);
 
+  const sortedBooks = useMemo(() => {
+    const percent = (book: Book) => {
+      const latest = book.readEvents[0];
+      return latest && book.pages > 0 ? latest.pagesRead / book.pages : 0;
+    };
+    const activity = (book: Book) =>
+      (book.readEvents[0]?.readAt ?? book.createdAt).getTime();
+
+    return [...filteredBooks].sort(
+      sort === "percent"
+        ? (a: Book, b: Book) => percent(b) - percent(a)
+        : (a: Book, b: Book) => activity(b) - activity(a),
+    );
+  }, [filteredBooks, sort]);
+
   const fuse = useMemo(
     () =>
-      new Fuse(filteredBooks, {
+      new Fuse(sortedBooks, {
         keys: ["title", "author"],
       }),
-    [filteredBooks],
+    [sortedBooks],
   );
 
-  const searchedBooks = useMemo(() => {
+  const booksForRender = useMemo(() => {
     const trimmedSearch = searchText.trim();
+    const matched =
+      trimmedSearch === ""
+        ? sortedBooks
+        : fuse.search(trimmedSearch).map((result) => result.item);
 
-    if (trimmedSearch === "") {
-      return filteredBooks;
-    }
-
-    return fuse.search(trimmedSearch).map((result) => result.item);
-  }, [filteredBooks, fuse, searchText]);
-
-  const outlinedBooks = filteredBooks.filter(
-    (book: Book) => book.background !== BackgroundColor.NONE,
-  );
-
-  const notOutlinedBooks = filteredBooks.filter(
-    (book: Book) => book.background === BackgroundColor.NONE,
-  );
-
-  const sortedFilteredBooks = outlinedBooks.concat(notOutlinedBooks);
-  const booksForRender =
-    searchText.trim() === "" ? sortedFilteredBooks : searchedBooks;
+    return [
+      ...matched.filter((book) => book.background !== BackgroundColor.NONE),
+      ...matched.filter((book) => book.background === BackgroundColor.NONE),
+    ];
+  }, [fuse, searchText, sortedBooks]);
   const filtersActive = notStarted || statusFilter !== "all";
-
-  if (sort === undefined) {
-    return (
-      <div className="p-2">
-        <Skeleton className="h-48 w-full" />
-      </div>
-    );
-  }
 
   return (
     <div>
@@ -284,7 +267,7 @@ export function BookList({ books }: { books: Book[] }) {
                 id="sort"
                 className="[&>span_svg]:text-muted-foreground/80 [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_svg]:shrink-0 w-full"
               >
-                <SelectValue placeholder="Select framework" />
+                <SelectValue />
               </SelectTrigger>
               <SelectContent className="[&_*[role=option]>span>svg]:text-muted-foreground/80 [&_*[role=option]>span]:flex [&_*[role=option]>span]:gap-2 [&_*[role=option]>span>svg]:shrink-0">
                 <SelectItem value="percent">

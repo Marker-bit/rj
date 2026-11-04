@@ -1,14 +1,24 @@
+import { HistoryIcon } from "lucide-react";
+import Link from "next/link";
 import { BookView } from "@/components/book/book-view";
+import { Button } from "@/components/ui/button";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { fetchBooks } from "@/lib/books";
-import { validateRequest } from "@/lib/server-validate-request";
+import { requireUser } from "@/lib/require-user";
 
 export default async function Page({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const { user } = await validateRequest();
-  if (!user) return null;
+  const user = await requireUser();
 
   const books = await fetchBooks(user.id, { history: true });
   const { bookReadId } = await searchParams;
@@ -20,6 +30,24 @@ export default async function Page({
         Здесь хранятся все ваши прочитанные книги.
       </p>
       <div className="flex flex-col gap-2">
+        {books.length === 0 && (
+          <Empty>
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <HistoryIcon />
+              </EmptyMedia>
+              <EmptyTitle>Пока нет книг</EmptyTitle>
+              <EmptyDescription>
+                Прочитанные книги появятся здесь.
+              </EmptyDescription>
+            </EmptyHeader>
+            <EmptyContent>
+              <Button asChild variant="outline">
+                <Link href="/books">К списку книг</Link>
+              </Button>
+            </EmptyContent>
+          </Empty>
+        )}
         {books.map((book) => (
           <BookView
             history

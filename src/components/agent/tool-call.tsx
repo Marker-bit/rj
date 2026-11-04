@@ -14,12 +14,12 @@ import {
   XIcon,
 } from "lucide-react";
 import { AnimatePresence, motion, type Variants } from "motion/react";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ToolConfirmation } from "@/components/agent/tool-confirmation";
 import { TextShimmer } from "@/components/ui/text-shimmer";
 import type { ToolId, ToolView } from "@/lib/ai/tools/types";
 import { cn } from "@/lib/utils";
+import { revalidate } from "@/lib/actions/revalidate";
 
 const iconVariants: Variants = {
   initial: { scale: 0.5, opacity: 0, filter: "blur(4px)" },
@@ -95,7 +95,6 @@ export function ToolCall<TOOL extends UITool>({
   addToolApprovalResponse: ChatAddToolApproveResponseFunction;
 }) {
   const queryClient = useQueryClient();
-  const router = useRouter();
   const [isExpanded, setIsExpanded] = useState(false);
 
   const texts = toolView.texts;
@@ -172,10 +171,9 @@ export function ToolCall<TOOL extends UITool>({
       });
     }
 
-    router.refresh();
+    void revalidate("books");
   }, [
     queryClient,
-    router,
     toolCall.input,
     toolCall.output,
     toolCall.state,

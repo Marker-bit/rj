@@ -9,7 +9,6 @@ import {
   UserX,
 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -22,6 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Loader } from "@/components/ui/loader";
+import { revalidate } from "@/lib/actions/revalidate";
 
 export function MemberActions({
   member,
@@ -34,7 +34,6 @@ export function MemberActions({
 }) {
   const [loading, setLoading] = useState(false);
   const [kickOpen, setKickOpen] = useState(false);
-  const router = useRouter();
 
   const kickMember = async () => {
     setLoading(true);
@@ -51,7 +50,7 @@ export function MemberActions({
     } else {
       setKickOpen(false);
       toast.success(res.message);
-      router.refresh();
+      void revalidate("groups");
     }
   };
 
@@ -72,7 +71,6 @@ export function MemberActions({
   //     })
   //   } else {
   //     toast.success(res.message)
-  //     router.refresh()
   //   }
   // }
 
@@ -90,7 +88,7 @@ export function MemberActions({
         if (res.error) {
           throw new Error(res.error);
         } else {
-          router.refresh();
+          void revalidate("groups");
           return res;
         }
       },
@@ -117,7 +115,6 @@ export function MemberActions({
     //   })
     // } else {
     //   toast.success(res.message)
-    //   router.refresh()
     // }
   };
 

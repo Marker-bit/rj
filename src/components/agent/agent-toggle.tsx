@@ -17,6 +17,7 @@ export function AgentToggle({
       className="dark:bg-neutral-800! pointer-events-auto max-sm:data-open:hidden"
       data-open={isOpen || undefined}
       onClick={onClick}
+      aria-label={isOpen ? "Закрыть ассистента" : "Открыть ассистента"}
     >
       <AnimatePresence initial={false} mode="popLayout">
         {isOpen ? (

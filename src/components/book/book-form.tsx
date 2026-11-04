@@ -2,7 +2,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
 import { Plus, Trash, X } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import posthog from "posthog-js";
 import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -22,6 +21,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { UploadButton } from "@/components/uploadthing";
 import { createBook } from "@/lib/actions/books";
+import { revalidate } from "@/lib/actions/revalidate";
 import { bookSchema } from "@/lib/validation/schemas";
 import { DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { DrawerDialog } from "../ui/drawer-dialog";
@@ -51,7 +51,6 @@ export function BookForm({
   const [fileUploading, setFileUploading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [scanDialogOpen, setScanDialogOpen] = useState(false);
-  const router = useRouter();
   const { data: aiEnabled } = useQuery({
     queryKey: ["ai", "enabled"],
     queryFn: async () =>
@@ -79,9 +78,8 @@ export function BookForm({
   async function onSubmit(values: z.input<typeof bookSchema>) {
     setLoading(true);
     await createBook(values);
+    await revalidate("books");
     setLoading(false);
-    router.refresh();
-    window.location.reload();
     form.reset({
       title: "",
       author: "",

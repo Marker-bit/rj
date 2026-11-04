@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Nunito_Sans } from "next/font/google";
+import { Inter } from "next/font/google";
 import "@/app/globals.css";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
@@ -10,9 +10,7 @@ import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
-const nunitoSans = Nunito_Sans({ variable: "--font-sans" });
-
-const font = Inter({ subsets: ["latin"] });
+const font = Inter({ variable: "--font-inter", subsets: ["latin"] });
 const siteUrl = "https://rj.markerbit.dev";
 const iconSizes = [72, 96, 128, 144, 152, 192, 384, 512] as const;
 const icons = iconSizes.map((size) => ({
@@ -59,7 +57,7 @@ export default async function RootLayout({
   const isVercel = process.env.VERCEL === "1";
 
   return (
-    <html lang="ru" suppressHydrationWarning className={nunitoSans.variable}>
+    <html lang="ru" suppressHydrationWarning className={font.variable}>
       <body
         className={`${font.className} overflow-x-hidden`}
         vaul-drawer-wrapper=""

@@ -7,6 +7,7 @@ import { useDropzone } from "@uploadthing/react";
 import type { User as LuciaUser } from "lucia";
 import { Check, LogOut, Plus, PlusIcon, X, XIcon } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -29,6 +30,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Loader } from "@/components/ui/loader";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Select,
   SelectContent,
@@ -65,6 +67,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [disableRecs, setDisableRecs] = useLocalStorage("disableRecs", false);
   const [isClient, setIsClient] = useState(false);
+  const router = useRouter();
   const [fields, setFields] = useLocalStorage<string[]>("fields", []);
   const defaultFields = fields.map((value, fieldIndex) => ({
     value,
@@ -162,7 +165,15 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
   });
 
   if (!isClient) {
-    return null;
+    return (
+      <div className="m-3 flex flex-col gap-3 rounded-md border p-4">
+        <Skeleton className="size-20 rounded-full" />
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-24 w-full" />
+      </div>
+    );
   }
 
   return (
@@ -170,6 +181,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="m-3 rounded-md border p-4">
           <div className="space-y-2">
+            <h2 className="text-lg font-semibold">Профиль</h2>
             <FormField
               control={form.control}
               name="avatarUrl"
@@ -301,6 +313,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
                 </FormItem>
               )}
             />
+            <h2 className="pt-2 text-lg font-semibold">Приватность</h2>
             <FormField
               control={form.control}
               name="shareFollowers"
@@ -423,6 +436,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
                 <PlusIcon />
               </Button>
             </div>
+            <h2 className="pt-2 text-lg font-semibold">Чтение</h2>
             <FormField
               control={form.control}
               name="hideActivity"
@@ -465,6 +479,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
             </div>
           </div>
         </div>
+        <h2 className="mb-2 text-center text-lg font-semibold">Аккаунт</h2>
         <div className="flex justify-center gap-2">
           <Button type="submit">
             {userMutation.isPending ? (
@@ -487,7 +502,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
                 method: "DELETE",
               }).then(() => {
                 setLogOutLoading(false);
-                window.location.href = "/";
+                router.replace("/");
               });
             }}
             disabled={logOutLoading}

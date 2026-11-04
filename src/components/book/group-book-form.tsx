@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader, Plus, Trash } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -21,6 +20,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { UploadButton } from "@/components/uploadthing";
 import { DialogHeader, DialogTitle } from "../ui/dialog";
 import { DrawerDialog } from "../ui/drawer-dialog";
+import { revalidate } from "@/lib/actions/revalidate";
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -45,7 +45,6 @@ export function GroupBookForm({
   const form = useForm<z.input<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
   });
-  const router = useRouter();
 
   const bookMutation = useMutation({
     mutationFn: (values: z.input<typeof bookSchema>) =>
@@ -66,7 +65,7 @@ export function GroupBookForm({
       });
       if (onSuccess) onSuccess();
       setOpen(false);
-      router.refresh();
+      void revalidate("books");
     },
   });
 

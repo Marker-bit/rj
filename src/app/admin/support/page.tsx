@@ -1,12 +1,11 @@
 import { Check } from "lucide-react";
 import Link from "next/link";
 import { db } from "@/lib/db";
-import { validateRequest } from "@/lib/server-validate-request";
+import { requireUser } from "@/lib/require-user";
 import { declOfNum } from "@/lib/utils";
 
 export default async function Support() {
-  const { user } = await validateRequest();
-  if (!user) return null;
+  await requireUser();
 
   const questions = await db.supportQuestion.findMany({
     include: {

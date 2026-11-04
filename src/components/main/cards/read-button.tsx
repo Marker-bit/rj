@@ -13,6 +13,7 @@ import {
 import { BookCheckIcon, BookOpenIcon, BookOpenTextIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
+import { revalidate } from "@/lib/actions/revalidate";
 
 export function ReadButton({
   book,
@@ -50,7 +51,7 @@ export function ReadButton({
           queryClient.invalidateQueries({
             queryKey: ["books"],
           });
-          router.refresh();
+          void revalidate("books");
         }}
         book={book}
         lastEvent={lastEvent}
@@ -66,7 +67,7 @@ export function ReadButton({
           queryClient.invalidateQueries({
             queryKey: ["books"],
           });
-          router.refresh();
+          void revalidate("books");
           router.push(`/books/history?bookReadId=${book.id}`);
         }}
       />

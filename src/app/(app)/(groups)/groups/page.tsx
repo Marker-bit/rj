@@ -4,11 +4,14 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { GroupsEmpty } from "@/app/(app)/(groups)/groups/groups-empty";
 import { db } from "@/lib/db";
+import { pageMetadata } from "@/lib/page-metadata";
 import { validateRequest } from "@/lib/server-validate-request";
 import { declOfNum } from "@/lib/utils";
 import { AddGroupButton } from "./add-group-button";
 
 export const dynamic = "force-dynamic";
+
+export const metadata = pageMetadata("Группы");
 
 export default async function Page() {
   const { user } = await validateRequest();

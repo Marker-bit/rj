@@ -1,10 +1,11 @@
 import { BarChartHorizontalBig, ChevronLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { db } from "@/lib/db";
-import { validateRequest } from "@/lib/server-validate-request";
+import { requireUser } from "@/lib/require-user";
 import { MemberInfo } from "./member";
 
 export const dynamic = "force-dynamic";
@@ -13,10 +14,7 @@ export default async function Page(props: {
   params: Promise<{ groupId: string; bookId: string }>;
 }) {
   const params = await props.params;
-  const { user } = await validateRequest();
-  if (!user) {
-    return null;
-  }
+  const user = await requireUser();
 
   const group = await db.group.findUnique({
     where: { id: params.groupId, members: { some: { userId: user.id } } },
@@ -40,7 +38,7 @@ export default async function Page(props: {
     },
   });
   if (!group) {
-    return null;
+    notFound();
   }
 
   const groupBook = await db.groupBook.findUnique({
@@ -58,7 +56,7 @@ export default async function Page(props: {
     },
   });
   if (!groupBook) {
-    return null;
+    notFound();
   }
 
   const ratingDict: Record<string, number | null> = {};

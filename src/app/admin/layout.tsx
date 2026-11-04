@@ -1,17 +1,18 @@
 import AdminNavBar from "@/components/navigation/admin-navbar";
 import { getBuildInfo } from "@/lib/build-info";
 import { db } from "@/lib/db";
+import { requireUser } from "@/lib/require-user";
 import { validateRequest } from "@/lib/server-validate-request";
+import { redirect } from "next/navigation";
 
 export default async function Layout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { user } = await validateRequest();
+  const user = await requireUser();
 
-  if (!user) return null;
-  if (!user.admin) return null;
+  if (!user.admin) redirect("/home");
 
   const auth = validateRequest().then(async ({ user: authUser }) => {
     if (!authUser) {

@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { db } from "@/lib/db";
-import { validateRequest } from "@/lib/server-validate-request";
+import { requireUser } from "@/lib/require-user";
 import { declOfNum } from "@/lib/utils";
 import { JoinGroupButton } from "./buttons";
 
@@ -12,10 +12,9 @@ export default async function Page(props: {
   params: Promise<{ linkId: string }>;
 }) {
   const params = await props.params;
-  const { user } = await validateRequest();
-  if (!user) return null;
+  const user = await requireUser();
 
-  const link = await db.groupInviteLink.findUniqueOrThrow({
+  const link = await db.groupInviteLink.findUnique({
     where: {
       id: params.linkId,
     },
@@ -33,6 +32,25 @@ export default async function Page(props: {
       },
     },
   });
+
+  if (!link) {
+    return (
+      <div className="flex flex-col p-4 max-sm:mb-[15vh] md:min-h-screen md:items-center md:justify-center">
+        <div className="flex flex-col gap-2 rounded-xl border p-4 max-sm:w-full md:m-1 md:min-w-[30vw]">
+          <h1 className="text-3xl font-bold">Приглашение не найдено</h1>
+          <p className="text-sm text-muted-foreground">
+            Приглашение не найдено или устарело.
+          </p>
+          <Link href="/home">
+            <Button className="items-center gap-2" variant="outline">
+              <Home className="size-4" />
+              На главную
+            </Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   if (link.group.members.some((member) => member.userId === user.id)) {
     return redirect(`/groups/${link.group.id}`);

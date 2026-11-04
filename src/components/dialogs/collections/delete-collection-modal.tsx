@@ -2,7 +2,6 @@
 
 import type { Book, Collection } from "@prisma/client";
 import { Trash } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
@@ -11,6 +10,7 @@ import { deleteCollection } from "@/lib/actions/collections";
 import { declOfNum } from "@/lib/utils";
 import { Button } from "../../ui/button";
 import { DialogDescription, DialogHeader, DialogTitle } from "../../ui/dialog";
+import { revalidate } from "@/lib/actions/revalidate";
 
 export function DeleteCollectionModal({
   open,
@@ -21,7 +21,6 @@ export function DeleteCollectionModal({
   setOpen: (v: boolean) => void;
   collection: Collection & { books: Book[] };
 }) {
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   const runAction = async () => {
@@ -36,7 +35,7 @@ export function DeleteCollectionModal({
     if (res.message) {
       toast.success(res.message);
       setOpen(false);
-      router.refresh();
+      void revalidate("collections");
     }
   };
 

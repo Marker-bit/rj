@@ -1,13 +1,13 @@
 "use client";
 
 import type { Book, Group, GroupBook } from "@prisma/client";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
 import { Loader } from "@/components/ui/loader";
 import { getBooks } from "@/lib/actions/books";
+import { revalidate } from "@/lib/actions/revalidate";
 
 export default function BindBookModal({
   open,
@@ -18,7 +18,6 @@ export default function BindBookModal({
   setOpen: (b: boolean) => void;
   groupBook: GroupBook & { group: Group };
 }) {
-  const router = useRouter();
   const [loading, setLoading] = useState<string>();
   const [books, setBooks] = useState<Book[]>();
 
@@ -49,7 +48,7 @@ export default function BindBookModal({
     }
     setLoading(undefined);
     setOpen(false);
-    router.refresh();
+    void revalidate("groups");
   };
 
   return (

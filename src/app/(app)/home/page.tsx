@@ -6,12 +6,15 @@ import { Stats } from "@/components/main/stats";
 import { StreakInfo } from "@/components/main/streak-info";
 import { Skeleton } from "@/components/ui/skeleton";
 import { NewWebsiteWarning } from "@/components/new-website-warning";
+import { pageMetadata } from "@/lib/page-metadata";
+
+export const metadata = pageMetadata("Главная");
 
 export default function Home() {
   return (
     <div className="p-2">
       <div className="mb-[15vh]">
-        <div className="m-2 flex items-center text-5xl font-black">Главная</div>
+        <div className="m-2 flex items-center text-3xl font-bold">Главная</div>
         <div className="flex flex-col gap-2">
           <div className="grid lg:grid-cols-2 gap-2">
             <Suspense fallback={<></>}>

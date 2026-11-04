@@ -19,10 +19,21 @@ import Link from "next/link";
 import { getStreak } from "@/lib/stats";
 import { declOfNum } from "@/lib/utils";
 
+function StatLink({
+  href,
+  children,
+}: {
+  href?: string;
+  children: React.ReactNode;
+}) {
+  return href ? <Link href={href}>{children}</Link> : <>{children}</>;
+}
+
 export async function Stats({
   profile,
   events,
   books,
+  isOwnProfile,
 }: {
   profile: User & {
     follower: {
@@ -54,6 +65,7 @@ export async function Stats({
     }[];
     pages: number;
   }[];
+  isOwnProfile: boolean;
 }) {
   const startAndEndOfWeek = () => {
     const monday = startOfISOWeek(new Date());
@@ -94,7 +106,10 @@ export async function Stats({
         if (differenceInDays(eventDate, beforeEventDate) >= 1) {
           beforeEventDate = max([addHours(eventDate, -5), beforeEventDate]);
         }
-        const minuteDifference = differenceInMinutes(eventDate, beforeEventDate);
+        const minuteDifference = differenceInMinutes(
+          eventDate,
+          beforeEventDate,
+        );
         const pageDifference = event.pagesRead - (beforeEvent?.pagesRead ?? 0);
         readSpeed.push(pageDifference / minuteDifference);
       }
@@ -190,7 +205,7 @@ export async function Stats({
         <div className="flex flex-col">
           <div className="font-bold">{readBooks.length}</div>
           <div className="-mt-1 text-xs lowercase text-muted-foreground/70">
-            {declOfNum(streak, [
+            {declOfNum(readBooks.length, [
               "прочитанная книга",
               "прочитанные книги",
               "прочитанных книг",
@@ -198,7 +213,7 @@ export async function Stats({
           </div>
         </div>
       </div>
-      <Link href="/friends">
+      <StatLink href={isOwnProfile ? "/friends" : undefined}>
         <div className="flex items-center gap-1 rounded-md border p-2 transition-colors hover:bg-muted">
           <Users2 className="size-6" />
           <div className="flex flex-col">
@@ -212,8 +227,8 @@ export async function Stats({
             </div>
           </div>
         </div>
-      </Link>
-      <Link href="/followers">
+      </StatLink>
+      <StatLink href={isOwnProfile ? "/followers" : undefined}>
         <div className="flex items-center gap-1 rounded-md border p-2 transition-colors hover:bg-muted">
           <UsersIcon className="size-6" />
           <div className="flex flex-col">
@@ -227,7 +242,7 @@ export async function Stats({
             </div>
           </div>
         </div>
-      </Link>
+      </StatLink>
     </div>
   );
 }

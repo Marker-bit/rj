@@ -48,6 +48,7 @@ export async function proxy(request: NextRequest) {
     "/icon.png",
     "/yandex_82f007f1c17a7d7a.html",
     "/sitemap.xml",
+    "/robots.txt",
     "/rjrj.png",
     "/manifest.webmanifest",
     "/manifest.json",
@@ -56,7 +57,7 @@ export async function proxy(request: NextRequest) {
     !(await cookies()).get("auth_session") &&
     !notProtectedRoutes.includes(pathname)
   ) {
-    return NextResponse.redirect(new URL("/auth", request.url));
+    return NextResponse.redirect(new URL("/auth/login", request.url));
   }
   return NextResponse.next();
 }

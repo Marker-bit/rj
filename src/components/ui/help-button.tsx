@@ -18,21 +18,20 @@ export function HelpButton({
 }) {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const pressStartTime = useRef<Date | null>(null);
+  const longPressAt = useRef(0);
 
-  const handleMouseDown = () => {
+  const handlePressStart = () => {
     pressStartTime.current = new Date();
   };
 
-  const handleMouseUp = () => {
-    if (pressStartTime.current) {
-      const pressDuration = Date.now() - pressStartTime.current.getTime();
-      pressStartTime.current = null;
+  const handlePressEnd = () => {
+    if (!pressStartTime.current) return;
+    const pressDuration = Date.now() - pressStartTime.current.getTime();
+    pressStartTime.current = null;
 
-      if (pressDuration >= 500) {
-        setIsPopoverOpen(true);
-      } else {
-        onClick();
-      }
+    if (pressDuration >= 500) {
+      longPressAt.current = Date.now();
+      setIsPopoverOpen(true);
     }
   };
 
@@ -40,33 +39,23 @@ export function HelpButton({
     pressStartTime.current = null;
   };
 
-  const handleTouchStart = () => {
-    pressStartTime.current = new Date();
-  };
-
-  const handleTouchEnd = () => {
-    if (pressStartTime.current) {
-      const pressDuration = Date.now() - pressStartTime.current.getTime();
-      pressStartTime.current = null;
-
-      if (pressDuration >= 500) {
-        setIsPopoverOpen(true);
-      } else {
-        onClick();
-      }
-    }
+  const handleClick = () => {
+    // Ignore the click that follows a long press; it opened the help popover.
+    if (Date.now() - longPressAt.current < 500) return;
+    onClick();
   };
 
   return (
     <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
       <PopoverPrimitive.PopoverAnchor asChild>
         <Button
-          onMouseDown={handleMouseDown}
-          onMouseUp={handleMouseUp}
+          onClick={handleClick}
+          onMouseDown={handlePressStart}
+          onMouseUp={handlePressEnd}
           onMouseLeave={handleMouseLeave}
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
-          aria-label={ariaLabel ?? helpText}
+          onTouchStart={handlePressStart}
+          onTouchEnd={handlePressEnd}
+          aria-label={ariaLabel}
           {...props}
         >
           {children}
