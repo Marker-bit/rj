@@ -3,7 +3,6 @@
 import { BackgroundColor } from "@prisma/client";
 import { Check, PaletteIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { setBookColor } from "@/lib/actions/books";
@@ -11,6 +10,7 @@ import { backgroundColors } from "@/lib/colors";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { revalidate } from "@/lib/actions/revalidate";
 
 export default function Palette({
   background,
@@ -22,7 +22,6 @@ export default function Palette({
   const [chosenBackground, setChosenBackground] =
     useState<BackgroundColor>(background);
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   const setColor = (color: BackgroundColor) => {
     if (loading) return;
@@ -34,7 +33,7 @@ export default function Palette({
     await setBookColor(bookId, color);
     setLoading(false);
     toast.success("Цвет изменен");
-    router.refresh();
+    void revalidate("books");
   };
   return (
     <Popover>
@@ -49,6 +48,8 @@ export default function Palette({
           <button
             type="button"
             className="flex items-center rounded-xl border p-2"
+            aria-label="Без цвета"
+            aria-pressed={chosenBackground === BackgroundColor.NONE}
             onClick={() => setColor(BackgroundColor.NONE)}
           >
             <div className="size-8 rounded-lg bg-zinc-200 dark:bg-zinc-800" />
@@ -68,6 +69,8 @@ export default function Palette({
             <button
               type="button"
               className="flex items-center rounded-xl border p-2"
+              aria-label={color.label}
+              aria-pressed={chosenBackground === color.type}
               onClick={() => setColor(color.type)}
               key={color.type}
             >

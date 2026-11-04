@@ -98,9 +98,9 @@ export default function MainChart({
         <Select value={timeRange} onValueChange={setTimeRange}>
           <SelectTrigger
             className="w-[160px] rounded-lg sm:ml-auto"
-            aria-label="Select a value"
+            aria-label="Период"
           >
-            <SelectValue placeholder="Last 3 months" />
+            <SelectValue placeholder="3 месяца" />
           </SelectTrigger>
           <SelectContent className="rounded-xl">
             <SelectItem value="90d" className="rounded-lg">
@@ -119,6 +119,8 @@ export default function MainChart({
             onClick={() => setChartType("line")}
             size="sm"
             variant={chartType === "line" ? "default" : "outline"}
+            aria-label="Линейный график"
+            aria-pressed={chartType === "line"}
           >
             <LineChartIcon />
           </Button>
@@ -126,6 +128,8 @@ export default function MainChart({
             onClick={() => setChartType("bar")}
             size="sm"
             variant={chartType === "bar" ? "default" : "outline"}
+            aria-label="Столбчатая диаграмма"
+            aria-pressed={chartType === "bar"}
           >
             <ChartColumnIcon />
           </Button>

@@ -47,6 +47,7 @@ import { HideBookButton } from "./buttons/hide-book";
 import { UndoEventButton } from "./buttons/undo-event-button";
 import Palette from "./palette";
 import { ArchiveBookButton } from "./buttons/archive-book";
+import { revalidate } from "@/lib/actions/revalidate";
 
 export const dynamic = "force-dynamic";
 
@@ -103,7 +104,7 @@ export function BookView({
         onSuccess={() => {
           setActiveDialog(null);
           onUpdate?.();
-          router.refresh();
+          void revalidate("books");
         }}
       />
       <div
@@ -160,7 +161,7 @@ export function BookView({
           onSuccess={() => {
             setActiveDialog(null);
             onUpdate?.();
-            router.refresh();
+            void revalidate("books");
           }}
           book={book}
           lastEvent={lastEvent}
@@ -172,7 +173,7 @@ export function BookView({
           onDone={() => {
             setActiveDialog(null);
             onUpdate?.();
-            router.refresh();
+            void revalidate("books");
             router.push(`/books/history?bookReadId=${book.id}`);
           }}
         />
@@ -223,7 +224,7 @@ export function BookView({
                     bookId={book.id}
                     onDone={() => {
                       onUpdate?.();
-                      router.refresh();
+                      void revalidate("books");
                     }}
                   />
                   <IconBadge variant="secondary" icon={BookOpen}>
@@ -250,7 +251,7 @@ export function BookView({
                         bookId={book.id}
                         onDone={() => {
                           onUpdate?.();
-                          router.refresh();
+                          void revalidate("books");
                         }}
                       />
                     </SimpleTooltip>
@@ -292,6 +293,7 @@ export function BookView({
                 <Button
                   variant="outline"
                   size="icon"
+                  aria-label="Добавить в коллекцию"
                   onClick={() => setActiveDialog("collections")}
                 >
                   <Layers2Icon className="size-4" />
@@ -305,6 +307,7 @@ export function BookView({
             className="gap-2"
             variant="outline"
             size="icon"
+            aria-label="Информация о книге"
             onClick={() => setActiveDialog("info")}
             helpText="Больше информации об этой книге"
           >
@@ -359,7 +362,7 @@ export function BookView({
               onDone={() => {
                 setActiveDialog(null);
                 onUpdate?.();
-                router.refresh();
+                void revalidate("books");
               }}
             />
           )}
@@ -370,17 +373,18 @@ export function BookView({
               onDone={() => {
                 setActiveDialog(null);
                 onUpdate?.();
-                router.refresh();
+                void revalidate("books");
               }}
             />
           )}
           <Palette background={book.background} bookId={book.id} />
-          <div className="absolute top-0 right-0 m-2 flex scale-0 gap-2 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100">
+          <div className="absolute top-0 right-0 m-2 flex scale-0 gap-2 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100 group-focus-within:scale-100 group-focus-within:opacity-100">
             <SimpleTooltip text="Отредактировать книгу">
               <Button
                 size="icon"
                 variant="outline"
                 className="size-fit p-1"
+                aria-label="Редактировать книгу"
                 onClick={() => setActiveDialog("edit")}
               >
                 <Edit className="size-4" />
@@ -391,6 +395,7 @@ export function BookView({
                 size="icon"
                 variant="outline"
                 className="size-fit p-1"
+                aria-label="Удалить книгу"
                 onClick={() => setActiveDialog("delete")}
               >
                 <Trash className="size-4" />

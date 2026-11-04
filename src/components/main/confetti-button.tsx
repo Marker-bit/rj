@@ -39,6 +39,7 @@ export function ConfettiButton() {
       className="active:scale-90"
       size="icon"
       variant="ghost"
+      aria-label="Запустить конфетти"
     >
       <PartyPopper className="size-4" />
     </Button>
