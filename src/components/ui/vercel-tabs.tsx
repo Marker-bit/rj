@@ -2,6 +2,7 @@
 
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -21,8 +22,11 @@ interface TabsProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
   ({ className, tabs, activeTab: _activeTab, onTabChange, ...props }, ref) => {
+    const pathname = usePathname();
+    const activeIndex = tabs.findIndex(
+      (tab) => pathname === tab.href || pathname.startsWith(`${tab.href}/`),
+    );
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-    const [activeIndex, setActiveIndex] = useState(0);
     const [hoverStyle, setHoverStyle] = useState({});
     const [activeStyle, setActiveStyle] = useState({
       left: "0px",
@@ -44,6 +48,7 @@ const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
     }, [hoveredIndex]);
 
     useEffect(() => {
+      if (activeIndex < 0) return;
       const activeElement = tabRefs.current[activeIndex];
       if (activeElement) {
         const { offsetLeft, offsetWidth } = activeElement;
@@ -53,19 +58,6 @@ const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
         });
       }
     }, [activeIndex]);
-
-    useEffect(() => {
-      requestAnimationFrame(() => {
-        const firstElement = tabRefs.current[0];
-        if (firstElement) {
-          const { offsetLeft, offsetWidth } = firstElement;
-          setActiveStyle({
-            left: `${offsetLeft}px`,
-            width: `${offsetWidth}px`,
-          });
-        }
-      });
-    }, []);
 
     return (
       <div ref={ref} className={cn("relative", className)} {...props}>
@@ -82,7 +74,7 @@ const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
           {/* Active Indicator */}
           <div
             className="absolute bottom-[-6px] h-[2px] bg-[#0e0f11] dark:bg-white transition-all duration-300 ease-out"
-            style={activeStyle}
+            style={{ ...activeStyle, opacity: activeIndex >= 0 ? 1 : 0 }}
           />
 
           {/* Tabs */}
@@ -92,11 +84,9 @@ const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
                 key={tab.id}
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
-                onClick={() => {
-                  setActiveIndex(index);
-                  onTabChange?.(tab.id);
-                }}
+                onClick={() => onTabChange?.(tab.id)}
                 href={tab.href}
+                aria-current={index === activeIndex ? "page" : undefined}
               >
                 <div
                   ref={(el) => {
