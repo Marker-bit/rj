@@ -2,7 +2,6 @@
 
 import type { Recommendation } from "@prisma/client";
 import { BookHeartIcon, XIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { use, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { useLocalStorage, useReadLocalStorage } from "usehooks-ts";
@@ -10,6 +9,7 @@ import { saveBookFromRec } from "@/lib/actions/books";
 import { Button } from "../ui/button";
 import { DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { DrawerDialog } from "../ui/drawer-dialog";
+import { revalidate } from "@/lib/actions/revalidate";
 
 export default function RecommendationBar({
   recommendations,
@@ -22,7 +22,6 @@ export default function RecommendationBar({
   const [isClient, setIsClient] = useState(false);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
     setIsClient(true);
@@ -45,7 +44,7 @@ export default function RecommendationBar({
     } else {
       toast.success("Книга успешно добавлена");
       setLoading(false);
-      router.refresh();
+      void revalidate("recommendations");
     }
   };
 
@@ -55,7 +54,7 @@ export default function RecommendationBar({
   if (!isClient) return null;
 
   return (
-    <div className="dark bg-muted text-foreground px-4 py-3">
+    <div className="bg-muted text-foreground px-4 py-3">
       <div className="flex gap-2 md:items-center">
         <div className="flex grow gap-3 md:items-center">
           <div
