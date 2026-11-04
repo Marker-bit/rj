@@ -1,7 +1,7 @@
 import type { Book, ReadEvent, User } from "@prisma/client";
 import type { ReactElement } from "react";
 import { db } from "@/lib/db";
-import { validateRequest } from "@/lib/server-validate-request";
+import { requireUser } from "@/lib/require-user";
 import Event from "./event";
 import EventRepeat from "./event-repeat";
 import Pagination from "./pagination";
@@ -10,8 +10,7 @@ export default async function Page(props: {
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const searchParams = await props.searchParams;
-  const { user } = await validateRequest();
-  if (!user) return null;
+  const user = await requireUser();
   let page = searchParams?.page ? parseInt(searchParams.page as string, 10) : 1;
   const pageSize = 20;
   if (page < 1) {

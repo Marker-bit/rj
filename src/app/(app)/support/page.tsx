@@ -1,11 +1,10 @@
 import { db } from "@/lib/db";
-import { validateRequest } from "@/lib/server-validate-request";
+import { requireUser } from "@/lib/require-user";
 import AskQuestion from "./ask-question";
 import SupportQuestionCard from "./support-question";
 
 export default async function Page() {
-  const { user } = await validateRequest();
-  if (!user) return;
+  const user = await requireUser();
 
   const questions = await db.supportQuestion.findMany({
     where: {
