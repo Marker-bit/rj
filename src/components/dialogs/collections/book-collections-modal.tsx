@@ -22,7 +22,7 @@ import type { Book } from "@/lib/api-types";
 import { declOfNum } from "@/lib/utils";
 import { Button } from "../../ui/button";
 import { Checkbox } from "../../ui/checkbox";
-import { DialogHeader, DialogTitle } from "../../ui/dialog";
+import { DialogDescription, DialogHeader, DialogTitle } from "../../ui/dialog";
 import { revalidate } from "@/lib/actions/revalidate";
 
 export function BookCollectionsModal({
@@ -107,6 +107,9 @@ export function BookCollectionsModal({
     <DrawerDialog open={open} onOpenChange={setOpen} className="min-w-[50vw]">
       <DialogHeader>
         <DialogTitle>Коллекции</DialogTitle>
+        <DialogDescription>
+          Выберите коллекции, в которых должна быть эта книга.
+        </DialogDescription>
       </DialogHeader>
       <div className="mt-2">
         {collectionsLoading ? (
@@ -121,6 +124,11 @@ export function BookCollectionsModal({
           </div>
         ) : (
           <div className="flex flex-col gap-2">
+            {collectionsData?.length === 0 && (
+              <p className="rounded-2xl border border-dashed p-4 text-center text-sm text-muted-foreground">
+                У вас пока нет коллекций. Создайте первую ниже.
+              </p>
+            )}
             {collectionsData?.map(
               (collection: {
                 id: string;

@@ -5,7 +5,11 @@ import { CopyIcon, Trash } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
 import { Input } from "@/components/ui/input";
 import { revalidate } from "@/lib/actions/revalidate";
@@ -29,8 +33,16 @@ export default function AddGroupLink({
     <DrawerDialog open={open} onOpenChange={setOpen} className="min-w-[50vw]">
       <DialogHeader>
         <DialogTitle>Пригласительные ссылки</DialogTitle>
+        <DialogDescription>
+          По этим ссылкам читатели могут присоединиться к группе.
+        </DialogDescription>
       </DialogHeader>
       <div className="flex flex-col gap-2">
+        {group.inviteLinks.length === 0 && (
+          <p className="rounded-2xl border border-dashed p-4 text-center text-sm text-muted-foreground">
+            Ссылок пока нет. Создайте первую ниже.
+          </p>
+        )}
         {group.inviteLinks.map((link) => (
           <div key={link.id} className="flex items-center gap-2 rounded-xl p-2">
             <Input

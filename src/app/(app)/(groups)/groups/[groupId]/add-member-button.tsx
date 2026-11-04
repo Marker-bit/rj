@@ -20,6 +20,7 @@ export function AddMemberButton({
           size="icon"
           variant="ghost"
           className="size-fit p-1"
+          aria-label="Добавить участника"
           onClick={() => setOpen(true)}
         >
           <Plus className="size-4" />
