@@ -20,6 +20,48 @@ export type MyUIMessagePart = UIMessagePart<
   InferUITools<ReturnType<typeof toolSetForUser>>
 >;
 
+export function sanitizeMessagesForProvider(
+  messages: MyUIMessage[],
+): MyUIMessage[] {
+  return messages.flatMap((message) => {
+    const parts: MyUIMessagePart[] = [];
+
+    for (const part of message.parts) {
+      if (part.type === "text") {
+        if (typeof part.text === "string") {
+          parts.push(part);
+        }
+        continue;
+      }
+
+      // Some providers do not understand the approval-response part and
+      // serialize the following tool message without content. Convert a denied
+      // approval into the regular output-denied state so the provider receives
+      // a proper tool result.
+      if (
+        isToolUIPart(part) &&
+        part.state === "approval-responded" &&
+        !part.approval.approved
+      ) {
+        parts.push({
+          ...part,
+          state: "output-denied",
+          approval: { ...part.approval, approved: false },
+        } as unknown as MyUIMessagePart);
+        continue;
+      }
+
+      parts.push(part);
+    }
+
+    if (parts.length === 0) {
+      return [];
+    }
+
+    return [{ ...message, parts }];
+  });
+}
+
 type PartGroup = ToolUIPart[] | TextUIPart;
 
 export function groupMessageParts(message: MyUIMessage): PartGroup[] {
