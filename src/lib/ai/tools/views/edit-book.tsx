@@ -40,7 +40,7 @@ const statuses: Record<BookStatus, string> = {
   HIDDEN: "скрыта",
 };
 
-type FieldChange =
+export type FieldChange =
   | {
       kind: "changed";
       field: { title: string; value: string };
@@ -49,19 +49,76 @@ type FieldChange =
   | { kind: "removed"; field: { title: string; value: string } }
   | { kind: "added"; field: { title: string; value: string } };
 
-const EditBookView: ToolOutputView<"editBook"> = ({ input, output }) => {
-  const book = output?.book;
-
-  if (!book) {
-    return (
-      <div className="w-40 h-20 text-muted-foreground flex items-center justify-center rounded-md border">
-        <CircleAlertIcon />
-      </div>
-    );
+export function EditBookFields({ changes }: { changes: FieldChange[] }) {
+  if (changes.length === 0) {
+    return null;
   }
 
-  const coverUrl = output?.coverUrl ?? input.values.coverUrl;
-  const nextFields = input.values.fields;
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="text-sm font-semibold text-foreground">Поля:</div>
+      <div className="flex min-w-0 flex-wrap items-center gap-2">
+        {changes.map((change) => (
+          <div
+            key={`${change.kind}-${change.field.title}-${change.field.value}`}
+            className="flex max-w-full items-start gap-2 rounded-xl border px-2 py-1"
+          >
+            <span className="flex h-5 w-3.5 shrink-0 items-center justify-center">
+              {change.kind === "changed" ? (
+                <PencilIcon className="size-3.5 text-amber-500" />
+              ) : change.kind === "removed" ? (
+                <MinusIcon className="size-3.5 text-destructive" />
+              ) : (
+                <PlusIcon className="size-3.5 text-emerald-600" />
+              )}
+            </span>
+            <span className="min-w-0 text-sm leading-5 break-words text-foreground">
+              <span className="font-semibold">{change.field.title}:</span>{" "}
+              {change.kind === "changed" ? (
+                <>
+                  {change.field.value}{" "}
+                  <ArrowRightIcon className="inline size-3.5 shrink-0 align-middle text-muted-foreground" />{" "}
+                  {change.next.value}
+                </>
+              ) : (
+                change.field.value
+              )}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export type EditBookSnapshot = {
+  title: string;
+  author: string;
+  description: string;
+  pages: number;
+  status: BookStatus;
+  background: BackgroundColor;
+  fields: { title: string; value: string }[];
+};
+
+export type EditBookValues = {
+  title?: string;
+  author?: string;
+  description?: string;
+  pages?: number;
+  status?: BookStatus;
+  background?: BackgroundColor;
+  fields?: { title: string; value: string }[];
+};
+
+export function EditBookChanges({
+  book,
+  values,
+}: {
+  book: EditBookSnapshot;
+  values: EditBookValues;
+}) {
+  const nextFields = values.fields;
   const fieldChanges: FieldChange[] = nextFields
     ? [
         ...book.fields.flatMap((field): FieldChange[] => {
@@ -86,6 +143,80 @@ const EditBookView: ToolOutputView<"editBook"> = ({ input, output }) => {
     : [];
 
   return (
+    <div className="flex flex-col gap-1">
+      {values.background !== undefined &&
+        book.background !== values.background && (
+          <div className="flex gap-2 items-center">
+            <div className="font-semibold text-sm text-foreground">Цвет: </div>
+            {book.background !== BackgroundColor.NONE && (
+              <div
+                className={cn(
+                  "size-8 rounded-md flex items-center justify-center",
+                  backgroundColors.find((c) => c.type === book.background)
+                    ?.color,
+                )}
+              >
+                <MinusIcon className="size-4 text-accent-foreground" />
+              </div>
+            )}
+            {values.background !== BackgroundColor.NONE && (
+              <div
+                className={cn(
+                  "size-8 rounded-md flex items-center justify-center",
+                  backgroundColors.find((c) => c.type === values.background)
+                    ?.color,
+                )}
+              >
+                <PlusIcon className="size-4 text-accent-foreground" />
+              </div>
+            )}
+          </div>
+        )}
+      <FieldView
+        label="Название"
+        originalValue={book.title}
+        changedValue={values.title}
+      />
+      <FieldView
+        label="Автор"
+        originalValue={book.author}
+        changedValue={values.author}
+      />
+      <FieldView
+        label="Описание"
+        originalValue={book.description}
+        changedValue={values.description}
+      />
+      <FieldView
+        label="Кол-во страниц"
+        originalValue={book.pages.toString()}
+        changedValue={values.pages?.toString()}
+      />
+      <FieldView
+        label="Статус"
+        originalValue={statuses[book.status]}
+        changedValue={values.status ? statuses[values.status] : undefined}
+      />
+
+      <EditBookFields changes={fieldChanges} />
+    </div>
+  );
+}
+
+const EditBookView: ToolOutputView<"editBook"> = ({ input, output }) => {
+  const book = output?.book;
+
+  if (!book) {
+    return (
+      <div className="w-40 h-20 text-muted-foreground flex items-center justify-center rounded-md border">
+        <CircleAlertIcon />
+      </div>
+    );
+  }
+
+  const coverUrl = output?.coverUrl ?? input.values.coverUrl;
+
+  return (
     <div className="flex min-w-0 flex-col gap-2">
       {coverUrl && (
         <Image
@@ -98,102 +229,7 @@ const EditBookView: ToolOutputView<"editBook"> = ({ input, output }) => {
         />
       )}
       <RemoteBookView bookId={input.id} />
-      <div className="flex flex-col gap-1">
-        {input.values.background !== undefined &&
-          book.background !== input.values.background && (
-            <div className="flex gap-2 items-center">
-              <div className="font-semibold text-sm text-foreground">
-                Цвет:{" "}
-              </div>
-              {book.background !== BackgroundColor.NONE && (
-                <div
-                  className={cn(
-                    "size-8 rounded-md flex items-center justify-center",
-                    backgroundColors.find((c) => c.type === book.background)
-                      ?.color,
-                  )}
-                >
-                  <MinusIcon className="size-4 text-accent-foreground" />
-                </div>
-              )}
-              {input.values.background !== BackgroundColor.NONE && (
-                <div
-                  className={cn(
-                    "size-8 rounded-md flex items-center justify-center",
-                    backgroundColors.find(
-                      (c) => c.type === input.values.background,
-                    )?.color,
-                  )}
-                >
-                  <PlusIcon className="size-4 text-accent-foreground" />
-                </div>
-              )}
-            </div>
-          )}
-        <FieldView
-          label="Название"
-          originalValue={book.title}
-          changedValue={input.values.title}
-        />
-        <FieldView
-          label="Автор"
-          originalValue={book.author}
-          changedValue={input.values.author}
-        />
-        <FieldView
-          label="Описание"
-          originalValue={book.description}
-          changedValue={input.values.description}
-        />
-        <FieldView
-          label="Кол-во страниц"
-          originalValue={book.pages.toString()}
-          changedValue={input.values.pages?.toString()}
-        />
-        <FieldView
-          label="Статус"
-          originalValue={statuses[book.status]}
-          changedValue={
-            input.values.status ? statuses[input.values.status] : undefined
-          }
-        />
-
-        {fieldChanges.length > 0 && (
-          <div className="flex flex-col gap-2">
-            <div className="text-sm font-semibold text-foreground">Поля:</div>
-            <div className="flex min-w-0 flex-wrap items-center gap-2">
-              {fieldChanges.map((change) => (
-                <div
-                  key={`${change.kind}-${change.field.title}-${change.field.value}`}
-                  className="flex max-w-full items-start gap-2 rounded-xl border px-2 py-1"
-                >
-                  <span className="flex h-5 w-3.5 shrink-0 items-center justify-center">
-                    {change.kind === "changed" ? (
-                      <PencilIcon className="size-3.5 text-amber-500" />
-                    ) : change.kind === "removed" ? (
-                      <MinusIcon className="size-3.5 text-destructive" />
-                    ) : (
-                      <PlusIcon className="size-3.5 text-emerald-600" />
-                    )}
-                  </span>
-                  <span className="min-w-0 text-sm leading-5 break-words text-foreground">
-                    <span className="font-semibold">{change.field.title}:</span>{" "}
-                    {change.kind === "changed" ? (
-                      <>
-                        {change.field.value}{" "}
-                        <ArrowRightIcon className="inline size-3.5 shrink-0 align-middle text-muted-foreground" />{" "}
-                        {change.next.value}
-                      </>
-                    ) : (
-                      change.field.value
-                    )}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
+      <EditBookChanges book={book} values={input.values} />
     </div>
   );
 };

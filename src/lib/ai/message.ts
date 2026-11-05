@@ -7,6 +7,7 @@ import {
   type UIMessage,
   type UIMessagePart,
 } from "ai";
+import type { BackgroundColor, BookStatus } from "@prisma/client";
 import type { toolSetForUser } from "@/lib/ai/tools/toolset";
 
 export type MyUIMessage = UIMessage<
@@ -101,6 +102,11 @@ export function hasVisibleMessageContent(message: MyUIMessage) {
 type KnownBook = {
   title: string;
   author?: string;
+  description?: string;
+  pages?: number;
+  status?: BookStatus;
+  background?: BackgroundColor;
+  fields?: { title: string; value: string }[];
 };
 
 type KnownCollection = {
@@ -136,9 +142,33 @@ export function collectKnownEntities(messages: MyUIMessage[]): KnownEntities {
       return;
     }
 
+    const fields = Array.isArray(book.fields)
+      ? book.fields.flatMap((field) =>
+          isRecord(field) &&
+          typeof field.title === "string" &&
+          typeof field.value === "string"
+            ? [{ title: field.title, value: field.value }]
+            : [],
+        )
+      : undefined;
+
+    const backgroundValue = book.background ?? book.backgroundColor;
+
     books.set(book.id, {
       title: book.title,
       author: typeof book.author === "string" ? book.author : undefined,
+      description:
+        typeof book.description === "string" ? book.description : undefined,
+      pages: typeof book.pages === "number" ? book.pages : undefined,
+      status:
+        typeof book.status === "string"
+          ? (book.status as BookStatus)
+          : undefined,
+      background:
+        typeof backgroundValue === "string"
+          ? (backgroundValue as BackgroundColor)
+          : undefined,
+      fields,
     });
   };
 
