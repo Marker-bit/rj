@@ -138,21 +138,26 @@ const EditBookView: ToolOutputView<"editBook"> = ({ input, output }) => {
                   (fld) => fld.title === field.title,
                 );
 
+                const changed =
+                  matchedField !== undefined &&
+                  matchedField.value !== field.value;
+
                 return (
                   <div
                     key={field.title + field.value}
-                    className={cn(
-                      "max-w-full rounded-xl border px-2 py-1 break-words",
-                      matchedField
-                        ? matchedField.value !== field.value &&
-                            "bg-yellow-300 dark:bg-yellow-700"
-                        : "bg-red-300 dark:bg-red-700",
-                    )}
+                    className="flex max-w-full items-start gap-1.5 rounded-xl border px-2 py-1 break-words"
                   >
-                    {field.title}:{" "}
-                    {matchedField && matchedField.value !== field.value
-                      ? `${field.value} -> ${matchedField.value}`
-                      : field.value}
+                    {changed ? (
+                      <PencilIcon className="mt-0.5 size-3 shrink-0 text-amber-500" />
+                    ) : matchedField === undefined ? (
+                      <MinusIcon className="mt-0.5 size-3 shrink-0 text-destructive" />
+                    ) : null}
+                    <span className="min-w-0 break-words">
+                      {field.title}:{" "}
+                      {changed
+                        ? `${field.value} -> ${matchedField.value}`
+                        : field.value}
+                    </span>
                   </div>
                 );
               })}
@@ -163,9 +168,12 @@ const EditBookView: ToolOutputView<"editBook"> = ({ input, output }) => {
                 return (
                   <div
                     key={field.title + field.value}
-                    className="max-w-full rounded-xl border px-2 py-1 break-words bg-green-300 dark:bg-green-700"
+                    className="flex max-w-full items-start gap-1.5 rounded-xl border px-2 py-1 break-words"
                   >
-                    {field.title}: {field.value}
+                    <PlusIcon className="mt-0.5 size-3 shrink-0 text-emerald-600" />
+                    <span className="min-w-0 break-words">
+                      {field.title}: {field.value}
+                    </span>
                   </div>
                 );
               })}
