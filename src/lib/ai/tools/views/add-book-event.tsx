@@ -3,13 +3,21 @@ import { RemoteBookView } from "@/components/agent/book-view";
 import type { ToolOutputView, ToolView } from "@/lib/ai/tools/types";
 import { dateToString } from "@/lib/utils";
 
-const AddBookEventView: ToolOutputView<"addBookEvent"> = ({ input }) => {
+const AddBookEventView: ToolOutputView<"addBookEvent"> = ({
+  input,
+  output,
+}) => {
+  const event = output?.event;
+  const pagesRead = event?.pagesRead ?? input.pagesRead;
+  const readAt = event?.readAt
+    ? new Date(event.readAt)
+    : new Date(input.dateRead);
+
   return (
     <div className="flex flex-col gap-2">
       <RemoteBookView bookId={input.id} />
       <div>
-        прочитана до {input.pagesRead}-ой страницы{" "}
-        {dateToString(new Date(input.dateRead), true)}
+        прочитана до {pagesRead}-ой страницы {dateToString(readAt, true)}
       </div>
     </div>
   );

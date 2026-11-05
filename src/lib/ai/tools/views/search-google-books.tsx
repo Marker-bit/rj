@@ -1,7 +1,6 @@
 import {
   BookOpenIcon,
   BuildingIcon,
-  ChevronDownIcon,
   HashIcon,
   LucideIcon,
   SearchIcon,
@@ -13,7 +12,6 @@ import type { ToolOutputView, ToolView } from "@/lib/ai/tools/types";
 import { Spinner } from "@/components/ui/spinner";
 import { filterSchema } from "@/lib/apis/books";
 import z from "zod";
-import { Button } from "@/components/ui/button";
 
 const filters: Record<
   keyof z.infer<typeof filterSchema>,
@@ -38,9 +36,6 @@ const FilterView = ({
       <div className="flex gap-2 items-center rounded-xl border px-2 py-1 truncate">
         <SearchIcon className="size-4 text-muted-foreground" />
         {filter}
-        <Button size="xs" className="ml-auto rounded-md px-1" variant="ghost">
-          +1 <ChevronDownIcon data-icon="inline-end" />
-        </Button>
       </div>
     );
   }
@@ -102,7 +97,8 @@ export const searchGoogleBooksToolView: ToolView<"searchGoogleBooks"> = {
   title: "Искать книги",
   texts: {
     loadingText: "Ищет книги...",
-    successText: "Поискал книги",
+    successText: "Поиск завершён",
+    errorText: "Не удалось найти книги",
     approvalText: "Хочет найти книги",
   },
   icon: SearchIcon,

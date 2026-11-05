@@ -1,9 +1,19 @@
 import { TrashIcon } from "lucide-react";
-import { RemoteBookView } from "@/components/agent/book-view";
+import { BookView } from "@/components/agent/book-view";
 import type { ToolOutputView, ToolView } from "@/lib/ai/tools/types";
 
-const DeleteBookView: ToolOutputView<"deleteBook"> = ({ input }) => {
-  return <RemoteBookView bookId={input.id} />;
+const DeleteBookView: ToolOutputView<"deleteBook"> = ({ output }) => {
+  if (!output?.book) {
+    return null;
+  }
+
+  return (
+    <BookView
+      title={output.book.title}
+      author={output.book.author}
+      pages={output.book.pages}
+    />
+  );
 };
 
 export const deleteBookToolView: ToolView<"deleteBook"> = {

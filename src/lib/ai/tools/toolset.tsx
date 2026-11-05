@@ -55,13 +55,27 @@ export const toolSetForUser = (user: User) => ({
       id: z.string().describe("Идентификатор книги"),
     }),
     execute: async ({ id }) => {
-      const book = await db.book.findUnique({
+      const book = await db.book.findFirst({
         where: {
           id,
           userId: user.id,
         },
-        include: {
-          collections: true,
+        select: {
+          id: true,
+          title: true,
+          author: true,
+          pages: true,
+          description: true,
+          coverUrl: true,
+          background: true,
+          status: true,
+          fields: true,
+          collections: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
           readEvents: {
             orderBy: {
               pagesRead: "asc",
@@ -69,6 +83,10 @@ export const toolSetForUser = (user: User) => ({
           },
         },
       });
+
+      if (!book) {
+        throw new Error("Книга не найдена");
+      }
 
       return book;
     },
@@ -123,7 +141,7 @@ export const toolSetForUser = (user: User) => ({
 
         coverUrlFinal = result.data.ufsUrl;
       }
-      await db.book.create({
+      const book = await db.book.create({
         data: {
           title,
           author,
@@ -135,7 +153,15 @@ export const toolSetForUser = (user: User) => ({
         },
       });
 
-      return { success: true };
+      return {
+        success: true,
+        book: {
+          id: book.id,
+          title: book.title,
+          author: book.author,
+          pages: book.pages,
+        },
+      };
     },
     needsApproval: true,
   }),
@@ -163,6 +189,28 @@ export const toolSetForUser = (user: User) => ({
         .partial(),
     }),
     execute: async ({ id, values }) => {
+      const book = await db.book.findFirst({
+        where: {
+          id,
+          userId: user.id,
+        },
+        select: {
+          id: true,
+          title: true,
+          author: true,
+          pages: true,
+          description: true,
+          coverUrl: true,
+          background: true,
+          status: true,
+          fields: true,
+        },
+      });
+
+      if (!book) {
+        throw new Error("Книга не найдена");
+      }
+
       let coverUrlFinal: string | undefined;
       if (values.coverUrl) {
         const url = new URL(values.coverUrl);
@@ -182,15 +230,22 @@ export const toolSetForUser = (user: User) => ({
 
         coverUrlFinal = result.data.ufsUrl;
       }
-      await db.book.update({
-        where: {
-          id,
-          userId: user.id,
-        },
-        data: { ...values, coverUrl: coverUrlFinal },
-      });
 
-      return { success: true };
+      const data = {
+        ...values,
+        ...(coverUrlFinal ? { coverUrl: coverUrlFinal } : {}),
+      };
+
+      if (Object.keys(data).length > 0) {
+        await db.book.update({
+          where: {
+            id,
+          },
+          data,
+        });
+      }
+
+      return { success: true, book };
     },
     needsApproval: true,
   }),
@@ -383,7 +438,21 @@ export const toolSetForUser = (user: User) => ({
         };
       }
 
-      const date = new Date(dateRead);
+      const [year, month, day] = dateRead.split("-").map(Number);
+      const date = new Date(year, month - 1, day);
+      const today = new Date();
+      const todayStart = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate(),
+      );
+
+      if (date > todayStart) {
+        return {
+          success: false,
+          error: "Дата прочтения не может быть в будущем",
+        };
+      }
 
       const event = await db.readEvent.create({
         data: {
@@ -422,13 +491,18 @@ export const toolSetForUser = (user: User) => ({
       });
 
       if (!readEvent) {
-        return { success: false, error: "Книга не найдена" };
+        return { success: false, error: "Событие не найдено" };
       }
 
       await db.readEvent.delete({ where: { id: readEvent.id } });
 
       return {
         success: true,
+        event: {
+          id: readEvent.id,
+          pagesRead: readEvent.pagesRead,
+          readAt: readEvent.readAt.toISOString(),
+        },
       };
     },
     needsApproval: true,
