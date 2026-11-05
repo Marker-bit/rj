@@ -22,6 +22,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { UploadButton } from "@/components/uploadthing";
 import { createBook } from "@/lib/actions/books";
 import { revalidate } from "@/lib/actions/revalidate";
+import { DEFAULT_FIELDS_STORAGE_KEY } from "@/lib/default-fields";
 import { bookSchema } from "@/lib/validation/schemas";
 import { DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { DrawerDialog } from "../ui/drawer-dialog";
@@ -36,7 +37,9 @@ export function BookForm({
   onSuccess?: (book: z.input<typeof bookSchema>) => void;
   isEdit?: boolean;
 }) {
-  const defaultFields = useReadLocalStorage<string[]>("fields");
+  const defaultFields = useReadLocalStorage<string[]>(
+    DEFAULT_FIELDS_STORAGE_KEY,
+  );
   const form = useForm<z.input<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
     defaultValues: {
