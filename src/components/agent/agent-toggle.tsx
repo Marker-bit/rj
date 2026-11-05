@@ -14,7 +14,7 @@ export function AgentToggle({
     <Button
       size="icon-sm"
       variant="outline"
-      className="dark:bg-neutral-800! pointer-events-auto max-sm:data-open:hidden"
+      className="pointer-events-auto max-sm:data-open:hidden rounded-full border-border bg-popover! shadow-md"
       data-open={isOpen || undefined}
       onClick={onClick}
       aria-label={isOpen ? "Закрыть ассистента" : "Открыть ассистента"}

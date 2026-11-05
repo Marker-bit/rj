@@ -1,4 +1,13 @@
 import { MessageCircleIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 
 const options = [
   'Добавь книгу "Война и мир"',
@@ -12,27 +21,31 @@ export function EmptyView({
   setMessage: (message: string) => void;
 }) {
   return (
-    <div className="size-full flex flex-col items-center justify-center p-2">
-      <div className="rounded-md border p-2 flex items-center justify-center">
-        <MessageCircleIcon className="size-6 text-muted-foreground" />
-      </div>
-      <div className="text-xl font-bold">Чат с ИИ</div>
-      <div className="text-sm text-muted-foreground text-center">
-        Искусственный интеллект поможет вам найти подходящую книгу, добавить
-        новую и изменить существующую.
-      </div>
-      <div className="flex flex-col items-center gap-2 mt-2">
+    <Empty className="size-full gap-4 overflow-y-auto p-3 md:p-3">
+      <EmptyHeader className="gap-1.5">
+        <EmptyMedia variant="icon">
+          <MessageCircleIcon />
+        </EmptyMedia>
+        <EmptyTitle className="text-base">Чат с ИИ</EmptyTitle>
+        <EmptyDescription className="text-xs">
+          Искусственный интеллект поможет вам найти подходящую книгу, добавить
+          новую и изменить существующую.
+        </EmptyDescription>
+      </EmptyHeader>
+      <EmptyContent className="gap-2">
         {options.map((option) => (
-          <button
+          <Button
             key={option}
             type="button"
+            variant="outline"
+            size="sm"
+            className="h-auto w-full justify-start py-2 text-left text-xs whitespace-normal"
             onClick={() => setMessage(option)}
-            className="border rounded-xl px-4 py-2 text-muted-foreground hover:text-foreground hover:bg-accent transition-all text-sm"
           >
             {option}
-          </button>
+          </Button>
         ))}
-      </div>
-    </div>
+      </EmptyContent>
+    </Empty>
   );
 }

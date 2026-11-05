@@ -73,6 +73,9 @@ export function groupMessageParts(message: MyUIMessage): PartGroup[] {
       continue;
     }
     if (part.type === "text") {
+      if (!part.text?.trim()) {
+        continue;
+      }
       if (currentGroup.length > 0) {
         groupedParts.push(currentGroup);
         currentGroup = [];
@@ -89,4 +92,113 @@ export function groupMessageParts(message: MyUIMessage): PartGroup[] {
   }
 
   return groupedParts;
+}
+
+export function hasVisibleMessageContent(message: MyUIMessage) {
+  return groupMessageParts(message).length > 0;
+}
+
+type KnownBook = {
+  title: string;
+  author?: string;
+};
+
+type KnownCollection = {
+  name: string;
+};
+
+type KnownReadEvent = {
+  pagesRead?: number;
+  readAt?: string;
+};
+
+export type KnownEntities = {
+  books: Map<string, KnownBook>;
+  collections: Map<string, KnownCollection>;
+  readEvents: Map<string, KnownReadEvent>;
+};
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+export function collectKnownEntities(messages: MyUIMessage[]): KnownEntities {
+  const books = new Map<string, KnownBook>();
+  const collections = new Map<string, KnownCollection>();
+  const readEvents = new Map<string, KnownReadEvent>();
+
+  const addBook = (book: unknown) => {
+    if (
+      !isRecord(book) ||
+      typeof book.id !== "string" ||
+      typeof book.title !== "string"
+    ) {
+      return;
+    }
+
+    books.set(book.id, {
+      title: book.title,
+      author: typeof book.author === "string" ? book.author : undefined,
+    });
+  };
+
+  const addCollection = (collection: unknown) => {
+    if (
+      !isRecord(collection) ||
+      typeof collection.id !== "string" ||
+      typeof collection.name !== "string"
+    ) {
+      return;
+    }
+
+    collections.set(collection.id, { name: collection.name });
+  };
+
+  const addReadEvent = (event: unknown) => {
+    if (!isRecord(event) || typeof event.id !== "string") {
+      return;
+    }
+
+    readEvents.set(event.id, {
+      pagesRead:
+        typeof event.pagesRead === "number" ? event.pagesRead : undefined,
+      readAt: typeof event.readAt === "string" ? event.readAt : undefined,
+    });
+  };
+
+  for (const message of messages) {
+    for (const part of message.parts) {
+      if (!isToolUIPart(part) || part.state !== "output-available") {
+        continue;
+      }
+
+      if (part.type === "tool-getAllBooks" && Array.isArray(part.output)) {
+        part.output.forEach(addBook);
+      } else if (part.type === "tool-getBookById") {
+        addBook(part.output);
+        const events = (part.output as { readEvents?: unknown })?.readEvents;
+        if (Array.isArray(events)) {
+          events.forEach(addReadEvent);
+        }
+      } else if (
+        part.type === "tool-getAllCollections" &&
+        Array.isArray(part.output)
+      ) {
+        part.output.forEach(addCollection);
+      } else if (part.type === "tool-createBook") {
+        addBook((part.output as { book?: unknown })?.book);
+      } else if (part.type === "tool-createCollection") {
+        addCollection((part.output as { collection?: unknown })?.collection);
+      } else if (part.type === "tool-addBookEvent") {
+        addReadEvent((part.output as { event?: unknown })?.event);
+      } else if (part.type === "tool-undoBookEvent") {
+        const event = (part.output as { event?: { id?: string } })?.event;
+        if (event?.id) {
+          readEvents.delete(event.id);
+        }
+      }
+    }
+  }
+
+  return { books, collections, readEvents };
 }
