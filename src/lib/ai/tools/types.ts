@@ -12,6 +12,7 @@ export type ToolView<ToolName extends ToolId = ToolId> = {
     approvalText: string;
     acceptedText?: string;
     deniedText?: string;
+    unansweredText?: string;
     errorText?: string;
   };
   title: string;

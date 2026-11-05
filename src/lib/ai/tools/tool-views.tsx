@@ -10,6 +10,7 @@ import { getBookByIdToolView } from "./views/get-book-by-id";
 import { undoBookEventToolView } from "./views/undo-book-event";
 import { editBookToolView } from "./views/edit-book";
 import { searchGoogleBooksToolView } from "./views/search-google-books";
+import { askUserToolView } from "./views/ask-user";
 
 export const toolViews: Record<ToolId, ToolView> = {
   getAllBooks: getAllBooksToolView,
@@ -23,4 +24,5 @@ export const toolViews: Record<ToolId, ToolView> = {
   addBookEvent: addBookEventToolView,
   undoBookEvent: undoBookEventToolView,
   searchGoogleBooks: searchGoogleBooksToolView,
+  askUser: askUserToolView,
 };

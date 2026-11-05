@@ -19,7 +19,8 @@ import {
   TraceTitle,
 } from "@/components/ui/trace";
 import type { KnownEntities } from "@/lib/ai/message";
-import type { ToolId, ToolView } from "@/lib/ai/tools/types";
+import type { ToolId, ToolInput, ToolView } from "@/lib/ai/tools/types";
+import { AskUserView } from "@/lib/ai/tools/views/ask-user";
 import { revalidate } from "@/lib/actions/revalidate";
 
 type BookDataMutationOutput = {
@@ -83,12 +84,20 @@ export function ToolCall<TOOL extends UITool>({
   toolCall,
   knownEntities,
   addToolApprovalResponse,
+  onAnswer,
+  isLastMessage,
 }: {
   toolName: ToolId;
   toolView: ToolView;
   toolCall: UIToolInvocation<TOOL>;
   knownEntities?: KnownEntities;
   addToolApprovalResponse: ChatAddToolApproveResponseFunction;
+  onAnswer: (args: {
+    toolCallId: string;
+    answer: string;
+    label: string;
+  }) => void;
+  isLastMessage: boolean;
 }) {
   const queryClient = useQueryClient();
 
@@ -173,17 +182,32 @@ export function ToolCall<TOOL extends UITool>({
         ? ((output as { error?: string }).error ??
           "Не удалось выполнить инструмент")
         : undefined;
+  const isAwaitingUserAnswer =
+    toolName === "askUser" &&
+    toolCall.state === "input-available" &&
+    !isLastMessage;
   const isRunning =
-    toolCall.state === "input-streaming" ||
-    toolCall.state === "input-available" ||
-    (toolCall.state === "approval-responded" && toolCall.approval.approved);
+    !isAwaitingUserAnswer &&
+    (toolCall.state === "input-streaming" ||
+      toolCall.state === "input-available" ||
+      (toolCall.state === "approval-responded" && toolCall.approval.approved));
   const isError = Boolean(errorText);
   const isDenied =
     toolCall.state === "output-denied" ||
     (toolCall.state === "approval-responded" && !toolCall.approval.approved);
 
+  const askUserLabel =
+    toolName === "askUser" && toolCall.state === "output-available"
+      ? ((toolCall.output as { label?: string; answer?: string } | undefined)
+          ?.label ??
+        (toolCall.output as { answer?: string } | undefined)?.answer)
+      : undefined;
+
   const selectedText =
-    errorText ??
+    (isAwaitingUserAnswer
+      ? (texts.unansweredText ?? texts.successText)
+      : undefined) ??
+    (errorText ? (texts.errorText ?? "Ошибка инструмента") : undefined) ??
     (isDenied
       ? (texts.deniedText ?? "Отклонено")
       : toolCall.state === "output-available"
@@ -205,14 +229,53 @@ export function ToolCall<TOOL extends UITool>({
   const line = (
     <TraceLine status={isRunning ? "running" : isError ? "error" : undefined}>
       <TraceIcon>{icon}</TraceIcon>
-      <TraceTitle>{selectedText}</TraceTitle>
+      <TraceTitle>
+        {selectedText}
+        {askUserLabel ? (
+          <>
+            <span className="mx-1 text-muted-foreground/50">·</span>
+            {askUserLabel}
+          </>
+        ) : null}
+      </TraceTitle>
     </TraceLine>
   );
+
+  if (toolName === "askUser" && toolCall.state === "input-available") {
+    if (isLastMessage) {
+      return (
+        <AskUserView
+          input={toolCall.input as ToolInput<"askUser">}
+          onAnswer={(answer) =>
+            onAnswer({
+              toolCallId: toolCall.toolCallId,
+              answer: answer.value,
+              label: answer.label,
+            })
+          }
+        />
+      );
+    }
+
+    return (
+      <Trace>
+        <TraceCollapsible>
+          <TraceCollapsibleTrigger>{line}</TraceCollapsibleTrigger>
+          <TraceCollapsibleContent>
+            <AskUserView
+              input={toolCall.input as ToolInput<"askUser">}
+              inactive
+            />
+          </TraceCollapsibleContent>
+        </TraceCollapsible>
+      </Trace>
+    );
+  }
 
   if (isError) {
     return (
       <Trace>
-        <TraceCollapsible defaultOpen>
+        <TraceCollapsible>
           <TraceCollapsibleTrigger>{line}</TraceCollapsibleTrigger>
           <TraceCollapsibleContent>
             <CodeBlock variant="destructive" size="sm">

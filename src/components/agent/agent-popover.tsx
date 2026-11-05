@@ -1,6 +1,7 @@
 import { useChat } from "@ai-sdk/react";
 import {
   DefaultChatTransport,
+  isToolUIPart,
   lastAssistantMessageIsCompleteWithApprovalResponses,
   lastAssistantMessageIsCompleteWithToolCalls,
 } from "ai";
@@ -32,13 +33,23 @@ export function AgentPopover({
   const isMobile = useIsMobile();
 
   const ref = useRef<MessageInputRef>(null);
+  const suppressAutoSend = useRef(false);
 
   const sendAutomaticallyWhen = useCallback(
-    ({ messages: nextMessages }: { messages: MyUIMessage[] }) =>
-      lastAssistantMessageIsCompleteWithToolCalls({ messages: nextMessages }) ||
-      lastAssistantMessageIsCompleteWithApprovalResponses({
-        messages: nextMessages,
-      }),
+    ({ messages: nextMessages }: { messages: MyUIMessage[] }) => {
+      if (suppressAutoSend.current) {
+        return false;
+      }
+
+      return (
+        lastAssistantMessageIsCompleteWithToolCalls({
+          messages: nextMessages,
+        }) ||
+        lastAssistantMessageIsCompleteWithApprovalResponses({
+          messages: nextMessages,
+        })
+      );
+    },
     [],
   );
 
@@ -68,10 +79,68 @@ export function AgentPopover({
     stop,
     clearError,
     addToolApprovalResponse,
+    addToolResult,
   } = useChat<MyUIMessage>({
     sendAutomaticallyWhen,
     transport,
   });
+
+  const sendWithDenial = useCallback(
+    async (text: string) => {
+      const pendingApprovalIds = messages.flatMap((message) =>
+        message.parts.flatMap((part) =>
+          isToolUIPart(part) &&
+          part.state === "approval-requested" &&
+          part.approval
+            ? [part.approval.id]
+            : [],
+        ),
+      );
+
+      if (pendingApprovalIds.length > 0) {
+        // Deny pending approvals with the message as the reason, then send the
+        // message in the same request instead of continuing without context.
+        suppressAutoSend.current = true;
+        try {
+          await Promise.all(
+            pendingApprovalIds.map((id) =>
+              addToolApprovalResponse({
+                id,
+                approved: false,
+                reason: text,
+              }),
+            ),
+          );
+        } catch {
+          // Send the message even if the denial could not be applied.
+        } finally {
+          suppressAutoSend.current = false;
+        }
+      }
+
+      sendMessage({ text });
+    },
+    [addToolApprovalResponse, messages, sendMessage],
+  );
+
+  const answerQuestion = useCallback(
+    ({
+      toolCallId,
+      answer,
+      label,
+    }: {
+      toolCallId: string;
+      answer: string;
+      label: string;
+    }) => {
+      void addToolResult({
+        tool: "askUser",
+        toolCallId,
+        output: { answer, label },
+      });
+    },
+    [addToolResult],
+  );
 
   const clearChat = () => {
     stop();
@@ -178,6 +247,7 @@ export function AgentPopover({
                 onRetry={() => regenerate()}
                 onRegenerate={(messageId) => regenerate({ messageId })}
                 addToolApprovalResponse={addToolApprovalResponse}
+                onAnswer={answerQuestion}
               />
             </motion.div>
           )}
@@ -187,7 +257,7 @@ export function AgentPopover({
         ref={ref}
         status={status}
         onSend={(message) => {
-          sendMessage({ text: message });
+          void sendWithDenial(message);
           posthog.capture("ai_message_sent", {
             length: message.length,
           });

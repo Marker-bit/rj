@@ -1,4 +1,9 @@
-import { type ChatAddToolApproveResponseFunction, type ChatStatus } from "ai";
+import {
+  type ChatAddToolApproveResponseFunction,
+  type ChatStatus,
+  isTextUIPart,
+  isToolUIPart,
+} from "ai";
 import {
   ArrowDownIcon,
   CircleAlertIcon,
@@ -38,6 +43,7 @@ export function ChatHistory({
   onRetry,
   onRegenerate,
   addToolApprovalResponse,
+  onAnswer,
 }: {
   messages: MyUIMessage[];
   error?: Error;
@@ -45,13 +51,32 @@ export function ChatHistory({
   onRetry: () => void;
   onRegenerate: (messageId: string) => void;
   addToolApprovalResponse: ChatAddToolApproveResponseFunction;
+  onAnswer: (args: {
+    toolCallId: string;
+    answer: string;
+    label: string;
+  }) => void;
 }) {
   const visibleMessages = messages.filter(hasVisibleMessageContent);
   const knownEntities = collectKnownEntities(visibleMessages);
   const lastMessage = visibleMessages.at(-1);
+  const lastMessageIsAssistant = lastMessage?.role === "assistant";
+  const hasPendingQuestion =
+    lastMessageIsAssistant &&
+    lastMessage.parts.some(
+      (part) =>
+        isToolUIPart(part) &&
+        part.type === "tool-askUser" &&
+        part.state === "input-available",
+    );
+  const isGeneratingText =
+    lastMessageIsAssistant &&
+    lastMessage.parts.some(
+      (part) => isTextUIPart(part) && part.text.trim().length > 0,
+    );
   const showThinking =
     status === "submitted" ||
-    (status === "streaming" && lastMessage?.role !== "assistant");
+    (status === "streaming" && !hasPendingQuestion && !isGeneratingText);
   const streamingMessageId =
     status === "streaming" ? lastMessage?.id : undefined;
 
@@ -74,6 +99,8 @@ export function ChatHistory({
                   knownEntities={knownEntities}
                   onRegenerate={() => onRegenerate(message.id)}
                   addToolApprovalResponse={addToolApprovalResponse}
+                  onAnswer={onAnswer}
+                  isLastMessage={message.id === lastMessage?.id}
                   isStreaming={
                     message.role === "assistant" &&
                     message.id === streamingMessageId
