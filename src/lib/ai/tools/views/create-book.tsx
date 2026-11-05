@@ -2,14 +2,16 @@ import { PlusIcon } from "lucide-react";
 import { BookView } from "@/components/agent/book-view";
 import type { ToolOutputView, ToolView } from "@/lib/ai/tools/types";
 
-const CreateBookView: ToolOutputView<"createBook"> = ({ input }) => {
+const CreateBookView: ToolOutputView<"createBook"> = ({ input, output }) => {
+  const book = output?.book;
+
   return (
     <BookView
-      coverUrl={input.coverUrl}
+      coverUrl={book?.coverUrl ?? input.coverUrl}
       background={input.background}
-      title={input.title}
-      author={input.author}
-      pages={input.pages}
+      title={book?.title ?? input.title}
+      author={book?.author ?? input.author}
+      pages={book?.pages ?? input.pages}
       fields={input.fields}
     />
   );

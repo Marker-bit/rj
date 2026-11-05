@@ -160,6 +160,7 @@ export const toolSetForUser = (user: User) => ({
           title: book.title,
           author: book.author,
           pages: book.pages,
+          coverUrl: book.coverUrl ?? undefined,
         },
       };
     },
@@ -245,7 +246,7 @@ export const toolSetForUser = (user: User) => ({
         });
       }
 
-      return { success: true, book };
+      return { success: true, book, coverUrl: coverUrlFinal };
     },
     needsApproval: true,
   }),

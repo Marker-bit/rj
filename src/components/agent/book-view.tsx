@@ -32,23 +32,28 @@ export function BookView({
   return (
     <div
       className={cn(
-        "px-2 pt-1 pb-2 rounded-md border flex gap-2 items-center",
+        "flex min-w-0 items-start gap-2 rounded-md border px-2 pt-1 pb-2",
         background !== BackgroundColor.NONE && "outline-4 outline-solid",
         color?.outline,
       )}
     >
       {coverUrl && (
         <Image
-          width={160}
-          height={80}
+          width={64}
+          height={96}
           src={coverUrl}
           alt="cover"
-          className="w-40 h-20 object-contain rounded-md"
+          unoptimized={coverUrl.includes("books.google.com")}
+          className="h-24 w-16 shrink-0 rounded-md object-cover"
         />
       )}
-      <div className="flex flex-col leading-tight">
-        <h2 className="text-sm font-semibold">{title}</h2>
-        <div className="text-xs text-muted-foreground">{author}</div>
+      <div className="flex min-w-0 flex-1 flex-col leading-tight">
+        <h2 className="line-clamp-2 text-sm font-semibold break-words">
+          {title}
+        </h2>
+        <div className="text-xs text-muted-foreground break-words">
+          {author}
+        </div>
         <div className="text-xs text-muted-foreground">
           {pages ? (
             <>
@@ -59,27 +64,24 @@ export function BookView({
           )}
         </div>
         {collections && collections.length > 0 && (
-          <div className="flex flex-wrap gap-2 mt-1">
+          <div className="mt-1 flex min-w-0 flex-wrap gap-2">
             {collections.map((c) => (
-              <Badge key={c} variant="outline">
+              <Badge key={c} variant="outline" className="max-w-full truncate">
                 {c}
               </Badge>
             ))}
           </div>
         )}
-        {fields && (
-          <div className="flex flex-col gap-2">
-            {/*<div className="font-semibold">Поля:</div>*/}
-            <div className="flex gap-2 items-center flex-wrap">
-              {fields.map((field) => (
-                <div
-                  key={field.title + field.value}
-                  className={cn("rounded-xl border px-2 py-1")}
-                >
-                  {field.title}: {field.value}
-                </div>
-              ))}
-            </div>
+        {fields && fields.length > 0 && (
+          <div className="mt-1 flex min-w-0 flex-wrap gap-1">
+            {fields.map((field) => (
+              <div
+                key={field.title + field.value}
+                className="max-w-full rounded-xl border px-2 py-1 text-xs break-words"
+              >
+                {field.title}: {field.value}
+              </div>
+            ))}
           </div>
         )}
       </div>
@@ -108,9 +110,11 @@ export function RemoteBookView({ bookId }: { bookId: string }) {
       <CircleAlertIcon />
     </div>
   ) : (
-    <div className="px-2 pt-1 pb-2 rounded-md flex flex-col leading-tight border">
-      <h2 className="text-sm font-semibold">{bookQuery.data.title}</h2>
-      <div className="text-xs text-muted-foreground">
+    <div className="flex min-w-0 flex-col rounded-md border px-2 pt-1 pb-2 leading-tight">
+      <h2 className="text-sm font-semibold break-words">
+        {bookQuery.data.title}
+      </h2>
+      <div className="text-xs text-muted-foreground break-words">
         {bookQuery.data.author}
       </div>
       <div className="text-xs text-muted-foreground">
