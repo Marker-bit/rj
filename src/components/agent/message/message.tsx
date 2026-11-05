@@ -56,20 +56,24 @@ export function Message({
 
       if (isUser) {
         return (
-          <p key={textKey} className="whitespace-pre-wrap">
+          <p
+            key={textKey}
+            data-message-text-part={textGroupNumber}
+            className="whitespace-pre-wrap"
+          >
             {partGroup.text}
           </p>
         );
       }
 
       return (
-        <Streamdown
+        <div
           key={textKey}
-          isAnimating={isStreaming}
-          className={idx !== 0 ? "mt-2" : ""}
+          data-message-text-part={textGroupNumber}
+          className={idx !== 0 ? "mt-2" : undefined}
         >
-          {partGroup.text}
-        </Streamdown>
+          <Streamdown isAnimating={isStreaming}>{partGroup.text}</Streamdown>
+        </div>
       );
     }
 
@@ -109,6 +113,7 @@ export function Message({
     <MessageContextMenu
       message={message}
       canRegenerate={canRegenerate}
+      isStreaming={isStreaming}
       onRegenerate={onRegenerate}
       className="flex w-full flex-col"
     >
