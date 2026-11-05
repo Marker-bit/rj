@@ -1,32 +1,19 @@
-import { useQuery } from "@tanstack/react-query";
-import { CircleAlertIcon, TrashIcon } from "lucide-react";
-import { Spinner } from "@/components/ui/spinner";
+import { TrashIcon } from "lucide-react";
 import type { ToolOutputView, ToolView } from "@/lib/ai/tools/types";
 
 const DeleteCollectionView: ToolOutputView<"deleteCollection"> = ({
-  input,
+  output,
 }) => {
-  const collectionQuery = useQuery({
-    queryKey: ["collection", input.id],
-    queryFn: () =>
-      fetch(`/api/collections/${input.id}`).then((res) => {
-        if (!res.ok) {
-          throw new Error("Не удалось получить коллекцию");
-        }
-        return res.json();
-      }),
-  });
-  return collectionQuery.isLoading ? (
-    <div className="w-40 h-20 text-muted-foreground flex items-center justify-center rounded-md border">
-      <Spinner />
-    </div>
-  ) : collectionQuery.isError ? (
-    <div className="w-40 h-20 text-muted-foreground flex items-center justify-center rounded-md border">
-      <CircleAlertIcon />
-    </div>
-  ) : (
+  if (!output?.collection) {
+    return null;
+  }
+
+  return (
     <div className="px-2 pt-1 pb-2 rounded-md flex flex-col leading-tight border">
-      <h2 className="text-sm font-semibold">{collectionQuery.data.name}</h2>
+      <h2 className="text-sm font-semibold">{output.collection.name}</h2>
+      <div className="text-xs text-muted-foreground">
+        Книг: {output.collection.books.length}
+      </div>
     </div>
   );
 };

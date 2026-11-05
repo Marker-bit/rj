@@ -7,9 +7,7 @@ import {
 } from "lucide-react";
 import { RemoteBookView } from "@/components/agent/book-view";
 import type { ToolOutputView, ToolView } from "@/lib/ai/tools/types";
-import { Spinner } from "@/components/ui/spinner";
-import { useQuery } from "@tanstack/react-query";
-import { BackgroundColor, Book, BookStatus } from "@prisma/client";
+import { BackgroundColor, BookStatus } from "@prisma/client";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { backgroundColors } from "@/lib/colors";
@@ -23,14 +21,14 @@ const FieldView = ({
   originalValue: string;
   changedValue?: string;
 }) =>
-  changedValue ? (
+  changedValue !== undefined ? (
     <div className="flex items-center">
-      <span className="font-semibold">{label}: </span>
+      <span className="me-1 font-semibold">{label}: </span>
       <span className="text-muted-foreground">
         {originalValue === "" ? "<ничего>" : originalValue}
       </span>
       <ArrowRightIcon className="size-4 shrink-0 mx-1 inline-block text-muted-foreground" />
-      <span>{changedValue}</span>
+      <span>{changedValue === "" ? "<пусто>" : changedValue}</span>
     </div>
   ) : null;
 
@@ -40,29 +38,18 @@ const statuses: Record<BookStatus, string> = {
   HIDDEN: "скрыта",
 };
 
-const EditBookView: ToolOutputView<"editBook"> = ({ input }) => {
-  const bookQuery = useQuery<Book>({
-    queryKey: ["book", input.id],
-    queryFn: () =>
-      fetch(`/api/books/${input.id}`).then((res) => {
-        if (!res.ok) {
-          throw new Error("Failed to fetch book");
-        }
-        return res.json();
-      }),
-  });
+const EditBookView: ToolOutputView<"editBook"> = ({ input, output }) => {
+  const book = output?.book;
 
-  const book = bookQuery.data!;
+  if (!book) {
+    return (
+      <div className="w-40 h-20 text-muted-foreground flex items-center justify-center rounded-md border">
+        <CircleAlertIcon />
+      </div>
+    );
+  }
 
-  return bookQuery.isLoading ? (
-    <div className="w-40 h-20 text-muted-foreground flex items-center justify-center rounded-md border">
-      <Spinner />
-    </div>
-  ) : bookQuery.isError ? (
-    <div className="w-40 h-20 text-muted-foreground flex items-center justify-center rounded-md border">
-      <CircleAlertIcon />
-    </div>
-  ) : (
+  return (
     <div className="flex flex-col gap-2">
       {input.values.coverUrl && (
         <Image
@@ -75,22 +62,22 @@ const EditBookView: ToolOutputView<"editBook"> = ({ input }) => {
       )}
       <RemoteBookView bookId={input.id} />
       <div className="flex flex-col gap-1">
-        {book.background !== input.values.background && (
-          <div className="flex gap-2 items-center">
-            <div className="font-semibold text-sm">Цвет: </div>
-            {book.background !== BackgroundColor.NONE && (
-              <div
-                className={cn(
-                  "size-8 rounded-md flex items-center justify-center",
-                  backgroundColors.find((c) => c.type === book.background)
-                    ?.color,
-                )}
-              >
-                <MinusIcon className="size-4 text-accent-foreground" />
-              </div>
-            )}
-            {input.values.background !== BackgroundColor.NONE &&
-              input.values.background && (
+        {input.values.background !== undefined &&
+          book.background !== input.values.background && (
+            <div className="flex gap-2 items-center">
+              <div className="font-semibold text-sm">Цвет: </div>
+              {book.background !== BackgroundColor.NONE && (
+                <div
+                  className={cn(
+                    "size-8 rounded-md flex items-center justify-center",
+                    backgroundColors.find((c) => c.type === book.background)
+                      ?.color,
+                  )}
+                >
+                  <MinusIcon className="size-4 text-accent-foreground" />
+                </div>
+              )}
+              {input.values.background !== BackgroundColor.NONE && (
                 <div
                   className={cn(
                     "size-8 rounded-md flex items-center justify-center",
@@ -102,8 +89,8 @@ const EditBookView: ToolOutputView<"editBook"> = ({ input }) => {
                   <PlusIcon className="size-4 text-accent-foreground" />
                 </div>
               )}
-          </div>
-        )}
+            </div>
+          )}
         <FieldView
           label="Название"
           originalValue={book.title}
