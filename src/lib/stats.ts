@@ -19,7 +19,6 @@ export function getStreak(events: ReadEvent[]) {
     return { streak: 0, breakDay: today, readToday: false };
   }
 
-  // The most recent day the user actually read, however long ago that was.
   const lastReadDay = events.reduce(
     (latest, event) => (event.readAt > latest ? event.readAt : latest),
     events[0].readAt,

@@ -19,7 +19,7 @@ export default async function LastReadCard() {
       {lastReadBook.coverUrl && (
         <Image
           src={lastReadBook.coverUrl}
-          alt=""
+          alt={`Обложка книги «${lastReadBook.title}»`}
           width={192}
           height={320}
           className="h-40 w-auto shrink-0 rounded-md object-cover shadow-md ring-1 ring-foreground/10"

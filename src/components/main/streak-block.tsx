@@ -27,7 +27,6 @@ export default function StreakBlock({
   const days = getDays2(events);
   const pagesReadToday = days[days.length - 1].pagesRead;
   const daysSinceBreak = breakDay ? differenceInDays(new Date(), breakDay) : 0;
-  // Past a month the exact day count stops being useful, so round it off.
   const breakLabel =
     daysSinceBreak > 365
       ? "больше года"
