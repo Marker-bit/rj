@@ -41,6 +41,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { useUploadThing } from "@/components/uploadthing";
 import ExportDataButton from "@/components/users/export-data-button";
+import { DEFAULT_FIELDS_STORAGE_KEY } from "@/lib/default-fields";
 import { cn } from "@/lib/utils";
 
 const formSchema = z.object({
@@ -68,7 +69,10 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
   const [disableRecs, setDisableRecs] = useLocalStorage("disableRecs", false);
   const [isClient, setIsClient] = useState(false);
   const router = useRouter();
-  const [fields, setFields] = useLocalStorage<string[]>("fields", []);
+  const [fields, setFields] = useLocalStorage<string[]>(
+    DEFAULT_FIELDS_STORAGE_KEY,
+    [],
+  );
   const defaultFields = fields.map((value, fieldIndex) => ({
     value,
     storageIndex: fieldIndex,

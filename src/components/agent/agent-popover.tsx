@@ -18,18 +18,8 @@ import { useToolSelection } from "@/components/agent/message-input/tool-selector
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import type { MyUIMessage } from "@/lib/ai/message";
+import { readDefaultFields } from "@/lib/default-fields";
 import { cn } from "@/lib/utils";
-
-function getDefaultFields() {
-  try {
-    const value = JSON.parse(localStorage.getItem("defaultFields") ?? "[]");
-    return Array.isArray(value)
-      ? value.filter((field): field is string => typeof field === "string")
-      : [];
-  } catch {
-    return [];
-  }
-}
 
 export function AgentPopover({
   isOpen,
@@ -60,7 +50,7 @@ export function AgentPopover({
             body: {
               ...data,
               allowedTools: useToolSelection.getState().allowedTools ?? [],
-              defaultFields: getDefaultFields(),
+              defaultFields: readDefaultFields(),
             },
           };
         },
