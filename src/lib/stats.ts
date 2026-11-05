@@ -4,6 +4,7 @@ import {
   addWeeks,
   endOfWeek,
   isSameDay,
+  startOfDay,
   startOfWeek,
   subDays,
 } from "date-fns";
@@ -13,36 +14,29 @@ export const goodNumbers = [
 ];
 
 export function getStreak(events: ReadEvent[]) {
+  const today = startOfDay(new Date());
   if (events.length === 0) {
-    return { streak: 0, breakDay: new Date(), readToday: false };
+    return { streak: 0, breakDay: today, readToday: false };
   }
+
+  const lastReadDay = events.reduce(
+    (latest, event) => (event.readAt > latest ? event.readAt : latest),
+    events[0].readAt,
+  );
+
+  const readDays = new Set(
+    events.map((event) => startOfDay(event.readAt).getTime()),
+  );
+  const readToday = readDays.has(today.getTime());
+
   let streak = 0;
-  let day = new Date();
-  day = subDays(day, 1);
-  let breakDay: null | Date = null;
-
-  while (true) {
-    if (events.find((e) => isSameDay(e.readAt, day))) {
-      streak++;
-      day = subDays(day, 1);
-    } else {
-      let l = 50;
-      while (!events.find((e) => isSameDay(e.readAt, day)) && l > 0) {
-        day = subDays(day, 1);
-        l--;
-      }
-      breakDay = day;
-      break;
-    }
-  }
-
-  let readToday = false;
-  if (events.find((e) => isSameDay(e.readAt, new Date()))) {
-    readToday = true;
+  let day = readToday ? today : subDays(today, 1);
+  while (readDays.has(day.getTime())) {
     streak++;
+    day = subDays(day, 1);
   }
 
-  return { streak, breakDay, readToday };
+  return { streak, breakDay: startOfDay(lastReadDay), readToday };
 }
 
 export function getEventDays(events: ReadEvent[]) {
