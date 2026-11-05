@@ -27,6 +27,13 @@ export default function StreakBlock({
   const days = getDays2(events);
   const pagesReadToday = days[days.length - 1].pagesRead;
   const daysSinceBreak = breakDay ? differenceInDays(new Date(), breakDay) : 0;
+  // Past a month the exact day count stops being useful, so round it off.
+  const breakLabel =
+    daysSinceBreak > 365
+      ? "больше года"
+      : daysSinceBreak > 30
+        ? "больше месяца"
+        : `${daysSinceBreak} ${declOfNum(daysSinceBreak, ["день", "дня", "дней"])}`;
   const goodNumbers = [
     5, 10, 20, 50, 100, 200, 300, 365, 400, 500, 600, 730, 800, 900, 1000,
   ];
@@ -69,11 +76,7 @@ export default function StreakBlock({
             </>
           ) : (
             <>
-              Вы не читаете уже{" "}
-              <span className="font-bold">
-                {daysSinceBreak}{" "}
-                {declOfNum(daysSinceBreak, ["день", "дня", "дней"])}
-              </span>
+              Вы не читаете уже <span className="font-bold">{breakLabel}</span>
               {" :("}
             </>
           )}

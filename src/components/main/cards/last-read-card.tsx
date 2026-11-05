@@ -15,44 +15,30 @@ export default async function LastReadCard() {
   const { book: lastReadBook, pages } = data;
 
   return (
-    <div className="bg-card text-card-foreground rounded-xl border p-6 shadow-sm overflow-hidden flex items-center relative">
-      <div className="flex items-center gap-4 w-full z-10 shrink-0">
-        {lastReadBook.coverUrl && (
-          <div className="relative shrink-0">
-            <Image
-              src={lastReadBook.coverUrl}
-              alt="book"
-              width={192}
-              height={320}
-              className="h-40 scale-150 w-auto rounded-md blur-xl absolute -z-10"
-              aria-hidden
-            />
-            <Image
-              src={lastReadBook.coverUrl}
-              alt="book"
-              width={192}
-              height={320}
-              className="h-40 w-auto rounded-md shrink-0"
-            />
-          </div>
-        )}
-        <div className="flex flex-col items-start">
-          <div className="text-sm text-muted-foreground">
-            Вы остановились на
-          </div>
-          <div className="text-2xl font-bold">{pages} странице</div>
-          <div className="text-muted-foreground">
-            В книге {lastReadBook.title} - {lastReadBook.author}
-          </div>
-          <div className="flex gap-2 items-center mt-2">
-            <ReadButton book={lastReadBook} />
-            <Button variant="outline" asChild>
-              <Link href={`/books/${lastReadBook.id}`}>
-                <div className="hidden sm:block">Открыть</div>
-                <ArrowUpRight className="size-4" />
-              </Link>
-            </Button>
-          </div>
+    <div className="bg-card text-card-foreground relative flex items-center gap-4 overflow-hidden rounded-2xl border p-6 shadow-sm">
+      {lastReadBook.coverUrl && (
+        <Image
+          src={lastReadBook.coverUrl}
+          alt=""
+          width={192}
+          height={320}
+          className="h-40 w-auto shrink-0 rounded-md object-cover shadow-md ring-1 ring-foreground/10"
+        />
+      )}
+      <div className="flex min-w-0 flex-col items-start">
+        <div className="text-sm text-muted-foreground">Вы остановились на</div>
+        <div className="text-2xl font-bold">{pages} странице</div>
+        <div className="text-muted-foreground text-pretty">
+          В книге {lastReadBook.title} — {lastReadBook.author}
+        </div>
+        <div className="mt-2 flex items-center gap-2">
+          <ReadButton book={lastReadBook} />
+          <Button variant="outline" asChild>
+            <Link href={`/books/${lastReadBook.id}`}>
+              <div className="hidden sm:block">Открыть</div>
+              <ArrowUpRight className="size-4" />
+            </Link>
+          </Button>
         </div>
       </div>
     </div>
