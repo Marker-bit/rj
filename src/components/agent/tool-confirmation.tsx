@@ -233,9 +233,10 @@ function ConfirmationFields({ fields }: { fields: BookField[] }) {
   return (
     <Collapsible className="min-w-0">
       <CollapsibleTrigger asChild>
-        <button
+        <Button
           type="button"
-          className="group/fields-trigger -mx-1 flex w-[calc(100%+0.5rem)] min-w-0 cursor-pointer items-center gap-1.5 rounded-md px-1 py-0.5 text-xs text-muted-foreground transition-colors outline-none hover:bg-accent/60 hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          variant="ghost"
+          className="group/fields-trigger text-muted-foreground"
         >
           <ChevronRightIcon className="size-3.5 shrink-0 transition-transform group-data-[state=open]/fields-trigger:rotate-90" />
           <span>Поля</span>
@@ -245,7 +246,7 @@ function ConfirmationFields({ fields }: { fields: BookField[] }) {
           >
             {fields.length}
           </Badge>
-        </button>
+        </Button>
       </CollapsibleTrigger>
       <CollapsibleContent className="overflow-hidden data-open:animate-accordion-down data-closed:animate-accordion-up">
         <dl className="mt-1.5 divide-y overflow-hidden rounded-md border text-xs leading-relaxed">
