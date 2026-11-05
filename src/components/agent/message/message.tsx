@@ -22,7 +22,9 @@ export function Message({
   ref,
   onRegenerate,
   addToolApprovalResponse,
+  onAnswer,
   isStreaming,
+  isLastMessage,
   canRegenerate,
 }: {
   message: MyUIMessage;
@@ -30,7 +32,13 @@ export function Message({
   ref?: React.RefObject<HTMLDivElement>;
   onRegenerate: () => void;
   addToolApprovalResponse: ChatAddToolApproveResponseFunction;
+  onAnswer: (args: {
+    toolCallId: string;
+    answer: string;
+    label: string;
+  }) => void;
   isStreaming: boolean;
+  isLastMessage: boolean;
   canRegenerate: boolean;
 }) {
   const partGroups = groupMessageParts(message);
@@ -84,6 +92,8 @@ export function Message({
                   toolCall={part}
                   knownEntities={knownEntities}
                   addToolApprovalResponse={addToolApprovalResponse}
+                  onAnswer={onAnswer}
+                  isLastMessage={isLastMessage}
                 />
               );
             })}

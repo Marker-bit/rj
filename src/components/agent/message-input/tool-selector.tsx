@@ -20,6 +20,10 @@ interface StoreState {
   setAllowedTools: (tools: AllowedTools) => void;
 }
 
+const TOOL_STORAGE_VERSION = 2;
+
+const toolsAddedInVersion2: AllowedTools = ["askUser"];
+
 export const useToolSelection = create<StoreState>()(
   persist(
     (set) => ({
@@ -28,7 +32,22 @@ export const useToolSelection = create<StoreState>()(
     }),
     {
       name: "tool-storage",
+      version: TOOL_STORAGE_VERSION,
       storage: createJSONStorage(() => localStorage),
+      migrate: (persistedState, version) => {
+        const state = persistedState as Partial<StoreState> | undefined;
+        const allowedTools = Array.isArray(state?.allowedTools)
+          ? state.allowedTools
+          : [];
+
+        return {
+          ...state,
+          allowedTools:
+            version < TOOL_STORAGE_VERSION
+              ? Array.from(new Set([...allowedTools, ...toolsAddedInVersion2]))
+              : allowedTools,
+        } as StoreState;
+      },
     },
   ),
 );
