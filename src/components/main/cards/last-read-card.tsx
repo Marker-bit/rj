@@ -22,6 +22,7 @@ export default async function LastReadCard() {
           alt={`Обложка книги «${lastReadBook.title}»`}
           width={192}
           height={320}
+          unoptimized={lastReadBook.coverUrl.includes("books.google.com")}
           className="h-40 w-auto shrink-0 rounded-md object-cover shadow-md ring-1 ring-foreground/10"
         />
       )}

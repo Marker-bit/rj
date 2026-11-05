@@ -203,6 +203,7 @@ export function BookView({
               alt="book"
               width={192}
               height={320}
+              unoptimized={book.coverUrl.includes("books.google.com")}
               className="h-40 w-auto rounded-md"
             />
           )}

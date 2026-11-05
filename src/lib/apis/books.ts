@@ -196,7 +196,9 @@ export async function searchBooks(
   const response = await fetchGoogleBooksWithRetry(url);
 
   if (!response.ok) {
-    throw new Error(`Google Books request failed: ${response.status}`);
+    throw new Error(
+      `Не удалось получить данные из Google Books (код ${response.status})`,
+    );
   }
 
   return (await response.json()) as GoogleBooksVolumesResponse;

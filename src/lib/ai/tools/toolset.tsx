@@ -518,7 +518,21 @@ export const toolSetForUser = (user: User) => ({
       ]),
     }),
     execute: async ({ query }) => {
-      return searchBooks(query);
+      try {
+        return await searchBooks(query);
+      } catch (error) {
+        if (error instanceof Error && error.message.includes("429")) {
+          throw new Error(
+            "Google Books временно недоступен: превышен дневной лимит запросов. Попробуйте позже.",
+            { cause: error },
+          );
+        }
+
+        throw new Error(
+          "Не удалось найти книги в Google Books. Попробуйте позже.",
+          { cause: error },
+        );
+      }
     },
   }),
   askUser: tool({
