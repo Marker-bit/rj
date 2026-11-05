@@ -1,7 +1,7 @@
 import { CheckIcon, WrenchIcon } from "lucide-react";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { Button } from "@/components/ui/button";
+import { InputGroupButton } from "@/components/ui/input-group";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -34,21 +34,29 @@ export const useToolSelection = create<StoreState>()(
 );
 
 export function ToolSelector() {
-  const { allowedTools, setAllowedTools } = useToolSelection();
+  const { allowedTools: storedTools, setAllowedTools } = useToolSelection();
+  const allowedTools = storedTools ?? [];
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button size="icon-sm" variant="ghost" type="button">
+        <InputGroupButton
+          size="icon-sm"
+          variant="ghost"
+          type="button"
+          aria-label="Инструменты"
+        >
           <WrenchIcon />
-        </Button>
+        </InputGroupButton>
       </DropdownMenuTrigger>
-      <DropdownMenuContent side="top" align="start" className="z-[120] w-64">
+      <DropdownMenuContent side="top" align="start" className="z-[120] w-56">
         <DropdownMenuGroup>
-          <DropdownMenuLabel>Разрешенные инструменты</DropdownMenuLabel>
+          <DropdownMenuLabel className="px-2 py-1.5 text-xs">
+            Разрешенные инструменты
+          </DropdownMenuLabel>
           {Object.entries(toolViews).map(([key, value]) => (
             <DropdownMenuItem
-              className="grid grid-cols-[1fr_1rem] items-center gap-4"
+              className="grid grid-cols-[1fr_0.875rem] items-center gap-2 py-1.5 text-xs"
               key={key}
               onClick={(evt) => {
                 evt.preventDefault();
@@ -59,12 +67,12 @@ export function ToolSelector() {
                 }
               }}
             >
-              <span className="flex items-center gap-2">
-                <value.icon className="size-4 opacity-72" />
+              <span className="flex min-w-0 items-center gap-2">
+                <value.icon className="size-3.5 shrink-0 opacity-72" />
                 <span className="truncate">{value.title}</span>
               </span>
               {allowedTools.includes(key as AllowedTool) && (
-                <CheckIcon className="size-4" />
+                <CheckIcon className="size-3.5" />
               )}
             </DropdownMenuItem>
           ))}

@@ -4,7 +4,7 @@ import {
   lastAssistantMessageIsCompleteWithApprovalResponses,
   lastAssistantMessageIsCompleteWithToolCalls,
 } from "ai";
-import { Maximize2Icon, Minimize2Icon, XIcon } from "lucide-react";
+import { Maximize2Icon, Minimize2Icon, Trash2Icon, XIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import posthog from "posthog-js";
 import { useCallback, useMemo, useRef, useState } from "react";
@@ -19,6 +19,17 @@ import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import type { MyUIMessage } from "@/lib/ai/message";
 import { cn } from "@/lib/utils";
+
+function getDefaultFields() {
+  try {
+    const value = JSON.parse(localStorage.getItem("defaultFields") ?? "[]");
+    return Array.isArray(value)
+      ? value.filter((field): field is string => typeof field === "string")
+      : [];
+  } catch {
+    return [];
+  }
+}
 
 export function AgentPopover({
   isOpen,
@@ -48,10 +59,8 @@ export function AgentPopover({
           return {
             body: {
               ...data,
-              allowedTools: useToolSelection.getState().allowedTools,
-              defaultFields: JSON.parse(
-                localStorage.getItem("defaultFields") ?? "[]",
-              ),
+              allowedTools: useToolSelection.getState().allowedTools ?? [],
+              defaultFields: getDefaultFields(),
             },
           };
         },
@@ -65,11 +74,21 @@ export function AgentPopover({
     error,
     status,
     regenerate,
+    setMessages,
+    stop,
+    clearError,
     addToolApprovalResponse,
   } = useChat<MyUIMessage>({
     sendAutomaticallyWhen,
     transport,
   });
+
+  const clearChat = () => {
+    stop();
+    setMessages([]);
+    clearError();
+    ref.current?.setMessage("");
+  };
 
   return (
     <div
@@ -92,6 +111,16 @@ export function AgentPopover({
       <div className="p-1 pl-3 pr-2 border-b flex items-center justify-between shrink-0">
         <div className="font-medium text-sm">Чат с ИИ</div>
         <div className="flex gap-2 items-center">
+          <Button
+            size="icon-sm"
+            variant="ghost"
+            className="size-6"
+            onClick={clearChat}
+            disabled={messages.length === 0 && !error}
+            aria-label="Очистить чат"
+          >
+            <Trash2Icon />
+          </Button>
           <Button
             size="icon-sm"
             variant="ghost"
@@ -170,7 +199,7 @@ export function AgentPopover({
         onSend={(message) => {
           sendMessage({ text: message });
           posthog.capture("ai_message_sent", {
-            text: message,
+            length: message.length,
           });
         }}
       />
