@@ -33,9 +33,9 @@ const FilterView = ({
 }) => {
   if (typeof filter === "string") {
     return (
-      <div className="flex gap-2 items-center rounded-xl border px-2 py-1 truncate">
-        <SearchIcon className="size-4 text-muted-foreground" />
-        {filter}
+      <div className="flex min-w-0 gap-2 items-center rounded-xl border px-2 py-1">
+        <SearchIcon className="size-4 shrink-0 text-muted-foreground" />
+        <span className="min-w-0 truncate">{filter}</span>
       </div>
     );
   }
@@ -45,16 +45,21 @@ const FilterView = ({
       filters[key as keyof z.infer<typeof filterSchema>];
 
     return (
-      <div key={key} className="flex gap-2 items-center px-2 py-0.5 text-xs">
-        <Icon className="size-3 text-muted-foreground" />
-        <span className="text-muted-foreground font-semibold">{name}: </span>
-        {value}
+      <div
+        key={key}
+        className="flex min-w-0 gap-2 items-center px-2 py-0.5 text-xs"
+      >
+        <Icon className="size-3 shrink-0 text-muted-foreground" />
+        <span className="shrink-0 text-muted-foreground font-semibold">
+          {name}:{" "}
+        </span>
+        <span className="min-w-0 truncate">{String(value)}</span>
       </div>
     );
   });
 
   return (
-    <div className="flex flex-col rounded-md border truncate divide-y">
+    <div className="flex min-w-0 flex-col divide-y rounded-md border">
       {filterList}
     </div>
   );

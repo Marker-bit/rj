@@ -22,13 +22,15 @@ const FieldView = ({
   changedValue?: string;
 }) =>
   changedValue !== undefined ? (
-    <div className="flex items-center">
+    <div className="flex min-w-0 flex-wrap items-center gap-x-1 break-words">
       <span className="me-1 font-semibold">{label}: </span>
-      <span className="text-muted-foreground">
+      <span className="min-w-0 break-words text-muted-foreground">
         {originalValue === "" ? "<ничего>" : originalValue}
       </span>
       <ArrowRightIcon className="size-4 shrink-0 mx-1 inline-block text-muted-foreground" />
-      <span>{changedValue === "" ? "<пусто>" : changedValue}</span>
+      <span className="min-w-0 break-words">
+        {changedValue === "" ? "<пусто>" : changedValue}
+      </span>
     </div>
   ) : null;
 
@@ -49,15 +51,18 @@ const EditBookView: ToolOutputView<"editBook"> = ({ input, output }) => {
     );
   }
 
+  const coverUrl = output?.coverUrl ?? input.values.coverUrl;
+
   return (
-    <div className="flex flex-col gap-2">
-      {input.values.coverUrl && (
+    <div className="flex min-w-0 flex-col gap-2">
+      {coverUrl && (
         <Image
-          width={160}
-          height={80}
-          src={input.values.coverUrl}
+          width={64}
+          height={96}
+          src={coverUrl}
           alt="cover"
-          className="w-40 h-20 object-contain rounded-md"
+          unoptimized={coverUrl.includes("books.google.com")}
+          className="h-24 w-16 shrink-0 rounded-md object-cover"
         />
       )}
       <RemoteBookView bookId={input.id} />
@@ -122,7 +127,7 @@ const EditBookView: ToolOutputView<"editBook"> = ({ input, output }) => {
         {input.values.fields !== undefined && (
           <div className="flex flex-col gap-2">
             <div className="font-semibold">Поля:</div>
-            <div className="flex gap-2 items-center flex-wrap">
+            <div className="flex min-w-0 flex-wrap items-center gap-2">
               {book.fields.map((field) => {
                 const fields = input.values.fields;
                 if (fields === undefined) {
@@ -137,7 +142,7 @@ const EditBookView: ToolOutputView<"editBook"> = ({ input, output }) => {
                   <div
                     key={field.title + field.value}
                     className={cn(
-                      "rounded-xl border px-2 py-1",
+                      "max-w-full rounded-xl border px-2 py-1 break-words",
                       matchedField
                         ? matchedField.value !== field.value &&
                             "bg-yellow-300 dark:bg-yellow-700"
@@ -158,7 +163,7 @@ const EditBookView: ToolOutputView<"editBook"> = ({ input, output }) => {
                 return (
                   <div
                     key={field.title + field.value}
-                    className="rounded-xl border px-2 py-1 bg-green-300 dark:bg-green-700"
+                    className="max-w-full rounded-xl border px-2 py-1 break-words bg-green-300 dark:bg-green-700"
                   >
                     {field.title}: {field.value}
                   </div>
