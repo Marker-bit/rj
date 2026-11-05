@@ -16,8 +16,14 @@ import {
   ItemMedia,
   ItemTitle,
 } from "@/components/ui/item";
+import { BookStatus, BackgroundColor } from "@prisma/client";
 import type { KnownEntities } from "@/lib/ai/message";
 import type { ToolId, ToolView } from "@/lib/ai/tools/types";
+import {
+  EditBookChanges,
+  type EditBookSnapshot,
+  type EditBookValues,
+} from "@/lib/ai/tools/views/edit-book";
 import { cn } from "@/lib/utils";
 
 type BookField = { title: string; value: string };
@@ -28,6 +34,10 @@ type ApprovalDetails = {
   meta?: string[];
   coverUrl?: string;
   fields?: BookField[];
+  editBookChanges?: {
+    book: EditBookSnapshot;
+    values: EditBookValues;
+  };
 };
 
 function asRecord(value: unknown): Record<string, unknown> {
@@ -68,6 +78,14 @@ function getStatusLabel(value: unknown) {
   }
 
   return STATUS_LABELS[value] ?? value.toLowerCase();
+}
+
+function isBookStatus(value: unknown): value is BookStatus {
+  return typeof value === "string" && Object.hasOwn(BookStatus, value);
+}
+
+function isBackgroundColor(value: unknown): value is BackgroundColor {
+  return typeof value === "string" && Object.hasOwn(BackgroundColor, value);
 }
 
 function formatIsoDate(value: string) {
@@ -156,9 +174,49 @@ function getApprovalDetails(
         background ? `фон: ${background}` : undefined,
       ]);
 
+      const nextFields = Array.isArray(values.fields)
+        ? getBookFields(values.fields)
+        : undefined;
+      const editValues: EditBookValues = {
+        title: typeof values.title === "string" ? values.title : undefined,
+        author: typeof values.author === "string" ? values.author : undefined,
+        description:
+          typeof values.description === "string"
+            ? values.description
+            : undefined,
+        pages: typeof values.pages === "number" ? values.pages : undefined,
+        status: isBookStatus(values.status) ? values.status : undefined,
+        background: isBackgroundColor(values.background)
+          ? values.background
+          : undefined,
+        fields: nextFields,
+      };
+
+      const bookSnapshot: EditBookSnapshot | undefined =
+        book &&
+        typeof book.pages === "number" &&
+        book.status !== undefined &&
+        book.background !== undefined
+          ? {
+              title: book.title,
+              author: book.author ?? "",
+              description: book.description ?? "",
+              pages: book.pages,
+              status: book.status,
+              background: book.background,
+              fields: book.fields ?? [],
+            }
+          : undefined;
+
       return {
         subject: book?.title ? `«${book.title}»` : undefined,
-        description: changes || "Изменение данных книги.",
+        description: bookSnapshot
+          ? "Изменение данных книги."
+          : changes || "Изменение данных книги.",
+        editBookChanges: bookSnapshot
+          ? { book: bookSnapshot, values: editValues }
+          : undefined,
+        fields: bookSnapshot ? undefined : nextFields,
       };
     }
 
@@ -323,6 +381,9 @@ export function ToolConfirmation({
             <ItemDescription>{details.description}</ItemDescription>
           )}
           <ConfirmationFields fields={details.fields ?? []} />
+          {details.editBookChanges ? (
+            <EditBookChanges {...details.editBookChanges} />
+          ) : null}
         </ItemContent>
       </div>
       <ItemActions className="w-full flex-col gap-2">
