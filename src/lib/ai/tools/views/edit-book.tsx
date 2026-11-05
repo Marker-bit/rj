@@ -23,12 +23,12 @@ const FieldView = ({
 }) =>
   changedValue !== undefined ? (
     <div className="flex min-w-0 flex-wrap items-center gap-x-1 break-words">
-      <span className="me-1 font-semibold">{label}: </span>
+      <span className="me-1 font-semibold text-foreground">{label}: </span>
       <span className="min-w-0 break-words text-muted-foreground">
         {originalValue === "" ? "<ничего>" : originalValue}
       </span>
       <ArrowRightIcon className="size-4 shrink-0 mx-1 inline-block text-muted-foreground" />
-      <span className="min-w-0 break-words">
+      <span className="min-w-0 break-words text-foreground">
         {changedValue === "" ? "<пусто>" : changedValue}
       </span>
     </div>
@@ -39,6 +39,15 @@ const statuses: Record<BookStatus, string> = {
   ARCHIVED: "архивирована",
   HIDDEN: "скрыта",
 };
+
+type FieldChange =
+  | {
+      kind: "changed";
+      field: { title: string; value: string };
+      next: { title: string; value: string };
+    }
+  | { kind: "removed"; field: { title: string; value: string } }
+  | { kind: "added"; field: { title: string; value: string } };
 
 const EditBookView: ToolOutputView<"editBook"> = ({ input, output }) => {
   const book = output?.book;
@@ -52,6 +61,29 @@ const EditBookView: ToolOutputView<"editBook"> = ({ input, output }) => {
   }
 
   const coverUrl = output?.coverUrl ?? input.values.coverUrl;
+  const nextFields = input.values.fields;
+  const fieldChanges: FieldChange[] = nextFields
+    ? [
+        ...book.fields.flatMap((field): FieldChange[] => {
+          const next = nextFields.find((fld) => fld.title === field.title);
+
+          if (!next) {
+            return [{ kind: "removed", field }];
+          }
+
+          if (next.value !== field.value) {
+            return [{ kind: "changed", field, next }];
+          }
+
+          return [];
+        }),
+        ...nextFields.flatMap((field): FieldChange[] =>
+          book.fields.some((fld) => fld.title === field.title)
+            ? []
+            : [{ kind: "added", field }],
+        ),
+      ]
+    : [];
 
   return (
     <div className="flex min-w-0 flex-col gap-2">
@@ -70,7 +102,9 @@ const EditBookView: ToolOutputView<"editBook"> = ({ input, output }) => {
         {input.values.background !== undefined &&
           book.background !== input.values.background && (
             <div className="flex gap-2 items-center">
-              <div className="font-semibold text-sm">Цвет: </div>
+              <div className="font-semibold text-sm text-foreground">
+                Цвет:{" "}
+              </div>
               {book.background !== BackgroundColor.NONE && (
                 <div
                   className={cn(
@@ -124,59 +158,32 @@ const EditBookView: ToolOutputView<"editBook"> = ({ input, output }) => {
           }
         />
 
-        {input.values.fields !== undefined && (
+        {fieldChanges.length > 0 && (
           <div className="flex flex-col gap-2">
-            <div className="font-semibold">Поля:</div>
+            <div className="text-sm font-semibold text-foreground">Поля:</div>
             <div className="flex min-w-0 flex-wrap items-center gap-2">
-              {book.fields.map((field) => {
-                const fields = input.values.fields;
-                if (fields === undefined) {
-                  return;
-                }
-
-                const matchedField = fields.find(
-                  (fld) => fld.title === field.title,
-                );
-
-                const changed =
-                  matchedField !== undefined &&
-                  matchedField.value !== field.value;
-
-                return (
-                  <div
-                    key={field.title + field.value}
-                    className="flex max-w-full items-start gap-1.5 rounded-xl border px-2 py-1 break-words"
-                  >
-                    {changed ? (
-                      <PencilIcon className="mt-0.5 size-3 shrink-0 text-amber-500" />
-                    ) : matchedField === undefined ? (
-                      <MinusIcon className="mt-0.5 size-3 shrink-0 text-destructive" />
-                    ) : null}
-                    <span className="min-w-0 break-words">
-                      {field.title}:{" "}
-                      {changed
-                        ? `${field.value} -> ${matchedField.value}`
-                        : field.value}
-                    </span>
-                  </div>
-                );
-              })}
-              {input.values.fields.map((field) => {
-                const fields = book.fields;
-                if (fields.find((fld) => fld.title === field.title)) return;
-
-                return (
-                  <div
-                    key={field.title + field.value}
-                    className="flex max-w-full items-start gap-1.5 rounded-xl border px-2 py-1 break-words"
-                  >
-                    <PlusIcon className="mt-0.5 size-3 shrink-0 text-emerald-600" />
-                    <span className="min-w-0 break-words">
-                      {field.title}: {field.value}
-                    </span>
-                  </div>
-                );
-              })}
+              {fieldChanges.map((change) => (
+                <div
+                  key={`${change.kind}-${change.field.title}-${change.field.value}`}
+                  className="flex max-w-full items-start gap-2 rounded-xl border px-2 py-1"
+                >
+                  <span className="flex h-5 w-3.5 shrink-0 items-center justify-center">
+                    {change.kind === "changed" ? (
+                      <PencilIcon className="size-3.5 text-amber-500" />
+                    ) : change.kind === "removed" ? (
+                      <MinusIcon className="size-3.5 text-destructive" />
+                    ) : (
+                      <PlusIcon className="size-3.5 text-emerald-600" />
+                    )}
+                  </span>
+                  <span className="min-w-0 text-sm leading-5 break-words text-foreground">
+                    <span className="font-semibold">{change.field.title}:</span>{" "}
+                    {change.kind === "changed"
+                      ? `${change.field.value} → ${change.next.value}`
+                      : change.field.value}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         )}
