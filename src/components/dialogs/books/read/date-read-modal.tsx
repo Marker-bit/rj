@@ -1,10 +1,9 @@
 import { useMutation } from "@tanstack/react-query";
 import { endOfDay, isToday, startOfDay } from "date-fns";
-import { ru } from "date-fns/locale";
 import { useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { PagesButtonGroup } from "@/components/dialogs/books/read/pages-button-group";
-import { Calendar } from "@/components/ui/calendar";
+import { DateCalendar } from "@/components/date-calendar";
 import {
   DialogDescription,
   DialogHeader,
@@ -71,7 +70,11 @@ export function DateReadModal({
   };
 
   return (
-    <DrawerDialog open={isOpen} onOpenChange={handleClose}>
+    <DrawerDialog
+      open={isOpen}
+      onOpenChange={handleClose}
+      className="sm:w-[22rem]"
+    >
       <DialogHeader className="mb-2">
         <DialogTitle>Отметить прочтение</DialogTitle>
         <DialogDescription>
@@ -79,7 +82,7 @@ export function DateReadModal({
         </DialogDescription>
       </DialogHeader>
       <div className="flex flex-col gap-2">
-        <Calendar
+        <DateCalendar
           mode="single"
           selected={date}
           onSelect={(newDate) => {
@@ -87,16 +90,13 @@ export function DateReadModal({
               setDate(newDate);
             }
           }}
-          className="rounded-md border w-full"
+          className="mx-auto rounded-md border max-md:w-full"
           disabled={{ after: today }}
-          weekStartsOn={1}
-          locale={ru}
           modifiers={{ events: days }}
           modifiersClassNames={{
             events: "underline decoration-2 decoration-green-500",
           }}
         />
-        {/* добавить captionLayout? */}
         <form
           onSubmit={async (evt) => {
             evt.preventDefault();
