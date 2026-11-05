@@ -1,7 +1,7 @@
 "use client";
 
+import { DateCalendar } from "@/components/date-calendar";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import {
   DialogDescription,
   DialogHeader,
@@ -13,7 +13,6 @@ import { doneMutationOptions } from "@/lib/mutations/books";
 import { useMutation } from "@tanstack/react-query";
 import confetti from "canvas-confetti";
 import { startOfDay } from "date-fns";
-import { ru } from "date-fns/locale";
 import { Save } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -54,7 +53,11 @@ export function DateDoneModal({
   };
 
   return (
-    <DrawerDialog open={isOpen} onOpenChange={handleClose}>
+    <DrawerDialog
+      open={isOpen}
+      onOpenChange={handleClose}
+      className="sm:w-[22rem]"
+    >
       <DialogHeader className="mb-2">
         <DialogTitle>Отметить книгу прочитанной</DialogTitle>
         <DialogDescription>
@@ -62,7 +65,7 @@ export function DateDoneModal({
         </DialogDescription>
       </DialogHeader>
       <div className="flex flex-col gap-2">
-        <Calendar
+        <DateCalendar
           mode="single"
           selected={date}
           onSelect={(newDate) => {
@@ -70,10 +73,8 @@ export function DateDoneModal({
               setDate(newDate);
             }
           }}
-          className="w-fit rounded-md border max-sm:w-full"
+          className="mx-auto rounded-md border max-md:w-full"
           disabled={{ after: today }}
-          weekStartsOn={1}
-          locale={ru}
           modifiers={{ events: days }}
           modifiersClassNames={{
             events: "underline decoration-2 decoration-green-500",
@@ -98,7 +99,7 @@ export function DateDoneModal({
           });
           onDone();
         }}
-        className="w-fit max-sm:w-full"
+        className="mx-auto w-fit max-md:w-full"
       >
         {readDoneMutation.isPending ? (
           <Loader invert className="mr-2 size-4" />

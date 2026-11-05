@@ -19,8 +19,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { DateCalendar } from "@/components/date-calendar";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import { DialogTitle } from "@/components/ui/dialog";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
 import {
@@ -206,14 +206,11 @@ export function AddRecommendation({
                     </FormControl>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
+                    <DateCalendar
                       mode="single"
-                      locale={ru}
-                      weekStartsOn={1}
                       selected={field.value}
                       onSelect={field.onChange}
                       disabled={{ before: new Date() }}
-                      captionLayout="dropdown"
                     />
                   </PopoverContent>
                 </Popover>
@@ -247,13 +244,11 @@ export function AddRecommendation({
                     </FormControl>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
+                    <DateCalendar
                       mode="single"
-                      locale={ru}
-                      weekStartsOn={1}
                       selected={field.value}
                       onSelect={field.onChange}
-                      captionLayout="dropdown"
+                      disabled={{ before: new Date() }}
                     />
                   </PopoverContent>
                 </Popover>

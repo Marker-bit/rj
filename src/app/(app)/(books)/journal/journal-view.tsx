@@ -9,13 +9,12 @@ import {
   isWithinInterval,
   startOfDay,
 } from "date-fns";
-import { ru } from "date-fns/locale";
 import { BookMinus, ChevronDownIcon, ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import type { DateRange } from "react-day-picker";
+import { DateCalendar } from "@/components/date-calendar";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
@@ -74,15 +73,12 @@ export default function JournalView({
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto overflow-hidden p-0" align="start">
-            <Calendar
+            <DateCalendar
               mode="range"
               selected={dates}
-              captionLayout="dropdown"
               onSelect={(range) => {
                 setDates(range);
               }}
-              weekStartsOn={1}
-              locale={ru}
               disabled={{ after: today }}
             />
           </PopoverContent>
