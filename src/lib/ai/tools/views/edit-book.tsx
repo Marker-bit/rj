@@ -178,9 +178,15 @@ const EditBookView: ToolOutputView<"editBook"> = ({ input, output }) => {
                   </span>
                   <span className="min-w-0 text-sm leading-5 break-words text-foreground">
                     <span className="font-semibold">{change.field.title}:</span>{" "}
-                    {change.kind === "changed"
-                      ? `${change.field.value} → ${change.next.value}`
-                      : change.field.value}
+                    {change.kind === "changed" ? (
+                      <>
+                        {change.field.value}{" "}
+                        <ArrowRightIcon className="inline size-3.5 shrink-0 align-middle text-muted-foreground" />{" "}
+                        {change.next.value}
+                      </>
+                    ) : (
+                      change.field.value
+                    )}
                   </span>
                 </div>
               ))}
