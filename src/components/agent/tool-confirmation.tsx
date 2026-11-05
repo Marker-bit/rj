@@ -1,6 +1,13 @@
 import type { ChatAddToolApproveResponseFunction, UIToolInvocation } from "ai";
-import { CheckIcon, XIcon } from "lucide-react";
+import { CheckIcon, ChevronRightIcon, XIcon } from "lucide-react";
+import Image from "next/image";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import {
   Item,
   ItemActions,
@@ -12,6 +19,16 @@ import {
 import type { KnownEntities } from "@/lib/ai/message";
 import type { ToolId, ToolView } from "@/lib/ai/tools/types";
 import { cn } from "@/lib/utils";
+
+type BookField = { title: string; value: string };
+
+type ApprovalDetails = {
+  subject?: string;
+  description: string;
+  meta?: string[];
+  coverUrl?: string;
+  fields?: BookField[];
+};
 
 function asRecord(value: unknown): Record<string, unknown> {
   return typeof value === "object" && value !== null
@@ -58,11 +75,35 @@ function formatIsoDate(value: string) {
   return match ? `${match[3]}.${match[2]}.${match[1]}` : value;
 }
 
+function getBookFields(value: unknown): BookField[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.flatMap((field) => {
+    if (typeof field !== "object" || field === null) {
+      return [];
+    }
+
+    const { title, value: fieldValue } = field as Record<string, unknown>;
+    if (typeof title !== "string" || title.trim().length === 0) {
+      return [];
+    }
+
+    return [
+      {
+        title: title.trim(),
+        value: typeof fieldValue === "string" ? fieldValue : "",
+      },
+    ];
+  });
+}
+
 function getApprovalDetails(
   toolName: ToolId,
   input: Record<string, unknown>,
   knownEntities?: KnownEntities,
-) {
+): ApprovalDetails {
   const book =
     typeof input.id === "string"
       ? knownEntities?.books.get(input.id)
@@ -79,20 +120,21 @@ function getApprovalDetails(
         typeof input.author === "string" ? input.author : undefined;
       const pages = typeof input.pages === "number" ? input.pages : undefined;
       const background = getBackgroundLabel(input.background);
-      const fields =
-        Array.isArray(input.fields) && input.fields.length > 0
-          ? `полей: ${input.fields.length}`
-          : undefined;
+      const meta = [
+        author,
+        joinDetails([
+          pages ? `${pages} страниц` : undefined,
+          background ? `${background} фон` : undefined,
+        ]),
+      ].filter((value): value is string => Boolean(value));
 
       return {
         subject: title ? `«${title}»` : undefined,
-        description:
-          joinDetails([
-            author,
-            pages ? `страниц: ${pages}` : undefined,
-            background ? `фон: ${background}` : undefined,
-            fields,
-          ]) || "Новая книга появится в библиотеке.",
+        description: "Новая книга появится в библиотеке.",
+        meta: meta.length > 0 ? meta : undefined,
+        coverUrl:
+          typeof input.coverUrl === "string" ? input.coverUrl : undefined,
+        fields: getBookFields(input.fields),
       };
     }
 
@@ -183,6 +225,50 @@ function getApprovalDetails(
   }
 }
 
+function ConfirmationFields({ fields }: { fields: BookField[] }) {
+  if (fields.length === 0) {
+    return null;
+  }
+
+  return (
+    <Collapsible className="min-w-0">
+      <CollapsibleTrigger asChild>
+        <Button
+          type="button"
+          variant="ghost"
+          className="group/fields-trigger text-muted-foreground"
+        >
+          <ChevronRightIcon className="size-3.5 shrink-0 transition-transform group-data-[state=open]/fields-trigger:rotate-90" />
+          <span>Поля</span>
+          <Badge
+            variant="secondary"
+            className="h-4 min-w-4 px-1 text-[10px] tabular-nums"
+          >
+            {fields.length}
+          </Badge>
+        </Button>
+      </CollapsibleTrigger>
+      <CollapsibleContent className="overflow-hidden data-open:animate-accordion-down data-closed:animate-accordion-up">
+        <dl className="mt-1.5 divide-y overflow-hidden rounded-md border text-xs leading-relaxed">
+          {fields.map((field) => (
+            <div
+              key={`${field.title}:${field.value}`}
+              className="grid grid-cols-[auto_minmax(0,1fr)] items-baseline gap-x-3 px-2 py-1.5"
+            >
+              <dt className="break-words text-muted-foreground">
+                {field.title}
+              </dt>
+              <dd className="min-w-0 text-right break-words">
+                {field.value || "—"}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </CollapsibleContent>
+    </Collapsible>
+  );
+}
+
 export function ToolConfirmation({
   invocation,
   toolName,
@@ -209,14 +295,34 @@ export function ToolConfirmation({
       {...props}
     >
       <div className="flex min-w-0 items-start gap-2.5">
-        <ItemMedia variant="icon">
-          <toolView.icon />
-        </ItemMedia>
-        <ItemContent>
+        {details.coverUrl ? (
+          <Image
+            src={details.coverUrl}
+            alt=""
+            width={56}
+            height={84}
+            unoptimized
+            className="aspect-[2/3] w-14 shrink-0 rounded-md border object-cover"
+          />
+        ) : (
+          <ItemMedia variant="icon">
+            <toolView.icon />
+          </ItemMedia>
+        )}
+        <ItemContent className="min-w-0 self-center">
           <ItemTitle>
             {toolView.texts.approvalText} {details.subject}
           </ItemTitle>
-          <ItemDescription>{details.description}</ItemDescription>
+          {details.meta?.length ? (
+            <ItemDescription className="flex flex-col gap-0.5">
+              {details.meta.map((line) => (
+                <span key={line}>{line}</span>
+              ))}
+            </ItemDescription>
+          ) : (
+            <ItemDescription>{details.description}</ItemDescription>
+          )}
+          <ConfirmationFields fields={details.fields ?? []} />
         </ItemContent>
       </div>
       <ItemActions className="w-full flex-col gap-2">
