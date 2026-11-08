@@ -45,15 +45,19 @@ export default function SupportQuestionCard({
         />
         вас
       </div> */}
-      <div className="text-xl font-bold">{question.title}</div>
+      <div className="flex w-full flex-wrap items-start justify-between gap-x-4 gap-y-1">
+        <div className="min-w-0 break-words text-xl font-bold">
+          {question.title}
+        </div>
+        <div className="shrink-0 text-sm text-muted-foreground">
+          {question.isDone && "выполнено · "}
+          {question.answers.length}{" "}
+          {declOfNum(question.answers.length, ["ответ", "ответа", "ответов"])}
+        </div>
+      </div>
       <div className="text-sm text-muted-foreground">{question.content}</div>
       <div className="text-xs text-muted-foreground">
         создан {formatRelative(question.date, new Date(), { locale: ru })}
-      </div>
-      <div className="absolute right-5 top-5 text-sm text-muted-foreground sm:translate-x-full sm:opacity-0 sm:transition-all sm:group-hover:translate-x-0 sm:group-hover:opacity-100">
-        {question.isDone && "выполнено · "}
-        {question.answers.length}{" "}
-        {declOfNum(question.answers.length, ["ответ", "ответа", "ответов"])}
       </div>
       {/* {question.answers.length > 0 && ( */}
       <Button
