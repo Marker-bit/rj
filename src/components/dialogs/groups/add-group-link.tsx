@@ -75,15 +75,18 @@ export default function AddGroupLink({
                   async () => {
                     if (loadingId === link.id) return;
                     setLoadingId(link.id);
-                    await fetch(
-                      `/api/groups/${group.id}/invite-link/${link.id}`,
-                      {
-                        method: "DELETE",
-                      },
-                    );
-                    setLoadingId(undefined);
-                    void revalidate("groups");
-                    setOpen(false);
+                    try {
+                      const response = await fetch(
+                        `/api/groups/${group.id}/invite-link/${link.id}`,
+                        { method: "DELETE" },
+                      );
+                      if (!response.ok)
+                        throw new Error("Не удалось удалить ссылку");
+                      void revalidate("groups");
+                      setOpen(false);
+                    } finally {
+                      setLoadingId(undefined);
+                    }
                   },
                   {
                     loading: "Удаление...",
@@ -104,11 +107,19 @@ export default function AddGroupLink({
             toast.promise(
               async () => {
                 setCreateLoading(true);
-                await fetch(`/api/groups/${group.id}/invite-link`, {
-                  method: "POST",
-                });
-                setCreateLoading(false);
-                void revalidate("groups");
+                try {
+                  const response = await fetch(
+                    `/api/groups/${group.id}/invite-link`,
+                    {
+                      method: "POST",
+                    },
+                  );
+                  if (!response.ok)
+                    throw new Error("Не удалось создать ссылку");
+                  void revalidate("groups");
+                } finally {
+                  setCreateLoading(false);
+                }
               },
               {
                 loading: "Создание...",
