@@ -47,7 +47,8 @@ export default function NavBar({
   build: BuildInfo;
 }) {
   const pathname = usePathname();
-  const isActive = (href: string) => href === pathname;
+  const isActive = (href: string) =>
+    pathname === href || pathname.startsWith(`${href}/`);
 
   return (
     <header className="border-b px-4 md:px-6 sticky top-0 z-50 bg-background/50 backdrop-blur-xl">
