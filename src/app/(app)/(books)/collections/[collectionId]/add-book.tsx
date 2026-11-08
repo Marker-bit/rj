@@ -54,6 +54,7 @@ export function AddBook({
         <div className="text-sm text-muted-foreground/70">{book.author}</div>
       </div>
       <Button
+        aria-label={`Добавить «${book.title}» в коллекцию`}
         variant="ghost"
         size="icon"
         className="ml-auto size-fit p-1 text-muted-foreground/50 hover:text-black dark:hover:text-white"

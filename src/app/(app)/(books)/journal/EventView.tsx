@@ -67,6 +67,7 @@ export function EventView({
       )}
       <SimpleTooltip text="Отменить">
         <Button
+          aria-label="Отменить запись"
           variant="outline"
           size="icon"
           className="ml-auto"
