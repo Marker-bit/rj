@@ -80,9 +80,22 @@ export function BookForm({
 
   async function onSubmit(values: z.input<typeof bookSchema>) {
     setLoading(true);
-    await createBook(values);
-    await revalidate("books");
-    setLoading(false);
+    try {
+      await createBook(values);
+      await revalidate("books").catch(() => {
+        toast.warning("Книга создана, но список не обновился", {
+          description: "Обновите страницу, чтобы увидеть книгу.",
+        });
+      });
+    } catch {
+      toast.error("Не удалось создать книгу", {
+        description:
+          "Данные сохранены в форме. Проверьте соединение и попробуйте ещё раз.",
+      });
+      return;
+    } finally {
+      setLoading(false);
+    }
     form.reset({
       title: "",
       author: "",
