@@ -42,17 +42,16 @@ export function ShareBookModal({
 
   const createLink = async () => {
     setLoading(true);
-    const resp = await fetch(`/api/books/${book.id}/links`, {
-      method: "POST",
-    });
-    const res = await resp.json();
-    if (resp.ok) {
-      setLoading(false);
-      void revalidate("books");
-    } else {
-      toast.error("Возникла проблема при создании ссылки", {
-        description: res.error,
+    try {
+      const resp = await fetch(`/api/books/${book.id}/links`, {
+        method: "POST",
       });
+      if (!resp.ok) throw new Error("Не удалось создать ссылку");
+      void revalidate("books");
+    } catch {
+      toast.error("Возникла проблема при создании ссылки");
+    } finally {
+      setLoading(false);
     }
   };
 
