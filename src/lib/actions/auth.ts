@@ -69,9 +69,12 @@ export async function resetPassword(data: {
       pages?: number | undefined;
     },
   ) {
-    return book.title === goodBook.title && goodBook.author
-      ? book.author === goodBook.author
-      : goodBook.pages === book.pages;
+    return (
+      book.title === goodBook.title &&
+      (goodBook.author
+        ? book.author === goodBook.author
+        : goodBook.pages === book.pages)
+    );
   }
 
   const book1 = goodBooks.find((book) => validateBook(book, data.book1));
