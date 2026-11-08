@@ -319,6 +319,7 @@ export function BookView({
               <HelpButton
                 className="gap-2"
                 variant="outline"
+                aria-label="Прочитана"
                 onClick={() => setActiveDialog("done")}
                 helpText="Отметить книгу прочитанной в определённую дату"
               >
@@ -328,6 +329,7 @@ export function BookView({
               <HelpButton
                 className="gap-2"
                 variant="outline"
+                aria-label="Отметить прочтение"
                 onClick={() => setActiveDialog("read")}
                 helpText="Отметить прочтение определённого количества страниц книги в некоторую дату"
               >
@@ -339,6 +341,7 @@ export function BookView({
           <HelpButton
             className="gap-2"
             variant="outline"
+            aria-label="Поделиться"
             onClick={() => setActiveDialog("share")}
             helpText="Создайте ссылки на книгу, чтобы другие могли скопировать её себе"
           >
@@ -349,6 +352,7 @@ export function BookView({
             <HelpButton
               className="gap-2"
               variant="outline"
+              aria-label="Статистика"
               onClick={() => setActiveDialog("stats")}
               helpText="Посмотреть статистику прочтения книги"
             >
