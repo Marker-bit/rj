@@ -4,6 +4,7 @@ import type { Book, Collection } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { Loader, Minus } from "lucide-react";
 import Image from "next/image";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { revalidate } from "@/lib/actions/revalidate";
 
@@ -17,10 +18,19 @@ export function RemoveBook({
   };
 }) {
   const removeMutation = useMutation({
-    mutationFn: () => {
-      return fetch(`/api/collections/${collection.id}/remove-books`, {
-        method: "POST",
-        body: JSON.stringify([book.id]),
+    mutationFn: async () => {
+      const response = await fetch(
+        `/api/collections/${collection.id}/remove-books`,
+        {
+          method: "POST",
+          body: JSON.stringify([book.id]),
+        },
+      );
+      if (!response.ok) throw new Error("Collection update failed");
+    },
+    onError: () => {
+      toast.error("Не удалось убрать книгу из коллекции", {
+        description: "Проверьте соединение и попробуйте ещё раз.",
       });
     },
     onSuccess: () => {
