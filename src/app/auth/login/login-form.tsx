@@ -90,9 +90,7 @@ export function LoginForm() {
             <FormItem>
               <FormLabel>Имя пользователя</FormLabel>
               <FormControl>
-                <div className="flex flex-col gap-1">
-                  <Input placeholder="ivan.ivanov" {...field} />
-                </div>
+                <Input placeholder="ivan.ivanov" {...field} />
               </FormControl>
               <FormDescription>
                 По этому имени пользователя вас можно будет найти в поиске.
