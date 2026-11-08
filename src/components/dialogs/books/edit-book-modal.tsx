@@ -1,15 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { Book } from "@prisma/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  AlertTriangleIcon,
-  Edit,
-  InfoIcon,
-  Loader,
-  Plus,
-  Trash,
-  X,
-} from "lucide-react";
+import { Edit, InfoIcon, Loader, Plus, Trash, X } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -98,11 +90,19 @@ export function EditBookModal({
   });
 
   const editMutation = useMutation({
-    mutationFn: (values: z.input<typeof bookSchema>) =>
-      fetch(`/api/books/${book.id}/`, {
+    mutationFn: async (values: z.input<typeof bookSchema>) => {
+      const response = await fetch(`/api/books/${book.id}/`, {
         method: "PATCH",
         body: JSON.stringify({ ...values, clamp }),
-      }),
+      });
+      if (!response.ok) throw new Error("Book update failed");
+    },
+    onError: () => {
+      toast.error("Не удалось сохранить книгу", {
+        description:
+          "Проверьте соединение и попробуйте ещё раз. Введённые данные сохранены в форме.",
+      });
+    },
     onSuccess: (_, values) => {
       queryClient.invalidateQueries({
         queryKey: ["books"],
@@ -112,12 +112,12 @@ export function EditBookModal({
       });
       void revalidate("books");
       onUpdate?.(values);
+      setOpen(false);
     },
   });
 
   async function onSubmit(values: z.infer<typeof bookSchema>) {
-    await editMutation.mutateAsync(values);
-    setOpen(false);
+    editMutation.mutate(values);
   }
 
   return (
