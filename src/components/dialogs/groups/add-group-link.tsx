@@ -46,12 +46,14 @@ export default function AddGroupLink({
         {group.inviteLinks.map((link) => (
           <div key={link.id} className="flex items-center gap-2 rounded-xl p-2">
             <Input
+              aria-label="Пригласительная ссылка"
               value={`${
                 typeof window !== "undefined" ? window.location.origin : ""
               }/join-group/${link.id}`}
               readOnly={true}
             />
             <Button
+              aria-label="Скопировать пригласительную ссылку"
               onClick={async () => {
                 try {
                   await navigator.clipboard.writeText(
@@ -70,6 +72,7 @@ export default function AddGroupLink({
               <CopyIcon className="size-4" />
             </Button>
             <Button
+              aria-label="Удалить пригласительную ссылку"
               onClick={() => {
                 toast.promise(
                   async () => {

@@ -49,6 +49,8 @@ export function DeleteGroupButton({ groupId }: { groupId: string }) {
         <p>Вы уверены, что хотите удалить группу? Это действие необратимо.</p>
         <div className="mt-4 flex justify-end gap-2">
           <Button
+            aria-label="Удалить группу"
+            disabled={loading}
             variant="destructive"
             className="flex items-center gap-2"
             onClick={deleteGroup}
@@ -70,6 +72,7 @@ export function DeleteGroupButton({ groupId }: { groupId: string }) {
         </div>
       </DrawerDialog>
       <Button
+        aria-label="Удалить группу"
         variant="outline"
         className="flex items-center gap-2"
         disabled={loading}

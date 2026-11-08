@@ -34,6 +34,7 @@ export function LeaveGroupButton({ groupId }: { groupId: string }) {
 
   return (
     <Button
+      aria-label="Выйти из группы"
       variant="outline"
       className="flex items-center gap-2"
       disabled={loading}

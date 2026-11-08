@@ -43,7 +43,12 @@ export function MoreActions({
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button size="icon" variant="ghost" className="size-fit p-1">
+          <Button
+            aria-label={`Действия с книгой «${book.title}»`}
+            size="icon"
+            variant="ghost"
+            className="size-fit p-1"
+          >
             <MoreHorizontal className="size-4" />
           </Button>
         </DropdownMenuTrigger>
