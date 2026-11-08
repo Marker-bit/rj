@@ -166,6 +166,8 @@ export function AgentPopover({
             : "30rem",
       }}
       data-hidden={!isOpen || undefined}
+      inert={!isOpen}
+      aria-hidden={!isOpen}
     >
       <div className="p-1 pl-3 pr-2 border-b flex items-center justify-between shrink-0">
         <div className="font-medium text-sm">Чат с ИИ</div>
