@@ -76,7 +76,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
   const defaultFields = fields.map((value, fieldIndex) => ({
     value,
     storageIndex: fieldIndex,
-    key: `${value}-${fieldIndex}`,
+    key: fieldIndex,
   }));
 
   useEffect(() => {
