@@ -499,6 +499,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
             )}
           </Button>
           <Button
+            type="button"
             variant="outline"
             onClick={() => {
               setLogOutLoading(true);
