@@ -25,14 +25,23 @@ export function DateReadModal({
   lastEvent?: { pagesRead: number };
 }) {
   const readDateMutation = useMutation({
-    mutationFn: ({ date, pages }: { date: Date; pages: number }) =>
-      fetch(`/api/books/${book.id}/read/`, {
+    mutationFn: async ({ date, pages }: { date: Date; pages: number }) => {
+      const response = await fetch(`/api/books/${book.id}/read/`, {
         method: "POST",
         body: JSON.stringify({
           pages: pages,
           readAt: isToday(date) ? new Date() : endOfDay(date),
         }),
-      }),
+      });
+      if (!response.ok) {
+        throw new Error("Не удалось сохранить прочтение");
+      }
+    },
+    onError: () => {
+      toast.error("Не удалось сохранить прочтение", {
+        description: "Проверьте подключение к интернету и попробуйте ещё раз.",
+      });
+    },
     onSuccess: () => {
       setIsOpen(false);
       toast.success("Событие сохранено");
@@ -98,7 +107,7 @@ export function DateReadModal({
           }}
         />
         <form
-          onSubmit={async (evt) => {
+          onSubmit={(evt) => {
             evt.preventDefault();
             if (!date) {
               toast.error("Выберите дату");
@@ -116,7 +125,7 @@ export function DateReadModal({
               toast.error("Количество страниц должно быть числом");
               return;
             }
-            await readDateMutation.mutateAsync({ date, pages: changePages });
+            readDateMutation.mutate({ date, pages: changePages });
           }}
         >
           <PagesButtonGroup
