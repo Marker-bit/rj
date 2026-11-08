@@ -61,6 +61,7 @@ export default function NavBar({
                 className="group size-8 md:hidden"
                 variant="ghost"
                 size="icon"
+                aria-label="Открыть меню навигации"
               >
                 <Menu className="text-muted-foreground" />
               </Button>
