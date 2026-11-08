@@ -161,8 +161,9 @@ export function BookForm({
                       setFileUploading(false);
                     }}
                     onUploadError={(error: Error) => {
+                      setFileUploading(false);
                       toast.error("Ошибка при загрузке обложки", {
-                        description: error.message,
+                        description: `${error.message}. Попробуйте загрузить обложку ещё раз.`,
                       });
                     }}
                     onUploadBegin={(_fileName) => {
