@@ -52,13 +52,19 @@ export default function AddGroupLink({
               readOnly={true}
             />
             <Button
-              onClick={() => {
-                navigator.clipboard.writeText(
-                  `${
-                    typeof window !== "undefined" ? window.location.origin : ""
-                  }/join-group/${link.id}`,
-                );
-                toast.success("Ссылка скопирована");
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(
+                    `${
+                      typeof window !== "undefined"
+                        ? window.location.origin
+                        : ""
+                    }/join-group/${link.id}`,
+                  );
+                  toast.success("Ссылка скопирована");
+                } catch {
+                  toast.error("Не удалось скопировать ссылку");
+                }
               }}
             >
               <CopyIcon className="size-4" />
