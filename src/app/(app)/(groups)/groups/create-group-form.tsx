@@ -5,6 +5,7 @@ import { PlusIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,17 +33,23 @@ export function CreateGroupForm() {
   });
   const router = useRouter();
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
-    fetch("/api/groups", {
-      method: "POST",
-      body: JSON.stringify(values),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        setLoading(false);
-        router.push(`/groups/${res.id}`);
+    try {
+      const response = await fetch("/api/groups", {
+        method: "POST",
+        body: JSON.stringify(values),
       });
+      if (!response.ok) throw new Error("Group creation failed");
+      const group = z
+        .object({ id: z.string().min(1) })
+        .parse(await response.json());
+      router.push(`/groups/${group.id}`);
+    } catch {
+      toast.error("Не удалось создать группу");
+    } finally {
+      setLoading(false);
+    }
   }
   return (
     <Form {...form}>
