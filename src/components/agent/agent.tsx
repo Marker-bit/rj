@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { AgentPopover } from "@/components/agent/agent-popover";
 import { AgentToggle } from "@/components/agent/agent-toggle";
 
 export function Agent() {
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -13,11 +14,19 @@ export function Agent() {
       data-hidden={!isOpen || undefined}
       data-open={isOpen || undefined}
     >
-      <AgentPopover isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      <AgentPopover
+        isOpen={isOpen}
+        onClose={() => {
+          setIsOpen(false);
+          triggerRef.current?.focus();
+        }}
+      />
       <AgentToggle
+        ref={triggerRef}
         isOpen={isOpen}
         onClick={(evt) => {
           evt.stopPropagation();
+          evt.currentTarget.focus();
           setIsOpen(!isOpen);
         }}
       />

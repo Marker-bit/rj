@@ -1,3 +1,4 @@
+import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { useChat } from "@ai-sdk/react";
 import {
   DefaultChatTransport,
@@ -30,10 +31,12 @@ export function AgentPopover({
   onClose: () => void;
 }) {
   const [isFullHeight, setIsFullHeight] = useState(false);
+  const [draft, setDraft] = useState("");
   const isMobile = useIsMobile();
 
   const ref = useRef<MessageInputRef>(null);
   const suppressAutoSend = useRef(false);
+  const returnFocusRef = useRef<HTMLElement | null>(null);
 
   const sendAutomaticallyWhen = useCallback(
     ({ messages: nextMessages }: { messages: MyUIMessage[] }) => {
@@ -146,11 +149,12 @@ export function AgentPopover({
     stop();
     setMessages([]);
     clearError();
-    ref.current?.setMessage("");
+    setDraft("");
   };
 
-  return (
+  const panel = (
     <div
+      data-agent-panel=""
       className={cn(
         "border bg-popover text-popover-foreground rounded-md origin-bottom-right data-hidden:opacity-0 data-hidden:scale-95 transition-all h-screen grid grid-rows-[auto_1fr_auto] overflow-hidden max-sm:w-full max-sm:rounded-none max-sm:border-0 max-sm:origin-bottom",
         isFullHeight ? "w-100" : "w-80",
@@ -170,7 +174,13 @@ export function AgentPopover({
       aria-hidden={!isOpen}
     >
       <div className="p-1 pl-3 pr-2 border-b flex items-center justify-between shrink-0">
-        <div className="font-medium text-sm">Чат с ИИ</div>
+        {isMobile ? (
+          <DialogPrimitive.Title className="font-medium text-sm">
+            Чат с ИИ
+          </DialogPrimitive.Title>
+        ) : (
+          <div className="font-medium text-sm">Чат с ИИ</div>
+        )}
         <div className="flex gap-2 items-center">
           <Button
             size="icon-sm"
@@ -258,6 +268,8 @@ export function AgentPopover({
         </AnimatePresence>
       </div>
       <MessageInput
+        message={draft}
+        setMessage={setDraft}
         ref={ref}
         status={status}
         onSend={(message) => {
@@ -268,5 +280,37 @@ export function AgentPopover({
         }}
       />
     </div>
+  );
+
+  if (!isMobile) return panel;
+
+  return (
+    <DialogPrimitive.Root
+      open={isOpen}
+      modal
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+    >
+      <DialogPrimitive.Overlay className="fixed inset-0 -z-10" />
+      <DialogPrimitive.Content
+        asChild
+        aria-modal="true"
+        aria-describedby={undefined}
+        onOpenAutoFocus={() => {
+          returnFocusRef.current =
+            document.activeElement instanceof HTMLElement
+              ? document.activeElement
+              : null;
+        }}
+        onCloseAutoFocus={(event) => {
+          event.preventDefault();
+          returnFocusRef.current?.focus();
+        }}
+        onInteractOutside={(event) => event.preventDefault()}
+      >
+        {panel}
+      </DialogPrimitive.Content>
+    </DialogPrimitive.Root>
   );
 }

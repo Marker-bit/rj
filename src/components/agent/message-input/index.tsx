@@ -1,6 +1,6 @@
 import type { ChatStatus } from "ai";
 import { SendIcon } from "lucide-react";
-import { useImperativeHandle, useRef, useState } from "react";
+import { useImperativeHandle, useRef } from "react";
 import { ToolSelector } from "@/components/agent/message-input/tool-selector";
 import {
   InputGroup,
@@ -15,14 +15,17 @@ export type MessageInputRef = {
 
 export function MessageInput({
   onSend,
+  message,
+  setMessage,
   status,
   ref,
 }: {
   onSend: (message: string) => void;
+  message: string;
+  setMessage: (message: string) => void;
   status: ChatStatus;
   ref: React.RefObject<MessageInputRef | null>;
 }) {
-  const [message, setMessage] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const busy = status === "streaming" || status === "submitted";
