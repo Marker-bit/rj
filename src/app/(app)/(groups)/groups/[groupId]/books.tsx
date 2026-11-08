@@ -97,7 +97,12 @@ export default function Books({
           </div>
         )}
         {books.map((book) => (
-          <GroupBookView groupBook={book} key={book.id} userId={userId} />
+          <GroupBookView
+            groupBook={book}
+            key={book.id}
+            userId={userId}
+            canManageBooks={!isMember}
+          />
         ))}
         <ScrollBar orientation="vertical" />
         <ScrollBar orientation="horizontal" />
