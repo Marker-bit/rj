@@ -64,9 +64,10 @@ export default function SupportQuestionCard({
         variant="outline"
         size="sm"
         className="mt-2 flex items-center gap-2"
+        aria-expanded={isExpanded}
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        Открыть диалог
+        {isExpanded ? "Свернуть диалог" : "Открыть диалог"}
         <ChevronDown
           className={cn("size-4 transition", isExpanded && "rotate-180")}
         />
