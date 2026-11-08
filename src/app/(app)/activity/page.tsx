@@ -77,7 +77,7 @@ export default async function Page(props: {
       index === activity.length - 1 ||
       event.bookId !== activity[index + 1].bookId
     ) {
-      if (tempArray.length > 2) {
+      if (tempArray.length > 1) {
         components.push(<EventRepeat key={event.id} events={tempArray} />);
       } else {
         components.push(<Event key={event.id} event={tempArray[0]} />);
