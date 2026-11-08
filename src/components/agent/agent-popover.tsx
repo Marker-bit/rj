@@ -187,6 +187,7 @@ export function AgentPopover({
             variant="ghost"
             className={cn("size-6", isMobile && "hidden")}
             onClick={() => setIsFullHeight((a) => !a)}
+            aria-label={isFullHeight ? "Свернуть чат" : "Развернуть чат"}
           >
             {isFullHeight ? <Minimize2Icon /> : <Maximize2Icon />}
           </Button>
@@ -195,6 +196,7 @@ export function AgentPopover({
             variant="ghost"
             className="size-6"
             onClick={onClose}
+            aria-label="Закрыть чат"
           >
             <XIcon />
           </Button>
