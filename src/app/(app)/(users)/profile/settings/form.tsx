@@ -484,7 +484,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
           </div>
         </div>
         <h2 className="mb-2 text-center text-lg font-semibold">Аккаунт</h2>
-        <div className="flex justify-center gap-2">
+        <div className="mx-3 flex flex-wrap justify-center gap-2">
           <Button type="submit">
             {userMutation.isPending ? (
               <>
