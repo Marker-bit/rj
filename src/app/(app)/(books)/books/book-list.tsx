@@ -1,6 +1,5 @@
 "use client";
 
-import { BackgroundColor } from "@prisma/client";
 import Fuse from "fuse.js";
 import {
   ArrowRightIcon,
@@ -141,15 +140,9 @@ export function BookList({ books }: { books: Book[] }) {
 
   const booksForRender = useMemo(() => {
     const trimmedSearch = searchText.trim();
-    const matched =
-      trimmedSearch === ""
-        ? sortedBooks
-        : fuse.search(trimmedSearch).map((result) => result.item);
-
-    return [
-      ...matched.filter((book) => book.background !== BackgroundColor.NONE),
-      ...matched.filter((book) => book.background === BackgroundColor.NONE),
-    ];
+    return trimmedSearch === ""
+      ? sortedBooks
+      : fuse.search(trimmedSearch).map((result) => result.item);
   }, [fuse, searchText, sortedBooks]);
   const filtersActive = notStarted || statusFilter !== "all";
 
