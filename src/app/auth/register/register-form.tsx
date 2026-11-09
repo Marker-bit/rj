@@ -146,7 +146,7 @@ export function RegisterForm({ returnTo }: { returnTo: string }) {
                 )}
               </div>
               <FormDescription>
-                По этому имени пользователя вас можно будет найти в поиске.
+                От 3 до 15 символов: латинские буквы, цифры, _, . и -.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -161,6 +161,7 @@ export function RegisterForm({ returnTo }: { returnTo: string }) {
               <FormControl>
                 <Input {...field} type="password" />
               </FormControl>
+              <FormDescription>Не менее 8 символов.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
