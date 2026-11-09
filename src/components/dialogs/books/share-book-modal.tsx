@@ -1,4 +1,4 @@
-import { CheckIcon, CopyIcon, LinkIcon, Settings, Trash } from "lucide-react";
+import { CheckIcon, CopyIcon, LinkIcon, Trash } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
@@ -32,11 +32,6 @@ export function ShareBookModal({
   setOpen: (v: boolean) => void;
   book: Book;
 }) {
-  const [_copyLink, _setCopyLink] = useState<string>();
-  // const [link, setLink] = useState("");
-  // useEffect(() => {
-  //   setLink(`${window.location.origin}/books/${book.id}`);
-  // }, [book.id]);
   const [loading, setLoading] = useState(false);
   const { copyToClipboard, isCopied } = useCopyToClipboard();
 
@@ -89,12 +84,13 @@ export function ShareBookModal({
                   value={`${
                     typeof window !== "undefined" && window.location.origin
                   }/sharedbook/${link.id}`}
+                  aria-label="Ссылка для доступа к книге"
                   readOnly
                 />
                 <InputGroupAddon align="inline-end">
                   <InputGroupButton
-                    aria-label="Copy"
-                    title="Copy"
+                    aria-label="Скопировать ссылку"
+                    title="Скопировать ссылку"
                     size="icon-xs"
                     onClick={() => {
                       copyToClipboard(
@@ -110,6 +106,8 @@ export function ShareBookModal({
                 </InputGroupAddon>
               </InputGroup>
               <Button
+                aria-label="Удалить ссылку"
+                title="Удалить ссылку"
                 onClick={() => deleteLink(link.id)}
                 disabled={loading}
                 variant="outline"
@@ -117,15 +115,6 @@ export function ShareBookModal({
                 className="shrink-0"
               >
                 <Trash className="size-4" />
-              </Button>
-              <Button
-                onClick={() => toast.info("В разработке")}
-                disabled={loading}
-                variant="outline"
-                size="icon"
-                className="shrink-0"
-              >
-                <Settings className="size-4" />
               </Button>
             </div>
           ))}
