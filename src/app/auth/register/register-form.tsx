@@ -72,7 +72,14 @@ export function RegisterForm({ returnTo }: { returnTo: string }) {
           });
           return;
         }
+        throw new Error("Authentication request failed");
       }
+    },
+    onError: () => {
+      toast.error("Возникла проблема при регистрации", {
+        description:
+          "Не удалось связаться с сервером. Проверьте подключение и попробуйте ещё раз.",
+      });
     },
   });
 
@@ -86,7 +93,8 @@ export function RegisterForm({ returnTo }: { returnTo: string }) {
         .then((res) => res.json())
         .then((data) => {
           setUsernameFound(data.found);
-        }),
+        })
+        .catch(() => setUsernameFound(null)),
     200,
   );
 
