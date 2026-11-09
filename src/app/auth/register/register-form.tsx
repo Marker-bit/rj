@@ -5,10 +5,9 @@ import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import posthog from "posthog-js";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { useDebounceCallback } from "usehooks-ts";
 import type { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,12 +21,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Loader } from "@/components/ui/loader";
+import { useUsernameAvailability } from "@/hooks/use-username-availability";
 import { authPageHref } from "@/lib/auth-return-path";
 import { validateRequest } from "@/lib/validate-request";
 import { registerSchema } from "@/lib/validation/schemas";
 
 export function RegisterForm({ returnTo }: { returnTo: string }) {
-  const [usernameFound, setUsernameFound] = useState<boolean | null>(null);
+  const { found: usernameFound, check: fetchUsername } =
+    useUsernameAvailability();
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -72,23 +73,20 @@ export function RegisterForm({ returnTo }: { returnTo: string }) {
           });
           return;
         }
+        throw new Error("Authentication request failed");
       }
+    },
+    onError: () => {
+      toast.error("Возникла проблема при регистрации", {
+        description:
+          "Не удалось связаться с сервером. Проверьте подключение и попробуйте ещё раз.",
+      });
     },
   });
 
   function onSubmit(values: z.infer<typeof registerSchema>) {
     userMutation.mutate(values);
   }
-
-  const fetchUsername = useDebounceCallback(
-    (username: string) =>
-      fetch(`/api/auth/username?username=${username}`)
-        .then((res) => res.json())
-        .then((data) => {
-          setUsernameFound(data.found);
-        }),
-    200,
-  );
 
   return (
     <Form {...form}>
@@ -146,7 +144,7 @@ export function RegisterForm({ returnTo }: { returnTo: string }) {
                 )}
               </div>
               <FormDescription>
-                По этому имени пользователя вас можно будет найти в поиске.
+                От 3 до 15 символов: латинские буквы, цифры, _, . и -.
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -161,6 +159,7 @@ export function RegisterForm({ returnTo }: { returnTo: string }) {
               <FormControl>
                 <Input {...field} type="password" />
               </FormControl>
+              <FormDescription>Не менее 8 символов.</FormDescription>
               <FormMessage />
             </FormItem>
           )}

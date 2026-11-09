@@ -1,6 +1,9 @@
 "use client";
 
 import type { GroupBook } from "@prisma/client";
+import { z } from "zod";
+import { toast } from "sonner";
+import { apiFetch } from "@/lib/api-fetch";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -45,17 +48,23 @@ export default function RemoveBookDialog({
       <div className="mt-2 flex gap-2 max-sm:flex-col md:justify-end">
         <Button
           variant="destructive"
+          disabled={loading}
           onClick={async () => {
+            if (loading) return;
             setLoading(true);
-            await fetch(
-              `/api/groups/${groupBook.groupId}/books/${groupBook.id}/own`,
-              {
-                method: "DELETE",
-              },
-            );
-            setLoading(false);
-            setOpen(false);
-            void revalidate("groups");
+            try {
+              const result = await apiFetch<unknown>(
+                `/api/groups/${groupBook.groupId}/books/${groupBook.id}/own`,
+                { method: "DELETE", type: "json" },
+              );
+              z.object({ success: z.literal(true) }).parse(result);
+              setOpen(false);
+              void revalidate("groups");
+            } catch {
+              toast.error("Не удалось удалить книгу");
+            } finally {
+              setLoading(false);
+            }
           }}
         >
           {loading ? <Loader white className="size-4" /> : "Удалить"}

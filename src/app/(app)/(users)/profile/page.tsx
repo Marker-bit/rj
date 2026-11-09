@@ -51,14 +51,14 @@ export default async function ProfilePage() {
     <div className="mb-[15vh]">
       <div className="m-2 flex items-center gap-2 text-3xl font-bold">
         <Button variant="ghost" size="icon" asChild>
-          <Link href="/">
+          <Link href="/" aria-label="На главную">
             <ChevronLeft className="size-6" />
           </Link>
         </Button>
         Профиль
         <div className="ml-auto">
           <Button asChild variant="secondary" size="icon" className="size-8">
-            <Link href="/profile/settings">
+            <Link href="/profile/settings" aria-label="Настройки профиля">
               <Settings />
             </Link>
           </Button>

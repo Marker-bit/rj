@@ -3,6 +3,7 @@ import { Plus } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { toast } from "sonner";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Loader } from "@/components/ui/loader";
 import { revalidate } from "@/lib/actions/revalidate";
@@ -16,23 +17,26 @@ export function Suggestion({
 }) {
   const [loading, setLoading] = useState(false);
 
-  const onClick = () => {
+  const onClick = async () => {
     setLoading(true);
-    fetch(`/api/groups/${suggestion.groupId}/suggestion/${suggestion.id}`, {
-      method: "POST",
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        setLoading(false);
-        if (res.error) {
-          toast.error("Возникла проблема при предложении книги", {
-            description: res.error,
-          });
-        } else {
-          toast.success(res.message);
-          void revalidate("groups");
-        }
-      });
+    try {
+      const response = await fetch(
+        `/api/groups/${suggestion.groupId}/suggestion/${suggestion.id}`,
+        { method: "POST" },
+      );
+      if (!response.ok) throw new Error("Suggestion acceptance failed");
+      const result = z
+        .object({ message: z.string().min(1) })
+        .parse(await response.json());
+      toast.success(result.message);
+      void revalidate("groups");
+    } catch {
+      toast.error(
+        "Не удалось добавить предложенную книгу. Попробуйте ещё раз.",
+      );
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <div className="flex gap-2">
@@ -54,6 +58,8 @@ export function Suggestion({
       </div>
       {role !== GroupMemberRole.MEMBER && (
         <Button
+          aria-label={`Добавить предложенную книгу «${suggestion.title}»`}
+          disabled={loading}
           variant="ghost"
           className="ml-auto"
           size="icon"

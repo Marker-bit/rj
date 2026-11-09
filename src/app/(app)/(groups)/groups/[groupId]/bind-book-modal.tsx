@@ -1,5 +1,7 @@
 "use client";
 
+import { z } from "zod";
+import { apiFetch } from "@/lib/api-fetch";
 import type { Book, Group, GroupBook } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -33,22 +35,24 @@ export default function BindBookModal({
   const bindBook = async (bookId: string) => {
     if (loading) return;
     setLoading(bookId);
-    const resp = await fetch(
-      `/api/groups/${groupBook.group.id}/books/${groupBook.id}/bind-book`,
-      {
-        method: "POST",
-        body: JSON.stringify({ bookId }),
-      },
-    );
-    const data = await resp.json();
-    if (data.error) {
-      toast.error(data.error);
-    } else {
+    try {
+      const result = await apiFetch<unknown>(
+        `/api/groups/${groupBook.group.id}/books/${groupBook.id}/bind-book`,
+        {
+          method: "POST",
+          body: JSON.stringify({ bookId }),
+          type: "json",
+        },
+      );
+      z.object({ success: z.literal(true) }).parse(result);
       toast.success("Книга связана");
+      setOpen(false);
+      void revalidate("groups");
+    } catch {
+      toast.error("Не удалось связать книгу");
+    } finally {
+      setLoading(undefined);
     }
-    setLoading(undefined);
-    setOpen(false);
-    void revalidate("groups");
   };
 
   return (
@@ -63,6 +67,7 @@ export default function BindBookModal({
           {books.map((book) => (
             <button
               type="button"
+              disabled={!!loading}
               className="flex flex-col gap-1"
               onClick={() => bindBook(book.id)}
               key={book.id}

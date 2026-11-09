@@ -42,6 +42,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useUploadThing } from "@/components/uploadthing";
 import ExportDataButton from "@/components/users/export-data-button";
+import { useUsernameAvailability } from "@/hooks/use-username-availability";
 import { DEFAULT_FIELDS_STORAGE_KEY } from "@/lib/default-fields";
 import { cn } from "@/lib/utils";
 
@@ -64,7 +65,8 @@ const formSchema = z.object({
 
 export function SettingsForm({ user }: { user: LuciaUser }) {
   const [logOutLoading, setLogOutLoading] = useState(false);
-  const [usernameFound, setUsernameFound] = useState<boolean | null>();
+  const { found: usernameFound, check: checkUsername } =
+    useUsernameAvailability(user.username);
   const [cropOpen, setCropOpen] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [disableRecs, setDisableRecs] = useLocalStorage("disableRecs", false);
@@ -263,28 +265,23 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
                         {...field}
                         onChange={(e) => {
                           field.onChange(e);
-                          if (e.target.value === user.username) {
-                            setUsernameFound(undefined);
-                            return;
-                          }
-                          setUsernameFound(null);
-                          fetch(`/api/auth/username?username=${e.target.value}`)
-                            .then((res) => res.json())
-                            .then((data) => {
-                              setUsernameFound(
-                                e.target.value === user.username
-                                  ? false
-                                  : data.found,
-                              );
-                            });
+                          checkUsername(e.target.value);
                         }}
                       />
                     </FormControl>
                     {usernameFound === true && (
-                      <X className="size-8 text-red-500" />
+                      <X
+                        className="size-8 text-red-500"
+                        aria-label="Имя пользователя занято"
+                        role="img"
+                      />
                     )}
                     {usernameFound === false && (
-                      <Check className="size-8 text-green-500" />
+                      <Check
+                        className="size-8 text-green-500"
+                        aria-label="Имя пользователя свободно"
+                        role="img"
+                      />
                     )}
                     {usernameFound === null && <Loader className="size-8" />}
                   </div>

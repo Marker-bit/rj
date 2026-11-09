@@ -25,6 +25,7 @@ export function BookSuggestions({
   return (
     <>
       <Button
+        aria-label="Предложения книг"
         size="icon"
         variant="ghost"
         className="size-fit p-1"

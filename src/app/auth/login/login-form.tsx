@@ -73,7 +73,14 @@ export function LoginForm({ returnTo }: { returnTo: string }) {
           });
           return;
         }
+        throw new Error("Authentication request failed");
       }
+    },
+    onError: () => {
+      toast.error("Возникла проблема при входе", {
+        description:
+          "Не удалось связаться с сервером. Проверьте подключение и попробуйте ещё раз.",
+      });
     },
   });
 

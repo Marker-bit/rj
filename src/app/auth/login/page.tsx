@@ -13,6 +13,7 @@ export default async function Page({
       <div className="flex flex-col gap-2 max-sm:w-full md:max-w-[50vw] md:m-1">
         <NewWebsiteWarning className="w-full max-w-full" />
         <div className="p-3 md:rounded-xl md:border">
+          <h1 className="mb-4 text-2xl font-semibold">Вход</h1>
           <LoginForm returnTo={returnTo} />
         </div>
       </div>

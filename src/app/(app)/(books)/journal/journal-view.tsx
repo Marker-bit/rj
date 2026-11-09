@@ -85,6 +85,15 @@ export default function JournalView({
             />
           </PopoverContent>
         </Popover>
+        {dates && (
+          <Button
+            variant="ghost"
+            className="w-fit"
+            onClick={() => setDates(undefined)}
+          >
+            Сбросить фильтр
+          </Button>
+        )}
         {filtered.length === 0 && events.length === 0 ? (
           <div className="flex items-center gap-2 rounded-xl border p-2">
             <BookMinus className="size-10" />

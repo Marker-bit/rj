@@ -4,6 +4,7 @@ import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
@@ -15,32 +16,36 @@ export function DeleteGroupButton({ groupId }: { groupId: string }) {
 
   const router = useRouter();
 
-  const deleteGroup = () => {
+  const deleteGroup = async () => {
     setLoading(true);
-
-    fetch(`/api/groups/${groupId}`, {
-      method: "DELETE",
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        setLoading(false);
-        if (res.error) {
-          toast.error("Возникла проблема при удалении группы", {
-            description: res.error,
-          });
-        } else {
-          toast.success(res.message);
-          setConfirmOpen(false);
-          router.push("/");
-        }
+    try {
+      const response = await fetch(`/api/groups/${groupId}`, {
+        method: "DELETE",
       });
+      if (!response.ok) throw new Error("Group deletion failed");
+      const result = z
+        .object({ message: z.string().min(1) })
+        .parse(await response.json());
+      toast.success(result.message);
+      setConfirmOpen(false);
+      router.push("/");
+      router.refresh();
+    } catch {
+      toast.error("Возникла проблема при удалении группы", {
+        description: "Попробуйте ещё раз.",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <>
       <DrawerDialog
         open={confirmOpen}
-        onOpenChange={setConfirmOpen}
+        onOpenChange={(value) => {
+          if (!loading) setConfirmOpen(value);
+        }}
         className="min-w-[50vw]"
       >
         <DialogHeader className="mb-2">
@@ -60,10 +65,11 @@ export function DeleteGroupButton({ groupId }: { groupId: string }) {
             ) : (
               <Trash className="size-4" />
             )}
-            <p className="max-sm:hidden">Удалить</p>
+            <p>Удалить</p>
           </Button>
           <Button
             variant="outline"
+            disabled={loading}
             className="flex items-center gap-2"
             onClick={() => setConfirmOpen(false)}
           >

@@ -1,6 +1,8 @@
 "use client";
 
 import type { Book, Group, GroupBook } from "@prisma/client";
+import { z } from "zod";
+import { apiFetch } from "@/lib/api-fetch";
 import { BookOpen, Minus, Plus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -38,44 +40,50 @@ export function GroupBookView({
   const book = groupBook.book.find((b) => b.userId === userId);
 
   const addBook = async () => {
+    if (loading) return;
     setLoading(true);
-    const res = await fetch(
-      `/api/groups/${groupBook.groupId}/books/${groupBook.id}/own`,
-      {
-        method: "POST",
-      },
-    );
-    const data = await res.json();
-    setLoading(false);
-    void revalidate("groups");
-    toast("Книга добавлена", {
-      description: "Теперь вы можете читать ее",
-      action: {
-        onClick: () => {
-          router.push(`/books/${data.id}`);
-          void revalidate("groups");
+    try {
+      const data = z
+        .object({ id: z.string().min(1) })
+        .parse(
+          await apiFetch<unknown>(
+            `/api/groups/${groupBook.groupId}/books/${groupBook.id}/own`,
+            { method: "POST", type: "json" },
+          ),
+        );
+      void revalidate("groups");
+      toast("Книга добавлена", {
+        description: "Теперь вы можете читать ее",
+        action: {
+          onClick: () => router.push(`/books/${data.id}`),
+          label: "Перейти",
         },
-        label: "Перейти",
-      },
-    });
+      });
+    } catch {
+      toast.error("Не удалось добавить книгу");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const deleteBook = async () => {
-    if (!book) {
+    if (!book || loading) return;
+    if (book.readEvents.length > 0) {
+      setRemoveDialogOpen(true);
       return;
     }
-    if (book.readEvents.length === 0) {
-      setLoading(true);
-      await fetch(
+    setLoading(true);
+    try {
+      const result = await apiFetch<unknown>(
         `/api/groups/${groupBook.groupId}/books/${groupBook.id}/own`,
-        {
-          method: "DELETE",
-        },
+        { method: "DELETE", type: "json" },
       );
-      setLoading(false);
+      z.object({ success: z.literal(true) }).parse(result);
       void revalidate("groups");
-    } else {
-      setRemoveDialogOpen(true);
+    } catch {
+      toast.error("Не удалось удалить книгу");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -137,6 +145,7 @@ export function GroupBookView({
                 size="icon"
                 variant="ghost"
                 className="size-fit p-1 max-sm:hidden"
+                disabled={loading}
                 onClick={async () => {
                   await addBook();
                 }}
@@ -158,6 +167,7 @@ export function GroupBookView({
                   size="icon"
                   variant="ghost"
                   className="size-fit p-1 max-sm:hidden"
+                  disabled={loading}
                   onClick={async () => {
                     await deleteBook();
                   }}

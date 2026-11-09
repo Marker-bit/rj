@@ -3,6 +3,7 @@
 import type { User } from "lucia";
 import {
   BoltIcon,
+  CircleHelpIcon,
   GalleryVertical,
   LockKeyholeIcon,
   LogOutIcon,
@@ -108,6 +109,16 @@ export default function UserMenu({
               </DropdownMenuItem>
             </Link>
           )}
+          <Link href="/faq">
+            <DropdownMenuItem active={pathname === "/faq"}>
+              <CircleHelpIcon
+                size={16}
+                className="opacity-60"
+                aria-hidden="true"
+              />
+              <span>Частые вопросы</span>
+            </DropdownMenuItem>
+          </Link>
           <Link href="/support">
             <DropdownMenuItem active={pathname === "/support"}>
               <MessageCircleQuestion

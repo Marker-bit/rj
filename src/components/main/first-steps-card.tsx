@@ -1,6 +1,7 @@
 "use client";
 
 import { Check } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -16,17 +17,12 @@ import {
 export type FirstStep = {
   id: string;
   text: string;
+  href?: string;
   completed: boolean;
   skippable?: boolean;
 };
 
-function StepIcon({
-  index,
-  completed,
-}: {
-  index: number;
-  completed: boolean;
-}) {
+function StepIcon({ index, completed }: { index: number; completed: boolean }) {
   return (
     <div
       className={cn(
@@ -69,7 +65,18 @@ export function FirstStepsCard({ steps }: { steps: FirstStep[] }) {
           {visibleSteps.map((step, idx) => (
             <div key={step.id} className="flex items-center gap-2">
               <StepIcon index={idx + 1} completed={step.completed} />
-              <span className="flex-1">{step.text}</span>
+              <span className="flex-1">
+                {step.href ? (
+                  <Link
+                    href={step.href}
+                    className="underline underline-offset-4 hover:text-primary"
+                  >
+                    {step.text}
+                  </Link>
+                ) : (
+                  step.text
+                )}
+              </span>
               {step.skippable && !step.completed && (
                 <Button
                   type="button"

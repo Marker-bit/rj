@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   Accordion,
   AccordionContent,
@@ -9,11 +10,17 @@ import faq from "@/lib/data/faq";
 export default function Page() {
   return (
     <div className="m-2 flex flex-col gap-2">
-      <h1 className="text-3xl font-bold">FAQ</h1>
-      {/* <div key={i} className="flex flex-col gap-2">
-        <h2 className="text-2xl font-bold">Q: {q.question}</h2>
-        <p className="text-lg">A: {q.answer}</p>
-      </div> */}
+      <h1 className="text-3xl font-bold">Частые вопросы</h1>
+      <p className="text-sm text-muted-foreground">
+        Не нашли ответ?{" "}
+        <Link
+          href="/support"
+          className="underline underline-offset-4 hover:text-primary"
+        >
+          Напишите в поддержку
+        </Link>
+        .
+      </p>
       <Accordion type="multiple">
         {faq.map((q) => (
           <AccordionItem key={q.question} value={q.question}>
