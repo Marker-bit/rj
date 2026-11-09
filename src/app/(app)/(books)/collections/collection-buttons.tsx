@@ -1,7 +1,7 @@
 "use client";
 
 import type { Book, Collection } from "@prisma/client";
-import { Pencil, Trash } from "lucide-react";
+import { BookOpen, Trash } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { DeleteCollectionModal } from "@/components/dialogs/collections/delete-collection-modal";
@@ -21,15 +21,19 @@ export function CollectionButtons({
         setOpen={setDeleteDialogOpen}
       />
       <div className="flex items-center gap-2">
-        <Link href={`/collections/${collection.id}`}>
-          <Button variant="outline" className="gap-2">
-            <Pencil className="size-4" />
-            <div className="max-sm:hidden">Редактировать</div>
-          </Button>
-        </Link>
+        <Button variant="outline" className="gap-2" asChild>
+          <Link
+            href={`/collections/${collection.id}`}
+            aria-label={`Управлять книгами в коллекции «${collection.name}»`}
+          >
+            <BookOpen className="size-4" />
+            <span>Управлять книгами</span>
+          </Link>
+        </Button>
         <Button
           variant="outline"
           className="gap-2"
+          aria-label={`Удалить коллекцию «${collection.name}»`}
           onClick={() => setDeleteDialogOpen(true)}
         >
           <Trash className="size-4" />
