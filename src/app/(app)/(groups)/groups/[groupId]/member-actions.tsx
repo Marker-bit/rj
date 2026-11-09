@@ -1,5 +1,7 @@
 "use client";
 
+import { z } from "zod";
+import { apiFetch } from "@/lib/api-fetch";
 import { GroupMemberRole } from "@prisma/client";
 import {
   BarChart2,
@@ -36,86 +38,48 @@ export function MemberActions({
   const [kickOpen, setKickOpen] = useState(false);
 
   const kickMember = async () => {
+    if (loading) return;
     setLoading(true);
-    const resp = await fetch(`/api/groups/${groupId}/member/${member.id}`, {
-      method: "DELETE",
-    });
-    const res = await resp.json();
-    setLoading(false);
-    if (res.error) {
-      toast.error("Возникла проблема при исключении участника", {
-        description: res.error,
-      });
+    try {
+      const result = await apiFetch<unknown>(
+        `/api/groups/${groupId}/member/${member.id}`,
+        {
+          method: "DELETE",
+          type: "json",
+        },
+      );
+      z.object({ message: z.string().min(1) }).parse(result);
       setKickOpen(false);
-    } else {
-      setKickOpen(false);
-      toast.success(res.message);
+      toast.success("Участник исключен");
       void revalidate("groups");
+    } catch {
+      toast.error("Возникла проблема при исключении участника");
+    } finally {
+      setLoading(false);
     }
   };
 
-  // const changeRole = async (role: GroupMemberRole) => {
-  //   setLoading(true)
-  //   const resp = await fetch(`/api/groups/${groupId}/member/${member.id}`, {
-  //     method: "PATCH",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({ role }),
-  //   })
-  //   const res = await resp.json()
-  //   setLoading(false)
-  //   if (res.error) {
-  //     toast.error("Возникла проблема при изменении роли участника", {
-  //       description: res.error,
-  //     })
-  //   } else {
-  //     toast.success(res.message)
-  //   }
-  // }
-
   const changeRole = async (nextRole: GroupMemberRole) => {
-    toast.promise(
-      async () => {
-        const resp = await fetch(`/api/groups/${groupId}/member/${member.id}`, {
+    if (loading) return;
+    setLoading(true);
+    try {
+      const result = await apiFetch<unknown>(
+        `/api/groups/${groupId}/member/${member.id}`,
+        {
           method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ role: nextRole }),
-        });
-        const res = await resp.json();
-        if (res.error) {
-          throw new Error(res.error);
-        } else {
-          void revalidate("groups");
-          return res;
-        }
-      },
-      {
-        loading: "Изменение роли участника...",
-        success: "Роль участника изменена",
-        error: (error) =>
-          `Возникла проблема при изменении роли участника: ${error.message}`,
-      },
-    );
-    // setLoading(true)
-    // const resp = await fetch(`/api/groups/${groupId}/member/${member.id}`, {
-    //   method: "PATCH",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({ role }),
-    // })
-    // const res = await resp.json()
-    // setLoading(false)
-    // if (res.error) {
-    //   toast.error("Возникла проблема при изменении роли участника", {
-    //     description: res.error,
-    //   })
-    // } else {
-    //   toast.success(res.message)
-    // }
+          type: "json",
+        },
+      );
+      z.object({ message: z.string().min(1) }).parse(result);
+      toast.success("Роль участника изменена");
+      void revalidate("groups");
+    } catch {
+      toast.error("Возникла проблема при изменении роли участника");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -158,6 +122,7 @@ export function MemberActions({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
+            disabled={loading}
             aria-label={`Действия участника @${member.user.username}`}
             variant="ghost"
             size="icon"
