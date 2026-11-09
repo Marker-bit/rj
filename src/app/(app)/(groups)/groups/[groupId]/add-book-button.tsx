@@ -1,6 +1,6 @@
 "use client";
 
-import { Book, BookCopy, BookDashed, Plus } from "lucide-react";
+import { Book, BookDashed, Plus } from "lucide-react";
 import { useState } from "react";
 import { AddFromMyBooks } from "@/components/book/add-from-my-books";
 import { GroupBookForm } from "@/components/book/group-book-form";
@@ -42,10 +42,6 @@ export function AddBookButton({ groupId }: { groupId: string }) {
           <DropdownMenuItem onClick={() => setModeOpen("create")}>
             <Book />
             Добавить книгу
-          </DropdownMenuItem>
-          <DropdownMenuItem disabled>
-            <BookCopy />
-            Добавить из коллекции
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setModeOpen("add-own")}>
             <BookDashed />
