@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { db } from "@/lib/db";
 import { requireUser } from "@/lib/require-user";
 import AskQuestion from "./ask-question";
@@ -23,6 +24,16 @@ export default async function Page() {
   return (
     <div className="m-2 flex flex-col items-start gap-2 max-sm:mb-[15vh]">
       <h1 className="text-3xl font-bold">Поддержка</h1>
+      <p className="text-sm text-muted-foreground">
+        Ответы на популярные вопросы — в разделе{" "}
+        <Link
+          href="/faq"
+          className="underline underline-offset-4 hover:text-primary"
+        >
+          «Частые вопросы»
+        </Link>
+        .
+      </p>
       <AskQuestion />
       {questions.map((question) => (
         <SupportQuestionCard
