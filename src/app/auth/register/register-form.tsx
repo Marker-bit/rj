@@ -5,10 +5,9 @@ import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import posthog from "posthog-js";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { useDebounceCallback } from "usehooks-ts";
 import type { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,12 +21,14 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Loader } from "@/components/ui/loader";
+import { useUsernameAvailability } from "@/hooks/use-username-availability";
 import { authPageHref } from "@/lib/auth-return-path";
 import { validateRequest } from "@/lib/validate-request";
 import { registerSchema } from "@/lib/validation/schemas";
 
 export function RegisterForm({ returnTo }: { returnTo: string }) {
-  const [usernameFound, setUsernameFound] = useState<boolean | null>(null);
+  const { found: usernameFound, check: fetchUsername } =
+    useUsernameAvailability();
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -86,17 +87,6 @@ export function RegisterForm({ returnTo }: { returnTo: string }) {
   function onSubmit(values: z.infer<typeof registerSchema>) {
     userMutation.mutate(values);
   }
-
-  const fetchUsername = useDebounceCallback(
-    (username: string) =>
-      fetch(`/api/auth/username?username=${username}`)
-        .then((res) => res.json())
-        .then((data) => {
-          setUsernameFound(data.found);
-        })
-        .catch(() => setUsernameFound(null)),
-    200,
-  );
 
   return (
     <Form {...form}>
