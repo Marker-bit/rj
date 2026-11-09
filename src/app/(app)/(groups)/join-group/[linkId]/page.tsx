@@ -10,9 +10,23 @@ import { JoinGroupButton } from "./buttons";
 
 export default async function Page(props: {
   params: Promise<{ linkId: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const params = await props.params;
-  const user = await requireUser();
+  const query = new URLSearchParams();
+  for (const [key, value] of Object.entries(await props.searchParams)) {
+    for (const item of Array.isArray(value)
+      ? value
+      : value === undefined
+        ? []
+        : [value]) {
+      query.append(key, item);
+    }
+  }
+  const search = query.toString();
+  const user = await requireUser(
+    `/join-group/${encodeURIComponent(params.linkId)}${search ? `?${search}` : ""}`,
+  );
 
   const link = await db.groupInviteLink.findUnique({
     where: {
