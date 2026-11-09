@@ -28,14 +28,6 @@ import {
   hasVisibleMessageContent,
 } from "@/lib/ai/message";
 
-function getErrorMessage(error: Error) {
-  if (/api key expired|invalid api key|unauthorized|401/i.test(error.message)) {
-    return "Сервис ИИ временно недоступен. Попробуйте позже.";
-  }
-
-  return error.message;
-}
-
 export function ChatHistory({
   messages,
   error,
@@ -128,7 +120,10 @@ export function ChatHistory({
                 <Alert variant="destructive">
                   <CircleAlertIcon />
                   <AlertTitle>Не удалось получить ответ</AlertTitle>
-                  <AlertDescription>{getErrorMessage(error)}</AlertDescription>
+                  <AlertDescription>
+                    Сервис ИИ временно недоступен. Проверьте подключение и
+                    попробуйте снова. Если ошибка повторится, попробуйте позже.
+                  </AlertDescription>
                   <Button
                     onClick={() => onRetry()}
                     variant="outline"
