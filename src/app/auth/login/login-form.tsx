@@ -90,9 +90,7 @@ export function LoginForm() {
             <FormItem>
               <FormLabel>Имя пользователя</FormLabel>
               <FormControl>
-                <div className="flex flex-col gap-1">
-                  <Input placeholder="ivan.ivanov" {...field} />
-                </div>
+                <Input placeholder="ivan.ivanov" {...field} />
               </FormControl>
               <FormDescription>
                 По этому имени пользователя вас можно будет найти в поиске.
@@ -119,12 +117,12 @@ export function LoginForm() {
             {userMutation.isPending && <Loader invert className="size-4" />}
             Авторизоваться
           </Button>
-          <Link href="/auth/register">
-            <Button variant="ghost">Нет аккаунта? Зарегистрироваться</Button>
-          </Link>
-          <Link href="/auth/reset-password">
-            <Button variant="outline">Забыл пароль</Button>
-          </Link>
+          <Button variant="ghost" asChild>
+            <Link href="/auth/register">Нет аккаунта? Зарегистрироваться</Link>
+          </Button>
+          <Button variant="outline" asChild>
+            <Link href="/auth/reset-password">Забыл пароль</Link>
+          </Button>
         </div>
         <p className="text-xs">
           При авторизации, вы соглашаетесь с{" "}

@@ -50,6 +50,7 @@ export default async function Page(props: {
                     },
                   },
                 },
+                hideActivity: false,
               },
             },
           },

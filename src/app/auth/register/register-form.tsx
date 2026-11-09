@@ -169,9 +169,9 @@ export function RegisterForm() {
             {userMutation.isPending && <Loader invert className="size-4" />}
             Зарегистрироваться
           </Button>
-          <Link href="/auth/login">
-            <Button variant="ghost">Есть аккаунт? Войти</Button>
-          </Link>
+          <Button variant="ghost" asChild>
+            <Link href="/auth/login">Есть аккаунт? Войти</Link>
+          </Button>
         </div>
         <p className="text-xs">
           При регистрации, вы соглашаетесь с{" "}

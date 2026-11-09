@@ -76,7 +76,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
   const defaultFields = fields.map((value, fieldIndex) => ({
     value,
     storageIndex: fieldIndex,
-    key: `${value}-${fieldIndex}`,
+    key: fieldIndex,
   }));
 
   useEffect(() => {
@@ -484,7 +484,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
           </div>
         </div>
         <h2 className="mb-2 text-center text-lg font-semibold">Аккаунт</h2>
-        <div className="flex justify-center gap-2">
+        <div className="mx-3 flex flex-wrap justify-center gap-2">
           <Button type="submit">
             {userMutation.isPending ? (
               <>
@@ -499,6 +499,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
             )}
           </Button>
           <Button
+            type="button"
             variant="outline"
             onClick={() => {
               setLogOutLoading(true);

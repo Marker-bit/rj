@@ -116,9 +116,7 @@ export default function ResetPasswordForm() {
             <FormItem>
               <FormLabel>Имя пользователя</FormLabel>
               <FormControl>
-                <div className="flex flex-col gap-1">
-                  <Input {...field} />
-                </div>
+                <Input {...field} />
               </FormControl>
               <FormDescription>
                 Введите ваше имя пользователя, указанное на платформе, писать @
@@ -135,9 +133,7 @@ export default function ResetPasswordForm() {
             <FormItem>
               <FormLabel>Имя</FormLabel>
               <FormControl>
-                <div className="flex flex-col gap-1">
-                  <Input {...field} />
-                </div>
+                <Input {...field} />
               </FormControl>
               <FormDescription>
                 Введите имя, указанное при регистрации (вторая часть ФИО, не имя
@@ -154,9 +150,7 @@ export default function ResetPasswordForm() {
             <FormItem>
               <FormLabel>Новый пароль</FormLabel>
               <FormControl>
-                <div className="flex flex-col gap-1">
-                  <Input {...field} type="password" />
-                </div>
+                <Input {...field} type="password" />
               </FormControl>
               <FormMessage />
             </FormItem>
