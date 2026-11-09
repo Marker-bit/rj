@@ -1,12 +1,12 @@
 "use client";
 
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
-import { useMutation } from "@tanstack/react-query";
 import { Loader, Plus, Trash } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
@@ -35,41 +35,47 @@ export function SuggestBook({ groupId }: { groupId: string }) {
   const [open, setOpen] = useState(false);
   const form = useForm<z.infer<typeof bookSchema>>({
     resolver: standardSchemaResolver(bookSchema),
+    defaultValues: { title: "", author: "", description: "", coverUrl: "" },
   });
 
-  const bookMutation = useMutation({
-    mutationFn: (values: z.infer<typeof bookSchema>) =>
-      fetch(`/api/groups/${groupId}/suggest`, {
+  const [loading, setLoading] = useState(false);
+
+  async function onSubmit(values: z.infer<typeof bookSchema>) {
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/groups/${groupId}/suggest`, {
         method: "POST",
         body: JSON.stringify(values),
-      }),
-    onSuccess: () => {
-      form.reset({
-        title: "",
-        author: "",
-        pages: NaN,
-        coverUrl: "",
-        description: "",
       });
+      if (!response.ok) throw new Error("Suggestion failed");
+      z.object({ id: z.string().min(1) }).parse(await response.json());
+      form.reset();
       setOpen(false);
       void revalidate("groups");
-    },
-  });
-
-  function onSubmit(values: z.infer<typeof bookSchema>) {
-    bookMutation.mutate(values);
+    } catch {
+      toast.error("Не удалось предложить книгу. Попробуйте ещё раз.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
     <>
       <Button
+        aria-label="Предложить книгу"
         className="gap-1 max-sm:size-fit max-sm:p-2"
         onClick={() => setOpen(true)}
       >
         <Plus className="size-4" />
         <div className="max-sm:hidden">Предложить книгу</div>
       </Button>
-      <DrawerDialog open={open} onOpenChange={setOpen} className="min-w-[50vw]">
+      <DrawerDialog
+        open={open}
+        onOpenChange={(value) => {
+          if (!loading) setOpen(value);
+        }}
+        className="min-w-[50vw]"
+      >
         <DialogHeader>
           <DialogTitle>Предложить книгу</DialogTitle>
         </DialogHeader>
@@ -158,7 +164,14 @@ export function SuggestBook({ groupId }: { groupId: string }) {
                 <FormItem>
                   <FormLabel>Кол-во страниц</FormLabel>
                   <FormControl>
-                    <Input {...field} onChange={field.onChange} type="number" />
+                    <Input
+                      {...field}
+                      value={field.value ?? ""}
+                      onChange={(event) =>
+                        field.onChange(event.target.valueAsNumber)
+                      }
+                      type="number"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -177,12 +190,8 @@ export function SuggestBook({ groupId }: { groupId: string }) {
                 </FormItem>
               )}
             />
-            <Button type="submit" disabled={bookMutation.isPending}>
-              {bookMutation.isPending ? (
-                <Loader className="animate-spin" />
-              ) : (
-                <Plus />
-              )}
+            <Button type="submit" disabled={loading}>
+              {loading ? <Loader className="animate-spin" /> : <Plus />}
               Предложить
             </Button>
           </form>
