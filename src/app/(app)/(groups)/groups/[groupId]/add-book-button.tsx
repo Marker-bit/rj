@@ -29,7 +29,12 @@ export function AddBookButton({ groupId }: { groupId: string }) {
       />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button size="icon" variant="ghost" className="size-fit p-1">
+          <Button
+            aria-label="Добавить книгу в группу"
+            size="icon"
+            variant="ghost"
+            className="size-fit p-1"
+          >
             <Plus className="size-4" />
           </Button>
         </DropdownMenuTrigger>

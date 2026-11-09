@@ -57,7 +57,12 @@ export async function proxy(request: NextRequest) {
     !(await cookies()).get("auth_session") &&
     !notProtectedRoutes.includes(pathname)
   ) {
-    return NextResponse.redirect(new URL("/auth/login", request.url));
+    const loginUrl = new URL("/auth/login", request.url);
+    loginUrl.searchParams.set(
+      "returnTo",
+      `${pathname}${request.nextUrl.search}`,
+    );
+    return NextResponse.redirect(loginUrl);
   }
   return NextResponse.next();
 }

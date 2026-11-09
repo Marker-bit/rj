@@ -38,7 +38,7 @@ export default function Palette({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline">
+        <Button variant="outline" aria-label="Цвет книги">
           <PaletteIcon className="size-4" />
           <div className="max-sm:hidden">Цвет</div>
         </Button>

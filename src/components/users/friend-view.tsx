@@ -38,11 +38,13 @@ export function FriendView({
       });
     });
   }, []);
+  const followingRes = userQuery.data?.following ?? following;
+
   const follow = async () => {
     setLoading(true);
     try {
       const res = await fetch(`/api/profile/${friend.username}/follow`, {
-        method: following || userQuery.data?.following ? "DELETE" : "POST",
+        method: followingRes ? "DELETE" : "POST",
       });
       if (!res.ok) {
         toast.error("Не удалось изменить подписку");
@@ -62,7 +64,6 @@ export function FriendView({
     }
   };
 
-  const followingRes = following || userQuery.data?.following;
   return (
     <div className="group flex cursor-pointer items-center gap-2 rounded-md border p-4 transition-colors">
       <Link

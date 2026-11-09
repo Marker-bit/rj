@@ -26,10 +26,12 @@ import BindBookModal from "./bind-book-modal";
 
 export function MoreActions({
   book,
+  canManageBooks,
   addedBook,
   addBook,
   deleteBook,
 }: {
+  canManageBooks: boolean;
   book: GroupBook & { group: Group };
   addedBook: Book | undefined;
   addBook: () => void;
@@ -43,7 +45,12 @@ export function MoreActions({
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button size="icon" variant="ghost" className="size-fit p-1">
+          <Button
+            aria-label={`Действия с книгой «${book.title}»`}
+            size="icon"
+            variant="ghost"
+            className="size-fit p-1"
+          >
             <MoreHorizontal className="size-4" />
           </Button>
         </DropdownMenuTrigger>
@@ -83,22 +90,34 @@ export function MoreActions({
               Статистика
             </DropdownMenuItem>
           </Link>
-          <DropdownMenuItem onClick={() => setEditOpen(true)}>
-            <Edit />
-            Редактировать
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setDeleteOpen(true)}>
-            <Trash />
-            Удалить
-          </DropdownMenuItem>
+          {canManageBooks && (
+            <>
+              <DropdownMenuItem onClick={() => setEditOpen(true)}>
+                <Edit />
+                Редактировать
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setDeleteOpen(true)}>
+                <Trash />
+                Удалить
+              </DropdownMenuItem>
+            </>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
-      <DeleteGroupBookModal
-        open={deleteOpen}
-        setOpen={setDeleteOpen}
-        book={book}
-      />
-      <EditGroupBookModal open={editOpen} setOpen={setEditOpen} book={book} />
+      {canManageBooks && (
+        <>
+          <DeleteGroupBookModal
+            open={deleteOpen}
+            setOpen={setDeleteOpen}
+            book={book}
+          />
+          <EditGroupBookModal
+            open={editOpen}
+            setOpen={setEditOpen}
+            book={book}
+          />
+        </>
+      )}
       <BindBookModal open={bindOpen} setOpen={setBindOpen} groupBook={book} />
     </>
   );

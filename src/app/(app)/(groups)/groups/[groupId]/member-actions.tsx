@@ -133,6 +133,8 @@ export function MemberActions({
         </p>
         <div className="mt-4 flex justify-end gap-2">
           <Button
+            aria-label={`Исключить участника @${member.user.username}`}
+            disabled={loading}
             variant="destructive"
             className="flex items-center gap-2"
             onClick={kickMember}
@@ -155,7 +157,12 @@ export function MemberActions({
       </DrawerDialog>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" className="size-fit p-1">
+          <Button
+            aria-label={`Действия участника @${member.user.username}`}
+            variant="ghost"
+            size="icon"
+            className="size-fit p-1"
+          >
             <MoreVertical className="size-4" />
           </Button>
         </DropdownMenuTrigger>

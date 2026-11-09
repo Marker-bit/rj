@@ -17,6 +17,7 @@ export function LinkMemberButton({
     <>
       {!isMember && (
         <Button
+          aria-label="Ссылки приглашения в группу"
           size="icon"
           variant="ghost"
           className="size-fit p-1"

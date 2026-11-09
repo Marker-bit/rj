@@ -1,17 +1,20 @@
 import { SparklesIcon, XIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import type { MouseEventHandler } from "react";
+import type { MouseEventHandler, Ref } from "react";
 import { Button } from "@/components/ui/button";
 
 export function AgentToggle({
   isOpen,
   onClick,
+  ref,
 }: {
   isOpen: boolean;
+  ref?: Ref<HTMLButtonElement>;
   onClick?: MouseEventHandler<HTMLButtonElement>;
 }) {
   return (
     <Button
+      ref={ref}
       size="icon-sm"
       variant="outline"
       className="pointer-events-auto max-sm:data-open:hidden rounded-full border-border bg-popover! shadow-md"

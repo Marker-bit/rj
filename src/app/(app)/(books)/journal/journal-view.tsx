@@ -63,13 +63,15 @@ export default function JournalView({
             <Button
               variant="outline"
               id="dates"
-              className="min-w-80 w-full md:w-fit justify-between font-normal"
+              className="h-auto min-h-9 min-w-0 w-full md:w-fit md:min-w-80 justify-between whitespace-normal text-left font-normal"
             >
-              Фильтр по дням{" "}
-              {dates?.from && `с ${format(dates.from, "dd.MM.yyyy")}`}{" "}
-              {dates?.to && `до ${format(dates.to, "dd.MM.yyyy")}`}
-              {!dates && "выключен"}
-              <ChevronDownIcon />
+              <span>
+                Фильтр по дням{" "}
+                {dates?.from && `с ${format(dates.from, "dd.MM.yyyy")}`}{" "}
+                {dates?.to && `до ${format(dates.to, "dd.MM.yyyy")}`}
+                {!dates && "выключен"}
+              </span>
+              <ChevronDownIcon className="shrink-0" />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto overflow-hidden p-0" align="start">

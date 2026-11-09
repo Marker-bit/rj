@@ -18,6 +18,7 @@ export function ArchiveBookButton({
     <HelpButton
       className="gap-2"
       variant="outline"
+      aria-label="Вернуть из архива"
       onClick={() => archiveMutation.mutate(undefined, { onSuccess: onDone })}
       disabled={archiveMutation.isPending}
       helpText="Переместить эту книгу в обычный список книг"
@@ -33,6 +34,7 @@ export function ArchiveBookButton({
     <HelpButton
       className="gap-2"
       variant="outline"
+      aria-label="В архив"
       onClick={() => archiveMutation.mutate(undefined, { onSuccess: onDone })}
       disabled={archiveMutation.isPending}
       helpText="Переместить эту книгу в архив"

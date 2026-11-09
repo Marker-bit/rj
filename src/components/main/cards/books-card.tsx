@@ -67,7 +67,7 @@ export default function BooksCard() {
           <CardAction className="flex gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline">
+                <Button variant="outline" aria-label="Сортировать книги">
                   <div className="max-sm:hidden">Сортировать</div>
                   <ArrowDownNarrowWideIcon />
                 </Button>
@@ -89,12 +89,12 @@ export default function BooksCard() {
               </DropdownMenuContent>
             </DropdownMenu>
             <Button variant="outline" asChild>
-              <Link href="/books">
+              <Link href="/books" aria-label="Все книги">
                 <div className="max-sm:hidden">Больше</div>
                 <ChevronRight />
               </Link>
             </Button>
-            <Button onClick={() => setOpen(true)}>
+            <Button aria-label="Добавить книгу" onClick={() => setOpen(true)}>
               <div className="max-sm:hidden">Добавить</div>
               <PlusIcon />
             </Button>

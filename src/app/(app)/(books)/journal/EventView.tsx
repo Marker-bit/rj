@@ -4,6 +4,7 @@ import type { Book } from "@prisma/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { BookOpen, BookOpenCheck, Loader, Undo } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { SimpleTooltip } from "@/components/ui/simple-tooltip";
 import { dateToString } from "@/lib/utils";
@@ -22,10 +23,18 @@ export function EventView({
 }) {
   const queryClient = useQueryClient();
   const undoMutation = useMutation({
-    mutationFn: async () =>
-      await fetch(`/api/journal/events/${event.id}`, {
+    mutationFn: async () => {
+      const response = await fetch(`/api/journal/events/${event.id}`, {
         method: "DELETE",
-      }),
+      });
+      if (!response.ok) throw new Error("Undo failed");
+    },
+    onError: () => {
+      toast.error("Не удалось отменить запись", {
+        description:
+          "Проверьте соединение и попробуйте ещё раз. Запись сохранена.",
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["events"],
@@ -58,6 +67,7 @@ export function EventView({
       )}
       <SimpleTooltip text="Отменить">
         <Button
+          aria-label="Отменить запись"
           variant="outline"
           size="icon"
           className="ml-auto"

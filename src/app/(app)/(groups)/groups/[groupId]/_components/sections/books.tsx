@@ -32,7 +32,12 @@ export default function BooksSection({
       </div>
       <ScrollArea className="h-[40vh]">
         {group.groupBooks.map((book) => (
-          <GroupBookView groupBook={book} key={book.id} userId={user.id} />
+          <GroupBookView
+            groupBook={book}
+            key={book.id}
+            userId={user.id}
+            canManageBooks={!isMember}
+          />
         ))}
         <ScrollBar orientation="vertical" />
         <ScrollBar orientation="horizontal" />

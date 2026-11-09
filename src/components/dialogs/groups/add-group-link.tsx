@@ -46,38 +46,50 @@ export default function AddGroupLink({
         {group.inviteLinks.map((link) => (
           <div key={link.id} className="flex items-center gap-2 rounded-xl p-2">
             <Input
+              aria-label="Пригласительная ссылка"
               value={`${
                 typeof window !== "undefined" ? window.location.origin : ""
               }/join-group/${link.id}`}
               readOnly={true}
             />
             <Button
-              onClick={() => {
-                navigator.clipboard.writeText(
-                  `${
-                    typeof window !== "undefined" ? window.location.origin : ""
-                  }/join-group/${link.id}`,
-                );
-                toast.success("Ссылка скопирована");
+              aria-label="Скопировать пригласительную ссылку"
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(
+                    `${
+                      typeof window !== "undefined"
+                        ? window.location.origin
+                        : ""
+                    }/join-group/${link.id}`,
+                  );
+                  toast.success("Ссылка скопирована");
+                } catch {
+                  toast.error("Не удалось скопировать ссылку");
+                }
               }}
             >
               <CopyIcon className="size-4" />
             </Button>
             <Button
+              aria-label="Удалить пригласительную ссылку"
               onClick={() => {
                 toast.promise(
                   async () => {
                     if (loadingId === link.id) return;
                     setLoadingId(link.id);
-                    await fetch(
-                      `/api/groups/${group.id}/invite-link/${link.id}`,
-                      {
-                        method: "DELETE",
-                      },
-                    );
-                    setLoadingId(undefined);
-                    void revalidate("groups");
-                    setOpen(false);
+                    try {
+                      const response = await fetch(
+                        `/api/groups/${group.id}/invite-link/${link.id}`,
+                        { method: "DELETE" },
+                      );
+                      if (!response.ok)
+                        throw new Error("Не удалось удалить ссылку");
+                      void revalidate("groups");
+                      setOpen(false);
+                    } finally {
+                      setLoadingId(undefined);
+                    }
                   },
                   {
                     loading: "Удаление...",
@@ -98,11 +110,19 @@ export default function AddGroupLink({
             toast.promise(
               async () => {
                 setCreateLoading(true);
-                await fetch(`/api/groups/${group.id}/invite-link`, {
-                  method: "POST",
-                });
-                setCreateLoading(false);
-                void revalidate("groups");
+                try {
+                  const response = await fetch(
+                    `/api/groups/${group.id}/invite-link`,
+                    {
+                      method: "POST",
+                    },
+                  );
+                  if (!response.ok)
+                    throw new Error("Не удалось создать ссылку");
+                  void revalidate("groups");
+                } finally {
+                  setCreateLoading(false);
+                }
               },
               {
                 loading: "Создание...",

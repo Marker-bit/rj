@@ -16,6 +16,7 @@ export function UndoEventButton({
     <Button
       variant="outline"
       size="icon"
+      aria-label="Отменить событие"
       onClick={() =>
         undoEventMutation.mutate(undefined, {
           onSuccess: onDone,

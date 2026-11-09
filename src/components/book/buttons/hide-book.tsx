@@ -19,6 +19,7 @@ export function HideBookButton({
     <HelpButton
       className="gap-2"
       variant="outline"
+      aria-label="Показать"
       onClick={() => hideMutation.mutate(undefined, { onSuccess: onDone })}
       disabled={hideMutation.isPending}
       helpText="Переместить эту книгу в обычный список книг"
@@ -34,6 +35,7 @@ export function HideBookButton({
     <HelpButton
       className="gap-2"
       variant="outline"
+      aria-label="Скрыть"
       onClick={() => hideMutation.mutate(undefined, { onSuccess: onDone })}
       disabled={hideMutation.isPending}
       helpText="Переместить эту книгу в самый низ, например, чтобы отложить её чтение на будущее"

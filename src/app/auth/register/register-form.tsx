@@ -22,10 +22,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Loader } from "@/components/ui/loader";
+import { authPageHref } from "@/lib/auth-return-path";
 import { validateRequest } from "@/lib/validate-request";
 import { registerSchema } from "@/lib/validation/schemas";
 
-export function RegisterForm() {
+export function RegisterForm({ returnTo }: { returnTo: string }) {
   const [usernameFound, setUsernameFound] = useState<boolean | null>(null);
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
@@ -42,10 +43,10 @@ export function RegisterForm() {
     (async () => {
       const { user } = await validateRequest();
       if (user) {
-        router.replace("/home");
+        router.replace(returnTo);
       }
     })();
-  }, [router]);
+  }, [router, returnTo]);
 
   const userMutation = useMutation({
     mutationFn: async (values: z.infer<typeof registerSchema>) => {
@@ -62,7 +63,7 @@ export function RegisterForm() {
         } catch (error) {
           console.error("Failed to identify user with PostHog:", error);
         }
-        router.push("/home");
+        router.replace(returnTo);
       } else {
         const data = await res.json();
         if (data.error) {
@@ -170,7 +171,9 @@ export function RegisterForm() {
             Зарегистрироваться
           </Button>
           <Button variant="ghost" asChild>
-            <Link href="/auth/login">Есть аккаунт? Войти</Link>
+            <Link href={authPageHref("login", returnTo)}>
+              Есть аккаунт? Войти
+            </Link>
           </Button>
         </div>
         <p className="text-xs">

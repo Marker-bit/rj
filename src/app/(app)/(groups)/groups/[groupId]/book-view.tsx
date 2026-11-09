@@ -22,12 +22,14 @@ import { revalidate } from "@/lib/actions/revalidate";
 export function GroupBookView({
   groupBook,
   userId,
+  canManageBooks,
 }: {
   groupBook: GroupBook & {
     group: Group;
     book: (Book & { readEvents: { pagesRead: number }[] })[];
   };
   userId: string;
+  canManageBooks: boolean;
 }) {
   const [loading, setLoading] = useState(false);
   const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
@@ -178,6 +180,7 @@ export function GroupBookView({
           </>
         )}
         <MoreActions
+          canManageBooks={canManageBooks}
           book={groupBook}
           addedBook={book}
           addBook={addBook}

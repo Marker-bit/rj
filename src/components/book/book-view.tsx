@@ -319,6 +319,7 @@ export function BookView({
               <HelpButton
                 className="gap-2"
                 variant="outline"
+                aria-label="Прочитана"
                 onClick={() => setActiveDialog("done")}
                 helpText="Отметить книгу прочитанной в определённую дату"
               >
@@ -328,6 +329,7 @@ export function BookView({
               <HelpButton
                 className="gap-2"
                 variant="outline"
+                aria-label="Отметить прочтение"
                 onClick={() => setActiveDialog("read")}
                 helpText="Отметить прочтение определённого количества страниц книги в некоторую дату"
               >
@@ -339,6 +341,7 @@ export function BookView({
           <HelpButton
             className="gap-2"
             variant="outline"
+            aria-label="Поделиться"
             onClick={() => setActiveDialog("share")}
             helpText="Создайте ссылки на книгу, чтобы другие могли скопировать её себе"
           >
@@ -349,6 +352,7 @@ export function BookView({
             <HelpButton
               className="gap-2"
               variant="outline"
+              aria-label="Статистика"
               onClick={() => setActiveDialog("stats")}
               helpText="Посмотреть статистику прочтения книги"
             >
@@ -379,7 +383,7 @@ export function BookView({
             />
           )}
           <Palette background={book.background} bookId={book.id} />
-          <div className="absolute top-0 right-0 m-2 flex scale-0 gap-2 opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100 group-focus-within:scale-100 group-focus-within:opacity-100">
+          <div className="flex gap-2 sm:absolute sm:top-0 sm:right-0 sm:m-2 [@media(hover:hover)_and_(pointer:fine)]:scale-0 [@media(hover:hover)_and_(pointer:fine)]:opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100 group-focus-within:scale-100 group-focus-within:opacity-100">
             <SimpleTooltip text="Отредактировать книгу">
               <Button
                 size="icon"

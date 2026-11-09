@@ -190,12 +190,18 @@ export default async function Page(props: {
           </div>
         </div>
         <div className="ml-auto flex items-center gap-2">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <LeaveGroupButton groupId={group.id} />
-            </TooltipTrigger>
-            <TooltipContent>Выйти из группы</TooltipContent>
-          </Tooltip>
+          {currentMember?.role === GroupMemberRole.CREATOR ? (
+            <p className="max-w-48 text-xs text-muted-foreground">
+              Создатель не может выйти из группы. Вы можете удалить группу.
+            </p>
+          ) : (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <LeaveGroupButton groupId={group.id} />
+              </TooltipTrigger>
+              <TooltipContent>Выйти из группы</TooltipContent>
+            </Tooltip>
+          )}
           {group.members.find((m) => m.userId === user.id)?.role ===
             GroupMemberRole.CREATOR && (
             <Tooltip>

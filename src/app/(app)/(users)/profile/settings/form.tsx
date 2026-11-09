@@ -38,6 +38,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useUploadThing } from "@/components/uploadthing";
 import ExportDataButton from "@/components/users/export-data-button";
@@ -466,16 +467,21 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
             />
             <div className="flex flex-row items-center justify-between rounded-lg border p-4">
               <div className="space-y-0.5">
-                <FormLabel className="text-base">
+                <Label htmlFor="disable-recommendations" className="text-base">
                   Не показывать рекомендации
-                </FormLabel>
-                <FormDescription>
+                </Label>
+                <p
+                  id="disable-recommendations-description"
+                  className="text-sm text-muted-foreground"
+                >
                   Включите, чтобы еженедельные баннеры рекомендаций больше не
                   появлялись
-                </FormDescription>
+                </p>
               </div>
               <div>
                 <Switch
+                  id="disable-recommendations"
+                  aria-describedby="disable-recommendations-description"
                   checked={disableRecs}
                   onCheckedChange={setDisableRecs}
                 />

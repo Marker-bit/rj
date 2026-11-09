@@ -47,7 +47,12 @@ export default function NewspaperButton() {
     <Popover open={open} onOpenChange={setOpen}>
       <SimpleTooltip text="Советы">
         <PopoverTrigger asChild suppressHydrationWarning>
-          <Button variant="ghost" size="icon" className="rounded-full relative">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-full relative"
+            aria-label="Советы"
+          >
             <LightbulbIcon className="size-4" />
 
             {currentTip !== tips.length && (

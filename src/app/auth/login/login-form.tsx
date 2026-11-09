@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Loader } from "@/components/ui/loader";
+import { authPageHref } from "@/lib/auth-return-path";
 import { validateRequest } from "@/lib/validate-request";
 
 const formSchema = z.object({
@@ -28,7 +29,7 @@ const formSchema = z.object({
   password: z.string(),
 });
 
-export function LoginForm() {
+export function LoginForm({ returnTo }: { returnTo: string }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -42,10 +43,10 @@ export function LoginForm() {
     (async () => {
       const { user } = await validateRequest();
       if (user) {
-        router.replace("/home");
+        router.replace(returnTo);
       }
     })();
-  }, [router]);
+  }, [router, returnTo]);
 
   const userMutation = useMutation({
     mutationFn: async (values: z.infer<typeof formSchema>) => {
@@ -62,7 +63,7 @@ export function LoginForm() {
         } catch (error) {
           console.error("Failed to identify user with PostHog:", error);
         }
-        router.replace("/home");
+        router.replace(returnTo);
         toast.success("Вы успешно авторизовались");
       } else {
         const data = await res.json();
@@ -118,7 +119,9 @@ export function LoginForm() {
             Авторизоваться
           </Button>
           <Button variant="ghost" asChild>
-            <Link href="/auth/register">Нет аккаунта? Зарегистрироваться</Link>
+            <Link href={authPageHref("register", returnTo)}>
+              Нет аккаунта? Зарегистрироваться
+            </Link>
           </Button>
           <Button variant="outline" asChild>
             <Link href="/auth/reset-password">Забыл пароль</Link>
