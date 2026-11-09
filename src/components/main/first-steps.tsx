@@ -35,7 +35,8 @@ export default async function FirstSteps() {
     {
       id: "book",
       completed: createdBook,
-      text: "Добавить книгу на странице Книги или тут",
+      text: "Добавить книгу на странице «Книги»",
+      href: "/books",
     },
     {
       id: "reading",
