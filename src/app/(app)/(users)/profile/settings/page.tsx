@@ -10,7 +10,7 @@ export default async function SettingsPage() {
     <div className="mb-20">
       <div className="m-2 flex items-center gap-2 text-3xl font-bold">
         <Button variant="ghost" size="icon" asChild>
-          <Link href="/profile">
+          <Link href="/profile" aria-label="Назад к профилю">
             <ChevronLeft className="size-8" />
           </Link>
         </Button>
