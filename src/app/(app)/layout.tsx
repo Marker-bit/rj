@@ -41,8 +41,10 @@ export default async function Layout({
               userId: user.id,
             },
           },
-          include: {
-            book: true,
+          select: {
+            readAt: true,
+            bookId: true,
+            pagesRead: true,
           },
           orderBy: {
             readAt: "asc",

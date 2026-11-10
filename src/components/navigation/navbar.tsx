@@ -1,6 +1,5 @@
 "use client";
 
-import type { ReadEvent } from "@prisma/client";
 import type { User } from "lucia";
 import { BarChartBig, BookIcon, HouseIcon, Menu, Users } from "lucide-react";
 import Link from "next/link";
@@ -18,6 +17,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import type { StreakEvent } from "@/lib/stats";
 import { ModeToggle } from "../mode-toggle";
 import { Skeleton } from "../ui/skeleton";
 import { Tabs } from "../ui/vercel-tabs";
@@ -42,7 +42,7 @@ export default function NavBar({
   auth,
   build,
 }: {
-  events: Promise<ReadEvent[]>;
+  events: Promise<StreakEvent[]>;
   auth: Promise<{ user: User; unread: number } | { user: null; unread: null }>;
   build: BuildInfo;
 }) {
