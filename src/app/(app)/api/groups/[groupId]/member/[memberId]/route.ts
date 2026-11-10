@@ -16,7 +16,7 @@ export async function PATCH(
     });
   }
 
-  const group = await db.group.findUniqueOrThrow({
+  const group = await db.group.findFirst({
     where: {
       id: params.groupId,
       members: {
@@ -105,7 +105,7 @@ export async function DELETE(
     });
   }
 
-  const group = await db.group.findUniqueOrThrow({
+  const group = await db.group.findFirst({
     where: {
       id: params.groupId,
       members: {

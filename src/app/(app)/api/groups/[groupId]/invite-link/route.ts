@@ -19,7 +19,7 @@ export async function POST(
   const params = await props.params;
   const { user } = await validateRequest();
   if (!user) return new NextResponse("Unauthorized", { status: 401 });
-  const group = await db.group.findUniqueOrThrow({
+  const group = await db.group.findFirst({
     where: {
       id: params.groupId,
       members: {
@@ -35,6 +35,13 @@ export async function POST(
       members: true,
     },
   });
+
+  if (!group)
+    return NextResponse.json(
+      { error: "Не существует группы" },
+      { status: 404 },
+    );
+
   const id = await generateInviteLinkId();
   const member = group.members.find((m) => m.userId === user.id);
   if (!member)

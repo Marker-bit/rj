@@ -61,12 +61,18 @@ export async function PATCH(
     );
   }
 
-  const originalBook = await db.book.findUniqueOrThrow({
+  const originalBook = await db.book.findUnique({
     where: {
       id: bookId,
       userId: user.id,
     },
   });
+
+  if (!originalBook) {
+    return new NextResponse("Not Found", {
+      status: 404,
+    });
+  }
 
   const updateBook = await db.book.update({
     where: {

@@ -11,11 +11,13 @@ export async function POST(
   const { user } = await validateRequest();
   if (!user) return new NextResponse("Unauthorized", { status: 401 });
 
-  const link = await db.groupInviteLink.findUniqueOrThrow({
+  const link = await db.groupInviteLink.findUnique({
     where: {
       id: params.linkId,
     },
   });
+
+  if (!link) return new NextResponse("Not Found", { status: 404 });
 
   const group = await db.group.update({
     where: {

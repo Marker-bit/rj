@@ -10,7 +10,7 @@ export async function DELETE(
   const params = await props.params;
   const { user } = await validateRequest();
   if (!user) return new NextResponse("Unauthorized", { status: 401 });
-  const group = await db.group.findUniqueOrThrow({
+  const group = await db.group.findFirst({
     where: {
       id: params.groupId,
       members: {

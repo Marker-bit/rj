@@ -16,7 +16,7 @@ export async function POST(
     });
   }
 
-  const book = await db.book.findUniqueOrThrow({
+  const book = await db.book.findUnique({
     where: {
       id: params.bookId,
       userId: user.id,
@@ -28,8 +28,8 @@ export async function POST(
   });
 
   if (!book) {
-    return new NextResponse(null, {
-      status: 400,
+    return new NextResponse("Not Found", {
+      status: 404,
     });
   }
 

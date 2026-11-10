@@ -13,7 +13,7 @@ export async function DELETE(
       status: 401,
     });
   }
-  const book = await db.book.findUniqueOrThrow({
+  const book = await db.book.findUnique({
     where: {
       id: bookId,
       userId: user.id,
@@ -26,6 +26,10 @@ export async function DELETE(
       },
     },
   });
+  if (!book)
+    return new NextResponse("Not Found", {
+      status: 404,
+    });
   if (!book.readEvents.length)
     return new NextResponse(null, {
       status: 400,
