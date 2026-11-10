@@ -4,9 +4,7 @@ import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
 
 async function generateInviteLinkId(): Promise<string> {
-  const id = Math.random()
-    .toString(36)
-    .substring(2, 6 + 2);
+  const id = crypto.randomUUID().replace(/-/g, "").slice(0, 16);
   const existingLink = await db.groupInviteLink.findUnique({ where: { id } });
 
   return existingLink ? generateInviteLinkId() : id;
@@ -19,7 +17,7 @@ export async function POST(
   const params = await props.params;
   const { user } = await validateRequest();
   if (!user) return new NextResponse("Unauthorized", { status: 401 });
-  const group = await db.group.findUniqueOrThrow({
+  const group = await db.group.findFirst({
     where: {
       id: params.groupId,
       members: {
@@ -35,6 +33,13 @@ export async function POST(
       members: true,
     },
   });
+
+  if (!group)
+    return NextResponse.json(
+      { error: "Не существует группы" },
+      { status: 404 },
+    );
+
   const id = await generateInviteLinkId();
   const member = group.members.find((m) => m.userId === user.id);
   if (!member)

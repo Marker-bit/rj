@@ -14,7 +14,7 @@ export async function POST(
   }
 
   const { linkId } = params;
-  const link = await db.bookLink.findUniqueOrThrow({
+  const link = await db.bookLink.findUnique({
     where: {
       id: linkId,
     },
@@ -22,6 +22,10 @@ export async function POST(
       book: true,
     },
   });
+
+  if (!link) {
+    return new Response("Not Found", { status: 404 });
+  }
 
   const newBook = await db.book.create({
     data: {
