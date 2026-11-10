@@ -14,14 +14,16 @@ export async function POST(
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const book = await db.book.findUniqueOrThrow({
+  const book = await db.book.findUnique({
     where: {
       id: params.bookId,
       userId: user.id,
     },
   });
 
-  const groupMember = await db.groupMember.findFirstOrThrow({
+  if (!book) return new NextResponse("Not Found", { status: 404 });
+
+  const groupMember = await db.groupMember.findFirst({
     where: {
       userId: user.id,
       groupId: params.groupId,
@@ -30,6 +32,8 @@ export async function POST(
       },
     },
   });
+
+  if (!groupMember) return new NextResponse("Forbidden", { status: 403 });
 
   const groupBook = await db.groupBook.create({
     data: {
