@@ -50,45 +50,6 @@ export async function POST(request: NextRequest) {
   );
 }
 
-export async function PATCH(request: NextRequest) {
-  const { user } = await validateRequest();
-  if (!user) {
-    return new NextResponse("Not Authorized", {
-      status: 401,
-    });
-  }
-
-  const data = await request.json();
-  const {
-    firstName,
-    lastName,
-    avatarUrl,
-    shareFollowers,
-    shareSubscriptions,
-    shareStats,
-    hideActivity,
-    aiEnabled,
-  } = data;
-  const updatedUser = await db.user.update({
-    where: {
-      id: user.id,
-    },
-    data: {
-      firstName,
-      lastName,
-      avatarUrl,
-      shareFollowers,
-      shareSubscriptions,
-      shareStats,
-      hideActivity,
-      aiEnabled,
-      active: true,
-    },
-  });
-
-  return NextResponse.json(updatedUser);
-}
-
 export async function DELETE(_request: NextRequest) {
   const { session } = await validateRequest();
   if (!session) {
