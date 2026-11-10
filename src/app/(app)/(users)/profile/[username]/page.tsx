@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
+import { publicUserSelect } from "@/lib/user-select";
 import FollowButton from "./follow-button";
 import { UserTabs } from "./user-tabs";
 
@@ -45,17 +46,25 @@ export default async function Page(props: {
         equals: username,
       },
     },
-    include: {
-      following: {
-        include: {
-          first: true,
-          second: true,
+    select: {
+      ...publicUserSelect,
+      shareSubscriptions: true,
+      shareFollowers: true,
+      shareStats: true,
+      follower: {
+        select: {
+          id: true,
+          firstId: true,
+          secondId: true,
+          second: { select: publicUserSelect },
         },
       },
-      follower: {
-        include: {
-          first: true,
-          second: true,
+      following: {
+        select: {
+          id: true,
+          firstId: true,
+          secondId: true,
+          first: { select: publicUserSelect },
         },
       },
     },

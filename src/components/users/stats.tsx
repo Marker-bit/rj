@@ -1,4 +1,4 @@
-import type { ReadEvent, User } from "@prisma/client";
+import type { ReadEvent } from "@prisma/client";
 import {
   addHours,
   differenceInDays,
@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { getStreak } from "@/lib/stats";
+import type { FollowEdge, PublicUser } from "@/lib/user-types";
 import { declOfNum } from "@/lib/utils";
 
 function StatLink({
@@ -35,17 +36,9 @@ export async function Stats({
   books,
   isOwnProfile,
 }: {
-  profile: User & {
-    follower: {
-      id: string;
-      firstId: string;
-      secondId: string;
-    }[];
-    following: {
-      id: string;
-      firstId: string;
-      secondId: string;
-    }[];
+  profile: PublicUser & {
+    follower: FollowEdge[];
+    following: FollowEdge[];
   };
   events: (ReadEvent & {
     book: {
