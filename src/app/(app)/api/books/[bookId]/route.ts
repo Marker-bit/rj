@@ -86,8 +86,6 @@ export async function PATCH(
       },
     });
 
-    console.log(bookEvents);
-
     if (bookEvents.length > 0) {
       await db.$transaction(
         bookEvents.map((event) => {

@@ -1,10 +1,11 @@
 "use server";
 
 import type { BackgroundColor } from "@prisma/client";
-import { prettifyError, z } from "zod";
+import { prettifyError } from "zod";
 import { fetchBooks } from "../books";
 import { db } from "../db";
 import { validateRequest } from "../server-validate-request";
+import { bookSchema } from "../validation/schemas";
 
 export async function getBooks(
   orderBy: "percent" | "activity" = "percent",
@@ -23,22 +24,6 @@ export async function getBooks(
   }
   return books;
 }
-
-const bookSchema = z.object({
-  title: z.string().min(1),
-  author: z.string().min(1),
-  pages: z.coerce.number().min(1),
-  description: z.string().optional(),
-  coverUrl: z.string().optional(),
-  fields: z.array(
-    z.object({
-      title: z.string({ error: "Название поля обязательно" }),
-      value: z.string({
-        error: "Значение поля обязательно",
-      }),
-    }),
-  ),
-});
 
 export async function createBook(book: {
   title: string;
