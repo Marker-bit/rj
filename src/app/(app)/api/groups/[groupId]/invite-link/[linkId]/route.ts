@@ -33,6 +33,7 @@ export async function DELETE(
   await db.groupInviteLink.delete({
     where: {
       id: params.linkId,
+      groupId: params.groupId,
     },
   });
 
