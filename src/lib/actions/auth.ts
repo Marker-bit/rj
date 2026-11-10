@@ -49,7 +49,7 @@ export async function resetPassword(data: {
   if (!user) {
     return {
       error: true,
-      message: "Пользователь не найден",
+      message: "Не удалось подтвердить данные аккаунта",
     };
   }
 
@@ -93,7 +93,7 @@ export async function resetPassword(data: {
   if (!book1 || !book2 || !book3) {
     return {
       error: true,
-      message: "Книги не найдены",
+      message: "Не удалось подтвердить данные аккаунта",
     };
   }
 
@@ -107,6 +107,8 @@ export async function resetPassword(data: {
       hashedPassword,
     },
   });
+
+  await db.session.deleteMany({ where: { userId: user.id } });
 
   return {
     error: false,
