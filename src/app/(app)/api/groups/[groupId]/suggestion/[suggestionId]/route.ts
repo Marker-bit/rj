@@ -14,11 +14,18 @@ export async function POST(
     });
   }
   const { groupId, suggestionId } = params;
-  const suggestion = await db.groupBookSuggestion.findUniqueOrThrow({
+  const suggestion = await db.groupBookSuggestion.findFirst({
     where: {
       id: suggestionId,
+      groupId,
     },
   });
+  if (!suggestion) {
+    return NextResponse.json(
+      { error: "Предложение не найдено" },
+      { status: 404 },
+    );
+  }
   const group = await db.group.findFirst({
     where: {
       id: groupId,
