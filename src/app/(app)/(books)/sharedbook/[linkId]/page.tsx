@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
+import { publicUserSelect } from "@/lib/user-select";
 import { declOfNum } from "@/lib/utils";
 import { CloneButton } from "./clone-button";
 
@@ -17,7 +18,7 @@ export default async function Page(props: {
     where: { links: { some: { id: params.linkId } } },
     include: {
       readEvents: { orderBy: [{ pagesRead: "desc" }, { readAt: "desc" }] },
-      user: true,
+      user: { select: publicUserSelect },
     },
   });
   if (!book) {

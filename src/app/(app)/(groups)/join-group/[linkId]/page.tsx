@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { db } from "@/lib/db";
 import { requireUser } from "@/lib/require-user";
+import { publicUserSelect } from "@/lib/user-select";
 import { declOfNum } from "@/lib/utils";
 import { JoinGroupButton } from "./buttons";
 
@@ -27,7 +28,7 @@ export default async function Page(props: {
       },
       createdBy: {
         include: {
-          user: true,
+          user: { select: publicUserSelect },
         },
       },
     },

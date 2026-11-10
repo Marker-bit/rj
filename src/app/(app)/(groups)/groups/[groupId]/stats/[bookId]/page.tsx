@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { db } from "@/lib/db";
 import { requireUser } from "@/lib/require-user";
+import { publicUserSelect } from "@/lib/user-select";
 import { MemberInfo } from "./member";
 
 export const dynamic = "force-dynamic";
@@ -21,7 +22,7 @@ export default async function Page(props: {
     include: {
       members: {
         include: {
-          user: true,
+          user: { select: publicUserSelect },
         },
       },
       groupBooks: {
@@ -47,7 +48,7 @@ export default async function Page(props: {
       group: true,
       book: {
         include: {
-          user: true,
+          user: { select: publicUserSelect },
           readEvents: {
             orderBy: [{ pagesRead: "desc" }, { readAt: "desc" }],
           },

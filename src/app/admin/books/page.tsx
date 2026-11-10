@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { publicUserSelect } from "@/lib/user-select";
 import { declOfNum } from "@/lib/utils";
 import BookPagination from "./pagination";
 import BookTable from "./table";
@@ -19,7 +20,7 @@ export default async function Page(props: {
   }
   const books = await db.book.findMany({
     include: {
-      user: true,
+      user: { select: publicUserSelect },
       groupBook: {
         include: {
           group: {

@@ -1,6 +1,6 @@
 "use client";
 
-import type { Book, GroupBook, GroupMember, User } from "@prisma/client";
+import type { Book, GroupBook, GroupMember } from "@prisma/client";
 import { BadgeCheck, Check, UserSquare2, X } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -11,6 +11,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import ChangedInfo from "../../_components/changed-info";
+import type { PublicUser } from "@/lib/user-types";
 
 export function MemberInfo({
   member,
@@ -22,7 +23,7 @@ export function MemberInfo({
   currentMember,
 }: {
   member: GroupMember & {
-    user: User;
+    user: PublicUser;
   };
   currentMember: GroupMember;
   group: { id: string };
