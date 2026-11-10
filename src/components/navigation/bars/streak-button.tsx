@@ -1,6 +1,5 @@
 "use client";
 
-import type { ReadEvent } from "@prisma/client";
 import {
   addDays,
   addWeeks,
@@ -24,13 +23,13 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { getDays, getStreak } from "@/lib/stats";
+import { getDays, getStreak, type StreakEvent } from "@/lib/stats";
 import { capitalizeFirstLetter, cn, declOfNum } from "@/lib/utils";
 
 export function StreakButton({
   events: eventsPromise,
 }: {
-  events: Promise<ReadEvent[]>;
+  events: Promise<StreakEvent[]>;
 }) {
   const [weekPadding, setWeekPadding] = useState(0);
   const events = use(eventsPromise);

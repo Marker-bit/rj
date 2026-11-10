@@ -40,8 +40,14 @@ export default function BookReadInfo({
   const [currentStep, setCurrentStep] = useState(0);
   const [direction, setDirection] = useState<-1 | 0 | 1>(0);
   const chartData = useMemo(
-    () => getEventDays([...book.readEvents].reverse()),
-    [book.readEvents],
+    () =>
+      getEventDays(
+        [...book.readEvents].reverse().map((event) => ({
+          ...event,
+          bookId: book.id,
+        })),
+      ),
+    [book.readEvents, book.id],
   );
 
   const firstEvent = book.readEvents.at(-1);
