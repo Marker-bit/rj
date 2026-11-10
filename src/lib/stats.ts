@@ -3,7 +3,6 @@ import {
   addDays,
   addWeeks,
   endOfWeek,
-  isSameDay,
   startOfDay,
   startOfWeek,
   subDays,
@@ -41,30 +40,51 @@ export function getStreak(events: StreakEvent[]) {
   return { streak, breakDay: startOfDay(lastReadDay), readToday };
 }
 
+/**
+ * Pages read per local calendar day. Each book's events are ordered by
+ * `readAt`, and only the increase in `pagesRead` is counted, so re-reading the
+ * same pages on a later day does not add pages twice.
+ */
+function getPagesReadByDay(events: StreakEvent[]) {
+  const byBook = new Map<string, StreakEvent[]>();
+  for (const event of events) {
+    const bookEvents = byBook.get(event.bookId);
+    if (bookEvents) {
+      bookEvents.push(event);
+    } else {
+      byBook.set(event.bookId, [event]);
+    }
+  }
+
+  const pagesReadByDay = new Map<number, number>();
+  for (const bookEvents of byBook.values()) {
+    bookEvents.sort((a, b) => a.readAt.getTime() - b.readAt.getTime());
+    let previousPages = 0;
+    for (const [index, event] of bookEvents.entries()) {
+      const pagesRead =
+        index === 0
+          ? event.pagesRead
+          : Math.max(event.pagesRead - previousPages, 0);
+      previousPages = event.pagesRead;
+      const day = startOfDay(event.readAt).getTime();
+      pagesReadByDay.set(day, (pagesReadByDay.get(day) ?? 0) + pagesRead);
+    }
+  }
+
+  return pagesReadByDay;
+}
+
 export function getEventDays(events: StreakEvent[]) {
   if (events.length === 0) {
     return [];
   }
+  const pagesReadByDay = getPagesReadByDay(events);
   const startDay = events[0].readAt;
   const endDay = events[events.length - 1].readAt;
   let current = startDay;
   const res: Map<Date, number> = new Map();
   while (current <= endDay) {
-    const todayEvents = events.filter((e) => isSameDay(e.readAt, current));
-    let dayStreak = 0;
-    if (todayEvents.length) {
-      for (const event of todayEvents) {
-        const bookEvents = events.filter((e) => e.bookId === event.bookId);
-        if (bookEvents.length === 1 || bookEvents.indexOf(event) === 0) {
-          dayStreak += event.pagesRead;
-        } else {
-          const previousEventIndex = bookEvents.indexOf(event) - 1;
-          const previousEvent = bookEvents[previousEventIndex];
-          dayStreak += event.pagesRead - previousEvent.pagesRead;
-        }
-      }
-    }
-    res.set(current, dayStreak);
+    res.set(current, pagesReadByDay.get(startOfDay(current).getTime()) ?? 0);
     current = addDays(current, 1);
   }
   return res.entries().map
@@ -78,6 +98,7 @@ export function getDays(events: StreakEvent[], weekPadding: number = 0) {
   const now = new Date();
   const from = startOfWeek(now, { weekStartsOn: 1 });
   const to = endOfWeek(now, { weekStartsOn: 1 });
+  const pagesReadByDay = getPagesReadByDay(events);
   let current = addWeeks(from, weekPadding); // because weekPadding is a negative number
   let currentDays = 0;
   const streak: Record<string, number> = {};
@@ -85,20 +106,9 @@ export function getDays(events: StreakEvent[], weekPadding: number = 0) {
     streak[i] = 0;
   }
   while (current <= to) {
-    const todayEvents = events.filter((e) => isSameDay(e.readAt, current));
-    if (todayEvents.length) {
-      let dayStreak = 0;
-      for (const event of todayEvents) {
-        const bookEvents = events.filter((e) => e.bookId === event.bookId);
-        if (bookEvents.length === 1 || bookEvents.indexOf(event) === 0) {
-          dayStreak += event.pagesRead;
-        } else {
-          const previousEventIndex = bookEvents.indexOf(event) - 1;
-          const previousEvent = bookEvents[previousEventIndex];
-          dayStreak += event.pagesRead - previousEvent.pagesRead;
-        }
-      }
-      streak[currentDays] = dayStreak;
+    const pagesRead = pagesReadByDay.get(startOfDay(current).getTime());
+    if (pagesRead !== undefined) {
+      streak[currentDays] = pagesRead;
     }
     current = addDays(current, 1);
     currentDays++;
@@ -111,6 +121,7 @@ export function getDays2(events: StreakEvent[]) {
   const now = new Date();
   const from = subDays(now, 6);
   const to = now;
+  const pagesReadByDay = getPagesReadByDay(events);
   let current = from;
   let currentDays = 0;
   const streak: Record<string, number> = {};
@@ -119,24 +130,13 @@ export function getDays2(events: StreakEvent[]) {
     streak[i] = 0;
   }
   while (current <= to) {
-    const todayEvents = events.filter((e) => isSameDay(e.readAt, current));
-    let dayStreak = 0;
-    if (todayEvents.length) {
-      for (const event of todayEvents) {
-        const bookEvents = events.filter((e) => e.bookId === event.bookId);
-        if (bookEvents.length === 1 || bookEvents.indexOf(event) === 0) {
-          dayStreak += event.pagesRead;
-        } else {
-          const previousEventIndex = bookEvents.indexOf(event) - 1;
-          const previousEvent = bookEvents[previousEventIndex];
-          dayStreak += event.pagesRead - previousEvent.pagesRead;
-        }
-      }
-      streak[currentDays] = dayStreak;
+    const pagesRead = pagesReadByDay.get(startOfDay(current).getTime()) ?? 0;
+    if (pagesRead) {
+      streak[currentDays] = pagesRead;
     }
     res.push({
       date: current,
-      pagesRead: dayStreak,
+      pagesRead: pagesRead,
     });
     current = addDays(current, 1);
     currentDays++;
