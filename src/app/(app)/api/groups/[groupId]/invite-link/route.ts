@@ -4,9 +4,7 @@ import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
 
 async function generateInviteLinkId(): Promise<string> {
-  const id = Math.random()
-    .toString(36)
-    .substring(2, 6 + 2);
+  const id = crypto.randomUUID().replace(/-/g, "").slice(0, 16);
   const existingLink = await db.groupInviteLink.findUnique({ where: { id } });
 
   return existingLink ? generateInviteLinkId() : id;

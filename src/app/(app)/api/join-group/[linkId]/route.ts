@@ -19,22 +19,33 @@ export async function POST(
 
   if (!link) return new NextResponse("Not Found", { status: 404 });
 
-  const group = await db.group.update({
+  const existing = await db.groupMember.findFirst({
+    where: {
+      groupId: link.groupId,
+      userId: user.id,
+    },
+  });
+
+  if (existing) return NextResponse.json({ groupId: link.groupId });
+
+  const group = await db.group.findFirst({
     where: {
       id: link.groupId,
-      members: {
+      blockedUsers: {
         none: {
-          userId: user.id,
+          id: user.id,
         },
       },
     },
+  });
+
+  if (!group) return new NextResponse("Forbidden", { status: 403 });
+
+  await db.groupMember.create({
     data: {
-      members: {
-        create: {
-          userId: user.id,
-          role: GroupMemberRole.MEMBER,
-        },
-      },
+      userId: user.id,
+      groupId: group.id,
+      role: GroupMemberRole.MEMBER,
     },
   });
 
