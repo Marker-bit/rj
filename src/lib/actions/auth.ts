@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { lucia } from "../auth";
 import { db } from "../db";
+import { checkRateLimit } from "../rate-limit";
 import { validateRequest } from "../server-validate-request";
 
 export async function resetPassword(data: {
@@ -26,6 +27,17 @@ export async function resetPassword(data: {
     pages?: number | undefined;
   };
 }) {
+  const rateLimit = checkRateLimit(`reset:${data.username}`, {
+    limit: 5,
+    windowMs: 60 * 60 * 1000,
+  });
+  if (!rateLimit.ok) {
+    return {
+      error: true,
+      message: "Слишком много попыток",
+    };
+  }
+
   const user = await db.user.findUnique({
     where: {
       username: data.username,
@@ -37,7 +49,7 @@ export async function resetPassword(data: {
   if (!user) {
     return {
       error: true,
-      message: "Пользователь не найден",
+      message: "Не удалось подтвердить данные аккаунта",
     };
   }
 
@@ -84,7 +96,7 @@ export async function resetPassword(data: {
   if (!book1 || !book2 || !book3) {
     return {
       error: true,
-      message: "Книги не найдены",
+      message: "Не удалось подтвердить данные аккаунта",
     };
   }
 
@@ -98,6 +110,8 @@ export async function resetPassword(data: {
       hashedPassword,
     },
   });
+
+  await db.session.deleteMany({ where: { userId: user.id } });
 
   return {
     error: false,

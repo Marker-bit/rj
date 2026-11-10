@@ -175,6 +175,11 @@ export default function GenerateRecommendation() {
         endsOn: addDays(today, 6),
         published: false,
       });
+      if ("error" in res) {
+        toast.error(res.error);
+        setSaveLoading(false);
+        return;
+      }
       toast.success(res.message);
       setSaveLoading(false);
       setOpen(false);

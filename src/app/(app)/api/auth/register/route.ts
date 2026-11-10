@@ -1,9 +1,9 @@
 import { hash } from "@node-rs/argon2";
 import { cookies } from "next/headers";
 import { type NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
 import { lucia } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { checkRateLimit } from "@/lib/rate-limit";
 import { validateRequest } from "@/lib/server-validate-request";
 import { registerSchema } from "@/lib/validation/schemas";
 
@@ -21,8 +21,34 @@ export async function POST(request: NextRequest) {
     );
   }
   const data = await request.json();
-  const username = data.username;
-  const password = data.password;
+
+  const parsed = registerSchema.safeParse(data);
+  if (!parsed.success) {
+    const message = parsed.error.issues.map((i) => i.message).join(", ");
+    return NextResponse.json(
+      {
+        error: message,
+      },
+      { status: 400 },
+    );
+  }
+
+  const ip =
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const rateLimit = checkRateLimit(`register:${ip}`, {
+    limit: 5,
+    windowMs: 60 * 60 * 1000,
+  });
+  if (!rateLimit.ok) {
+    return NextResponse.json(
+      {
+        error: "Слишком много попыток",
+      },
+      { status: 429 },
+    );
+  }
+
+  const { username, password, firstName, lastName } = parsed.data;
   const hashedPassword = await hash(password);
 
   const user = await db.user.findFirst({
@@ -37,34 +63,6 @@ export async function POST(request: NextRequest) {
       },
       { status: 400 },
     );
-  }
-
-  try {
-    registerSchema.parse(data);
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      const message = error.issues.map((i) => i.message).join(", ");
-      return NextResponse.json(
-        {
-          error: message,
-        },
-        { status: 400 },
-      );
-      /* [
-        {
-          expected: 'string',
-          code: 'invalid_type',
-          path: [ 'username' ],
-          message: 'Invalid input: expected string'
-        },
-        {
-          expected: 'number',
-          code: 'invalid_type',
-          path: [ 'xp' ],
-          message: 'Invalid input: expected number'
-        }
-      ] */
-    }
   }
 
   // const avatar = createAvatar(shapes, {
@@ -95,8 +93,8 @@ export async function POST(request: NextRequest) {
       username: username,
       hashedPassword,
       active: true,
-      firstName: data.firstName,
-      lastName: data.lastName,
+      firstName: firstName,
+      lastName: lastName,
       // avatarUrl: files.data?.url,
     },
   });
