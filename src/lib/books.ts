@@ -28,8 +28,26 @@ export async function fetchBooks(
               not: BookStatus.ARCHIVED,
             },
     },
-    include: {
+    select: {
+      id: true,
+      title: true,
+      author: true,
+      pages: true,
+      createdAt: true,
+      description: true,
+      coverUrl: true,
+      background: true,
+      status: true,
+      fields: true,
+      userId: true,
+      groupBookId: true,
+      fromRecommendationId: true,
       readEvents: {
+        select: {
+          id: true,
+          pagesRead: true,
+          readAt: true,
+        },
         orderBy: [
           { pagesRead: "desc" },
           {
@@ -37,13 +55,29 @@ export async function fetchBooks(
           },
         ],
       },
-      collections: true,
-      groupBook: {
-        include: {
-          group: true,
+      collections: {
+        select: {
+          id: true,
+          name: true,
         },
       },
-      links: true,
+      groupBook: {
+        select: {
+          id: true,
+          groupId: true,
+          group: {
+            select: {
+              id: true,
+              title: true,
+            },
+          },
+        },
+      },
+      links: {
+        select: {
+          id: true,
+        },
+      },
     },
   });
   const compareBooksByPercent = (a: Book, b: Book) => {
