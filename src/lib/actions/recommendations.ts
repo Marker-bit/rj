@@ -9,7 +9,7 @@ const recommendationSchema = z.object({
   bookInfo: z.string().min(1),
   title: z.string().min(1),
   author: z.string().min(1),
-  pages: z.coerce.number().int().min(1),
+  pages: z.coerce.number().int().min(0),
   startsOn: z.coerce.date(),
   endsOn: z.coerce.date(),
   published: z.boolean(),
