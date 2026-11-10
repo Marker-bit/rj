@@ -1,6 +1,5 @@
 "use client";
 
-import type { User } from "@prisma/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { BadgeCheck, UserPlus, UserX } from "lucide-react";
 import Image from "next/image";
@@ -10,6 +9,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { revalidate } from "@/lib/actions/revalidate";
+import type { PublicUser } from "@/lib/user-types";
 import { Badge } from "../ui/badge";
 import { Loader } from "../ui/loader";
 
@@ -17,7 +17,7 @@ export function FriendView({
   friend,
   following,
 }: {
-  friend: User;
+  friend: PublicUser;
   following?: boolean;
 }) {
   const queryClient = useQueryClient();

@@ -2,6 +2,7 @@ import { SharePeople } from "@prisma/client";
 import { type NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
+import { publicUserSelect } from "@/lib/user-select";
 
 export async function GET(
   _req: NextRequest,
@@ -9,29 +10,44 @@ export async function GET(
 ) {
   const params = await props.params;
   const { user: currentUser } = await validateRequest();
-  const user = await db.user.findFirstOrThrow({
+  const user = await db.user.findUnique({
     where: {
       username: params.username,
     },
-    include: {
+    select: {
+      ...publicUserSelect,
+      shareSubscriptions: true,
+      shareFollowers: true,
+      shareStats: true,
       follower: {
         select: {
-          second: true,
+          second: { select: publicUserSelect },
         },
       },
       following: {
         select: {
-          first: true,
+          first: { select: publicUserSelect },
         },
       },
     },
   });
 
+  if (!user) {
+    return new NextResponse("Not Found", { status: 404 });
+  }
+
   if (!currentUser) {
     return NextResponse.json({
-      ...user,
+      id: user.id,
+      username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      avatarUrl: user.avatarUrl,
+      verified: user.verified,
+      following: false,
     });
   }
+
   const follow = await db.follow.findFirst({
     where: {
       firstId: currentUser.id,

@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/tooltip";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
+import { publicUserSelect } from "@/lib/user-select";
 import { declOfNum } from "@/lib/utils";
 import ChangedInfo from "../../_components/changed-info";
 
@@ -35,7 +36,7 @@ export default async function Page(props: {
     include: {
       members: {
         include: {
-          user: true,
+          user: { select: publicUserSelect },
         },
       },
       groupBooks: {
@@ -68,7 +69,7 @@ export default async function Page(props: {
       id: params.memberId,
     },
     include: {
-      user: true,
+      user: { select: publicUserSelect },
       booksAdded: true,
     },
   });

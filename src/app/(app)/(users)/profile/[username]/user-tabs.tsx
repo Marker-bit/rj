@@ -1,9 +1,10 @@
 "use client";
 
-import { type User as DbUser, SharePeople } from "@prisma/client";
+import { SharePeople } from "@prisma/client";
 import type { User } from "lucia";
 import { FriendView } from "@/components/users/friend-view";
 import { Stats } from "@/components/users/stats";
+import type { ProfileUser } from "@/lib/user-types";
 
 export function UserTabs({
   user,
@@ -11,20 +12,7 @@ export function UserTabs({
   events,
   books,
 }: {
-  user: DbUser & {
-    following: {
-      first: DbUser;
-      second: DbUser;
-      firstId: string;
-      secondId: string;
-    }[];
-    follower: {
-      first: DbUser;
-      second: DbUser;
-      firstId: string;
-      secondId: string;
-    }[];
-  };
+  user: ProfileUser;
   currentUser: User | null;
   events: ({
     book: {
@@ -70,7 +58,7 @@ export function UserTabs({
       {shareSubscriptions && user.follower?.length !== 0 && (
         <div className="flex flex-col">
           <div className="text-3xl font-semibold">Подписки</div>
-          {user.follower?.map(({ second: friend }: { second: any }) => (
+          {user.follower?.map(({ second: friend }) => (
             <FriendView key={friend.id} friend={friend} />
           ))}
         </div>
@@ -78,7 +66,7 @@ export function UserTabs({
       {shareFollowers && user.following?.length !== 0 && (
         <div className="flex flex-col">
           <div className="text-3xl font-semibold">Подписчики</div>
-          {user.following.map(({ first: friend }: { first: any }) => (
+          {user.following.map(({ first: friend }) => (
             <FriendView key={friend.id} friend={friend} />
           ))}
         </div>
@@ -87,7 +75,7 @@ export function UserTabs({
         <div className="flex flex-col">
           <div className="text-3xl font-semibold">Статистика</div>
           <Stats
-            profile={user as any}
+            profile={user}
             events={events}
             books={books}
             isOwnProfile={false}

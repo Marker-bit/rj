@@ -1,16 +1,17 @@
 "use client";
 
-import type { Book, ReadEvent, User } from "@prisma/client";
+import type { Book, ReadEvent } from "@prisma/client";
 import { ChevronDown } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
+import type { PublicUser } from "@/lib/user-types";
 import { cn, declOfNum } from "@/lib/utils";
 import Event from "./event";
 
 export default function EventRepeat({
   events,
 }: {
-  events: (ReadEvent & { book: Book & { user: User } })[];
+  events: (ReadEvent & { book: Book & { user: PublicUser } })[];
 }) {
   const fromPage = events[events.length - 1].pagesRead;
   const toPage = events[0].pagesRead;

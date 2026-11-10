@@ -25,6 +25,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { db } from "@/lib/db";
+import { publicUserSelect } from "@/lib/user-select";
 import { declOfNum } from "@/lib/utils";
 import BookMenu from "./book-menu";
 
@@ -82,7 +83,7 @@ export default async function Page() {
         },
         take: 1,
       },
-      user: true,
+      user: { select: publicUserSelect },
     },
   });
 

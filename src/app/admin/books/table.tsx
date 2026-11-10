@@ -1,6 +1,6 @@
 "use client";
 
-import type { Book, Group, GroupBook, GroupMember, User } from "@prisma/client";
+import type { Book, Group, GroupBook, GroupMember } from "@prisma/client";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -12,13 +12,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import type { PublicUser } from "@/lib/user-types";
 import { declOfNum } from "@/lib/utils";
 
 export default function BookTable({
   books,
 }: {
   books: (Book & {
-    user: User;
+    user: PublicUser;
     groupBook:
       | (GroupBook & { group: Group & { members: GroupMember[] } })
       | null;

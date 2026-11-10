@@ -1,7 +1,9 @@
-import type { Book, ReadEvent, User } from "@prisma/client";
+import type { Book, ReadEvent } from "@prisma/client";
 import type { ReactElement } from "react";
 import { db } from "@/lib/db";
 import { requireUser } from "@/lib/require-user";
+import { publicUserSelect } from "@/lib/user-select";
+import type { PublicUser } from "@/lib/user-types";
 import Event from "./event";
 import EventRepeat from "./event-repeat";
 import Pagination from "./pagination";
@@ -57,7 +59,7 @@ export default async function Page(props: {
           include: {
             book: {
               include: {
-                user: true,
+                user: { select: publicUserSelect },
               },
             },
           },
@@ -68,7 +70,7 @@ export default async function Page(props: {
           take: pageSize,
         });
   const components: ReactElement<any>[] = [];
-  let tempArray: (ReadEvent & { book: Book & { user: User } })[] = [];
+  let tempArray: (ReadEvent & { book: Book & { user: PublicUser } })[] = [];
 
   activity.forEach((event, index) => {
     tempArray.push(event);

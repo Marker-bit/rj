@@ -1,14 +1,15 @@
-import type { Book, ReadEvent, User } from "@prisma/client";
+import type { Book, ReadEvent } from "@prisma/client";
 import { BookCheck, BookOpen } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import type { PublicUser } from "@/lib/user-types";
 import { cn, dateToString, declOfNum } from "@/lib/utils";
 
 export default function Event({
   event,
 }: {
-  event: ReadEvent & { book: Book & { user: User } };
+  event: ReadEvent & { book: Book & { user: PublicUser } };
 }) {
   const book = event.book;
   const user = book.user;
