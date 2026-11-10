@@ -21,6 +21,9 @@
 .DS_Store
 *.pem
 
+# audit screenshots and scripts
+/artifacts/
+
 # debug
 npm-debug.log*
 yarn-debug.log*

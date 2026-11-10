@@ -9,7 +9,7 @@ services:
     ports:
       - 5433:5432
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "test", "-p", "5432", "-d", "rj"]
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-p", "5432", "-d", "rj"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -22,7 +22,7 @@ services:
       db:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "-q", "http://0.0.0.0:3000/api/health"]
+      test: ["CMD", "wget", "-q", "http://127.0.0.1:80/api/health"]
       interval: 10s
       timeout: 5s
       retries: 5

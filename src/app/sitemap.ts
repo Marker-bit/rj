@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const DOMAIN = "https://rjrj.ru";
+import { SITE_URL } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const routes = [
@@ -13,7 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ];
 
   return routes.map((route) => ({
-    url: `${DOMAIN}${route}`,
+    url: `${SITE_URL}${route}`,
     lastModified: new Date(),
     changeFrequency: route === "/" ? "always" : "monthly",
     priority: route === "/" ? 1 : 0.5,

@@ -9,9 +9,9 @@ import { QueryProvider } from "@/components/providers/query-client-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { SITE_URL } from "@/lib/site";
 
 const font = Inter({ variable: "--font-inter", subsets: ["latin"] });
-const siteUrl = "https://rj.markerbit.dev";
 const iconSizes = [72, 96, 128, 144, 152, 192, 384, 512] as const;
 const icons = iconSizes.map((size) => ({
   url: `/images/icons/icon-${size}x${size}.png`,
@@ -20,7 +20,7 @@ const icons = iconSizes.map((size) => ({
 }));
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(SITE_URL),
   title: "Читательский дневник",
   description: "Читательский дневник - социальная сеть для читателей",
   manifest: "/manifest.webmanifest",
@@ -33,12 +33,12 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Читательский дневник",
     description: "Социальная сеть для читателей",
-    url: siteUrl,
+    url: SITE_URL,
     images: ["/og.png"],
   },
   appLinks: {
     web: {
-      url: siteUrl,
+      url: SITE_URL,
     },
   },
   creator: "Mark Pentus",
