@@ -6,6 +6,7 @@ import { FriendView } from "@/components/users/friend-view";
 import { db } from "@/lib/db";
 import { pageMetadata } from "@/lib/page-metadata";
 import { validateRequest } from "@/lib/server-validate-request";
+import { publicUserSelect } from "@/lib/user-select";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +25,7 @@ export default async function FriendsPage() {
         },
       },
     },
+    select: publicUserSelect,
   });
   return (
     <div>
