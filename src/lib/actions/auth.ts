@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { lucia } from "../auth";
 import { db } from "../db";
+import { checkRateLimit } from "../rate-limit";
 import { validateRequest } from "../server-validate-request";
 
 export async function resetPassword(data: {
@@ -26,6 +27,17 @@ export async function resetPassword(data: {
     pages?: number | undefined;
   };
 }) {
+  const rateLimit = checkRateLimit(`reset:${data.username}`, {
+    limit: 5,
+    windowMs: 60 * 60 * 1000,
+  });
+  if (!rateLimit.ok) {
+    return {
+      error: true,
+      message: "Слишком много попыток",
+    };
+  }
+
   const user = await db.user.findUnique({
     where: {
       username: data.username,
