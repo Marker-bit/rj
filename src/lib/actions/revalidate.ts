@@ -31,6 +31,7 @@ const dynamicPagePaths: Partial<Record<keyof typeof pagePaths, string[]>> = {
 export type RevalidationScope = keyof typeof pagePaths;
 
 export async function revalidate(scope: RevalidationScope) {
+  if (scope === "books") revalidatePath("/", "layout");
   for (const path of pagePaths[scope]) {
     revalidatePath(path);
   }
