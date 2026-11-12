@@ -7,7 +7,7 @@ import { requireUser } from "@/lib/require-user";
 import { BookList } from "./book-list";
 import AddBookButton from "./button";
 import HiddenBooksCollapsible from "./hidden-books-collapsible";
-import { BookStatus } from "@prisma/client";
+import { BookStatus } from "@/generated/prisma/enums";
 
 export default async function BooksPage() {
   const user = await requireUser();

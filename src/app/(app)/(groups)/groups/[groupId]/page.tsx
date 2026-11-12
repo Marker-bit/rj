@@ -1,4 +1,4 @@
-import { GroupMemberRole } from "@prisma/client";
+import { GroupMemberRole } from "@/generated/prisma/enums";
 import {
   BadgeCheck,
   BarChart2,

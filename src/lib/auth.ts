@@ -1,7 +1,7 @@
 /* src/lib/utils.ts */
 
 import { PrismaAdapter } from "@lucia-auth/adapter-prisma";
-import type { SharePeople } from "@prisma/client";
+import type { SharePeople } from "@/generated/prisma/enums";
 import { Lucia } from "lucia";
 import { db } from "./db";
 

@@ -5,7 +5,7 @@ import type {
   SupportAnswer,
   SupportQuestion,
   User,
-} from "@prisma/client";
+} from "@/generated/prisma/browser";
 import { formatRelative } from "date-fns";
 import { ru } from "date-fns/locale";
 import type { User as LuciaUser } from "lucia";

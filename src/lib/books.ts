@@ -1,4 +1,4 @@
-import { BookStatus } from "@prisma/client";
+import { BookStatus } from "@/generated/prisma/enums";
 import type { Book } from "./api-types";
 import { db } from "./db";
 

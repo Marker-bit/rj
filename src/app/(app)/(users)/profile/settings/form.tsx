@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SharePeople } from "@/lib/enums";
+import { SharePeople } from "@/generated/prisma/enums";
 import { useMutation } from "@tanstack/react-query";
 import type { User as LuciaUser } from "lucia";
 import { Check, LogOut, PlusIcon, X, XIcon } from "lucide-react";

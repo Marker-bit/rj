@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { apiFetch } from "@/lib/api-fetch";
-import { GroupMemberRole } from "@/lib/enums";
+import { GroupMemberRole } from "@/generated/prisma/enums";
 import {
   BarChart2,
   MoreVertical,

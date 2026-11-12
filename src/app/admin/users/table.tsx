@@ -1,6 +1,6 @@
 "use client";
 
-import type { Book, User } from "@prisma/client";
+import type { Book, User } from "@/generated/prisma/browser";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {

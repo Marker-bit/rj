@@ -7,7 +7,7 @@ import { endOfDay, isToday } from "date-fns";
 import { bookSchema } from "@/lib/validation/schemas";
 import { filterSchema, searchBooks } from "@/lib/apis/books";
 import { utapi } from "@/app/(app)/api/uploadthing/core";
-import { BackgroundColor } from "@/lib/enums";
+import { BackgroundColor } from "@/generated/prisma/enums";
 
 export const toolSetForUser = (user: User) => ({
   getAllBooks: tool({

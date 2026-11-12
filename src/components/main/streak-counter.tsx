@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReadEvent } from "@prisma/client";
+import type { ReadEvent } from "@/generated/prisma/browser";
 import { addDays, differenceInDays, format, startOfWeek } from "date-fns";
 import { ru } from "date-fns/locale";
 import type { User } from "lucia";

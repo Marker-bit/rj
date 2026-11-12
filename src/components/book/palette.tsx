@@ -1,6 +1,6 @@
 "use client";
 
-import { BackgroundColor } from "@/lib/enums";
+import { BackgroundColor } from "@/generated/prisma/enums";
 import { Check, PaletteIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";

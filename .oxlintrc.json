@@ -16,6 +16,7 @@
     ".next/",
     "out/",
     "build/",
+    "src/generated/",
     "artifacts/",
     "next-env.d.ts"
   ]

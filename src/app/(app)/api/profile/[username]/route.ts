@@ -1,4 +1,4 @@
-import { SharePeople } from "@prisma/client";
+import { SharePeople } from "@/generated/prisma/enums";
 import { type NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";

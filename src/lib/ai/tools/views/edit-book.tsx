@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import { RemoteBookView } from "@/components/agent/book-view";
 import type { ToolOutputView, ToolView } from "@/lib/ai/tools/types";
-import { BackgroundColor, BookStatus } from "@/lib/enums";
+import { BackgroundColor, BookStatus } from "@/generated/prisma/enums";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { backgroundColors } from "@/lib/colors";

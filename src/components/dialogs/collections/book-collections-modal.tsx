@@ -1,5 +1,5 @@
 /* oxlint-disable eslint-plugin-jsx-a11y(prefer-tag-over-role) */
-import type { Book as PrismaBook } from "@prisma/client";
+import type { Book as PrismaBook } from "@/generated/prisma/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowRightIcon, Loader, PlusIcon, TrashIcon } from "lucide-react";
 import { useState } from "react";

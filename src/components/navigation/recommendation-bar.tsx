@@ -1,6 +1,6 @@
 "use client";
 
-import type { Recommendation } from "@prisma/client";
+import type { Recommendation } from "@/generated/prisma/browser";
 import { BookHeartIcon, XIcon } from "lucide-react";
 import { use, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";

@@ -7,7 +7,7 @@ import {
   type UIMessage,
   type UIMessagePart,
 } from "ai";
-import type { BackgroundColor, BookStatus } from "@prisma/client";
+import type { BackgroundColor, BookStatus } from "@/generated/prisma/enums";
 import type { toolSetForUser } from "@/lib/ai/tools/toolset";
 
 export type MyUIMessage = UIMessage<

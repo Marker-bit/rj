@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { Recommendation } from "@prisma/client";
+import type { Recommendation } from "@/generated/prisma/browser";
 import { addDays, format } from "date-fns";
 import { ru } from "date-fns/locale";
 import {

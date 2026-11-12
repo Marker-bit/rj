@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { Book } from "@prisma/client";
+import type { Book } from "@/generated/prisma/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Edit, InfoIcon, Loader, Plus, Trash, X } from "lucide-react";
 import Image from "next/image";

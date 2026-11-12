@@ -1,4 +1,4 @@
-import { BackgroundColor } from "@/lib/enums";
+import { BackgroundColor } from "@/generated/prisma/enums";
 
 export const backgroundColors = [
   {

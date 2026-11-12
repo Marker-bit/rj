@@ -1,6 +1,6 @@
 "use client";
 
-import type { Group, GroupInviteLink } from "@prisma/client";
+import type { Group, GroupInviteLink } from "@/generated/prisma/browser";
 import { CopyIcon, Trash } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";

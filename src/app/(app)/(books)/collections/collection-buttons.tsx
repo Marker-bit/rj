@@ -1,6 +1,6 @@
 "use client";
 
-import type { Book, Collection } from "@prisma/client";
+import type { Book, Collection } from "@/generated/prisma/browser";
 import { BookOpen, Trash } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";

@@ -1,4 +1,4 @@
-import type { Book } from "@prisma/client";
+import type { Book } from "@/generated/prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import {

@@ -1,4 +1,4 @@
-import type { Book } from "@prisma/client";
+import type { Book } from "@/generated/prisma/client";
 import Image from "next/image";
 import {
   HoverCard,

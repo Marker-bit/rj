@@ -1,6 +1,6 @@
 "use client";
 
-import type { Book as DbBook, ReadEvent } from "@prisma/client";
+import type { Book as DbBook, ReadEvent } from "@/generated/prisma/browser";
 import {
   endOfDay,
   format,

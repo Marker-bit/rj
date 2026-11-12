@@ -1,6 +1,6 @@
 "use client";
 
-import type { Book, Collection } from "@prisma/client";
+import type { Book, Collection } from "@/generated/prisma/browser";
 import { useMutation } from "@tanstack/react-query";
 import { Loader, Minus } from "lucide-react";
 import Image from "next/image";

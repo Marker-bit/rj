@@ -1,4 +1,4 @@
-import type { ReadEvent } from "@prisma/client";
+import type { ReadEvent } from "@/generated/prisma/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { getDays, getEventDays, getStreak } from "./stats";
