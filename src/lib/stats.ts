@@ -87,11 +87,10 @@ export function getEventDays(events: StreakEvent[]) {
     res.set(current, pagesReadByDay.get(startOfDay(current).getTime()) ?? 0);
     current = addDays(current, 1);
   }
-  return res.entries().map
-    ? Array.from(
-        res.entries().map(([date, pagesRead]) => ({ date, pagesRead })),
-      )
-    : [];
+  return Array.from(res.entries(), ([date, pagesRead]) => ({
+    date,
+    pagesRead,
+  }));
 }
 
 export function getDays(events: StreakEvent[], weekPadding: number = 0) {
