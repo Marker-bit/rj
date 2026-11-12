@@ -11,7 +11,10 @@ import {
 import { ru } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
 import { useState } from "react";
-import { useStreakEvents } from "@/components/main/streak-context";
+import {
+  useBrowserTimeZone,
+  useStreakEvents,
+} from "@/components/main/streak-context";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -28,6 +31,11 @@ import { getDays, getStreak } from "@/lib/stats";
 import { capitalizeFirstLetter, cn, declOfNum } from "@/lib/utils";
 
 export function StreakButton() {
+  const ready = useBrowserTimeZone();
+  return ready ? <StreakButtonContent /> : <div className="h-9 w-14" />;
+}
+
+function StreakButtonContent() {
   const [weekPadding, setWeekPadding] = useState(0);
   const events = useStreakEvents();
   const { streak } = getStreak(events);
