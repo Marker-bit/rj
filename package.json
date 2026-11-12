@@ -2,10 +2,11 @@
   "name": "reading-journal",
   "version": "1.0.0",
   "private": true,
-  "packageManager": "pnpm@10.32.1",
   "scripts": {
     "dev": "next dev",
+    "predev": "pnpm generate:enums",
     "build": "next build",
+    "prebuild": "pnpm generate:enums",
     "start": "next start",
     "lint": "oxlint",
     "typecheck": "tsc --noEmit",
@@ -13,7 +14,8 @@
     "test:watch": "vitest",
     "format": "oxfmt --check",
     "format:fix": "oxfmt",
-    "postinstall": "prisma generate",
+    "generate:enums": "node scripts/generate-enums.mjs",
+    "postinstall": "prisma generate && pnpm generate:enums",
     "db:push": "prisma db push"
   },
   "dependencies": {
@@ -110,6 +112,11 @@
   "peerDependencies": {
     "tw-animate-css": "^1.3.2"
   },
+  "overrides": {
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3"
+  },
+  "packageManager": "pnpm@10.32.1",
   "pnpm": {
     "onlyBuiltDependencies": [
       "@prisma/client",
@@ -123,9 +130,5 @@
       "sharp",
       "unrs-resolver"
     ]
-  },
-  "overrides": {
-    "@types/react": "19.2.7",
-    "@types/react-dom": "19.2.3"
   }
 }

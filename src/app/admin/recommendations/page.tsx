@@ -9,7 +9,8 @@ import { BookIcon, CalendarIcon, CheckIcon, XIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { IconBadge } from "@/components/ui/icon-badge";
 import { db } from "@/lib/db";
-import { dateToString, declOfNum } from "@/lib/utils";
+import { dateToString } from "@/lib/date";
+import { declOfNum } from "@/lib/utils";
 import AddRecommendation, {
   CopyRecommendationButton,
   DeleteRecommendationButton,
@@ -55,61 +56,61 @@ export default async function Page() {
               key={r.id}
               className="flex flex-col items-start gap-2 border p-4 rounded-xl"
             >
-            <div className="text-2xl font-bold -mb-2 wrap-anywhere">
-              {r.slogan}
-            </div>
-            <div className="text-sm wrap-anywhere">
-              {r.title} - {r.author}
-            </div>
-            <div className="line-clamp-3 text-sm text-muted-foreground wrap-anywhere">
-              {r.bookInfo}
-            </div>
-            <div className="flex gap-2 flex-wrap">
-              {r.published ? (
-                <Badge variant="outline" className="gap-1">
-                  <CheckIcon
-                    className="text-emerald-500"
-                    size={12}
-                    aria-hidden="true"
-                  />
-                  Опубликована
-                </Badge>
-              ) : (
-                <Badge variant="outline" className="gap-1">
-                  <XIcon
-                    className="text-red-500"
-                    size={12}
-                    aria-hidden="true"
-                  />
-                  Не опубликована
-                </Badge>
-              )}
-              <IconBadge
-                icon={CalendarIcon}
-                variant={
-                  isWithinInterval(new Date(), {
-                    start: startOfDay(r.startsOn),
-                    end: endOfDay(r.endsOn),
-                  })
-                    ? "default"
-                    : "outline"
-                }
-              >
-                {dateToString(new TZDate(r.startsOn, "Europe/Moscow"))} -{" "}
-                {dateToString(new TZDate(r.endsOn, "Europe/Moscow"))} (
-                {differenceInDays(r.endsOn, r.startsOn) + 1} дн.)
-              </IconBadge>
-              <IconBadge icon={BookIcon} variant="outline">
-                {createdBooksCount}{" "}
-                {declOfNum(createdBooksCount, ["книга", "книги", "книг"])}
-              </IconBadge>
-            </div>
-            <div className="flex gap-2 flex-wrap">
-              <EditRecommendationButton recommendation={r} />
-              <DeleteRecommendationButton recommendationId={r.id} />
-              <DuplicateRecommendationButton recommendationId={r.id} />
-              <CopyRecommendationButton recommendation={r} />
-            </div>
+              <div className="text-2xl font-bold -mb-2 wrap-anywhere">
+                {r.slogan}
+              </div>
+              <div className="text-sm wrap-anywhere">
+                {r.title} - {r.author}
+              </div>
+              <div className="line-clamp-3 text-sm text-muted-foreground wrap-anywhere">
+                {r.bookInfo}
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                {r.published ? (
+                  <Badge variant="outline" className="gap-1">
+                    <CheckIcon
+                      className="text-emerald-500"
+                      size={12}
+                      aria-hidden="true"
+                    />
+                    Опубликована
+                  </Badge>
+                ) : (
+                  <Badge variant="outline" className="gap-1">
+                    <XIcon
+                      className="text-red-500"
+                      size={12}
+                      aria-hidden="true"
+                    />
+                    Не опубликована
+                  </Badge>
+                )}
+                <IconBadge
+                  icon={CalendarIcon}
+                  variant={
+                    isWithinInterval(new Date(), {
+                      start: startOfDay(r.startsOn),
+                      end: endOfDay(r.endsOn),
+                    })
+                      ? "default"
+                      : "outline"
+                  }
+                >
+                  {dateToString(new TZDate(r.startsOn, "Europe/Moscow"))} -{" "}
+                  {dateToString(new TZDate(r.endsOn, "Europe/Moscow"))} (
+                  {differenceInDays(r.endsOn, r.startsOn) + 1} дн.)
+                </IconBadge>
+                <IconBadge icon={BookIcon} variant="outline">
+                  {createdBooksCount}{" "}
+                  {declOfNum(createdBooksCount, ["книга", "книги", "книг"])}
+                </IconBadge>
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                <EditRecommendationButton recommendation={r} />
+                <DeleteRecommendationButton recommendationId={r.id} />
+                <DuplicateRecommendationButton recommendationId={r.id} />
+                <CopyRecommendationButton recommendation={r} />
+              </div>
             </div>
           );
         })}

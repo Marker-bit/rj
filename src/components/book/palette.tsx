@@ -1,8 +1,7 @@
 "use client";
 
-import { BackgroundColor } from "@prisma/client";
+import { BackgroundColor } from "@/lib/enums";
 import { Check, PaletteIcon } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { setBookColor } from "@/lib/actions/books";
@@ -53,17 +52,9 @@ export default function Palette({
             onClick={() => setColor(BackgroundColor.NONE)}
           >
             <div className="size-8 rounded-lg bg-zinc-200 dark:bg-zinc-800" />
-            <AnimatePresence initial={false}>
-              {chosenBackground === BackgroundColor.NONE && (
-                <motion.div
-                  initial={{ width: 0, opacity: 0 }}
-                  animate={{ width: "auto", opacity: 1 }}
-                  exit={{ width: 0, opacity: 0 }}
-                >
-                  <Check className="ml-2 size-4" />
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {chosenBackground === BackgroundColor.NONE && (
+              <Check className="ml-2 size-4" />
+            )}
           </button>
           {backgroundColors.map((color) => (
             <button
@@ -75,37 +66,21 @@ export default function Palette({
               key={color.type}
             >
               <div className={cn("size-8 rounded-lg", color.color)} />
-              <AnimatePresence>
-                {chosenBackground === color.type && (
-                  <motion.div
-                    initial={{ width: 0, opacity: 0 }}
-                    animate={{ width: "auto", opacity: 1 }}
-                    exit={{ width: 0, opacity: 0 }}
-                  >
-                    <Check className="ml-2 size-4" />
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {chosenBackground === color.type && (
+                <Check className="ml-2 size-4" />
+              )}
             </button>
           ))}
         </div>
-        <AnimatePresence>
-          {chosenBackground !== background && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-            >
-              <Button
-                className="mt-2 flex w-full items-center justify-center"
-                disabled={loading}
-                onClick={() => updateColor(chosenBackground)}
-              >
-                Сохранить
-              </Button>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {chosenBackground !== background && (
+          <Button
+            className="mt-2 flex w-full items-center justify-center"
+            disabled={loading}
+            onClick={() => updateColor(chosenBackground)}
+          >
+            Сохранить
+          </Button>
+        )}
         <p className="text-xs text-muted-foreground mt-2">
           Изменить цвет этой книги (цветные книги будут показываться в самом
           верху списка)

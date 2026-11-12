@@ -1,7 +1,7 @@
 import { ListPlusIcon } from "lucide-react";
 import { RemoteBookView } from "@/components/agent/book-view";
 import type { ToolOutputView, ToolView } from "@/lib/ai/tools/types";
-import { dateToString } from "@/lib/utils";
+import { dateToString } from "@/lib/date";
 
 const AddBookEventView: ToolOutputView<"addBookEvent"> = ({
   input,

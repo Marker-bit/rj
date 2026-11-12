@@ -8,7 +8,7 @@ import {
 } from "ai";
 import { Maximize2Icon, Minimize2Icon, Trash2Icon, XIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import posthog from "posthog-js";
+import { capture } from "@/lib/posthog";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { ChatHistory } from "@/components/agent/chat-history";
 import { EmptyView } from "@/components/agent/empty-view";
@@ -274,7 +274,7 @@ export function AgentPopover({
         status={status}
         onSend={(message) => {
           void sendWithDenial(message);
-          posthog.capture("ai_message_sent", {
+          void capture("ai_message_sent", {
             length: message.length,
           });
         }}

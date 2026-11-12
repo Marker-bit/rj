@@ -1,17 +1,21 @@
 "use client";
 
-import {
-  type GroupBookSuggestion,
-  type GroupMember,
-  GroupMemberRole,
-} from "@prisma/client";
+import type { GroupBookSuggestion, GroupMember } from "@prisma/client";
+import { GroupMemberRole } from "@/lib/enums";
 import { BookUser } from "lucide-react";
-import { useState } from "react";
+import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
-import { SuggestBook } from "./suggest-book";
 import { Suggestion } from "./suggestion";
+
+const SuggestBook = dynamic(
+  () => import("./suggest-book").then((mod) => mod.SuggestBook),
+  {
+    ssr: false,
+  },
+);
 
 export function BookSuggestions({
   suggestions,
@@ -21,6 +25,13 @@ export function BookSuggestions({
   member: GroupMember;
 }) {
   const [open, setOpen] = useState(false);
+  const [suggestMounted, setSuggestMounted] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      setSuggestMounted(true);
+    }
+  }, [open]);
 
   return (
     <>
@@ -40,7 +51,7 @@ export function BookSuggestions({
           </DialogTitle>
         </DialogHeader>
         <div className="flex flex-col gap-2 p-4">
-          <SuggestBook groupId={member.groupId} />
+          {suggestMounted && <SuggestBook groupId={member.groupId} />}
           {suggestions
             .filter((s) =>
               member.role === GroupMemberRole.MEMBER

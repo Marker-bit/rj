@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { PublicUser } from "@/lib/user-types";
-import { cn, dateToString, declOfNum } from "@/lib/utils";
+import { dateToString } from "@/lib/date";
+import { cn, declOfNum } from "@/lib/utils";
 
 export default function Event({
   event,

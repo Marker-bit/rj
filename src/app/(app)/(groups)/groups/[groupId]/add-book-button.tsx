@@ -1,9 +1,9 @@
 "use client";
 
 import { Book, BookDashed, Plus } from "lucide-react";
-import { useState } from "react";
+import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
 import { AddFromMyBooks } from "@/components/book/add-from-my-books";
-import { GroupBookForm } from "@/components/book/group-book-form";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,16 +12,33 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+const GroupBookForm = dynamic(
+  () =>
+    import("@/components/book/group-book-form").then(
+      (mod) => mod.GroupBookForm,
+    ),
+  { ssr: false },
+);
+
 export function AddBookButton({ groupId }: { groupId: string }) {
   const [modeOpen, setModeOpen] = useState<"create" | "add-own">();
+  const [createMounted, setCreateMounted] = useState(false);
+
+  useEffect(() => {
+    if (modeOpen === "create") {
+      setCreateMounted(true);
+    }
+  }, [modeOpen]);
 
   return (
     <>
-      <GroupBookForm
-        open={modeOpen === "create"}
-        setOpen={(b) => setModeOpen(b ? "create" : undefined)}
-        groupId={groupId}
-      />
+      {createMounted && (
+        <GroupBookForm
+          open={modeOpen === "create"}
+          setOpen={(b) => setModeOpen(b ? "create" : undefined)}
+          groupId={groupId}
+        />
+      )}
       <AddFromMyBooks
         open={modeOpen === "add-own"}
         setOpen={(b) => setModeOpen(b ? "add-own" : undefined)}

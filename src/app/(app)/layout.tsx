@@ -4,6 +4,9 @@ import type React from "react";
 import { AgentGate } from "@/components/agent/agent-gate";
 import NavBar from "@/components/navigation/navbar";
 import RecommendationBar from "@/components/navigation/recommendation-bar";
+import { QueryProvider } from "@/components/providers/query-client-provider";
+import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { getBuildInfo } from "@/lib/build-info";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
@@ -81,11 +84,16 @@ export default async function Layout({
   const build = getBuildInfo();
 
   return (
-    <div>
-      <NavBar events={events} auth={auth} build={build} />
-      <RecommendationBar recommendations={recommendationsAvailable} />
-      <div className="w-full overflow-auto">{children}</div>
-      <AgentGate aiEnabled={aiEnabled} />
-    </div>
+    <QueryProvider>
+      <TooltipProvider>
+        <div>
+          <NavBar events={events} auth={auth} build={build} />
+          <RecommendationBar recommendations={recommendationsAvailable} />
+          <div className="w-full overflow-auto">{children}</div>
+          <AgentGate aiEnabled={aiEnabled} />
+        </div>
+        <Toaster />
+      </TooltipProvider>
+    </QueryProvider>
   );
 }

@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
-import MainChart from "./main-chart";
+import { LazyMainChart } from "./lazy-main-chart";
 
 export async function Stats() {
   const { user } = await validateRequest();
@@ -28,5 +28,5 @@ export async function Stats() {
     },
   });
 
-  return <MainChart events={events} profile={profile} />;
+  return <LazyMainChart events={events} profile={profile} />;
 }

@@ -7,17 +7,12 @@ import { usePathname } from "next/navigation";
 import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-} from "@/components/ui/navigation-menu";
-import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import type { StreakEvent } from "@/lib/stats";
+import { cn } from "@/lib/utils";
 import { ModeToggle } from "../mode-toggle";
 import { Skeleton } from "../ui/skeleton";
 import { Tabs } from "../ui/vercel-tabs";
@@ -68,31 +63,29 @@ export default function NavBar({
               </Button>
             </PopoverTrigger>
             <PopoverContent align="start" className="w-44 p-1 md:hidden">
-              <NavigationMenu className="max-w-none *:w-full">
-                <NavigationMenuList className="flex-col items-start gap-0 md:gap-2">
-                  {navigationLinks.map((link) => {
-                    const Icon = link.icon;
-                    return (
-                      <NavigationMenuItem key={link.href} className="w-full">
-                        <NavigationMenuLink
-                          className="flex-row items-center gap-2 py-1.5"
-                          render={
-                            <Link href={link.href}>
-                              <Icon
-                                size={16}
-                                className="text-muted-foreground/80"
-                                aria-hidden="true"
-                              />
-                              <span>{link.label}</span>
-                            </Link>
-                          }
-                          active={isActive(link.href)}
-                        ></NavigationMenuLink>
-                      </NavigationMenuItem>
-                    );
-                  })}
-                </NavigationMenuList>
-              </NavigationMenu>
+              <nav className="flex flex-col gap-0.5">
+                {navigationLinks.map((link) => {
+                  const Icon = link.icon;
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className={cn(
+                        "flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-accent hover:text-accent-foreground",
+                        isActive(link.href) &&
+                          "bg-accent font-medium text-accent-foreground",
+                      )}
+                    >
+                      <Icon
+                        size={16}
+                        className="text-muted-foreground/80"
+                        aria-hidden="true"
+                      />
+                      <span>{link.label}</span>
+                    </Link>
+                  );
+                })}
+              </nav>
               <MobileBuildFooter build={build} />
             </PopoverContent>
           </Popover>

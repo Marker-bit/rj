@@ -1,9 +1,8 @@
 "use client";
 
 import type { GroupBookSuggestion, GroupMember } from "@prisma/client";
-import Fuse from "fuse.js";
 import { BookIcon, Search, X } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -27,20 +26,56 @@ export default function Books({
   userId: string;
 }) {
   const [searchText, setSearchText] = useState("");
+  const [FuseClass, setFuseClass] = useState<
+    typeof import("fuse.js").default | null
+  >(null);
+
+  useEffect(() => {
+    if (searchText.trim() === "" || FuseClass) {
+      return;
+    }
+
+    let cancelled = false;
+    void import("fuse.js").then((mod) => {
+      if (!cancelled) {
+        setFuseClass(() => mod.default);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [searchText, FuseClass]);
+
   const search = useMemo(
     () =>
-      new Fuse(group.groupBooks, {
-        keys: ["title", "author", "description"],
-      }),
-    [group.groupBooks],
+      FuseClass
+        ? new FuseClass(group.groupBooks, {
+            keys: ["title", "author", "description"],
+          })
+        : null,
+    [FuseClass, group.groupBooks],
   );
-  const books = useMemo(
-    () =>
-      searchText
-        ? search.search(searchText).map((result) => result.item)
-        : group.groupBooks,
-    [group.groupBooks, search, searchText],
-  );
+  const books = useMemo(() => {
+    const query = searchText.trim();
+
+    if (!query) {
+      return group.groupBooks;
+    }
+
+    if (search) {
+      return search.search(query).map((result) => result.item);
+    }
+
+    const lowerQuery = query.toLowerCase();
+    return group.groupBooks.filter((book) =>
+      [book.title, book.author, book.description].some((value) =>
+        String(value ?? "")
+          .toLowerCase()
+          .includes(lowerQuery),
+      ),
+    );
+  }, [group.groupBooks, search, searchText]);
 
   const groupMember = group.members.find((member) => member.userId === userId);
 

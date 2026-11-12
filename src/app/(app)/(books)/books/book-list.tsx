@@ -1,7 +1,6 @@
 "use client";
 
-import { BackgroundColor } from "@prisma/client";
-import Fuse from "fuse.js";
+import { BackgroundColor } from "@/lib/enums";
 import {
   ArrowRightIcon,
   BookMinus,
@@ -43,6 +42,9 @@ export function BookList({ books }: { books: Book[] }) {
   const [searchText, setSearchText] = useState("");
   const [sort, _setSort] = useState<"percent" | "activity">("percent");
   const [statusFilter, _setStatusFilter] = useState<StatusFilter>("all");
+  const [FuseClass, setFuseClass] = useState<
+    typeof import("fuse.js").default | null
+  >(null);
 
   useEffect(() => {
     const localStorageNotStarted = localStorage.getItem("notStarted");
@@ -133,18 +135,45 @@ export function BookList({ books }: { books: Book[] }) {
 
   const fuse = useMemo(
     () =>
-      new Fuse(sortedBooks, {
-        keys: ["title", "author"],
-      }),
-    [sortedBooks],
+      FuseClass
+        ? new FuseClass(sortedBooks, {
+            keys: ["title", "author"],
+          })
+        : null,
+    [FuseClass, sortedBooks],
   );
+
+  useEffect(() => {
+    if (searchText.trim() === "" || FuseClass) {
+      return;
+    }
+
+    let cancelled = false;
+    void import("fuse.js").then((mod) => {
+      if (!cancelled) {
+        setFuseClass(() => mod.default);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [searchText, FuseClass]);
 
   const booksForRender = useMemo(() => {
     const trimmedSearch = searchText.trim();
     const matched =
       trimmedSearch === ""
         ? sortedBooks
-        : fuse.search(trimmedSearch).map((result) => result.item);
+        : fuse
+          ? fuse.search(trimmedSearch).map((result) => result.item)
+          : sortedBooks.filter((book) => {
+              const query = trimmedSearch.toLowerCase();
+              return (
+                book.title.toLowerCase().includes(query) ||
+                book.author.toLowerCase().includes(query)
+              );
+            });
 
     return [
       ...matched.filter((book) => book.background !== BackgroundColor.NONE),

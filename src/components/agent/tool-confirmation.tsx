@@ -16,8 +16,8 @@ import {
   ItemMedia,
   ItemTitle,
 } from "@/components/ui/item";
-import { BookStatus, BackgroundColor } from "@prisma/client";
 import type { KnownEntities } from "@/lib/ai/message";
+import { BackgroundColor, BookStatus } from "@/lib/enums";
 import type { ToolId, ToolView } from "@/lib/ai/tools/types";
 import {
   EditBookChanges,

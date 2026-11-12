@@ -8,7 +8,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { dateToString } from "@/lib/utils";
+import { dateToString } from "@/lib/date";
 
 export const description = "A bar chart";
 

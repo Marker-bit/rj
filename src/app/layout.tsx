@@ -5,10 +5,7 @@ import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "@/app/(app)/api/uploadthing/core";
 import { Analytics } from "@/components/analytics";
-import { QueryProvider } from "@/components/providers/query-client-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
-import { Toaster } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { SITE_URL } from "@/lib/site";
 
 const font = Inter({ variable: "--font-inter", subsets: ["latin"] });
@@ -62,23 +59,16 @@ export default async function RootLayout({
         className={`${font.className} overflow-x-hidden`}
         vaul-drawer-wrapper=""
       >
-        <QueryProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <TooltipProvider>
-              <NextSSRPlugin
-                routerConfig={extractRouterConfig(ourFileRouter)}
-              />
-              {children}
-              <Analytics isVercel={isVercel} />
-              <Toaster />
-            </TooltipProvider>
-          </ThemeProvider>
-        </QueryProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
+          {children}
+          <Analytics isVercel={isVercel} />
+        </ThemeProvider>
       </body>
     </html>
   );
