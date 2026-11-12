@@ -12,9 +12,9 @@ import {
   TriangleAlert,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
-import { AddBookDialog } from "@/components/book/book-form";
 import { BookView } from "@/components/book/book-view";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,8 +34,21 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { getBooks } from "@/lib/actions/books";
 
+const AddBookDialog = dynamic(
+  () => import("@/components/book/book-form").then((mod) => mod.AddBookDialog),
+  { ssr: false },
+);
+
 export default function BooksCard() {
   const [open, setOpen] = useState(false);
+  const [addDialogMounted, setAddDialogMounted] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      setAddDialogMounted(true);
+    }
+  }, [open]);
+
   const [orderBy, setOrderBy] = useLocalStorage<"percent" | "activity">(
     "orderBy",
     "percent",
@@ -151,7 +164,7 @@ export default function BooksCard() {
           )}
         </CardContent>
       </Card>
-      <AddBookDialog open={open} setOpen={setOpen} />
+      {addDialogMounted && <AddBookDialog open={open} setOpen={setOpen} />}
     </>
   );
 }

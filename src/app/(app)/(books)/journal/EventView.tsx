@@ -7,7 +7,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { SimpleTooltip } from "@/components/ui/simple-tooltip";
-import { dateToString } from "@/lib/utils";
+import { dateToString } from "@/lib/date";
 import { revalidate } from "@/lib/actions/revalidate";
 
 export function EventView({

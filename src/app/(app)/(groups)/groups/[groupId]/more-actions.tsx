@@ -12,9 +12,9 @@ import {
   Trash,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
 import { DeleteGroupBookModal } from "@/components/dialogs/groups/delete-group-book-modal";
-import { EditGroupBookModal } from "@/components/dialogs/groups/edit-group-book-modal";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -23,6 +23,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import BindBookModal from "./bind-book-modal";
+
+const EditGroupBookModal = dynamic(
+  () =>
+    import("@/components/dialogs/groups/edit-group-book-modal").then(
+      (mod) => mod.EditGroupBookModal,
+    ),
+  { ssr: false },
+);
 
 export function MoreActions({
   book,
@@ -38,8 +46,15 @@ export function MoreActions({
   deleteBook: () => void;
 }) {
   const [editOpen, setEditOpen] = useState(false);
+  const [editMounted, setEditMounted] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [bindOpen, setBindOpen] = useState(false);
+
+  useEffect(() => {
+    if (editOpen) {
+      setEditMounted(true);
+    }
+  }, [editOpen]);
 
   return (
     <>
@@ -111,11 +126,13 @@ export function MoreActions({
             setOpen={setDeleteOpen}
             book={book}
           />
-          <EditGroupBookModal
-            open={editOpen}
-            setOpen={setEditOpen}
-            book={book}
-          />
+          {editMounted && (
+            <EditGroupBookModal
+              open={editOpen}
+              setOpen={setEditOpen}
+              book={book}
+            />
+          )}
         </>
       )}
       <BindBookModal open={bindOpen} setOpen={setBindOpen} groupBook={book} />

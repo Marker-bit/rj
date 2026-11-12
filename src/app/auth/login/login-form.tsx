@@ -4,11 +4,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import posthog from "posthog-js";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { identify } from "@/lib/posthog";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -57,9 +57,7 @@ export function LoginForm({ returnTo }: { returnTo: string }) {
       if (res.ok) {
         try {
           const data = await res.json();
-          if (posthog["__loaded"]) {
-            posthog.identify(data.id);
-          }
+          await identify(data.id);
         } catch (error) {
           console.error("Failed to identify user with PostHog:", error);
         }

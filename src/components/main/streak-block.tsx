@@ -3,7 +3,6 @@
 import type { ReadEvent } from "@prisma/client";
 import { differenceInDays } from "date-fns";
 import type { User } from "lucia";
-import { Area, AreaChart } from "recharts";
 import {
   Card,
   CardAction,
@@ -12,7 +11,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ChartContainer } from "@/components/ui/chart";
 import { getDays2, getStreak } from "@/lib/stats";
 import { declOfNum } from "@/lib/utils";
 import { ConfettiButton } from "./confetti-button";
@@ -37,6 +35,14 @@ export default function StreakBlock({
     5, 10, 20, 50, 100, 200, 300, 365, 400, 500, 600, 730, 800, 900, 1000,
   ];
   const hasntRead = events.length === 0;
+  const maxPages = Math.max(...days.map((day) => day.pagesRead), 1);
+  const points = days
+    .map((day, index) => {
+      const x = (index / Math.max(days.length - 1, 1)) * 100;
+      const y = 100 - (day.pagesRead / maxPages) * 100;
+      return `${x.toFixed(2)},${y.toFixed(2)}`;
+    })
+    .join(" ");
 
   return (
     <Card className="pb-0 flex overflow-hidden">
@@ -85,33 +91,27 @@ export default function StreakBlock({
             (streak !== 0 && streak % 50 === 0)) && <ConfettiButton />}
         </CardAction>
       </CardHeader>
-      <CardContent className="mt-auto max-h-[124px] flex-1 p-0">
-        <ChartContainer
-          config={{
-            pagesRead: {
-              label: "Страниц прочитано",
-              color: "var(--primary)",
-            },
-          }}
+      <CardContent className="mt-auto h-[124px] flex-1 p-0">
+        <svg
           className="size-full"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+          role="img"
+          aria-label="Страницы, прочитанные за последние 7 дней"
         >
-          <AreaChart
-            data={days}
-            margin={{
-              left: 0,
-              right: 0,
-            }}
-          >
-            <Area
-              dataKey="pagesRead"
-              fill="var(--color-pagesRead)"
-              fillOpacity={0.05}
-              stroke="var(--color-pagesRead)"
-              strokeWidth={2}
-              type="monotone"
-            />
-          </AreaChart>
-        </ChartContainer>
+          <polygon
+            points={`0,100 ${points} 100,100`}
+            fill="var(--primary)"
+            fillOpacity={0.05}
+          />
+          <polyline
+            points={points}
+            fill="none"
+            stroke="var(--primary)"
+            strokeWidth={2}
+            vectorEffect="non-scaling-stroke"
+          />
+        </svg>
       </CardContent>
     </Card>
   );

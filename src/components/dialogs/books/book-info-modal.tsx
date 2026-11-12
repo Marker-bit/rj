@@ -17,7 +17,8 @@ import {
 } from "@/components/ui/collapsible";
 import { DialogTitle } from "@/components/ui/dialog";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
-import { dateToString, declOfNum } from "@/lib/utils";
+import { dateToString } from "@/lib/date";
+import { declOfNum } from "@/lib/utils";
 import { Badge } from "../../ui/badge";
 import { Button } from "../../ui/button";
 import { BookDialog } from "@/components/book/book-view";

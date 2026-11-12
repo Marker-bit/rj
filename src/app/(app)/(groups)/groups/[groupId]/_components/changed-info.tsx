@@ -1,9 +1,5 @@
-import {
-  type Book,
-  type GroupBook,
-  type GroupMember,
-  GroupMemberRole,
-} from "@prisma/client";
+import type { Book, GroupBook, GroupMember } from "@prisma/client";
+import { GroupMemberRole } from "@/lib/enums";
 import { Text } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {

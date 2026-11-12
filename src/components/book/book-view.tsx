@@ -1,9 +1,5 @@
 "use client";
 
-import { BookInfoModal } from "@/components/dialogs/books/book-info-modal";
-import { EditBookModal } from "@/components/dialogs/books/edit-book-modal";
-import { DateReadModal } from "@/components/dialogs/books/read/date-read-modal";
-import { BookCollectionsModal } from "@/components/dialogs/collections/book-collections-modal";
 import { Button } from "@/components/ui/button";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
@@ -11,8 +7,9 @@ import { IconBadge } from "@/components/ui/icon-badge";
 import { SimpleTooltip } from "@/components/ui/simple-tooltip";
 import type { Book } from "@/lib/api-types";
 import { backgroundColors } from "@/lib/colors";
-import { cn, dateToString, declOfNum } from "@/lib/utils";
-import { BackgroundColor, BookStatus } from "@prisma/client";
+import { dateToString } from "@/lib/date";
+import { cn, declOfNum } from "@/lib/utils";
+import { BackgroundColor, BookStatus } from "@/lib/enums";
 import {
   BarChart,
   BookIcon,
@@ -28,25 +25,78 @@ import {
   Trash,
   Users,
 } from "lucide-react";
+import nextDynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import posthog from "posthog-js";
-import { useState } from "react";
-import { DeleteBookModal } from "../dialogs/books/delete-book-modal";
-import { DateDoneModal } from "../dialogs/books/read/date-done-modal";
-import { ShareBookModal } from "../dialogs/books/share-book-modal";
+import { capture } from "@/lib/posthog";
+import { useEffect, useState } from "react";
 import { HelpButton } from "../ui/help-button";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from "../ui/hover-card";
-import BookReadInfo from "./book-read-info";
 import { HideBookButton } from "./buttons/hide-book";
 import { UndoEventButton } from "./buttons/undo-event-button";
 import Palette from "./palette";
 import { ArchiveBookButton } from "./buttons/archive-book";
+
+// Dialogs and panels are only mounted after they are opened for the first time,
+// so heavy dependencies (charts, rich text editor, upload widget) stay out of
+// the initial bundle for the books list.
+const BookInfoModal = nextDynamic(
+  () =>
+    import("@/components/dialogs/books/book-info-modal").then(
+      (mod) => mod.BookInfoModal,
+    ),
+  { ssr: false },
+);
+const EditBookModal = nextDynamic(
+  () =>
+    import("@/components/dialogs/books/edit-book-modal").then(
+      (mod) => mod.EditBookModal,
+    ),
+  { ssr: false },
+);
+const DateReadModal = nextDynamic(
+  () =>
+    import("@/components/dialogs/books/read/date-read-modal").then(
+      (mod) => mod.DateReadModal,
+    ),
+  { ssr: false },
+);
+const DateDoneModal = nextDynamic(
+  () =>
+    import("@/components/dialogs/books/read/date-done-modal").then(
+      (mod) => mod.DateDoneModal,
+    ),
+  { ssr: false },
+);
+const BookCollectionsModal = nextDynamic(
+  () =>
+    import("@/components/dialogs/collections/book-collections-modal").then(
+      (mod) => mod.BookCollectionsModal,
+    ),
+  { ssr: false },
+);
+const DeleteBookModal = nextDynamic(
+  () =>
+    import("@/components/dialogs/books/delete-book-modal").then(
+      (mod) => mod.DeleteBookModal,
+    ),
+  { ssr: false },
+);
+const ShareBookModal = nextDynamic(
+  () =>
+    import("@/components/dialogs/books/share-book-modal").then(
+      (mod) => mod.ShareBookModal,
+    ),
+  { ssr: false },
+);
+const BookReadInfo = nextDynamic(() => import("./book-read-info"), {
+  ssr: false,
+});
 import { revalidate } from "@/lib/actions/revalidate";
 
 export const dynamic = "force-dynamic";
@@ -76,7 +126,26 @@ export function BookView({
   const [activeDialog, setActiveDialog] = useState<BookDialog | null>(
     initialReadOpen ? "stats" : null,
   );
+  const [mountedDialogs, setMountedDialogs] = useState<Set<BookDialog>>(
+    () => new Set(initialReadOpen ? (["stats"] as const) : []),
+  );
   const router = useRouter();
+
+  useEffect(() => {
+    if (!activeDialog) {
+      return;
+    }
+
+    setMountedDialogs((previous) => {
+      if (previous.has(activeDialog)) {
+        return previous;
+      }
+
+      const next = new Set(previous);
+      next.add(activeDialog);
+      return next;
+    });
+  }, [activeDialog]);
 
   const lastEvent = book.readEvents[0];
 
@@ -97,16 +166,18 @@ export function BookView({
 
   return (
     <>
-      <DeleteBookModal
-        book={book}
-        open={activeDialog === "delete"}
-        onOpenChange={genSetOpen("delete")}
-        onSuccess={() => {
-          setActiveDialog(null);
-          onUpdate?.();
-          void revalidate("books");
-        }}
-      />
+      {mountedDialogs.has("delete") && (
+        <DeleteBookModal
+          book={book}
+          open={activeDialog === "delete"}
+          onOpenChange={genSetOpen("delete")}
+          onSuccess={() => {
+            setActiveDialog(null);
+            onUpdate?.();
+            void revalidate("books");
+          }}
+        />
+      )}
       <div
         className={cn(
           "group relative flex flex-col gap-2 overflow-hidden rounded-md border p-2 transition-shadow hover:shadow-sm",
@@ -139,63 +210,77 @@ export function BookView({
           </DialogHeader>
           <pre className="font-sans">{book.description}</pre>
         </DrawerDialog>
-        <BookInfoModal
-          open={activeDialog === "info"}
-          setOpen={genSetOpen("info")}
-          book={book}
-          setActiveDialog={setActiveDialog}
-        />
-        <BookCollectionsModal
-          open={activeDialog === "collections"}
-          setOpen={genSetOpen("collections")}
-          book={book}
-        />
-        <ShareBookModal
-          open={activeDialog === "share"}
-          setOpen={genSetOpen("share")}
-          book={book}
-        />
-        <DateReadModal
-          isOpen={activeDialog === "read"}
-          setIsOpen={genSetOpen("read")}
-          onSuccess={() => {
-            setActiveDialog(null);
-            onUpdate?.();
-            void revalidate("books");
-          }}
-          book={book}
-          lastEvent={lastEvent}
-        />
-        <DateDoneModal
-          isOpen={activeDialog === "done"}
-          setIsOpen={genSetOpen("done")}
-          book={book}
-          onDone={() => {
-            setActiveDialog(null);
-            onUpdate?.();
-            void revalidate("books");
-            router.push(`/books/history?bookReadId=${book.id}`);
-          }}
-        />
-        <EditBookModal
-          open={activeDialog === "edit"}
-          setOpen={genSetOpen("edit")}
-          book={book}
-          onUpdate={(newBook) => {
-            posthog.capture("edited_book", {
-              title: newBook.title,
-              author: newBook.author,
-              oldTitle: book.title,
-              oldAuthor: book.author,
-            });
-            onUpdate?.();
-          }}
-        />
-        <BookReadInfo
-          open={activeDialog === "stats"}
-          setOpen={genSetOpen("stats")}
-          book={book}
-        />
+        {mountedDialogs.has("info") && (
+          <BookInfoModal
+            open={activeDialog === "info"}
+            setOpen={genSetOpen("info")}
+            book={book}
+            setActiveDialog={setActiveDialog}
+          />
+        )}
+        {mountedDialogs.has("collections") && (
+          <BookCollectionsModal
+            open={activeDialog === "collections"}
+            setOpen={genSetOpen("collections")}
+            book={book}
+          />
+        )}
+        {mountedDialogs.has("share") && (
+          <ShareBookModal
+            open={activeDialog === "share"}
+            setOpen={genSetOpen("share")}
+            book={book}
+          />
+        )}
+        {mountedDialogs.has("read") && (
+          <DateReadModal
+            isOpen={activeDialog === "read"}
+            setIsOpen={genSetOpen("read")}
+            onSuccess={() => {
+              setActiveDialog(null);
+              onUpdate?.();
+              void revalidate("books");
+            }}
+            book={book}
+            lastEvent={lastEvent}
+          />
+        )}
+        {mountedDialogs.has("done") && (
+          <DateDoneModal
+            isOpen={activeDialog === "done"}
+            setIsOpen={genSetOpen("done")}
+            book={book}
+            onDone={() => {
+              setActiveDialog(null);
+              onUpdate?.();
+              void revalidate("books");
+              router.push(`/books/history?bookReadId=${book.id}`);
+            }}
+          />
+        )}
+        {mountedDialogs.has("edit") && (
+          <EditBookModal
+            open={activeDialog === "edit"}
+            setOpen={genSetOpen("edit")}
+            book={book}
+            onUpdate={(newBook) => {
+              void capture("edited_book", {
+                title: newBook.title,
+                author: newBook.author,
+                oldTitle: book.title,
+                oldAuthor: book.author,
+              });
+              onUpdate?.();
+            }}
+          />
+        )}
+        {mountedDialogs.has("stats") && (
+          <BookReadInfo
+            open={activeDialog === "stats"}
+            setOpen={genSetOpen("stats")}
+            book={book}
+          />
+        )}
         <div className="flex items-start gap-2">
           {book.coverUrl && (
             <Image

@@ -10,7 +10,6 @@ import { formatRelative } from "date-fns";
 import { ru } from "date-fns/locale";
 import type { User as LuciaUser } from "lucia";
 import { ChevronDown } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -83,27 +82,27 @@ export default function SupportQuestionCard({
         )}
       </Button>
       {/* )} */}
-      <AnimatePresence initial={false}>
-        {isExpanded && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="w-full"
-          >
-            <div className="mt-2 flex flex-col gap-2">
-              {question.answers.map((answer) => (
-                <QuestionAnswer
-                  key={answer.id}
-                  answer={answer}
-                  currentUserId={currentUser.id}
-                />
-              ))}
-              <AnswerQuestion questionId={question.id} />
-            </div>
-          </motion.div>
+      <div
+        className={cn(
+          "grid w-full transition-all duration-200",
+          isExpanded
+            ? "grid-rows-[1fr] opacity-100"
+            : "grid-rows-[0fr] opacity-0",
         )}
-      </AnimatePresence>
+      >
+        <div className="overflow-hidden">
+          <div className="mt-2 flex flex-col gap-2">
+            {question.answers.map((answer) => (
+              <QuestionAnswer
+                key={answer.id}
+                answer={answer}
+                currentUserId={currentUser.id}
+              />
+            ))}
+            <AnswerQuestion questionId={question.id} />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

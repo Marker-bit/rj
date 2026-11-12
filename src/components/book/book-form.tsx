@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
 import { Plus, Trash, X } from "lucide-react";
 import Image from "next/image";
-import posthog from "posthog-js";
+import { capture } from "@/lib/posthog";
 import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -315,7 +315,7 @@ export function AddBookDialog({
       <div className="p-4 pt-0 mt-4 overflow-auto">
         <BookForm
           onSuccess={(book) => {
-            posthog.capture("book_created", {
+            void capture("book_created", {
               title: book.title,
               author: book.author,
               pages: book.pages,

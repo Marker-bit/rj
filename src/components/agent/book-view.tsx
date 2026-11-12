@@ -3,7 +3,7 @@ import { CircleAlertIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Spinner } from "@/components/ui/spinner";
 import { cn, declOfNum } from "@/lib/utils";
-import { BackgroundColor } from "@prisma/client";
+import { BackgroundColor } from "@/lib/enums";
 import { backgroundColors } from "@/lib/colors";
 import Image from "next/image";
 

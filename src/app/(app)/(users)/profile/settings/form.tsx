@@ -1,23 +1,17 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SharePeople } from "@prisma/client";
+import { SharePeople } from "@/lib/enums";
 import { useMutation } from "@tanstack/react-query";
-import { useDropzone } from "@uploadthing/react";
 import type { User as LuciaUser } from "lucia";
-import { Check, LogOut, Plus, PlusIcon, X, XIcon } from "lucide-react";
-import Image from "next/image";
+import { Check, LogOut, PlusIcon, X, XIcon } from "lucide-react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import {
-  generateClientDropzoneAccept,
-  generatePermittedFileTypes,
-} from "uploadthing/client";
 import { useLocalStorage } from "usehooks-ts";
 import { z } from "zod";
-import { CropImage } from "@/components/crop-image";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -40,11 +34,17 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { useUploadThing } from "@/components/uploadthing";
 import ExportDataButton from "@/components/users/export-data-button";
 import { useUsernameAvailability } from "@/hooks/use-username-availability";
 import { DEFAULT_FIELDS_STORAGE_KEY } from "@/lib/default-fields";
-import { cn } from "@/lib/utils";
+
+const AvatarField = dynamic(
+  () => import("./avatar-field").then((mod) => mod.AvatarField),
+  {
+    ssr: false,
+    loading: () => <Skeleton className="size-20 rounded-full" />,
+  },
+);
 
 const formSchema = z.object({
   username: z
@@ -67,8 +67,6 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
   const [logOutLoading, setLogOutLoading] = useState(false);
   const { found: usernameFound, check: checkUsername } =
     useUsernameAvailability(user.username);
-  const [cropOpen, setCropOpen] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [disableRecs, setDisableRecs] = useLocalStorage("disableRecs", false);
   const [isClient, setIsClient] = useState(false);
   const router = useRouter();
@@ -138,39 +136,6 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
     userMutation.mutate(values);
   }
 
-  const [files, setFiles] = useState<File[]>([]);
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    if (acceptedFiles.length === 1) {
-      setFiles(acceptedFiles);
-      setCropOpen(true);
-    } else {
-      toast.error("Принимается только 1 файл!");
-    }
-  }, []);
-
-  const { startUpload, routeConfig } = useUploadThing("avatar", {
-    onClientUploadComplete: (res) => {
-      form.setValue("avatarUrl", res[0].ufsUrl);
-      setUploadProgress(null);
-    },
-    onUploadError: (_err) => {
-      toast.error("Произошла ошибка при загрузке файла");
-    },
-    onUploadBegin: () => {
-      // alert("upload has begun");
-    },
-    onUploadProgress: (p) => {
-      setUploadProgress(p);
-    },
-  });
-
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-    accept: generateClientDropzoneAccept(
-      generatePermittedFileTypes(routeConfig).fileTypes,
-    ),
-  });
-
   if (!isClient) {
     return (
       <div className="m-3 flex flex-col gap-3 rounded-md border p-4">
@@ -196,58 +161,10 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
                 <FormItem>
                   <FormLabel>Аватар</FormLabel>
                   <FormControl>
-                    <div className="flex flex-col gap-2">
-                      {field.value ? (
-                        <div
-                          className="relative flex size-fit cursor-pointer"
-                          {...getRootProps()}
-                        >
-                          <Image
-                            src={field.value}
-                            className="size-20 rounded-full"
-                            width={80}
-                            height={80}
-                            alt="avatar"
-                          />
-                          <input
-                            disabled={uploadProgress !== null}
-                            {...getInputProps()}
-                          />
-                          <div
-                            className={cn(
-                              "absolute top-0 left-0 pointer-events-none w-full h-full bg-black/80 flex flex-col items-center justify-center opacity-0 text-white transition-opacity",
-                              uploadProgress !== null && "opacity-100",
-                            )}
-                          >
-                            <Loader className="size-4" />
-                            {uploadProgress !== null && (
-                              <div>{uploadProgress}%</div>
-                            )}
-                          </div>
-                        </div>
-                      ) : (
-                        <div
-                          className="flex size-20 cursor-pointer items-center justify-center rounded-full border"
-                          {...getRootProps()}
-                        >
-                          <Plus className="size-4 text-zinc-500" />
-                          <input
-                            disabled={uploadProgress !== null}
-                            {...getInputProps()}
-                          />
-                        </div>
-                      )}
-                      {files.length > 0 && (
-                        <CropImage
-                          open={cropOpen}
-                          setOpen={setCropOpen}
-                          file={files[0]}
-                          onSelect={(file) => {
-                            startUpload([file]);
-                          }}
-                        />
-                      )}
-                    </div>
+                    <AvatarField
+                      value={field.value}
+                      onChange={(url) => field.onChange(url)}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

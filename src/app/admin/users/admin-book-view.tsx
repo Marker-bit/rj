@@ -5,7 +5,8 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-import { dateToString, declOfNum } from "@/lib/utils";
+import { dateToString } from "@/lib/date";
+import { declOfNum } from "@/lib/utils";
 
 export default function AdminBookView({ book }: { book: Book }) {
   return (

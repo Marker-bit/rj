@@ -1,9 +1,9 @@
-import confetti from "canvas-confetti";
 import { PartyPopper } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function ConfettiButton() {
-  const handleClick = () => {
+  const handleClick = async () => {
+    const confetti = (await import("canvas-confetti")).default;
     const end = Date.now() + 1000; // 3 seconds
     const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"];
 

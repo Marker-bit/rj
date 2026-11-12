@@ -2,7 +2,6 @@
 
 import type { Book, ReadEvent } from "@prisma/client";
 import { ChevronDown } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import type { PublicUser } from "@/lib/user-types";
 import { cn, declOfNum } from "@/lib/utils";
@@ -50,20 +49,13 @@ export default function EventRepeat({
         </div>
       </div>
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            className="flex flex-col gap-2 rounded-xl border p-2"
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-          >
-            {events.slice(1).map((event) => (
-              <Event key={event.id} event={event} />
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {open && (
+        <div className="flex flex-col gap-2 rounded-xl border p-2">
+          {events.slice(1).map((event) => (
+            <Event key={event.id} event={event} />
+          ))}
+        </div>
+      )}
     </>
   );
 }

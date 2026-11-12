@@ -1,8 +1,7 @@
 "use client";
 
-import { DateReadModal } from "@/components/dialogs/books/read/date-read-modal";
-import { DateDoneModal } from "@/components/dialogs/books/read/date-done-modal";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import {
   DropdownMenu,
@@ -14,6 +13,21 @@ import { BookCheckIcon, BookOpenIcon, BookOpenTextIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
 import { revalidate } from "@/lib/actions/revalidate";
+
+const DateReadModal = dynamic(
+  () =>
+    import("@/components/dialogs/books/read/date-read-modal").then(
+      (mod) => mod.DateReadModal,
+    ),
+  { ssr: false },
+);
+const DateDoneModal = dynamic(
+  () =>
+    import("@/components/dialogs/books/read/date-done-modal").then(
+      (mod) => mod.DateDoneModal,
+    ),
+  { ssr: false },
+);
 
 export function ReadButton({
   book,
@@ -30,6 +44,25 @@ export function ReadButton({
   const [activeDialog, setActiveDialog] = useState<null | "read" | "done">(
     null,
   );
+  const [mountedDialogs, setMountedDialogs] = useState<Set<"read" | "done">>(
+    () => new Set(),
+  );
+
+  useEffect(() => {
+    if (!activeDialog) {
+      return;
+    }
+
+    setMountedDialogs((previous) => {
+      if (previous.has(activeDialog)) {
+        return previous;
+      }
+
+      const next = new Set(previous);
+      next.add(activeDialog);
+      return next;
+    });
+  }, [activeDialog]);
 
   const genSetOpen = (dialog: null | "read" | "done") => (open: boolean) =>
     setActiveDialog(open ? dialog : null);
@@ -41,36 +74,40 @@ export function ReadButton({
 
   return (
     <>
-      <DateReadModal
-        isOpen={activeDialog === "read"}
-        setIsOpen={genSetOpen("read")}
-        onSuccess={() => {
-          queryClient.invalidateQueries({
-            queryKey: ["events"],
-          });
-          queryClient.invalidateQueries({
-            queryKey: ["books"],
-          });
-          void revalidate("books");
-        }}
-        book={book}
-        lastEvent={lastEvent}
-      />
-      <DateDoneModal
-        isOpen={activeDialog === "done"}
-        setIsOpen={genSetOpen("done")}
-        book={book}
-        onDone={() => {
-          queryClient.invalidateQueries({
-            queryKey: ["events"],
-          });
-          queryClient.invalidateQueries({
-            queryKey: ["books"],
-          });
-          void revalidate("books");
-          router.push(`/books/history?bookReadId=${book.id}`);
-        }}
-      />
+      {mountedDialogs.has("read") && (
+        <DateReadModal
+          isOpen={activeDialog === "read"}
+          setIsOpen={genSetOpen("read")}
+          onSuccess={() => {
+            queryClient.invalidateQueries({
+              queryKey: ["events"],
+            });
+            queryClient.invalidateQueries({
+              queryKey: ["books"],
+            });
+            void revalidate("books");
+          }}
+          book={book}
+          lastEvent={lastEvent}
+        />
+      )}
+      {mountedDialogs.has("done") && (
+        <DateDoneModal
+          isOpen={activeDialog === "done"}
+          setIsOpen={genSetOpen("done")}
+          book={book}
+          onDone={() => {
+            queryClient.invalidateQueries({
+              queryKey: ["events"],
+            });
+            queryClient.invalidateQueries({
+              queryKey: ["books"],
+            });
+            void revalidate("books");
+            router.push(`/books/history?bookReadId=${book.id}`);
+          }}
+        />
+      )}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button>
