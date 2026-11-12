@@ -1,8 +1,10 @@
 "use client";
 
-import { useStreakEvents } from "./streak-context";
+import { useBrowserTimeZone, useStreakEvents } from "./streak-context";
 import StreakBlock from "./streak-block";
 
 export function StreakInfo() {
-  return <StreakBlock events={useStreakEvents()} />;
+  const events = useStreakEvents();
+  const ready = useBrowserTimeZone();
+  return ready ? <StreakBlock events={events} /> : <div className="min-h-60" />;
 }
