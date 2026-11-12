@@ -10,7 +10,8 @@ import {
 } from "date-fns";
 import { ru } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
-import { use, useState } from "react";
+import { useState } from "react";
+import { useStreakEvents } from "@/components/main/streak-context";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -23,16 +24,12 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { getDays, getStreak, type StreakEvent } from "@/lib/stats";
+import { getDays, getStreak } from "@/lib/stats";
 import { capitalizeFirstLetter, cn, declOfNum } from "@/lib/utils";
 
-export function StreakButton({
-  events: eventsPromise,
-}: {
-  events: Promise<StreakEvent[]>;
-}) {
+export function StreakButton() {
   const [weekPadding, setWeekPadding] = useState(0);
-  const events = use(eventsPromise);
+  const events = useStreakEvents();
   const { streak } = getStreak(events);
   const days = getDays(events, weekPadding);
   const weekStart = startOfWeek(addWeeks(new Date(), weekPadding), {

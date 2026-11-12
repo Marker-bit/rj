@@ -3,6 +3,7 @@ import { startOfToday } from "date-fns";
 import type React from "react";
 import { AgentGate } from "@/components/agent/agent-gate";
 import NavBar from "@/components/navigation/navbar";
+import { StreakEventsProvider } from "@/components/main/streak-context";
 import RecommendationBar from "@/components/navigation/recommendation-bar";
 import { QueryProvider } from "@/components/providers/query-client-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -86,12 +87,14 @@ export default async function Layout({
   return (
     <QueryProvider>
       <TooltipProvider>
-        <div>
-          <NavBar events={events} auth={auth} build={build} />
-          <RecommendationBar recommendations={recommendationsAvailable} />
-          <div className="w-full overflow-auto">{children}</div>
-          <AgentGate aiEnabled={aiEnabled} />
-        </div>
+        <StreakEventsProvider events={events}>
+          <div>
+            <NavBar auth={auth} build={build} />
+            <RecommendationBar recommendations={recommendationsAvailable} />
+            <div className="w-full overflow-auto">{children}</div>
+            <AgentGate aiEnabled={aiEnabled} />
+          </div>
+        </StreakEventsProvider>
         <Toaster />
       </TooltipProvider>
     </QueryProvider>

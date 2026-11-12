@@ -11,7 +11,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import type { StreakEvent } from "@/lib/stats";
 import { cn } from "@/lib/utils";
 import { ModeToggle } from "../mode-toggle";
 import { Skeleton } from "../ui/skeleton";
@@ -33,11 +32,9 @@ const navigationLinks = [
 ];
 
 export default function NavBar({
-  events,
   auth,
   build,
 }: {
-  events: Promise<StreakEvent[]>;
   auth: Promise<{ user: User; unread: number } | { user: null; unread: null }>;
   build: BuildInfo;
 }) {
@@ -108,7 +105,7 @@ export default function NavBar({
         {/* Right side */}
         <div className="flex flex-1 items-center justify-end gap-2">
           <Suspense fallback={<Skeleton className="h-9 w-14 rounded-full" />}>
-            <StreakButton events={events} />
+            <StreakButton />
           </Suspense>
           <ModeToggle />
           <NewspaperButton />

@@ -1,8 +1,6 @@
 "use client";
 
-import type { ReadEvent } from "@prisma/client";
 import { differenceInDays } from "date-fns";
-import type { User } from "lucia";
 import {
   Card,
   CardAction,
@@ -11,16 +9,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getDays2, getStreak } from "@/lib/stats";
+import { getDays2, getStreak, type StreakEvent } from "@/lib/stats";
 import { declOfNum } from "@/lib/utils";
 import { ConfettiButton } from "./confetti-button";
 
-export default function StreakBlock({
-  events,
-}: {
-  events: ReadEvent[];
-  user: User;
-}) {
+export default function StreakBlock({ events }: { events: StreakEvent[] }) {
   const { streak, breakDay, readToday } = getStreak(events);
   const days = getDays2(events);
   const pagesReadToday = days[days.length - 1].pagesRead;
@@ -91,9 +84,9 @@ export default function StreakBlock({
             (streak !== 0 && streak % 50 === 0)) && <ConfettiButton />}
         </CardAction>
       </CardHeader>
-      <CardContent className="mt-auto h-[124px] flex-1 p-0">
+      <CardContent className="mt-auto h-[124px] shrink-0 p-0">
         <svg
-          className="size-full"
+          className="block h-full w-full"
           viewBox="0 0 100 100"
           preserveAspectRatio="none"
           role="img"
