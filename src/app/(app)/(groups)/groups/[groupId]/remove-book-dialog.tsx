@@ -1,6 +1,6 @@
 "use client";
 
-import type { GroupBook } from "@prisma/client";
+import type { GroupBook } from "@/generated/prisma/browser";
 import { z } from "zod";
 import { toast } from "sonner";
 import { apiFetch } from "@/lib/api-fetch";

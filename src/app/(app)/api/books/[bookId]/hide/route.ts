@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
-import { BookStatus } from "@prisma/client";
+import { BookStatus } from "@/generated/prisma/enums";
 
 export async function POST(
   _req: NextRequest,

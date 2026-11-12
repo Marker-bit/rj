@@ -1,6 +1,9 @@
 "use client";
 
-import type { GroupBookSuggestion, GroupMember } from "@prisma/client";
+import type {
+  GroupBookSuggestion,
+  GroupMember,
+} from "@/generated/prisma/browser";
 import { BookIcon, Search, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";

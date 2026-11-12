@@ -1,7 +1,10 @@
 "use client";
 
-import type { GroupBookSuggestion, GroupMember } from "@prisma/client";
-import { GroupMemberRole } from "@/lib/enums";
+import type {
+  GroupBookSuggestion,
+  GroupMember,
+} from "@/generated/prisma/browser";
+import { GroupMemberRole } from "@/generated/prisma/enums";
 import { BookUser } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";

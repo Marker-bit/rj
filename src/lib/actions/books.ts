@@ -1,6 +1,6 @@
 "use server";
 
-import type { BackgroundColor } from "@prisma/client";
+import type { BackgroundColor } from "@/generated/prisma/enums";
 import { prettifyError } from "zod";
 import { fetchBooks } from "../books";
 import { db } from "../db";

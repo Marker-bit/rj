@@ -1,4 +1,4 @@
-import type { SharePeople } from "@prisma/client";
+import type { SharePeople } from "@/generated/prisma/enums";
 
 export type PublicUser = {
   id: string;

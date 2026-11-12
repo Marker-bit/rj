@@ -1,5 +1,5 @@
-import type { GroupBookSuggestion } from "@prisma/client";
-import { GroupMemberRole } from "@/lib/enums";
+import type { GroupBookSuggestion } from "@/generated/prisma/client";
+import { GroupMemberRole } from "@/generated/prisma/enums";
 import { Plus } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";

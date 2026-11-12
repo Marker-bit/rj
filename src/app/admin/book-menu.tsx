@@ -1,6 +1,6 @@
 "use client";
 
-import type { Book } from "@prisma/client";
+import type { Book } from "@/generated/prisma/browser";
 import { MoreVertical, Trash, UserCircle } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";

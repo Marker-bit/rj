@@ -1,4 +1,4 @@
-import type { Book, Group, GroupBook } from "@prisma/client";
+import type { Book, Group, GroupBook } from "@/generated/prisma/client";
 import type { User } from "lucia";
 import { BookIcon } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";

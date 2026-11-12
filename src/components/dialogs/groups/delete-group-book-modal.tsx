@@ -1,6 +1,6 @@
 "use client";
 
-import type { Group, GroupBook } from "@prisma/client";
+import type { Group, GroupBook } from "@/generated/prisma/browser";
 import { Loader } from "lucide-react";
 import { useState } from "react";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";

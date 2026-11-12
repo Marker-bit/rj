@@ -17,7 +17,7 @@ import {
   ItemTitle,
 } from "@/components/ui/item";
 import type { KnownEntities } from "@/lib/ai/message";
-import { BackgroundColor, BookStatus } from "@/lib/enums";
+import { BackgroundColor, BookStatus } from "@/generated/prisma/enums";
 import type { ToolId, ToolView } from "@/lib/ai/tools/types";
 import {
   EditBookChanges,

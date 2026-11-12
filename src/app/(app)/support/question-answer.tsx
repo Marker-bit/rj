@@ -1,4 +1,8 @@
-import type { AnswerRead, SupportAnswer, User } from "@prisma/client";
+import type {
+  AnswerRead,
+  SupportAnswer,
+  User,
+} from "@/generated/prisma/client";
 import { CheckCheck } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";

@@ -1,4 +1,4 @@
-import type { Book, Collection } from "@prisma/client";
+import type { Book, Collection } from "@/generated/prisma/client";
 import { declOfNum } from "@/lib/utils";
 import { CollectionButtons } from "./collection-buttons";
 

@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 import { apiFetch } from "@/lib/api-fetch";
-import type { Book, Group, GroupBook } from "@prisma/client";
+import type { Book, Group, GroupBook } from "@/generated/prisma/browser";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";

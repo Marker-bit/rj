@@ -1,4 +1,4 @@
-import { GroupMemberRole } from "@prisma/client";
+import { GroupMemberRole } from "@/generated/prisma/enums";
 import { Crown, Shield } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";

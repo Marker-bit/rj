@@ -1,4 +1,4 @@
-import type { Collection, ReadEvent } from "@prisma/client";
+import type { Collection, ReadEvent } from "@/generated/prisma/client";
 import {
   BookOpen,
   BookOpenCheck,

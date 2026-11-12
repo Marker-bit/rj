@@ -1,4 +1,4 @@
-import type { Book, ReadEvent } from "@prisma/client";
+import type { Book, ReadEvent } from "@/generated/prisma/client";
 import type { ReactElement } from "react";
 import { db } from "@/lib/db";
 import { requireUser } from "@/lib/require-user";

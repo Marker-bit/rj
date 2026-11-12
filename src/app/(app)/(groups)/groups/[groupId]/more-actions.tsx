@@ -1,6 +1,6 @@
 "use client";
 
-import type { Book, Group, GroupBook } from "@prisma/client";
+import type { Book, Group, GroupBook } from "@/generated/prisma/browser";
 import {
   BarChartHorizontalBig,
   BookOpen,

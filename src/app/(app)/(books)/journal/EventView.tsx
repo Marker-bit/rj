@@ -1,6 +1,6 @@
 "use client";
 
-import type { Book } from "@prisma/client";
+import type { Book } from "@/generated/prisma/browser";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { BookOpen, BookOpenCheck, Loader, Undo } from "lucide-react";
 import Link from "next/link";

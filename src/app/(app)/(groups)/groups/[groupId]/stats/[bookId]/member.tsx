@@ -1,6 +1,6 @@
 "use client";
 
-import type { Book, GroupBook, GroupMember } from "@prisma/client";
+import type { Book, GroupBook, GroupMember } from "@/generated/prisma/browser";
 import { BadgeCheck, Check, UserSquare2, X } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";

@@ -1,6 +1,6 @@
 "use client";
 
-import type { Book, Group, GroupBook } from "@prisma/client";
+import type { Book, Group, GroupBook } from "@/generated/prisma/browser";
 import { z } from "zod";
 import { apiFetch } from "@/lib/api-fetch";
 import { BookOpen, Minus, Plus } from "lucide-react";

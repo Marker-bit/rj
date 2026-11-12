@@ -1,6 +1,6 @@
 "use client";
 
-import type { Book, Collection } from "@prisma/client";
+import type { Book, Collection } from "@/generated/prisma/browser";
 import { Trash } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";

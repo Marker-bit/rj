@@ -1,6 +1,6 @@
 "use client";
 
-import type { GroupBook } from "@prisma/client";
+import type { GroupBook } from "@/generated/prisma/browser";
 import { Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 

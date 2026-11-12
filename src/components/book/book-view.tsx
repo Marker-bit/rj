@@ -9,7 +9,7 @@ import type { Book } from "@/lib/api-types";
 import { backgroundColors } from "@/lib/colors";
 import { dateToString } from "@/lib/date";
 import { cn, declOfNum } from "@/lib/utils";
-import { BackgroundColor, BookStatus } from "@/lib/enums";
+import { BackgroundColor, BookStatus } from "@/generated/prisma/enums";
 import {
   BarChart,
   BookIcon,

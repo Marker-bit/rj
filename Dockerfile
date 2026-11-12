@@ -1,4 +1,4 @@
-FROM node:20-alpine AS base
+FROM node:22-alpine AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 ENV NEXT_TELEMETRY_DISABLED=1
@@ -14,7 +14,6 @@ COPY package.json pnpm-lock.yaml ./
 COPY prisma ./prisma/
 RUN --mount=type=cache,id=s/5081a2db-f18f-4416-bec2-ccfe549c9f4a-/pnpm/store,target=/pnpm/store,sharing=locked \
     pnpm install --frozen-lockfile --ignore-scripts
-RUN pnpm exec prisma generate
 
 # Builder
 FROM base AS builder

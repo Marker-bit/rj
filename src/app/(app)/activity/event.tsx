@@ -1,4 +1,4 @@
-import type { Book, ReadEvent } from "@prisma/client";
+import type { Book, ReadEvent } from "@/generated/prisma/client";
 import { BookCheck, BookOpen } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";

@@ -1,6 +1,6 @@
 "use client";
 
-import type { Book, ReadEvent } from "@prisma/client";
+import type { Book, ReadEvent } from "@/generated/prisma/browser";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 import type { PublicUser } from "@/lib/user-types";

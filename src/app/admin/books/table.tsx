@@ -1,6 +1,11 @@
 "use client";
 
-import type { Book, Group, GroupBook, GroupMember } from "@prisma/client";
+import type {
+  Book,
+  Group,
+  GroupBook,
+  GroupMember,
+} from "@/generated/prisma/browser";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {

@@ -1,6 +1,6 @@
 "use client";
 
-import type { Book } from "@prisma/client";
+import type { Book } from "@/generated/prisma/browser";
 import { ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {

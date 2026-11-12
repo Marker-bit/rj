@@ -1,6 +1,6 @@
 "use client";
 
-import { SharePeople } from "@/lib/enums";
+import { SharePeople } from "@/generated/prisma/enums";
 import type { User } from "lucia";
 import { FriendView } from "@/components/users/friend-view";
 import { Stats } from "@/components/users/stats";
