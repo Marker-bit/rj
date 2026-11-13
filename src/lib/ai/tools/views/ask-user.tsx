@@ -274,7 +274,7 @@ export function AskUserView({
         </p>
       ) : (
         !locked && (
-          <p className="text-[11px] text-muted-foreground/70">
+          <p className="text-[11px] text-muted-foreground">
             Выберите клавишей или напишите свой вариант в поле ниже.
           </p>
         )

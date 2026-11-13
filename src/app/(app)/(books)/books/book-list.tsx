@@ -236,11 +236,11 @@ export function BookList({ books }: { books: Book[] }) {
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
             />
-            <div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50">
+            <div className="text-muted-foreground pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50">
               <SearchIcon size={16} />
             </div>
             <button
-              className="text-muted-foreground/80 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-md transition-[color,box-shadow] outline-none focus:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+              className="text-muted-foreground hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-md transition-[color,box-shadow] outline-none focus:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
               aria-label="Искать"
               type="submit"
             >
@@ -257,11 +257,11 @@ export function BookList({ books }: { books: Book[] }) {
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger
                 id="status"
-                className="[&>span_svg]:text-muted-foreground/80 [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_svg]:shrink-0 w-full"
+                className="[&>span_svg]:text-muted-foreground [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_svg]:shrink-0 w-full"
               >
                 <SelectValue placeholder="Статус" />
               </SelectTrigger>
-              <SelectContent className="[&_*[role=option]>span>svg]:text-muted-foreground/80 [&_*[role=option]>span]:flex [&_*[role=option]>span]:gap-2 [&_*[role=option]>span>svg]:shrink-0">
+              <SelectContent className="[&_*[role=option]>span>svg]:text-muted-foreground [&_*[role=option]>span]:flex [&_*[role=option]>span]:gap-2 [&_*[role=option]>span>svg]:shrink-0">
                 <SelectItem value="all">
                   <BookMinus size={16} aria-hidden="true" />
                   <span className="truncate">Все книги</span>
@@ -291,11 +291,11 @@ export function BookList({ books }: { books: Book[] }) {
             <Select value={sort} onValueChange={setSort}>
               <SelectTrigger
                 id="sort"
-                className="[&>span_svg]:text-muted-foreground/80 [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_svg]:shrink-0 w-full"
+                className="[&>span_svg]:text-muted-foreground [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_svg]:shrink-0 w-full"
               >
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="[&_*[role=option]>span>svg]:text-muted-foreground/80 [&_*[role=option]>span]:flex [&_*[role=option]>span]:gap-2 [&_*[role=option]>span>svg]:shrink-0">
+              <SelectContent className="[&_*[role=option]>span>svg]:text-muted-foreground [&_*[role=option]>span]:flex [&_*[role=option]>span]:gap-2 [&_*[role=option]>span>svg]:shrink-0">
                 <SelectItem value="percent">
                   <Percent size={16} aria-hidden="true" />
                   <span className="truncate">По прогрессу в книге</span>

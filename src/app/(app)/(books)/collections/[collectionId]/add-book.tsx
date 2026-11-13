@@ -51,13 +51,13 @@ export function AddBook({
       )}
       <div className="mb-auto ml-2 flex flex-col">
         <div className="text-xl">{book.title}</div>
-        <div className="text-sm text-muted-foreground/70">{book.author}</div>
+        <div className="text-sm text-muted-foreground">{book.author}</div>
       </div>
       <Button
         aria-label={`Добавить «${book.title}» в коллекцию`}
         variant="ghost"
         size="icon"
-        className="ml-auto size-fit p-1 text-muted-foreground/50 hover:text-black dark:hover:text-white"
+        className="ml-auto size-fit p-1 text-muted-foreground hover:text-black dark:hover:text-white"
         onClick={() => addMutation.mutate()}
         disabled={addMutation.isPending}
       >

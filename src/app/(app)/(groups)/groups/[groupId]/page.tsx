@@ -155,7 +155,7 @@ export default async function Page(props: {
           <div className="text-3xl font-bold">
             <div>{group.title}</div>
           </div>
-          <div className="flex gap-1 text-sm text-muted-foreground/70">
+          <div className="flex gap-1 text-sm text-muted-foreground">
             <div>
               {group.groupBooks.length}{" "}
               {declOfNum(group.groupBooks.length, ["книга", "книги", "книг"])}
@@ -250,7 +250,7 @@ export default async function Page(props: {
                         <BadgeCheck className="size-4 text-yellow-500" />
                       )}
                     </div>
-                    <div className="text-sm text-muted-foreground/70">
+                    <div className="text-sm text-muted-foreground">
                       @{member.user.username}
                     </div>
                   </div>
@@ -285,7 +285,7 @@ export default async function Page(props: {
               <div className="flex justify-between">
                 <div className="flex flex-col">
                   <div className="text-xl">{stat.title}</div>
-                  <div className="text-sm text-muted-foreground/70">
+                  <div className="text-sm text-muted-foreground">
                     {stat.description}
                   </div>
                 </div>
@@ -297,7 +297,7 @@ export default async function Page(props: {
                     ).toFixed(1)}
                     %
                   </div>
-                  <div className="text-sm text-muted-foreground/70">
+                  <div className="text-sm text-muted-foreground">
                     {stat.value}/{stat.max}
                   </div>
                 </div>
@@ -340,7 +340,7 @@ export default async function Page(props: {
                         <BadgeCheck className="size-4 text-yellow-500" />
                       )}
                     </div>
-                    <div className="text-sm text-muted-foreground/70">
+                    <div className="text-sm text-muted-foreground">
                       @{member.user.username}
                     </div>
                   </div>

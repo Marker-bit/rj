@@ -56,7 +56,7 @@ export default async function Page(props: {
       </Link>
       <div className="flex flex-col border-b bg-neutral-100 p-2 dark:bg-neutral-900">
         <h1 className="text-5xl font-bold">{collection.name}</h1>
-        <div className="text-muted-foreground/50">
+        <div className="text-muted-foreground">
           {collection.books.length}{" "}
           {declOfNum(collection.books.length, ["книга", "книги", "книг"])}
         </div>

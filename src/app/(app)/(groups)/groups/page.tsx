@@ -50,7 +50,7 @@ export default async function Page() {
               className="flex flex-col gap-1 rounded-xl border p-2"
             >
               <div>{g.title}</div>
-              <div className="flex gap-1 text-sm text-muted-foreground/70">
+              <div className="flex gap-1 text-sm text-muted-foreground">
                 <div>
                   {g.groupBooks.length}{" "}
                   {declOfNum(g.groupBooks.length, ["книга", "книги", "книг"])}

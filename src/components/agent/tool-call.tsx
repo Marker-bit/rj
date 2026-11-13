@@ -233,7 +233,7 @@ export function ToolCall<TOOL extends UITool>({
         {selectedText}
         {askUserLabel ? (
           <>
-            <span className="mx-1 text-muted-foreground/50">·</span>
+            <span className="mx-1 text-muted-foreground">·</span>
             {askUserLabel}
           </>
         ) : null}

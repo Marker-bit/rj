@@ -36,7 +36,7 @@ export async function Profile() {
               <BadgeCheck className="size-6 text-yellow-500" />
             )}
           </div>
-          <div className="text-sm text-muted-foreground/70">
+          <div className="text-sm text-muted-foreground">
             @{profile.username}
           </div>
         </div>

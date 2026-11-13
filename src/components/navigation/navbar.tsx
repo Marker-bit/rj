@@ -75,7 +75,7 @@ export default function NavBar({
                     >
                       <Icon
                         size={16}
-                        className="text-muted-foreground/80"
+                        className="text-muted-foreground"
                         aria-hidden="true"
                       />
                       <span>{link.label}</span>

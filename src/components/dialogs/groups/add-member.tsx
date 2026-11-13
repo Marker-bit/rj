@@ -111,7 +111,7 @@ export default function AddMember({
                 <div className="font-bold">
                   {friend.firstName} {friend.lastName}
                 </div>
-                <div className="text-sm text-muted-foreground/70">
+                <div className="text-sm text-muted-foreground">
                   @{friend.username}
                 </div>
               </div>

@@ -76,7 +76,7 @@ export default async function ProfilePage() {
           <div className="text-3xl font-semibold">
             {userData?.firstName} {userData?.lastName}
           </div>
-          <div className="text-sm text-muted-foreground/70">
+          <div className="text-sm text-muted-foreground">
             @{userData?.username}
           </div>
         </div>
