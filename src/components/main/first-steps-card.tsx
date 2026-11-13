@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import {
   Card,
+  CardAction,
   CardContent,
   CardDescription,
   CardHeader,
@@ -39,14 +40,18 @@ function StepIcon({ index, completed }: { index: number; completed: boolean }) {
 
 export function FirstStepsCard({ steps }: { steps: FirstStep[] }) {
   const [skippedCover, setSkippedCover] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
     setSkippedCover(localStorage.getItem("skipCoverStep") === "true");
+    setDismissed(localStorage.getItem("firstStepsDismissed") === "true");
   }, []);
 
   const visibleSteps = steps.filter(
     (step) => !(step.id === "cover" && skippedCover),
   );
+
+  if (dismissed) return null;
 
   if (visibleSteps.every((step) => step.completed)) {
     return null;
@@ -59,6 +64,21 @@ export function FirstStepsCard({ steps }: { steps: FirstStep[] }) {
         <CardDescription>
           Чтобы вы лучше освоились в Читательском дневнике
         </CardDescription>
+        <CardAction>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            aria-label="Скрыть подсказки"
+            onClick={() => {
+              localStorage.setItem("firstStepsDismissed", "true");
+              setDismissed(true);
+              toast.success("Подсказки скрыты");
+            }}
+          >
+            Скрыть
+          </Button>
+        </CardAction>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-4">

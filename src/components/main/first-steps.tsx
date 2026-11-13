@@ -41,12 +41,14 @@ export default async function FirstSteps() {
     {
       id: "reading",
       completed: markedReading,
-      text: "Прочитать несколько страниц и отметить прочтение",
+      text: "Откройте книгу и отметьте, сколько страниц прочитали",
+      href: "/books",
     },
     {
       id: "cover",
       completed: addedCover,
-      text: "Добавить обложку",
+      text: "Добавьте обложку при создании или редактировании книги",
+      href: "/books",
       skippable: true,
     },
   ];
