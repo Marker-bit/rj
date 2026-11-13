@@ -1,6 +1,7 @@
 import { CheckIcon, CopyIcon, LinkIcon, Trash } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
 import {
   Empty,
@@ -33,7 +34,9 @@ export function ShareBookModal({
   book: Book;
 }) {
   const [loading, setLoading] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const { copyToClipboard, isCopied } = useCopyToClipboard();
+  const queryClient = useQueryClient();
 
   const createLink = async () => {
     setLoading(true);
@@ -42,6 +45,8 @@ export function ShareBookModal({
         method: "POST",
       });
       if (!resp.ok) throw new Error("Не удалось создать ссылку");
+      toast.success("Ссылка создана");
+      queryClient.invalidateQueries({ queryKey: ["books"] });
       void revalidate("books");
     } catch {
       toast.error("Возникла проблема при создании ссылки");
@@ -51,12 +56,16 @@ export function ShareBookModal({
   };
 
   const deleteLink = async (id: string) => {
+    setDeletingId(id);
     toast.promise(
       async () => {
-        setLoading(true);
-        await deleteBookLink(id);
-        setLoading(false);
-        void revalidate("books");
+        try {
+          await deleteBookLink(id);
+          queryClient.invalidateQueries({ queryKey: ["books"] });
+          void revalidate("books");
+        } finally {
+          setDeletingId(null);
+        }
       },
       {
         loading: "Удаление ссылки...",
@@ -109,7 +118,7 @@ export function ShareBookModal({
                 aria-label="Удалить ссылку"
                 title="Удалить ссылку"
                 onClick={() => deleteLink(link.id)}
-                disabled={loading}
+                disabled={deletingId === link.id}
                 variant="outline"
                 size="icon"
                 className="shrink-0"

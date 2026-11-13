@@ -53,7 +53,7 @@ export function MemberInfo({
             <BadgeCheck className="size-4 text-yellow-500" />
           )}
         </div>
-        <div className="text-sm text-muted-foreground/70">
+        <div className="text-sm text-muted-foreground">
           @{member.user.username}
         </div>
         {savedBook && (

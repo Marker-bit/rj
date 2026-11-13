@@ -7,6 +7,7 @@ import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
+import { SimpleTooltip } from "@/components/ui/simple-tooltip";
 import {
   Form,
   FormControl,
@@ -92,18 +93,21 @@ export function GroupBookForm({
                       width={500}
                       height={500}
                       className="h-52 w-auto rounded-md"
-                      alt="cover"
+                      alt="Обложка книги"
                     />
                     <div className="absolute right-0 top-2 flex translate-x-1/2 flex-col gap-2">
-                      <Button
-                        size="icon"
-                        className="size-fit p-1"
-                        variant="outline"
-                        onClick={() => field.onChange("")}
-                        type="button"
-                      >
-                        <Trash className="size-4" />
-                      </Button>
+                      <SimpleTooltip text="Удалить обложку">
+                        <Button
+                          size="icon"
+                          className="size-fit p-1"
+                          variant="outline"
+                          aria-label="Удалить обложку"
+                          onClick={() => field.onChange("")}
+                          type="button"
+                        >
+                          <Trash className="size-4" />
+                        </Button>
+                      </SimpleTooltip>
                     </div>
                   </div>
                 ) : (

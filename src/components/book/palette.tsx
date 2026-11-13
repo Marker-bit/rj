@@ -31,7 +31,7 @@ export default function Palette({
     setLoading(true);
     await setBookColor(bookId, color);
     setLoading(false);
-    toast.success("Цвет изменен");
+    toast.success("Цвет изменён");
     void revalidate("books");
   };
   return (

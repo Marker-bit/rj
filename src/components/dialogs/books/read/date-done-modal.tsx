@@ -14,7 +14,7 @@ import { useMutation } from "@tanstack/react-query";
 import confetti from "canvas-confetti";
 import { startOfDay } from "date-fns";
 import { Save } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export function DateDoneModal({
@@ -30,9 +30,20 @@ export function DateDoneModal({
 }) {
   const today = new Date();
   const [date, setDate] = useState<Date | undefined>(today);
-  const readDoneMutation = useMutation(
-    doneMutationOptions(book.id, book.pages),
-  );
+  const readDoneMutation = useMutation({
+    ...doneMutationOptions(book.id, book.pages),
+    onError: () => {
+      toast.error("Не удалось отметить книгу прочитанной", {
+        description: "Проверьте соединение и попробуйте ещё раз.",
+      });
+    },
+    meta: { errorHandled: true },
+  });
+
+  useEffect(() => {
+    if (!isOpen) return;
+    setDate(new Date());
+  }, [isOpen]);
 
   const days: Date[] = [];
 
@@ -48,7 +59,6 @@ export function DateDoneModal({
       setIsOpen(true);
       return;
     }
-    setDate(new Date());
     setIsOpen(false);
   };
 
@@ -88,7 +98,11 @@ export function DateDoneModal({
             toast.error("Вы не выбрали дату");
             return;
           }
-          await readDoneMutation.mutateAsync({ readAt: date });
+          try {
+            await readDoneMutation.mutateAsync({ readAt: date });
+          } catch {
+            return; // toast already shown
+          }
 
           confetti({
             particleCount: 100,
@@ -100,6 +114,7 @@ export function DateDoneModal({
           onDone();
         }}
         className="mx-auto w-fit max-md:w-full"
+        disabled={readDoneMutation.isPending}
       >
         {readDoneMutation.isPending ? (
           <Loader invert className="mr-2 size-4" />

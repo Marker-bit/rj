@@ -12,12 +12,15 @@ export const deleteMutationOptions = (bookId: string) =>
     onSuccess: () => toast.success("Книга удалена"),
   });
 
-export const undoEventMutationOptions = (bookId: string) =>
+export const undoEventMutationOptions = (bookId: string, eventId: string) =>
   mutationOptions({
     mutationFn: () =>
-      apiFetch(`/api/books/${bookId}/undo`, {
-        method: "DELETE",
-      }),
+      apiFetch(
+        `/api/books/${bookId}/undo?eventId=${encodeURIComponent(eventId)}`,
+        {
+          method: "DELETE",
+        },
+      ),
     onSuccess: () => toast.success("Событие отменено"),
   });
 

@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { useLocalStorage } from "usehooks-ts";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
+import { SimpleTooltip } from "@/components/ui/simple-tooltip";
 import {
   Form,
   FormControl,
@@ -36,7 +37,9 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import ExportDataButton from "@/components/users/export-data-button";
 import { useUsernameAvailability } from "@/hooks/use-username-availability";
+import { USERNAME_REGEX } from "@/lib/api-validate";
 import { DEFAULT_FIELDS_STORAGE_KEY } from "@/lib/default-fields";
+import { settingsSchema } from "@/lib/validation/schemas";
 
 const AvatarField = dynamic(
   () => import("./avatar-field").then((mod) => mod.AvatarField),
@@ -46,27 +49,11 @@ const AvatarField = dynamic(
   },
 );
 
-const formSchema = z.object({
-  username: z
-    .string()
-    .min(2, "Минимум 2 символа")
-    .max(50, "Максимум 50 символов"),
-  firstName: z.string().min(1, "Требуется имя").max(50),
-  lastName: z.string().max(50, "Максимум 50 символов").optional(),
-  avatarUrl: z.string().optional(),
-  shareSubscriptions: z
-    .enum(["ALL", "SUBS", "NONE"])
-    .default("NONE")
-    .optional(),
-  shareFollowers: z.enum(["ALL", "SUBS", "NONE"]).default("NONE").optional(),
-  shareStats: z.enum(["ALL", "SUBS", "NONE"]).default("NONE").optional(),
-  hideActivity: z.boolean(),
-});
-
 export function SettingsForm({ user }: { user: LuciaUser }) {
   const [logOutLoading, setLogOutLoading] = useState(false);
+  const [usernameBaseline, setUsernameBaseline] = useState(user.username);
   const { found: usernameFound, check: checkUsername } =
-    useUsernameAvailability(user.username);
+    useUsernameAvailability(usernameBaseline);
   const [disableRecs, setDisableRecs] = useLocalStorage("disableRecs", false);
   const [isClient, setIsClient] = useState(false);
   const router = useRouter();
@@ -84,8 +71,8 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
     setIsClient(true);
   }, []);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof settingsSchema>>({
+    resolver: zodResolver(settingsSchema),
     defaultValues: {
       username: user.username,
       firstName: user.firstName ?? "",
@@ -113,26 +100,36 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
     },
   });
 
+  const usernameValue = form.watch("username");
+
   const userMutation = useMutation({
-    mutationFn: async (values: z.infer<typeof formSchema>) => {
+    mutationFn: async (values: z.infer<typeof settingsSchema>) => {
       const req = await fetch("/api/auth", {
         method: "PATCH",
         body: JSON.stringify(values),
       });
-      const res = await req.json();
-      if (res.error) {
-        toast.error("Возникла проблема при обновлении профиля", {
-          description: res.error,
-        });
-        throw new Error(res.error);
+      const res = await req.json().catch(() => null);
+      if (!req.ok || res?.error) {
+        throw new Error(
+          typeof res?.error === "string"
+            ? res.error
+            : "Не удалось сохранить профиль",
+        );
       }
     },
-    onSuccess: () => {
-      toast.success("Профиль обновлен");
+    onError: (error) => {
+      toast.error("Возникла проблема при обновлении профиля", {
+        description: error.message,
+      });
     },
+    onSuccess: (_data, variables) => {
+      toast.success("Профиль обновлен");
+      setUsernameBaseline(variables.username);
+    },
+    meta: { errorHandled: true },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<typeof settingsSchema>) {
     userMutation.mutate(values);
   }
 
@@ -193,13 +190,14 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
                         role="img"
                       />
                     )}
-                    {usernameFound === false && (
-                      <Check
-                        className="size-8 text-green-500"
-                        aria-label="Имя пользователя свободно"
-                        role="img"
-                      />
-                    )}
+                    {usernameFound === false &&
+                      USERNAME_REGEX.test(usernameValue) && (
+                        <Check
+                          className="size-8 text-green-500"
+                          aria-label="Имя пользователя свободно"
+                          role="img"
+                        />
+                      )}
                     {usernameFound === null && <Loader className="size-8" />}
                   </div>
                   <FormMessage />
@@ -327,33 +325,39 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
                     }
                     placeholder={`Поле ${defaultField.storageIndex + 1}`}
                   />
-                  <Button
-                    size="icon"
-                    variant="outline"
-                    type="button"
-                    onClick={() =>
-                      setFields((currentFields) => {
-                        return currentFields.filter(
-                          (_, fieldIndex) =>
-                            fieldIndex !== defaultField.storageIndex,
-                        );
-                      })
-                    }
-                  >
-                    <XIcon />
-                  </Button>
+                  <SimpleTooltip text="Удалить поле">
+                    <Button
+                      size="icon"
+                      variant="outline"
+                      type="button"
+                      aria-label="Удалить поле"
+                      onClick={() =>
+                        setFields((currentFields) => {
+                          return currentFields.filter(
+                            (_, fieldIndex) =>
+                              fieldIndex !== defaultField.storageIndex,
+                          );
+                        })
+                      }
+                    >
+                      <XIcon />
+                    </Button>
+                  </SimpleTooltip>
                 </div>
               ))}
-              <Button
-                size="icon"
-                variant="outline"
-                type="button"
-                onClick={() =>
-                  setFields((currentFields) => [...currentFields, ""])
-                }
-              >
-                <PlusIcon />
-              </Button>
+              <SimpleTooltip text="Добавить поле">
+                <Button
+                  size="icon"
+                  variant="outline"
+                  type="button"
+                  aria-label="Добавить поле"
+                  onClick={() =>
+                    setFields((currentFields) => [...currentFields, ""])
+                  }
+                >
+                  <PlusIcon />
+                </Button>
+              </SimpleTooltip>
             </div>
             <h2 className="pt-2 text-lg font-semibold">Чтение</h2>
             <FormField
@@ -405,7 +409,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
         </div>
         <h2 className="mb-2 text-center text-lg font-semibold">Аккаунт</h2>
         <div className="mx-3 flex flex-wrap justify-center gap-2">
-          <Button type="submit">
+          <Button type="submit" disabled={userMutation.isPending}>
             {userMutation.isPending ? (
               <>
                 <Loader invert className="mr-2 size-6" />

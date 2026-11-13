@@ -110,7 +110,7 @@ export default async function Page(props: {
           <div className="text-3xl font-semibold">
             {user.firstName} {user.lastName}
           </div>
-          <div className="text-sm text-muted-foreground/70">@{username}</div>
+          <div className="text-sm text-muted-foreground">@{username}</div>
           <FollowButton
             following={
               !!user.following.find((f) => f.firstId === currentUser?.id)

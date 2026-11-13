@@ -15,6 +15,15 @@ import { useState } from "react";
 import type { DateRange } from "react-day-picker";
 import { DateCalendar } from "@/components/date-calendar";
 import { Button } from "@/components/ui/button";
+import { SimpleTooltip } from "@/components/ui/simple-tooltip";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import {
   Popover,
   PopoverContent,
@@ -50,11 +59,13 @@ export default function JournalView({
   return (
     <div className="max-sm:mb-[15vh]">
       <div className="m-2 flex items-center gap-2 text-3xl font-bold">
-        <Link href="/">
-          <Button variant="ghost" size="icon">
-            <ChevronLeft className="size-8" />
-          </Button>
-        </Link>
+        <SimpleTooltip text="Назад">
+          <Link href="/home" aria-label="Назад">
+            <Button variant="ghost" size="icon">
+              <ChevronLeft className="size-8" />
+            </Button>
+          </Link>
+        </SimpleTooltip>
         Журнал
       </div>
       <div className="flex flex-col gap-2 p-3">
@@ -95,10 +106,22 @@ export default function JournalView({
           </Button>
         )}
         {filtered.length === 0 && events.length === 0 ? (
-          <div className="flex items-center gap-2 rounded-xl border p-2">
-            <BookMinus className="size-10" />
-            Журнал пуст
-          </div>
+          <Empty>
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <BookMinus />
+              </EmptyMedia>
+              <EmptyTitle>Журнал пуст</EmptyTitle>
+              <EmptyDescription>
+                Отметьте прочтение книги, чтобы здесь появилась запись.
+              </EmptyDescription>
+            </EmptyHeader>
+            <EmptyContent>
+              <Button asChild variant="outline">
+                <Link href="/books">К книгам</Link>
+              </Button>
+            </EmptyContent>
+          </Empty>
         ) : (
           filtered.length === 0 && (
             <div className="flex items-center gap-2 rounded-xl border p-2">

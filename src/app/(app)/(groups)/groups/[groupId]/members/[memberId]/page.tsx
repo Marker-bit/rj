@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -53,14 +54,14 @@ export default async function Page(props: {
     },
   });
   if (!group) {
-    return null;
+    notFound();
   }
   const currentMember = group.members.find(
     (member) => member.userId === user.id,
   );
 
   if (!currentMember) {
-    return null;
+    notFound();
   }
 
   const member = await db.groupMember.findUnique({
@@ -74,7 +75,7 @@ export default async function Page(props: {
     },
   });
 
-  if (!member) return null;
+  if (!member) notFound();
 
   const booksSaved = await db.book.findMany({
     where: {
@@ -115,10 +116,10 @@ export default async function Page(props: {
           <div className="text-xl font-bold">
             {member.user.firstName} {member.user.lastName}
           </div>
-          <div className="text-sm text-muted-foreground/90">
+          <div className="text-sm text-muted-foreground">
             @{member.user.username}
           </div>
-          <div className="text-sm text-muted-foreground/90">
+          <div className="text-sm text-muted-foreground">
             {booksSaved.length}{" "}
             {declOfNum(booksSaved.length, [
               "книга сохранена",
@@ -136,7 +137,7 @@ export default async function Page(props: {
       </div>
 
       <div className="mt-2 min-h-[20vh] w-full rounded-xl border bg-neutral-100 p-4 dark:bg-neutral-900">
-        <div className="flex items-center gap-2 text-muted-foreground/90">
+        <div className="flex items-center gap-2 text-muted-foreground">
           <BookOpen className="size-4" />
           Книги
         </div>
@@ -149,7 +150,7 @@ export default async function Page(props: {
               {book.coverUrl && (
                 <Image
                   src={book.coverUrl}
-                  alt="book"
+                  alt={`Обложка книги «${book.title}»`}
                   width={500}
                   height={500}
                   className="h-20 w-auto rounded-md"
@@ -157,14 +158,14 @@ export default async function Page(props: {
               )}
               <div className="flex flex-col">
                 <div className="text-xl font-bold">{book.title}</div>
-                <div className="text-sm text-muted-foreground/90">
+                <div className="text-sm text-muted-foreground">
                   {book.author}
                 </div>
-                <div className="text-sm text-muted-foreground/90">
+                <div className="text-sm text-muted-foreground">
                   {book.pages} стр.
                 </div>
                 {book.groupBook?.description === book.description && (
-                  <p className="text-sm text-muted-foreground/90">
+                  <p className="text-sm text-muted-foreground">
                     {book.description}
                   </p>
                 )}

@@ -8,6 +8,7 @@ import { SimpleTooltip } from "@/components/ui/simple-tooltip";
 import type { Book } from "@/lib/api-types";
 import { backgroundColors } from "@/lib/colors";
 import { dateToString } from "@/lib/date";
+import { getReadingState } from "@/lib/reading-events";
 import { cn, declOfNum } from "@/lib/utils";
 import { BackgroundColor, BookStatus } from "@/generated/prisma/enums";
 import {
@@ -32,11 +33,7 @@ import { useRouter } from "next/navigation";
 import { capture } from "@/lib/posthog";
 import { useEffect, useState } from "react";
 import { HelpButton } from "../ui/help-button";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "../ui/hover-card";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { HideBookButton } from "./buttons/hide-book";
 import { UndoEventButton } from "./buttons/undo-event-button";
 import Palette from "./palette";
@@ -147,7 +144,9 @@ export function BookView({
     });
   }, [activeDialog]);
 
-  const lastEvent = book.readEvents[0];
+  const reading = getReadingState(book.readEvents);
+  const latestEvent = reading.latest;
+  const progressPages = reading.progressPages;
 
   const color =
     book.background !== BackgroundColor.NONE
@@ -195,7 +194,7 @@ export function BookView({
               : "bg-neutral-100/50 dark:bg-neutral-900/50",
           )}
           style={{
-            width: `${((lastEvent?.pagesRead || 0) / book.pages) * 100}%`,
+            width: `${(progressPages / book.pages) * 100}%`,
           }}
         />
 
@@ -242,7 +241,7 @@ export function BookView({
               void revalidate("books");
             }}
             book={book}
-            lastEvent={lastEvent}
+            lastEvent={reading.latest ?? undefined}
           />
         )}
         {mountedDialogs.has("done") && (
@@ -285,7 +284,7 @@ export function BookView({
           {book.coverUrl && (
             <Image
               src={book.coverUrl}
-              alt="book"
+              alt={`Обложка книги «${book.title}»`}
               width={192}
               height={320}
               unoptimized={book.coverUrl.includes("books.google.com")}
@@ -303,11 +302,13 @@ export function BookView({
                     {book.pages} страниц всего
                   </IconBadge>
                 </>
-              ) : lastEvent.pagesRead === book.pages ? (
+              ) : progressPages === book.pages ? (
                 <>
                   <IconBadge icon={BookOpenCheck}>Прочитана</IconBadge>
                   <UndoEventButton
                     bookId={book.id}
+                    eventId={latestEvent!.id}
+                    eventDate={latestEvent!.readAt}
                     onDone={() => {
                       onUpdate?.();
                       void revalidate("books");
@@ -319,22 +320,28 @@ export function BookView({
                     всего
                   </IconBadge>
                   <IconBadge variant="outline" icon={CalendarDays}>
-                    {dateToString(new Date(lastEvent.readAt))}
+                    {latestEvent
+                      ? dateToString(new Date(latestEvent.readAt))
+                      : ""}
                   </IconBadge>
                 </>
               ) : (
                 <>
                   <IconBadge icon={BookIcon}>Читается</IconBadge>
                   <IconBadge variant="secondary" icon={BookOpen}>
-                    {lastEvent.pagesRead}/{book.pages}{" "}
+                    {progressPages}/{book.pages}{" "}
                     {declOfNum(book.pages, ["страницы", "страниц", "страниц"])}{" "}
-                    ({((lastEvent.pagesRead / book.pages) * 100).toFixed(1)}%)
+                    ({((progressPages / book.pages) * 100).toFixed(1)}%)
                   </IconBadge>
                   <IconBadge variant="outline" icon={CalendarDays}>
-                    {dateToString(new Date(lastEvent.readAt))}
+                    {latestEvent
+                      ? dateToString(new Date(latestEvent.readAt))
+                      : ""}
                     <SimpleTooltip text="Отменить событие">
                       <UndoEventButton
                         bookId={book.id}
+                        eventId={latestEvent!.id}
+                        eventDate={latestEvent!.readAt}
                         onDone={() => {
                           onUpdate?.();
                           void revalidate("books");
@@ -399,7 +406,7 @@ export function BookView({
           >
             <Info className="size-4" />
           </HelpButton>
-          {lastEvent?.pagesRead !== book.pages && (
+          {progressPages !== book.pages && (
             <>
               <HelpButton
                 className="gap-2"
@@ -501,22 +508,26 @@ export function BookView({
         {fieldsData && (
           <div className="grid grid-cols-3 gap-2 w-full md:w-1/2">
             {fieldsData.map((field: { title: string; value: string }) => (
-              <HoverCard key={field.title + field.value}>
-                <HoverCardTrigger>
-                  <div className="flex flex-col gap-1 border rounded-md p-2">
-                    <div className="text-muted-foreground text-sm truncate">
+              <Popover key={field.title + field.value}>
+                <PopoverTrigger asChild>
+                  <button
+                    type="button"
+                    className="flex flex-col gap-1 border rounded-md p-2 text-left"
+                    aria-label={`${field.title}: ${field.value}`}
+                  >
+                    <span className="text-muted-foreground text-sm truncate">
                       {field.title}
-                    </div>
-                    <div className="font-bold truncate">{field.value}</div>
-                  </div>
-                </HoverCardTrigger>
-                <HoverCardContent className="max-w-160 w-fit min-w-80 max-h-[40vh] overflow-auto">
+                    </span>
+                    <span className="font-bold truncate">{field.value}</span>
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="max-w-160 w-fit min-w-80 max-h-[40vh] overflow-auto">
                   <div className="text-muted-foreground text-sm">
                     {field.title}
                   </div>
                   <div>{field.value}</div>
-                </HoverCardContent>
-              </HoverCard>
+                </PopoverContent>
+              </Popover>
             ))}
           </div>
         )}

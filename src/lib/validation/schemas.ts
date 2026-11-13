@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { USERNAME_MESSAGE, USERNAME_REGEX } from "@/lib/api-validate";
+
 export const registerSchema = z.object({
   username: z
     .string()
@@ -23,6 +25,20 @@ export const registerSchema = z.object({
     .or(z.literal("")),
 });
 
+export const settingsSchema = z.object({
+  username: z.string().regex(USERNAME_REGEX, USERNAME_MESSAGE),
+  firstName: z.string().trim().min(1, "Требуется имя").max(50),
+  lastName: z.string().trim().max(50, "Максимум 50 символов").optional(),
+  avatarUrl: z.string().optional(),
+  shareSubscriptions: z
+    .enum(["ALL", "SUBS", "NONE"])
+    .default("NONE")
+    .optional(),
+  shareFollowers: z.enum(["ALL", "SUBS", "NONE"]).default("NONE").optional(),
+  shareStats: z.enum(["ALL", "SUBS", "NONE"]).default("NONE").optional(),
+  hideActivity: z.boolean(),
+});
+
 export const bookSchema = z.object({
   title: z.string().min(1),
   author: z.string().min(1),
@@ -38,3 +54,33 @@ export const bookSchema = z.object({
     }),
   ),
 });
+
+const resetBookSchema = z
+  .object({
+    title: z.string().trim().min(1, "Укажите точное название книги"),
+    author: z.string().trim().optional(),
+    pages: z.coerce.number<number>().int().min(1).optional(),
+  })
+  .superRefine((book, ctx) => {
+    if (!book.author && book.pages === undefined) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["author"],
+        message: "Укажите автора или количество страниц",
+      });
+    }
+  });
+
+export const resetPasswordSchema = z
+  .object({
+    username: z.string().trim().min(1, "Введите имя пользователя"),
+    password: z.string().min(8, "Пароль должен содержать минимум 8 символов"),
+    confirmPassword: z.string().min(1, "Повторите пароль"),
+    book1: resetBookSchema,
+    book2: resetBookSchema,
+    book3: resetBookSchema,
+  })
+  .refine((values) => values.password === values.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "Пароли не совпадают",
+  });

@@ -164,7 +164,15 @@ export default function BooksCard() {
           )}
         </CardContent>
       </Card>
-      {addDialogMounted && <AddBookDialog open={open} setOpen={setOpen} />}
+      {addDialogMounted && (
+        <AddBookDialog
+          open={open}
+          setOpen={setOpen}
+          onCreated={() => {
+            queryClient.invalidateQueries({ queryKey: ["books"] });
+          }}
+        />
+      )}
     </>
   );
 }

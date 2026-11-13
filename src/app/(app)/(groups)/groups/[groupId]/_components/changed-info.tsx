@@ -49,7 +49,7 @@ export default function ChangedInfo({
         </Popover>
       )}
       {pagesUpdated && (
-        <div className="text-sm text-muted-foreground/70">
+        <div className="text-sm text-muted-foreground">
           {book.pages} стр. вместо {groupBook.pages}
         </div>
       )}

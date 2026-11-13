@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -18,7 +19,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { db } from "@/lib/db";
-import { validateRequest } from "@/lib/server-validate-request";
+import { requireUser } from "@/lib/require-user";
 import { declOfNum } from "@/lib/utils";
 import { AddGroupButton } from "../add-group-button";
 import { AddMemberButton } from "./add-member-button";
@@ -34,10 +35,7 @@ export default async function Page(props: {
   params: Promise<{ groupId: string }>;
 }) {
   const params = await props.params;
-  const { user } = await validateRequest();
-  if (!user) {
-    return null;
-  }
+  const user = await requireUser();
   const group = await db.group.findUnique({
     where: { id: params.groupId, members: { some: { userId: user.id } } },
     include: {
@@ -72,9 +70,12 @@ export default async function Page(props: {
   });
   if (!group) {
     return (
-      <div className="flex flex-col items-center p-4">
+      <div className="flex flex-col items-center gap-3 p-4">
         <p className="text-6xl font-black">404</p>
-        <p>Группа не найдена, или вы не состоите в ней.</p>
+        <p>Группа не найдена, или вы не состоите в ней.</p>
+        <Button asChild>
+          <Link href="/groups">К группам</Link>
+        </Button>
       </div>
     );
   }
@@ -155,7 +156,7 @@ export default async function Page(props: {
           <div className="text-3xl font-bold">
             <div>{group.title}</div>
           </div>
-          <div className="flex gap-1 text-sm text-muted-foreground/70">
+          <div className="flex gap-1 text-sm text-muted-foreground">
             <div>
               {group.groupBooks.length}{" "}
               {declOfNum(group.groupBooks.length, ["книга", "книги", "книг"])}
@@ -250,7 +251,7 @@ export default async function Page(props: {
                         <BadgeCheck className="size-4 text-yellow-500" />
                       )}
                     </div>
-                    <div className="text-sm text-muted-foreground/70">
+                    <div className="text-sm text-muted-foreground">
                       @{member.user.username}
                     </div>
                   </div>
@@ -285,7 +286,7 @@ export default async function Page(props: {
               <div className="flex justify-between">
                 <div className="flex flex-col">
                   <div className="text-xl">{stat.title}</div>
-                  <div className="text-sm text-muted-foreground/70">
+                  <div className="text-sm text-muted-foreground">
                     {stat.description}
                   </div>
                 </div>
@@ -297,7 +298,7 @@ export default async function Page(props: {
                     ).toFixed(1)}
                     %
                   </div>
-                  <div className="text-sm text-muted-foreground/70">
+                  <div className="text-sm text-muted-foreground">
                     {stat.value}/{stat.max}
                   </div>
                 </div>
@@ -340,7 +341,7 @@ export default async function Page(props: {
                         <BadgeCheck className="size-4 text-yellow-500" />
                       )}
                     </div>
-                    <div className="text-sm text-muted-foreground/70">
+                    <div className="text-sm text-muted-foreground">
                       @{member.user.username}
                     </div>
                   </div>

@@ -95,7 +95,7 @@ export default async function Page(props: {
         {groupBook.coverUrl && (
           <Image
             src={groupBook.coverUrl}
-            alt="book"
+            alt={`Обложка книги «${groupBook.title}»`}
             width={500}
             height={500}
             className="h-40 w-auto rounded-md"
@@ -103,20 +103,20 @@ export default async function Page(props: {
         )}
         <div className="flex flex-col">
           <div className="text-xl font-bold">{groupBook.title}</div>
-          <div className="text-sm text-muted-foreground/90">
+          <div className="text-sm text-muted-foreground">
             {groupBook.author}
           </div>
-          <div className="text-sm text-muted-foreground/90">
+          <div className="text-sm text-muted-foreground">
             {groupBook.pages} стр.
           </div>
-          <p className="text-sm text-muted-foreground/90">
+          <p className="text-sm text-muted-foreground">
             {groupBook.description}
           </p>
         </div>
       </div>
 
       <div className="mt-2 min-h-[20vh] w-full rounded-xl border bg-neutral-100/50 p-4 dark:bg-neutral-900/50">
-        <div className="flex items-center gap-2 text-muted-foreground/90">
+        <div className="flex items-center gap-2 text-muted-foreground">
           <BarChartHorizontalBig className="size-4" />
           Статистика
         </div>
@@ -124,7 +124,7 @@ export default async function Page(props: {
           <div className="flex justify-between">
             <div className="flex flex-col">
               <div className="text-xl">Читающих участников</div>
-              <div className="text-sm text-muted-foreground/70">
+              <div className="text-sm text-muted-foreground">
                 Участников, добавивших себе эту книгу
               </div>
             </div>
@@ -136,7 +136,7 @@ export default async function Page(props: {
                 ).toFixed(1)}
                 %
               </div>
-              <div className="text-sm text-muted-foreground/70">
+              <div className="text-sm text-muted-foreground">
                 {groupBook.book.length}/{group.members.length}
               </div>
             </div>
@@ -149,7 +149,7 @@ export default async function Page(props: {
           <div className="flex justify-between">
             <div className="flex flex-col">
               <div className="text-xl">Прочитавших участников</div>
-              <div className="text-sm text-muted-foreground/70">
+              <div className="text-sm text-muted-foreground">
                 Участников, полностью прочитавших эту книгу
               </div>
             </div>
@@ -164,7 +164,7 @@ export default async function Page(props: {
                 ).toFixed(1)}
                 %
               </div>
-              <div className="text-sm text-muted-foreground/70">
+              <div className="text-sm text-muted-foreground">
                 {
                   groupBook.book.filter(
                     (book) => book.readEvents[0]?.pagesRead === book.pages,

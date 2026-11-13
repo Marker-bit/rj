@@ -5,6 +5,7 @@ import type {
   GroupMember,
 } from "@/generated/prisma/browser";
 import { BookIcon, Search, X } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -83,7 +84,14 @@ export default function Books({
   const groupMember = group.members.find((member) => member.userId === userId);
 
   if (!groupMember) {
-    return null;
+    return (
+      <div className="rounded-xl border p-4 text-sm">
+        Вы не состоите в этой группе.{" "}
+        <Link className="underline underline-offset-4" href="/groups">
+          К группам
+        </Link>
+      </div>
+    );
   }
 
   return (

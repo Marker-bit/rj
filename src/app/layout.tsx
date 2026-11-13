@@ -19,17 +19,17 @@ const icons = iconSizes.map((size) => ({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "Читательский дневник",
-  description: "Читательский дневник - социальная сеть для читателей",
+  description: "Читательский дневник — личный дневник чтения",
   manifest: "/manifest.webmanifest",
   twitter: {
     card: "summary_large_image",
     title: "Читательский дневник",
-    description: "Социальная сеть для читателей",
+    description: "Личный дневник чтения",
     images: ["/og.png"],
   },
   openGraph: {
     title: "Читательский дневник",
-    description: "Социальная сеть для читателей",
+    description: "Личный дневник чтения",
     url: SITE_URL,
     images: ["/og.png"],
   },

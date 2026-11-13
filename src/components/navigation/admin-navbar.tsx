@@ -82,7 +82,7 @@ export default function AdminNavBar({
                     >
                       <Icon
                         size={16}
-                        className="text-muted-foreground/80"
+                        className="text-muted-foreground"
                         aria-hidden="true"
                       />
                       <span>{link.label}</span>
@@ -116,7 +116,7 @@ export default function AdminNavBar({
               >
                 <Icon
                   size={16}
-                  className="text-muted-foreground/80"
+                  className="text-muted-foreground"
                   aria-hidden="true"
                 />
                 <span>{link.label}</span>

@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useMemo, useState } from "react";
 import useMeasure from "react-use-measure";
 import type { Book } from "@/lib/api-types";
+import { getReadingState } from "@/lib/reading-events";
 import { getEventDays } from "@/lib/stats";
 import { cn, declOfNum } from "@/lib/utils";
 import { Button } from "../ui/button";
@@ -42,16 +43,22 @@ export default function BookReadInfo({
   const chartData = useMemo(
     () =>
       getEventDays(
-        [...book.readEvents].reverse().map((event) => ({
-          ...event,
-          bookId: book.id,
-        })),
+        [...book.readEvents]
+          .sort(
+            (a, b) =>
+              new Date(a.readAt).getTime() - new Date(b.readAt).getTime(),
+          )
+          .map((event) => ({
+            ...event,
+            bookId: book.id,
+          })),
       ),
     [book.readEvents, book.id],
   );
 
-  const firstEvent = book.readEvents.at(-1);
-  const lastEvent = book.readEvents[0];
+  const { first: firstEvent, latest: lastEvent } = getReadingState(
+    book.readEvents,
+  );
   const readingTime =
     firstEvent && lastEvent
       ? differenceInDays(
@@ -63,6 +70,9 @@ export default function BookReadInfo({
     chartData.length > 0
       ? chartData.reduce((a, b) => a + b.pagesRead, 0) / chartData.length
       : 0;
+  const averageLabel = Number.isInteger(avg)
+    ? declOfNum(avg, ["страница", "страницы", "страниц"])
+    : "страницы";
 
   const steps: Step[] = [
     {
@@ -84,11 +94,7 @@ export default function BookReadInfo({
     {
       id: "average",
       title: "В среднем, вы читали",
-      highlightedText: `${avg.toFixed(1)} ${declOfNum(Math.floor(avg), [
-        "страницу",
-        "страницы",
-        "страниц",
-      ])}`,
+      highlightedText: `${avg.toFixed(1).replace(".", ",")} ${averageLabel}`,
       highlightedTextDescription: "в день",
     },
     {
@@ -140,6 +146,8 @@ export default function BookReadInfo({
             <button
               key={stepItem.id}
               type="button"
+              aria-label={`Шаг ${stepIndex + 1} из ${steps.length}: ${stepItem.title}`}
+              aria-current={currentStep === stepIndex ? "step" : undefined}
               className={cn(
                 "h-2 rounded-full transition-all duration-300 cursor-pointer",
                 currentStep === stepIndex

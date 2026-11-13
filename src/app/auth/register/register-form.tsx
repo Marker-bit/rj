@@ -80,6 +80,7 @@ export function RegisterForm({ returnTo }: { returnTo: string }) {
           "Не удалось связаться с сервером. Проверьте подключение и попробуйте ещё раз.",
       });
     },
+    meta: { errorHandled: true },
   });
 
   function onSubmit(values: z.infer<typeof registerSchema>) {
@@ -174,7 +175,7 @@ export function RegisterForm({ returnTo }: { returnTo: string }) {
           </Button>
         </div>
         <p className="text-xs">
-          При регистрации, вы соглашаетесь с{" "}
+          При регистрации вы соглашаетесь с{" "}
           <Link
             href="/privacy-policy"
             className="text-blue-500 underline underline-offset-2"

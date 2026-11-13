@@ -6,6 +6,7 @@ import type {
 import { CheckCheck } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Loader } from "@/components/ui/loader";
 import { markAsRead } from "@/lib/actions/support";
@@ -24,9 +25,16 @@ export default function QuestionAnswer({
   const [readLoading, setReadLoading] = useState(false);
   const read = async () => {
     setReadLoading(true);
-    await markAsRead(answer.id);
-    setReadLoading(false);
-    void revalidate("support");
+    try {
+      await markAsRead(answer.id);
+      void revalidate("support");
+    } catch {
+      toast.error("Не удалось выполнить действие", {
+        description: "Проверьте соединение и попробуйте ещё раз.",
+      });
+    } finally {
+      setReadLoading(false);
+    }
   };
   return (
     <div

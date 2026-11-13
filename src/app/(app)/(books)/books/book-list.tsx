@@ -2,7 +2,6 @@
 
 import { BackgroundColor } from "@/generated/prisma/enums";
 import {
-  ArrowRightIcon,
   BookMinus,
   BookOpen,
   BookOpenCheck,
@@ -16,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -24,17 +24,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { Book } from "@/lib/api-types";
+import { getReadingState } from "@/lib/reading-events";
 
 type StatusFilter = "all" | "planned" | "reading" | "finished";
 
 function getBookStatus(book: Book): Exclude<StatusFilter, "all"> {
-  const lastEvent = book.readEvents[0];
-
-  if (!lastEvent) {
-    return "planned";
-  }
-
-  return lastEvent.pagesRead >= book.pages ? "finished" : "reading";
+  const { latest, progressPages } = getReadingState(book.readEvents);
+  if (!latest) return "planned";
+  return progressPages >= book.pages ? "finished" : "reading";
 }
 
 export function BookList({ books }: { books: Book[] }) {
@@ -230,25 +227,25 @@ export function BookList({ books }: { books: Book[] }) {
         <div className="flex flex-col sm:flex-row gap-2">
           <form
             className="relative w-full"
-            onSubmit={(event) => event.preventDefault()}
+            onSubmit={(event) => {
+              event.preventDefault();
+              document.getElementById("book-search")?.blur();
+            }}
           >
+            <Label htmlFor="book-search" className="sr-only">
+              Поиск по книгам
+            </Label>
             <Input
+              id="book-search"
               className="peer ps-9 pe-9"
               placeholder="Поиск по названию или автору..."
               type="search"
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
             />
-            <div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50">
+            <div className="text-muted-foreground pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50">
               <SearchIcon size={16} />
             </div>
-            <button
-              className="text-muted-foreground/80 hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-md transition-[color,box-shadow] outline-none focus:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
-              aria-label="Искать"
-              type="submit"
-            >
-              <ArrowRightIcon size={16} aria-hidden="true" />
-            </button>
           </form>
           <div className="group relative w-full sm:w-[50%] md:w-[30%]">
             <label
@@ -260,11 +257,11 @@ export function BookList({ books }: { books: Book[] }) {
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger
                 id="status"
-                className="[&>span_svg]:text-muted-foreground/80 [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_svg]:shrink-0 w-full"
+                className="[&>span_svg]:text-muted-foreground [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_svg]:shrink-0 w-full"
               >
                 <SelectValue placeholder="Статус" />
               </SelectTrigger>
-              <SelectContent className="[&_*[role=option]>span>svg]:text-muted-foreground/80 [&_*[role=option]>span]:flex [&_*[role=option]>span]:gap-2 [&_*[role=option]>span>svg]:shrink-0">
+              <SelectContent className="[&_*[role=option]>span>svg]:text-muted-foreground [&_*[role=option]>span]:flex [&_*[role=option]>span]:gap-2 [&_*[role=option]>span>svg]:shrink-0">
                 <SelectItem value="all">
                   <BookMinus size={16} aria-hidden="true" />
                   <span className="truncate">Все книги</span>
@@ -294,11 +291,11 @@ export function BookList({ books }: { books: Book[] }) {
             <Select value={sort} onValueChange={setSort}>
               <SelectTrigger
                 id="sort"
-                className="[&>span_svg]:text-muted-foreground/80 [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_svg]:shrink-0 w-full"
+                className="[&>span_svg]:text-muted-foreground [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_svg]:shrink-0 w-full"
               >
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent className="[&_*[role=option]>span>svg]:text-muted-foreground/80 [&_*[role=option]>span]:flex [&_*[role=option]>span]:gap-2 [&_*[role=option]>span>svg]:shrink-0">
+              <SelectContent className="[&_*[role=option]>span>svg]:text-muted-foreground [&_*[role=option]>span]:flex [&_*[role=option]>span]:gap-2 [&_*[role=option]>span>svg]:shrink-0">
                 <SelectItem value="percent">
                   <Percent size={16} aria-hidden="true" />
                   <span className="truncate">По прогрессу в книге</span>
@@ -314,7 +311,7 @@ export function BookList({ books }: { books: Book[] }) {
 
         {(searchText.trim() !== "" || filtersActive) && (
           <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="outline">
+            <Badge variant="outline" role="status" aria-live="polite">
               Показано {booksForRender.length} из {books.length}
             </Badge>
             {statusFilter !== "all" && (

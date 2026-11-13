@@ -51,7 +51,7 @@ export default async function ProfilePage() {
     <div className="mb-[15vh]">
       <div className="m-2 flex items-center gap-2 text-3xl font-bold">
         <Button variant="ghost" size="icon" asChild>
-          <Link href="/" aria-label="На главную">
+          <Link href="/home" aria-label="На главную">
             <ChevronLeft className="size-6" />
           </Link>
         </Button>
@@ -76,7 +76,7 @@ export default async function ProfilePage() {
           <div className="text-3xl font-semibold">
             {userData?.firstName} {userData?.lastName}
           </div>
-          <div className="text-sm text-muted-foreground/70">
+          <div className="text-sm text-muted-foreground">
             @{userData?.username}
           </div>
         </div>

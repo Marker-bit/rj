@@ -14,7 +14,7 @@ const pagePaths = {
     "/admin/support",
     "/admin/recommendations",
   ],
-  collections: ["/collections", "/books"],
+  collections: ["/books"],
   recommendations: ["/home", "/admin/recommendations"],
   settings: ["/profile", "/profile/settings"],
 } as const;
@@ -25,7 +25,6 @@ const dynamicPagePaths: Partial<Record<keyof typeof pagePaths, string[]>> = {
   profile: ["/profile/[username]"],
   support: ["/admin/support/[questionId]"],
   admin: ["/admin/users/[userId]", "/admin/support/[questionId]"],
-  collections: ["/collections/[collectionId]"],
 };
 
 export type RevalidationScope = keyof typeof pagePaths;

@@ -84,7 +84,7 @@ export function FriendView({
               <BadgeCheck className="size-6 text-yellow-500" />
             )}
           </div>
-          <div className="text-sm text-muted-foreground/70">
+          <div className="text-sm text-muted-foreground">
             @{friend.username}
           </div>
           {currentUserId === friend.id && <Badge className="w-fit">Вы</Badge>}

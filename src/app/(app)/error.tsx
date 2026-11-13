@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 export default function Error({ reset }: { reset: () => void }) {
@@ -9,9 +10,12 @@ export default function Error({ reset }: { reset: () => void }) {
       <p className="text-muted-foreground">
         Произошла ошибка. Попробуйте ещё раз.
       </p>
-      <Button onClick={() => reset()} className="mt-2">
-        Попробовать снова
-      </Button>
+      <div className="mt-2 flex gap-2">
+        <Button onClick={() => reset()}>Попробовать снова</Button>
+        <Button variant="outline" asChild>
+          <Link href="/home">На главную</Link>
+        </Button>
+      </div>
     </div>
   );
 }

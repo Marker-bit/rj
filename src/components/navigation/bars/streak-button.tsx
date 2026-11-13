@@ -73,8 +73,12 @@ function StreakButtonContent() {
             return (
               <Tooltip key={date.toISOString()}>
                 <TooltipTrigger asChild>
-                  <div className="flex flex-col items-center gap-1">
-                    <div
+                  <button
+                    type="button"
+                    className="flex flex-col items-center gap-1"
+                    aria-label={`${format(date, "d MMMM", { locale: ru })}, ${pages} ${declOfNum(pages, ["страница", "страницы", "страниц"])}`}
+                  >
+                    <span
                       className={cn(
                         "size-8 rounded-xl",
                         pages === 0
@@ -85,16 +89,16 @@ function StreakButtonContent() {
                           "border-4 border-black dark:border-white",
                       )}
                     />
-                    <p className="text-xs">
+                    <span className="text-xs">
                       {capitalizeFirstLetter(
                         format(date, "EEE", {
                           locale: ru,
                           weekStartsOn: 1,
                         }),
                       ).slice(0, 2)}
-                    </p>
-                    <p className="text-xs">{pages}</p>
-                  </div>
+                    </span>
+                    <span className="text-xs">{pages}</span>
+                  </button>
                 </TooltipTrigger>
                 <TooltipContent className="text-center">
                   <div className="text-primary-foreground/70">

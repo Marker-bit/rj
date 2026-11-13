@@ -174,7 +174,7 @@ export async function Stats({
         <CalendarRange className="size-6" />
         <div className="flex flex-col">
           <div className="font-bold">{streak}</div>
-          <div className="-mt-1 text-xs lowercase text-muted-foreground/70">
+          <div className="-mt-1 text-xs lowercase text-muted-foreground">
             {declOfNum(streak, ["день", "дня", "дней"])} подряд
           </div>
         </div>
@@ -183,7 +183,7 @@ export async function Stats({
         <BookOpen className="size-6" />
         <div className="flex flex-col">
           <div className="font-bold">{readWeekSum}</div>
-          <div className="-mt-1 text-xs lowercase text-muted-foreground/70">
+          <div className="-mt-1 text-xs lowercase text-muted-foreground">
             {declOfNum(readWeekSum, [
               "страница прочитана",
               "страницы прочитаны",
@@ -197,7 +197,7 @@ export async function Stats({
         <BookCheck className="size-6" />
         <div className="flex flex-col">
           <div className="font-bold">{readBooks.length}</div>
-          <div className="-mt-1 text-xs lowercase text-muted-foreground/70">
+          <div className="-mt-1 text-xs lowercase text-muted-foreground">
             {declOfNum(readBooks.length, [
               "прочитанная книга",
               "прочитанные книги",
@@ -211,7 +211,7 @@ export async function Stats({
           <Users2 className="size-6" />
           <div className="flex flex-col">
             <div className="font-bold">{profile.follower.length}</div>
-            <div className="-mt-1 text-xs lowercase text-muted-foreground/70">
+            <div className="-mt-1 text-xs lowercase text-muted-foreground">
               {declOfNum(profile.follower.length, [
                 "подписка",
                 "подписки",
@@ -226,7 +226,7 @@ export async function Stats({
           <UsersIcon className="size-6" />
           <div className="flex flex-col">
             <div className="font-bold">{profile.following.length}</div>
-            <div className="-mt-1 text-xs lowercase text-muted-foreground/70">
+            <div className="-mt-1 text-xs lowercase text-muted-foreground">
               {declOfNum(profile.following.length, [
                 "подписчик",
                 "подписчика",
