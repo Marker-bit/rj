@@ -3,7 +3,7 @@ import type { Book } from "@/generated/prisma/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Edit, InfoIcon, Loader, Plus, Trash, X } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -32,6 +32,7 @@ import {
 import { Calligraph } from "calligraph";
 import { AnimatePresence, motion } from "motion/react";
 import { revalidate } from "@/lib/actions/revalidate";
+import { parseBookFields } from "@/lib/book-fields";
 
 const bookSchema = z.object({
   title: z.string().min(1),
@@ -64,12 +65,7 @@ export function EditBookModal({
   const [clamp, setClamp] = useState(true);
   const [fileUploading, setFileUploading] = useState(false);
 
-  const fieldsData =
-    typeof book.fields === "string"
-      ? JSON.parse(book.fields)
-      : Array.isArray(book.fields)
-        ? book.fields
-        : [];
+  const fieldsData = parseBookFields(book.fields);
   const form = useForm<z.infer<typeof bookSchema>>({
     resolver: zodResolver(bookSchema),
     defaultValues: {
@@ -81,6 +77,19 @@ export function EditBookModal({
       fields: fieldsData ?? [],
     },
   });
+
+  useEffect(() => {
+    if (!open) return;
+    setClamp(true);
+    form.reset({
+      title: book.title,
+      author: book.author,
+      pages: book.pages,
+      description: book.description ?? "",
+      coverUrl: book.coverUrl ?? "",
+      fields: parseBookFields(book.fields),
+    });
+  }, [open, book, form]);
 
   const pages = form.watch("pages");
 

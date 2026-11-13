@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { endOfDay, isToday, startOfDay } from "date-fns";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { PagesButtonGroup } from "@/components/dialogs/books/read/pages-button-group";
 import { DateCalendar } from "@/components/date-calendar";
@@ -57,6 +57,15 @@ export function DateReadModal({
   );
   const input = useRef<HTMLInputElement>(null);
 
+  const lastPages = useRef(lastEvent?.pagesRead);
+  lastPages.current = lastEvent?.pagesRead;
+
+  useEffect(() => {
+    if (!isOpen) return;
+    setDate(new Date());
+    setChangePages(lastPages.current ?? "");
+  }, [isOpen]);
+
   const days = useMemo(() => {
     const eventDays: Date[] = [];
     for (const event of book.readEvents) {
@@ -74,8 +83,6 @@ export function DateReadModal({
       setIsOpen(true);
       return;
     }
-    setDate(new Date());
-    setChangePages(lastEvent?.pagesRead ?? 0);
     setIsOpen(false);
   };
 
