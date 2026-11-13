@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -18,7 +19,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { db } from "@/lib/db";
-import { validateRequest } from "@/lib/server-validate-request";
+import { requireUser } from "@/lib/require-user";
 import { declOfNum } from "@/lib/utils";
 import { AddGroupButton } from "../add-group-button";
 import { AddMemberButton } from "./add-member-button";
@@ -34,10 +35,7 @@ export default async function Page(props: {
   params: Promise<{ groupId: string }>;
 }) {
   const params = await props.params;
-  const { user } = await validateRequest();
-  if (!user) {
-    return null;
-  }
+  const user = await requireUser();
   const group = await db.group.findUnique({
     where: { id: params.groupId, members: { some: { userId: user.id } } },
     include: {
@@ -72,9 +70,12 @@ export default async function Page(props: {
   });
   if (!group) {
     return (
-      <div className="flex flex-col items-center p-4">
+      <div className="flex flex-col items-center gap-3 p-4">
         <p className="text-6xl font-black">404</p>
-        <p>Группа не найдена, или вы не состоите в ней.</p>
+        <p>Группа не найдена, или вы не состоите в ней.</p>
+        <Button asChild>
+          <Link href="/groups">К группам</Link>
+        </Button>
       </div>
     );
   }

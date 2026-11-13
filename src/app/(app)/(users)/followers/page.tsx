@@ -2,6 +2,14 @@ import { ChevronLeft, UserX } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { FriendView } from "@/components/users/friend-view";
 import { db } from "@/lib/db";
 import { pageMetadata } from "@/lib/page-metadata";
@@ -34,7 +42,7 @@ export default async function FriendsPage() {
   return (
     <div>
       <div className="m-2 flex items-center gap-2 text-3xl font-bold">
-        <Link href="/">
+        <Link href="/home">
           <Button variant="ghost" size="icon">
             <ChevronLeft className="size-8" />
           </Button>
@@ -49,15 +57,20 @@ export default async function FriendsPage() {
       <div className="p-3">
         <div className="flex flex-col gap-2">
           {friends.length === 0 && (
-            <div className="flex items-center gap-2 rounded-xl border p-2 text-xl">
-              <UserX className="size-10" />
-              <div className="flex flex-col">
-                <div>У вас нет подписчиков</div>
-                <div className="text-xs text-muted-foreground">
-                  Подписчики появятся здесь.
-                </div>
-              </div>
-            </div>
+            <Empty>
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <UserX />
+                </EmptyMedia>
+                <EmptyTitle>У вас нет подписчиков</EmptyTitle>
+                <EmptyDescription>Подписчики появятся здесь.</EmptyDescription>
+              </EmptyHeader>
+              <EmptyContent>
+                <Button asChild variant="outline">
+                  <Link href="/groups">К группам</Link>
+                </Button>
+              </EmptyContent>
+            </Empty>
           )}
 
           {friends.map((friend) => (

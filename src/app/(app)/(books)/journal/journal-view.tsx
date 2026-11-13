@@ -16,6 +16,14 @@ import type { DateRange } from "react-day-picker";
 import { DateCalendar } from "@/components/date-calendar";
 import { Button } from "@/components/ui/button";
 import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import {
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -95,10 +103,22 @@ export default function JournalView({
           </Button>
         )}
         {filtered.length === 0 && events.length === 0 ? (
-          <div className="flex items-center gap-2 rounded-xl border p-2">
-            <BookMinus className="size-10" />
-            Журнал пуст
-          </div>
+          <Empty>
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <BookMinus />
+              </EmptyMedia>
+              <EmptyTitle>Журнал пуст</EmptyTitle>
+              <EmptyDescription>
+                Отметьте прочтение книги, чтобы здесь появилась запись.
+              </EmptyDescription>
+            </EmptyHeader>
+            <EmptyContent>
+              <Button asChild variant="outline">
+                <Link href="/books">К книгам</Link>
+              </Button>
+            </EmptyContent>
+          </Empty>
         ) : (
           filtered.length === 0 && (
             <div className="flex items-center gap-2 rounded-xl border p-2">

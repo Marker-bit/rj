@@ -1,5 +1,16 @@
 import type { Book, ReadEvent } from "@/generated/prisma/client";
+import { Users } from "lucide-react";
+import Link from "next/link";
 import type { ReactElement } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { db } from "@/lib/db";
 import { requireUser } from "@/lib/require-user";
 import { publicUserSelect } from "@/lib/user-select";
@@ -90,11 +101,22 @@ export default async function Page(props: {
 
   if (page === 0) {
     return (
-      <div className="h-40 flex items-center justify-center">
-        <div className="text-muted-foreground text-sm font-semibold text-center px-2">
-          Пока что нечего смотреть, приходите позже
-        </div>
-      </div>
+      <Empty>
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <Users />
+          </EmptyMedia>
+          <EmptyTitle>Пока здесь пусто</EmptyTitle>
+          <EmptyDescription>
+            Активность появится, когда вы подпишетесь на читателей.
+          </EmptyDescription>
+        </EmptyHeader>
+        <EmptyContent>
+          <Button asChild variant="outline">
+            <Link href="/groups">Найти читателей в группах</Link>
+          </Button>
+        </EmptyContent>
+      </Empty>
     );
   }
 

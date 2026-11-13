@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -53,14 +54,14 @@ export default async function Page(props: {
     },
   });
   if (!group) {
-    return null;
+    notFound();
   }
   const currentMember = group.members.find(
     (member) => member.userId === user.id,
   );
 
   if (!currentMember) {
-    return null;
+    notFound();
   }
 
   const member = await db.groupMember.findUnique({
@@ -74,7 +75,7 @@ export default async function Page(props: {
     },
   });
 
-  if (!member) return null;
+  if (!member) notFound();
 
   const booksSaved = await db.book.findMany({
     where: {
