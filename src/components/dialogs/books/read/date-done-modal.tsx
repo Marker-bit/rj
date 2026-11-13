@@ -14,7 +14,7 @@ import { useMutation } from "@tanstack/react-query";
 import confetti from "canvas-confetti";
 import { startOfDay } from "date-fns";
 import { Save } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export function DateDoneModal({
@@ -40,6 +40,11 @@ export function DateDoneModal({
     meta: { errorHandled: true },
   });
 
+  useEffect(() => {
+    if (!isOpen) return;
+    setDate(new Date());
+  }, [isOpen]);
+
   const days: Date[] = [];
 
   for (const event of book.readEvents) {
@@ -54,7 +59,6 @@ export function DateDoneModal({
       setIsOpen(true);
       return;
     }
-    setDate(new Date());
     setIsOpen(false);
   };
 
