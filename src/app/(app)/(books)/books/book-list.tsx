@@ -2,7 +2,6 @@
 
 import { BackgroundColor } from "@/generated/prisma/enums";
 import {
-  ArrowRightIcon,
   BookMinus,
   BookOpen,
   BookOpenCheck,
@@ -16,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -227,9 +227,16 @@ export function BookList({ books }: { books: Book[] }) {
         <div className="flex flex-col sm:flex-row gap-2">
           <form
             className="relative w-full"
-            onSubmit={(event) => event.preventDefault()}
+            onSubmit={(event) => {
+              event.preventDefault();
+              document.getElementById("book-search")?.blur();
+            }}
           >
+            <Label htmlFor="book-search" className="sr-only">
+              Поиск по книгам
+            </Label>
             <Input
+              id="book-search"
               className="peer ps-9 pe-9"
               placeholder="Поиск по названию или автору..."
               type="search"
@@ -239,13 +246,6 @@ export function BookList({ books }: { books: Book[] }) {
             <div className="text-muted-foreground pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50">
               <SearchIcon size={16} />
             </div>
-            <button
-              className="text-muted-foreground hover:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-md transition-[color,box-shadow] outline-none focus:z-10 focus-visible:ring-[3px] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
-              aria-label="Искать"
-              type="submit"
-            >
-              <ArrowRightIcon size={16} aria-hidden="true" />
-            </button>
           </form>
           <div className="group relative w-full sm:w-[50%] md:w-[30%]">
             <label
@@ -311,7 +311,7 @@ export function BookList({ books }: { books: Book[] }) {
 
         {(searchText.trim() !== "" || filtersActive) && (
           <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="outline">
+            <Badge variant="outline" role="status" aria-live="polite">
               Показано {booksForRender.length} из {books.length}
             </Badge>
             {statusFilter !== "all" && (
