@@ -245,7 +245,7 @@ export function BookView({
               void revalidate("books");
             }}
             book={book}
-            lastEvent={reading.furthest ?? undefined}
+            lastEvent={reading.latest ?? undefined}
           />
         )}
         {mountedDialogs.has("done") && (

@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { Loader, Undo } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -31,6 +32,7 @@ export function UndoEventButton({
     ...undoEventMutationOptions(bookId, eventId),
     onSuccess: () => {
       setOpen(false);
+      toast.success("Событие отменено");
       onDone();
     },
   });
@@ -57,8 +59,7 @@ export function UndoEventButton({
         <AlertDialogHeader>
           <AlertDialogTitle>Отменить событие?</AlertDialogTitle>
           <AlertDialogDescription>
-            Событие от {label} будет удалено, прогресс вернётся к предыдущему
-            значению. Это действие нельзя отменить.
+            Событие от {label} будет удалено. Это действие нельзя отменить.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
