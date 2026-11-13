@@ -6,11 +6,7 @@ import { ru } from "date-fns/locale";
 import type { User } from "lucia";
 import { getDays, getStreak, goodNumbers } from "@/lib/stats";
 import { capitalizeFirstLetter, cn, declOfNum } from "@/lib/utils";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "../ui/hover-card";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 export function StreakCounter({
   events,
@@ -55,10 +51,14 @@ export function StreakCounter({
         </p>
         <div className="grid grid-cols-7 gap-2 self-start max-sm:self-center">
           {weekDays.map((weekDay, dayIndex) => (
-            <HoverCard key={weekDay.key} openDelay={100} closeDelay={100}>
-              <HoverCardTrigger asChild>
-                <div className="flex flex-col items-center gap-1">
-                  <div
+            <Popover key={weekDay.key}>
+              <PopoverTrigger asChild>
+                <button
+                  type="button"
+                  className="flex flex-col items-center gap-1"
+                  aria-label={`${format(weekDay.date, "d MMMM", { locale: ru })}, ${weekDay.pages} ${declOfNum(weekDay.pages, ["страница", "страницы", "страниц"])}`}
+                >
+                  <span
                     className={cn(
                       "size-8 rounded-xl",
                       weekDay.pages === 0
@@ -69,13 +69,13 @@ export function StreakCounter({
                     )}
                   />
 
-                  <p className="text-xs md:hidden">
+                  <span className="text-xs md:hidden">
                     {format(weekDay.date, "EEE", { locale: ru }).slice(0, 2)}
-                  </p>
-                  <p className="text-xs md:hidden">{weekDay.pages}</p>
-                </div>
-              </HoverCardTrigger>
-              <HoverCardContent className="w-80">
+                  </span>
+                  <span className="text-xs md:hidden">{weekDay.pages}</span>
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80">
                 <div className="flex items-center justify-between space-x-4">
                   <div className="flex size-8 items-center justify-center rounded-full bg-green-300 dark:bg-green-700">
                     {weekDay.pages}
@@ -85,8 +85,8 @@ export function StreakCounter({
                     format(weekDay.date, "EEEE", { locale: ru }),
                   )}
                 </div>
-              </HoverCardContent>
-            </HoverCard>
+              </PopoverContent>
+            </Popover>
           ))}
         </div>
       </div>

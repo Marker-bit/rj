@@ -33,11 +33,7 @@ import { useRouter } from "next/navigation";
 import { capture } from "@/lib/posthog";
 import { useEffect, useState } from "react";
 import { HelpButton } from "../ui/help-button";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "../ui/hover-card";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { HideBookButton } from "./buttons/hide-book";
 import { UndoEventButton } from "./buttons/undo-event-button";
 import Palette from "./palette";
@@ -512,22 +508,26 @@ export function BookView({
         {fieldsData && (
           <div className="grid grid-cols-3 gap-2 w-full md:w-1/2">
             {fieldsData.map((field: { title: string; value: string }) => (
-              <HoverCard key={field.title + field.value}>
-                <HoverCardTrigger>
-                  <div className="flex flex-col gap-1 border rounded-md p-2">
-                    <div className="text-muted-foreground text-sm truncate">
+              <Popover key={field.title + field.value}>
+                <PopoverTrigger asChild>
+                  <button
+                    type="button"
+                    className="flex flex-col gap-1 border rounded-md p-2 text-left"
+                    aria-label={`${field.title}: ${field.value}`}
+                  >
+                    <span className="text-muted-foreground text-sm truncate">
                       {field.title}
-                    </div>
-                    <div className="font-bold truncate">{field.value}</div>
-                  </div>
-                </HoverCardTrigger>
-                <HoverCardContent className="max-w-160 w-fit min-w-80 max-h-[40vh] overflow-auto">
+                    </span>
+                    <span className="font-bold truncate">{field.value}</span>
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="max-w-160 w-fit min-w-80 max-h-[40vh] overflow-auto">
                   <div className="text-muted-foreground text-sm">
                     {field.title}
                   </div>
                   <div>{field.value}</div>
-                </HoverCardContent>
-              </HoverCard>
+                </PopoverContent>
+              </Popover>
             ))}
           </div>
         )}
