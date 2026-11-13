@@ -32,9 +32,10 @@ export async function resetPassword(data: {
     windowMs: 60 * 60 * 1000,
   });
   if (!rateLimit.ok) {
+    const minutes = Math.max(1, Math.ceil(rateLimit.retryAfterMs / 60_000));
     return {
       error: true,
-      message: "Слишком много попыток",
+      message: `Слишком много попыток. Попробуйте снова через ${minutes} мин.`,
     };
   }
 
@@ -63,14 +64,18 @@ export async function resetPassword(data: {
   }
 
   if (
-    data.book1.title === data.book2.title ||
-    data.book1.title === data.book3.title ||
-    data.book2.title === data.book3.title
+    normalize(data.book1.title) === normalize(data.book2.title) ||
+    normalize(data.book1.title) === normalize(data.book3.title) ||
+    normalize(data.book2.title) === normalize(data.book3.title)
   ) {
     return {
       error: true,
       message: "Книги не могут быть одинаковыми",
     };
+  }
+
+  function normalize(value: string) {
+    return value.trim().replace(/\s+/g, " ").toLocaleLowerCase("ru");
   }
 
   function validateBook(
@@ -82,9 +87,9 @@ export async function resetPassword(data: {
     },
   ) {
     return (
-      book.title === goodBook.title &&
+      normalize(book.title) === normalize(goodBook.title) &&
       (goodBook.author
-        ? book.author === goodBook.author
+        ? normalize(book.author) === normalize(goodBook.author)
         : goodBook.pages === book.pages)
     );
   }
@@ -93,10 +98,19 @@ export async function resetPassword(data: {
   const book2 = goodBooks.find((book) => validateBook(book, data.book2));
   const book3 = goodBooks.find((book) => validateBook(book, data.book3));
 
+  const matches = [book1, book2, book3];
   if (!book1 || !book2 || !book3) {
     return {
       error: true,
       message: "Не удалось подтвердить данные аккаунта",
+      failedBooks: matches.flatMap((book, index) => (book ? [] : [index + 1])),
+    };
+  }
+
+  if (data.password.length < 8) {
+    return {
+      error: true,
+      message: "Пароль должен содержать минимум 8 символов",
     };
   }
 

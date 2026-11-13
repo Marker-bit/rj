@@ -38,3 +38,33 @@ export const bookSchema = z.object({
     }),
   ),
 });
+
+const resetBookSchema = z
+  .object({
+    title: z.string().trim().min(1, "Укажите точное название книги"),
+    author: z.string().trim().optional(),
+    pages: z.coerce.number<number>().int().min(1).optional(),
+  })
+  .superRefine((book, ctx) => {
+    if (!book.author && book.pages === undefined) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["author"],
+        message: "Укажите автора или количество страниц",
+      });
+    }
+  });
+
+export const resetPasswordSchema = z
+  .object({
+    username: z.string().trim().min(1, "Введите имя пользователя"),
+    password: z.string().min(8, "Пароль должен содержать минимум 8 символов"),
+    confirmPassword: z.string().min(1, "Повторите пароль"),
+    book1: resetBookSchema,
+    book2: resetBookSchema,
+    book3: resetBookSchema,
+  })
+  .refine((values) => values.password === values.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "Пароли не совпадают",
+  });

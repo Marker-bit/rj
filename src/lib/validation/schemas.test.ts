@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { bookSchema, registerSchema } from "./schemas";
+import { bookSchema, registerSchema, resetPasswordSchema } from "./schemas";
 
 const validRegistration = {
   username: "reader_1",
@@ -52,5 +52,68 @@ describe("bookSchema", () => {
 
     expect(result.success).toBe(true);
     expect(result.data?.pages).toBe(12);
+  });
+});
+
+describe("resetPasswordSchema", () => {
+  const validReset = {
+    username: "reader_1",
+    password: "password123",
+    confirmPassword: "password123",
+    book1: { title: "Война и мир", author: "Лев Толстой" },
+    book2: { title: "Преступление и наказание", pages: 480 },
+    book3: { title: "Мастер и Маргарита", author: "Михаил Булгаков" },
+  };
+
+  it("accepts a valid payload with three distinct books", () => {
+    expect(resetPasswordSchema.safeParse(validReset).success).toBe(true);
+  });
+
+  it("rejects a seven-character password", () => {
+    const result = resetPasswordSchema.safeParse({
+      ...validReset,
+      password: "1234567",
+      confirmPassword: "1234567",
+    });
+
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects mismatched confirmPassword", () => {
+    const result = resetPasswordSchema.safeParse({
+      ...validReset,
+      confirmPassword: "different123",
+    });
+
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects a book with neither author nor pages", () => {
+    const result = resetPasswordSchema.safeParse({
+      ...validReset,
+      book2: { title: "Преступление и наказание" },
+    });
+
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects a whitespace-only title", () => {
+    const result = resetPasswordSchema.safeParse({
+      ...validReset,
+      book1: { title: "   ", author: "Лев Толстой" },
+    });
+
+    expect(result.success).toBe(false);
+  });
+
+  it("accepts books identified by title + pages and by title + author", () => {
+    const result = resetPasswordSchema.safeParse({
+      ...validReset,
+      book1: { title: "Война и мир", pages: 1225 },
+      book2: { title: "Преступление и наказание", author: "Фёдор Достоевский" },
+      book3: { title: "Мастер и Маргарита", pages: 480 },
+    });
+
+    expect(result.success).toBe(true);
   });
 });

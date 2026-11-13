@@ -19,61 +19,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { Loader } from "@/components/ui/loader";
 import { resetPassword } from "@/lib/actions/auth";
-
-const formSchema = z.object({
-  username: z
-    .string({ error: "Поле обязательно для заполнения" })
-    .min(1, "Поле обязательно для заполнения"),
-  name: z
-    .string({ error: "Поле обязательно для заполнения" })
-    .min(1, "Поле обязательно для заполнения"),
-  book1: z.object({
-    title: z
-      .string({ error: "Поле обязательно для заполнения" })
-      .min(1, "Поле обязательно для заполнения"),
-    author: z.string().optional(),
-    pages: z.coerce
-      .number<number>({
-        error: "Поле обязательно для заполнения",
-      })
-      .min(1)
-      .optional(),
-  }),
-  book2: z.object({
-    title: z
-      .string({ error: "Поле обязательно для заполнения" })
-      .min(1, "Поле обязательно для заполнения"),
-    author: z.string().optional(),
-    pages: z.coerce
-      .number<number>({
-        error: "Поле обязательно для заполнения",
-      })
-      .min(1)
-      .optional(),
-  }),
-  book3: z.object({
-    title: z
-      .string({ error: "Поле обязательно для заполнения" })
-      .min(1, "Поле обязательно для заполнения"),
-    author: z.string().optional(),
-    pages: z.coerce
-      .number<number>({
-        error: "Поле обязательно для заполнения",
-      })
-      .min(1)
-      .optional(),
-  }),
-  password: z
-    .string({ error: "Поле обязательно для заполнения" })
-    .min(1, "Поле обязательно для заполнения"),
-});
+import { resetPasswordSchema } from "@/lib/validation/schemas";
 
 export default function ResetPasswordForm() {
-  const form = useForm<z.input<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.input<typeof resetPasswordSchema>>({
+    resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
       username: "",
-      name: "",
+      password: "",
+      confirmPassword: "",
       book1: {
         title: "",
         author: undefined,
@@ -93,17 +47,39 @@ export default function ResetPasswordForm() {
   });
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [failedBooks, setFailedBooks] = useState<number[]>([]);
 
-  async function onSubmit(values: z.input<typeof formSchema>) {
+  async function onSubmit(values: z.input<typeof resetPasswordSchema>) {
     setLoading(true);
+    setFailedBooks([]);
+    form.clearErrors([
+      "confirmPassword",
+      "book1.title",
+      "book2.title",
+      "book3.title",
+    ]);
     try {
       const res = await resetPassword(values);
       if (res.error) {
+        if ("failedBooks" in res && res.failedBooks) {
+          setFailedBooks(res.failedBooks);
+          for (const index of res.failedBooks) {
+            form.setError(
+              `book${index}.title` as
+                | "book1.title"
+                | "book2.title"
+                | "book3.title",
+              {
+                message: "Не удалось подтвердить эту книгу",
+              },
+            );
+          }
+        }
         toast.error(res.message);
-      } else {
-        toast.success("Пароль успешно изменен!");
-        router.push("/auth/login");
+        return;
       }
+      toast.success("Пароль изменён. Войдите заново на всех устройствах.");
+      router.push("/auth/login");
     } catch {
       toast.error("Не удалось выполнить действие", {
         description: "Проверьте соединение и попробуйте ещё раз.",
@@ -135,36 +111,39 @@ export default function ResetPasswordForm() {
         />
         <FormField
           control={form.control}
-          name="name"
+          name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Имя</FormLabel>
+              <FormLabel>Новый пароль</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} type="password" autoComplete="new-password" />
               </FormControl>
-              <FormDescription>
-                Введите имя, указанное при регистрации (вторая часть ФИО, не имя
-                пользователя)
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
         <FormField
           control={form.control}
-          name="password"
+          name="confirmPassword"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Новый пароль</FormLabel>
+              <FormLabel>Повторите пароль</FormLabel>
               <FormControl>
-                <Input {...field} type="password" />
+                <Input {...field} type="password" autoComplete="new-password" />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         {[1, 2, 3].map((i) => (
-          <>
+          <div
+            key={`book-${i}`}
+            className={
+              failedBooks.includes(i)
+                ? "space-y-2 rounded-md border border-red-500/60 p-2"
+                : "space-y-2"
+            }
+          >
             <p className="text-lg font-bold">Книга {i}</p>
             <FormField
               control={form.control}
@@ -223,7 +202,7 @@ export default function ResetPasswordForm() {
                 </FormItem>
               )}
             />
-          </>
+          </div>
         ))}
         <Button type="submit" disabled={loading}>
           {loading && <Loader invert className="mr-2 size-4" />}
