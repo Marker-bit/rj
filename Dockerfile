@@ -48,10 +48,14 @@ COPY package.json pnpm-lock.yaml ./
 # during the build and downloads the schema engine for this image's platform.
 # The runner needs that binary for commands like `prisma db push`.
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.pnpm ./node_modules/.pnpm
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/prisma ./node_modules/prisma
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/dotenv ./node_modules/dotenv
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.bin/prisma ./node_modules/.bin/prisma
+# COPY follows a symlink source, which turns `node_modules/prisma` into a real
+# directory. Recreate the pnpm link so the CLI resolves its dependencies from
+# `.pnpm/prisma@.../node_modules` (including `@prisma/config`).
+RUN prisma_pkg="$(ls -d node_modules/.pnpm/prisma@*/node_modules/prisma | head -n 1)" && \
+    ln -s "${prisma_pkg#node_modules/}" node_modules/prisma
 
 USER nextjs
 
