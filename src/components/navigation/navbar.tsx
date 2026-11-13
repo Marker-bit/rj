@@ -4,7 +4,7 @@ import type { User } from "lucia";
 import { BarChartBig, BookIcon, HouseIcon, Menu, Users } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -39,6 +39,12 @@ export default function NavBar({
   build: BuildInfo;
 }) {
   const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+
   const isActive = (href: string) =>
     pathname === href || pathname.startsWith(`${href}/`);
 
@@ -48,7 +54,7 @@ export default function NavBar({
         {/* Left side */}
         <div className="flex flex-1 items-center gap-2">
           {/* Mobile menu trigger */}
-          <Popover>
+          <Popover open={menuOpen} onOpenChange={setMenuOpen}>
             <PopoverTrigger suppressHydrationWarning asChild>
               <Button
                 className="group size-8 md:hidden"
@@ -67,6 +73,7 @@ export default function NavBar({
                     <Link
                       key={link.href}
                       href={link.href}
+                      onClick={() => setMenuOpen(false)}
                       className={cn(
                         "flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-accent hover:text-accent-foreground",
                         isActive(link.href) &&
