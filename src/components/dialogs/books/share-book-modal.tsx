@@ -1,6 +1,7 @@
 import { CheckIcon, CopyIcon, LinkIcon, Trash } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
 import {
   Empty,
@@ -35,6 +36,7 @@ export function ShareBookModal({
   const [loading, setLoading] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const { copyToClipboard, isCopied } = useCopyToClipboard();
+  const queryClient = useQueryClient();
 
   const createLink = async () => {
     setLoading(true);
@@ -43,6 +45,8 @@ export function ShareBookModal({
         method: "POST",
       });
       if (!resp.ok) throw new Error("Не удалось создать ссылку");
+      toast.success("Ссылка создана");
+      queryClient.invalidateQueries({ queryKey: ["books"] });
       void revalidate("books");
     } catch {
       toast.error("Возникла проблема при создании ссылки");
@@ -57,6 +61,7 @@ export function ShareBookModal({
       async () => {
         try {
           await deleteBookLink(id);
+          queryClient.invalidateQueries({ queryKey: ["books"] });
           void revalidate("books");
         } finally {
           setDeletingId(null);

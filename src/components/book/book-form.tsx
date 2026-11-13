@@ -87,6 +87,9 @@ export function BookForm({
           description: "Обновите страницу, чтобы увидеть книгу.",
         });
       });
+      if (!isEdit) {
+        toast.success("Книга добавлена");
+      }
     } catch {
       toast.error("Не удалось создать книгу", {
         description:
@@ -300,9 +303,11 @@ export function BookForm({
 export function AddBookDialog({
   open,
   setOpen,
+  onCreated,
 }: {
   open: boolean;
   setOpen: (open: boolean) => void;
+  onCreated?: () => void;
 }) {
   return (
     <DrawerDialog open={open} onOpenChange={setOpen} className="min-w-[50vw]">
@@ -320,6 +325,7 @@ export function AddBookDialog({
               author: book.author,
               pages: book.pages,
             });
+            onCreated?.();
             setOpen(false);
           }}
         />
