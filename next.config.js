@@ -42,6 +42,20 @@ const nextConfig = {
       bodySizeLimit: "5mb",
     },
   },
+  redirects() {
+    return [
+      {
+        source: "/collections",
+        destination: "/books",
+        permanent: false,
+      },
+      {
+        source: "/collections/:path*",
+        destination: "/books",
+        permanent: false,
+      },
+    ];
+  },
   pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
   // experimental: {
   //   turbo: {
