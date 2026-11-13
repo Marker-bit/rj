@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { bookSchema, registerSchema, resetPasswordSchema } from "./schemas";
+import {
+  bookSchema,
+  registerSchema,
+  resetPasswordSchema,
+  settingsSchema,
+} from "./schemas";
 
 const validRegistration = {
   username: "reader_1",
@@ -30,6 +35,75 @@ describe("registerSchema", () => {
     });
 
     expect(result.success).toBe(false);
+  });
+});
+
+describe("settingsSchema", () => {
+  const validSettings = {
+    username: "reader_1",
+    firstName: "Иван",
+    lastName: "",
+    avatarUrl: "",
+    shareSubscriptions: "NONE" as const,
+    shareFollowers: "NONE" as const,
+    shareStats: "NONE" as const,
+    hideActivity: false,
+  };
+
+  it("accepts valid usernames", () => {
+    for (const username of ["reader_1", "a.b-c", "abcdefghijklmno"]) {
+      expect(
+        settingsSchema.safeParse({ ...validSettings, username }).success,
+      ).toBe(true);
+    }
+  });
+
+  it("rejects a two-character username", () => {
+    const result = settingsSchema.safeParse({
+      ...validSettings,
+      username: "ab",
+    });
+
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects a sixteen-character username", () => {
+    const result = settingsSchema.safeParse({
+      ...validSettings,
+      username: "abcdefghijklmnop",
+    });
+
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects Cyrillic characters", () => {
+    const result = settingsSchema.safeParse({
+      ...validSettings,
+      username: "читатель",
+    });
+
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects spaces", () => {
+    const result = settingsSchema.safeParse({
+      ...validSettings,
+      username: "reader 1",
+    });
+
+    expect(result.success).toBe(false);
+  });
+
+  it("accepts an empty last name and a missing avatar", () => {
+    const { avatarUrl, ...settingsWithoutAvatar } = validSettings;
+    expect(avatarUrl).toBe("");
+
+    const result = settingsSchema.safeParse({
+      ...settingsWithoutAvatar,
+      lastName: "",
+    });
+
+    expect(result.success).toBe(true);
   });
 });
 

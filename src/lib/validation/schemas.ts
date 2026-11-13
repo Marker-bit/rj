@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { USERNAME_MESSAGE, USERNAME_REGEX } from "@/lib/api-validate";
+
 export const registerSchema = z.object({
   username: z
     .string()
@@ -21,6 +23,20 @@ export const registerSchema = z.object({
     .string()
     .min(3, "Фамилия должна содержать минимум 3 символа")
     .or(z.literal("")),
+});
+
+export const settingsSchema = z.object({
+  username: z.string().regex(USERNAME_REGEX, USERNAME_MESSAGE),
+  firstName: z.string().trim().min(1, "Требуется имя").max(50),
+  lastName: z.string().trim().max(50, "Максимум 50 символов").optional(),
+  avatarUrl: z.string().optional(),
+  shareSubscriptions: z
+    .enum(["ALL", "SUBS", "NONE"])
+    .default("NONE")
+    .optional(),
+  shareFollowers: z.enum(["ALL", "SUBS", "NONE"]).default("NONE").optional(),
+  shareStats: z.enum(["ALL", "SUBS", "NONE"]).default("NONE").optional(),
+  hideActivity: z.boolean(),
 });
 
 export const bookSchema = z.object({
