@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
 export async function DELETE(
-  _req: NextRequest,
+  req: NextRequest,
   props: { params: Promise<{ bookId: string }> },
 ) {
   const params = await props.params;
@@ -19,27 +19,32 @@ export async function DELETE(
       userId: user.id,
     },
     select: {
-      readEvents: {
-        select: {
-          id: true,
-        },
-      },
+      id: true,
     },
   });
   if (!book)
     return new NextResponse("Not Found", {
       status: 404,
     });
-  if (!book.readEvents.length)
-    return new NextResponse(null, {
-      status: 400,
+
+  const eventId = req.nextUrl.searchParams.get("eventId");
+
+  if (eventId) {
+    const deleted = await db.readEvent.deleteMany({
+      where: { id: eventId, bookId },
     });
-  await db.readEvent.delete({
-    where: {
-      id: book.readEvents[book.readEvents.length - 1].id,
-    },
+    if (deleted.count === 0) {
+      return new NextResponse("Not Found", { status: 404 });
+    }
+    return NextResponse.json({ ok: true, eventId });
+  }
+
+  const latest = await db.readEvent.findFirst({
+    where: { bookId },
+    orderBy: [{ readAt: "desc" }, { id: "desc" }],
+    select: { id: true },
   });
-  return NextResponse.json(book, {
-    status: 201,
-  });
+  if (!latest) return new NextResponse(null, { status: 400 });
+  await db.readEvent.delete({ where: { id: latest.id } });
+  return NextResponse.json({ ok: true, eventId: latest.id });
 }

@@ -24,17 +24,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { Book } from "@/lib/api-types";
+import { getReadingState } from "@/lib/reading-events";
 
 type StatusFilter = "all" | "planned" | "reading" | "finished";
 
 function getBookStatus(book: Book): Exclude<StatusFilter, "all"> {
-  const lastEvent = book.readEvents[0];
-
-  if (!lastEvent) {
-    return "planned";
-  }
-
-  return lastEvent.pagesRead >= book.pages ? "finished" : "reading";
+  const { latest, progressPages } = getReadingState(book.readEvents);
+  if (!latest) return "planned";
+  return progressPages >= book.pages ? "finished" : "reading";
 }
 
 export function BookList({ books }: { books: Book[] }) {

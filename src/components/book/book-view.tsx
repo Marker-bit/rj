@@ -8,6 +8,7 @@ import { SimpleTooltip } from "@/components/ui/simple-tooltip";
 import type { Book } from "@/lib/api-types";
 import { backgroundColors } from "@/lib/colors";
 import { dateToString } from "@/lib/date";
+import { getReadingState } from "@/lib/reading-events";
 import { cn, declOfNum } from "@/lib/utils";
 import { BackgroundColor, BookStatus } from "@/generated/prisma/enums";
 import {
@@ -147,7 +148,9 @@ export function BookView({
     });
   }, [activeDialog]);
 
-  const lastEvent = book.readEvents[0];
+  const reading = getReadingState(book.readEvents);
+  const latestEvent = reading.latest;
+  const progressPages = reading.progressPages;
 
   const color =
     book.background !== BackgroundColor.NONE
@@ -195,7 +198,7 @@ export function BookView({
               : "bg-neutral-100/50 dark:bg-neutral-900/50",
           )}
           style={{
-            width: `${((lastEvent?.pagesRead || 0) / book.pages) * 100}%`,
+            width: `${(progressPages / book.pages) * 100}%`,
           }}
         />
 
@@ -242,7 +245,7 @@ export function BookView({
               void revalidate("books");
             }}
             book={book}
-            lastEvent={lastEvent}
+            lastEvent={reading.furthest ?? undefined}
           />
         )}
         {mountedDialogs.has("done") && (
@@ -303,11 +306,13 @@ export function BookView({
                     {book.pages} страниц всего
                   </IconBadge>
                 </>
-              ) : lastEvent.pagesRead === book.pages ? (
+              ) : progressPages === book.pages ? (
                 <>
                   <IconBadge icon={BookOpenCheck}>Прочитана</IconBadge>
                   <UndoEventButton
                     bookId={book.id}
+                    eventId={latestEvent!.id}
+                    eventDate={latestEvent!.readAt}
                     onDone={() => {
                       onUpdate?.();
                       void revalidate("books");
@@ -319,22 +324,28 @@ export function BookView({
                     всего
                   </IconBadge>
                   <IconBadge variant="outline" icon={CalendarDays}>
-                    {dateToString(new Date(lastEvent.readAt))}
+                    {latestEvent
+                      ? dateToString(new Date(latestEvent.readAt))
+                      : ""}
                   </IconBadge>
                 </>
               ) : (
                 <>
                   <IconBadge icon={BookIcon}>Читается</IconBadge>
                   <IconBadge variant="secondary" icon={BookOpen}>
-                    {lastEvent.pagesRead}/{book.pages}{" "}
+                    {progressPages}/{book.pages}{" "}
                     {declOfNum(book.pages, ["страницы", "страниц", "страниц"])}{" "}
-                    ({((lastEvent.pagesRead / book.pages) * 100).toFixed(1)}%)
+                    ({((progressPages / book.pages) * 100).toFixed(1)}%)
                   </IconBadge>
                   <IconBadge variant="outline" icon={CalendarDays}>
-                    {dateToString(new Date(lastEvent.readAt))}
+                    {latestEvent
+                      ? dateToString(new Date(latestEvent.readAt))
+                      : ""}
                     <SimpleTooltip text="Отменить событие">
                       <UndoEventButton
                         bookId={book.id}
+                        eventId={latestEvent!.id}
+                        eventDate={latestEvent!.readAt}
                         onDone={() => {
                           onUpdate?.();
                           void revalidate("books");
@@ -399,7 +410,7 @@ export function BookView({
           >
             <Info className="size-4" />
           </HelpButton>
-          {lastEvent?.pagesRead !== book.pages && (
+          {progressPages !== book.pages && (
             <>
               <HelpButton
                 className="gap-2"
