@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { useLocalStorage } from "usehooks-ts";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
+import { SimpleTooltip } from "@/components/ui/simple-tooltip";
 import {
   Form,
   FormControl,
@@ -334,33 +335,39 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
                     }
                     placeholder={`Поле ${defaultField.storageIndex + 1}`}
                   />
-                  <Button
-                    size="icon"
-                    variant="outline"
-                    type="button"
-                    onClick={() =>
-                      setFields((currentFields) => {
-                        return currentFields.filter(
-                          (_, fieldIndex) =>
-                            fieldIndex !== defaultField.storageIndex,
-                        );
-                      })
-                    }
-                  >
-                    <XIcon />
-                  </Button>
+                  <SimpleTooltip text="Удалить поле">
+                    <Button
+                      size="icon"
+                      variant="outline"
+                      type="button"
+                      aria-label="Удалить поле"
+                      onClick={() =>
+                        setFields((currentFields) => {
+                          return currentFields.filter(
+                            (_, fieldIndex) =>
+                              fieldIndex !== defaultField.storageIndex,
+                          );
+                        })
+                      }
+                    >
+                      <XIcon />
+                    </Button>
+                  </SimpleTooltip>
                 </div>
               ))}
-              <Button
-                size="icon"
-                variant="outline"
-                type="button"
-                onClick={() =>
-                  setFields((currentFields) => [...currentFields, ""])
-                }
-              >
-                <PlusIcon />
-              </Button>
+              <SimpleTooltip text="Добавить поле">
+                <Button
+                  size="icon"
+                  variant="outline"
+                  type="button"
+                  aria-label="Добавить поле"
+                  onClick={() =>
+                    setFields((currentFields) => [...currentFields, ""])
+                  }
+                >
+                  <PlusIcon />
+                </Button>
+              </SimpleTooltip>
             </div>
             <h2 className="pt-2 text-lg font-semibold">Чтение</h2>
             <FormField

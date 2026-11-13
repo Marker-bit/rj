@@ -4,6 +4,7 @@ import { Loader, Plus, Search } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
+import { SimpleTooltip } from "../ui/simple-tooltip";
 import { DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { DrawerDialog } from "../ui/drawer-dialog";
 import { revalidate } from "@/lib/actions/revalidate";
@@ -69,7 +70,7 @@ export function AddFromMyBooks({
           {book.coverUrl && (
             <Image
               src={book.coverUrl}
-              alt="book"
+              alt={`Обложка книги «${book.title}»`}
               width={500}
               height={500}
               className="h-20 w-auto rounded-md"
@@ -83,27 +84,31 @@ export function AddFromMyBooks({
               {book.description}
             </div>
           </div>
-          <Button
-            size="icon"
-            variant="ghost"
-            className="ml-auto size-fit p-1"
-            onClick={() => {
-              setBookLoadingId(book.id);
-              fetch(`/api/groups/${groupId}/add-own/${book.id}`, {
-                method: "POST",
-              }).then(() => {
-                setBookLoadingId(undefined);
-                setOpen(false);
-                void revalidate("books");
-              });
-            }}
-          >
-            {bookLoadingId === book.id ? (
-              <Loader className="size-4 animate-spin" />
-            ) : (
-              <Plus className="size-4" />
-            )}
-          </Button>
+          <SimpleTooltip text="Добавить книгу в группу">
+            <Button
+              size="icon"
+              variant="ghost"
+              type="button"
+              aria-label="Добавить книгу в группу"
+              className="ml-auto size-fit p-1"
+              onClick={() => {
+                setBookLoadingId(book.id);
+                fetch(`/api/groups/${groupId}/add-own/${book.id}`, {
+                  method: "POST",
+                }).then(() => {
+                  setBookLoadingId(undefined);
+                  setOpen(false);
+                  void revalidate("books");
+                });
+              }}
+            >
+              {bookLoadingId === book.id ? (
+                <Loader className="size-4 animate-spin" />
+              ) : (
+                <Plus className="size-4" />
+              )}
+            </Button>
+          </SimpleTooltip>
         </div>
       ))}
     </DrawerDialog>

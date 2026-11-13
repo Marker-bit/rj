@@ -95,7 +95,7 @@ export default async function Page(props: {
         {groupBook.coverUrl && (
           <Image
             src={groupBook.coverUrl}
-            alt="book"
+            alt={`Обложка книги «${groupBook.title}»`}
             width={500}
             height={500}
             className="h-40 w-auto rounded-md"

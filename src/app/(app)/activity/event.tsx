@@ -41,7 +41,7 @@ export default function Event({
         {book.coverUrl && (
           <Image
             src={book.coverUrl}
-            alt="book"
+            alt={`Обложка книги «${book.title}»`}
             width={96}
             height={96}
             className="h-auto w-24 rounded-md max-sm:h-24 max-sm:w-auto"

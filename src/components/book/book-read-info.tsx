@@ -146,6 +146,8 @@ export default function BookReadInfo({
             <button
               key={stepItem.id}
               type="button"
+              aria-label={`Шаг ${stepIndex + 1} из ${steps.length}: ${stepItem.title}`}
+              aria-current={currentStep === stepIndex ? "step" : undefined}
               className={cn(
                 "h-2 rounded-full transition-all duration-300 cursor-pointer",
                 currentStep === stepIndex

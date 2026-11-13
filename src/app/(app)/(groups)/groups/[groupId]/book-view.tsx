@@ -95,7 +95,7 @@ export function GroupBookView({
       {groupBook.coverUrl && (
         <Image
           src={groupBook.coverUrl}
-          alt="book"
+          alt={`Обложка книги «${groupBook.title}»`}
           width={500}
           height={500}
           className="h-32 w-auto rounded-md"

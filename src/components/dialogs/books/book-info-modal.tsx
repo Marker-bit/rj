@@ -44,7 +44,7 @@ export function BookInfoModal({
           {book.coverUrl && (
             <Image
               src={book.coverUrl}
-              alt="book"
+              alt={`Обложка книги «${book.title}»`}
               width={500}
               height={500}
               className="h-52 w-auto rounded-md"

@@ -2,6 +2,7 @@ import { ChevronLeft, UserX } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { SimpleTooltip } from "@/components/ui/simple-tooltip";
 import {
   Empty,
   EmptyContent,
@@ -38,11 +39,13 @@ export default async function FriendsPage() {
   return (
     <div>
       <div className="m-2 flex items-center gap-2 text-3xl font-bold">
-        <Link href="/home">
-          <Button variant="ghost" size="icon">
-            <ChevronLeft className="size-8" />
-          </Button>
-        </Link>
+        <SimpleTooltip text="Назад">
+          <Link href="/home" aria-label="Назад">
+            <Button variant="ghost" size="icon">
+              <ChevronLeft className="size-8" />
+            </Button>
+          </Link>
+        </SimpleTooltip>
         Подписки
         <Button variant="ghost" asChild>
           <Link href="/followers" className="ml-auto">

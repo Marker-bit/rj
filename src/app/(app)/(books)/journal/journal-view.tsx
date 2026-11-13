@@ -15,6 +15,7 @@ import { useState } from "react";
 import type { DateRange } from "react-day-picker";
 import { DateCalendar } from "@/components/date-calendar";
 import { Button } from "@/components/ui/button";
+import { SimpleTooltip } from "@/components/ui/simple-tooltip";
 import {
   Empty,
   EmptyContent,
@@ -58,11 +59,13 @@ export default function JournalView({
   return (
     <div className="max-sm:mb-[15vh]">
       <div className="m-2 flex items-center gap-2 text-3xl font-bold">
-        <Link href="/">
-          <Button variant="ghost" size="icon">
-            <ChevronLeft className="size-8" />
-          </Button>
-        </Link>
+        <SimpleTooltip text="Назад">
+          <Link href="/home" aria-label="Назад">
+            <Button variant="ghost" size="icon">
+              <ChevronLeft className="size-8" />
+            </Button>
+          </Link>
+        </SimpleTooltip>
         Журнал
       </div>
       <div className="flex flex-col gap-2 p-3">

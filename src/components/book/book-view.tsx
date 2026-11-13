@@ -288,7 +288,7 @@ export function BookView({
           {book.coverUrl && (
             <Image
               src={book.coverUrl}
-              alt="book"
+              alt={`Обложка книги «${book.title}»`}
               width={192}
               height={320}
               unoptimized={book.coverUrl.includes("books.google.com")}
