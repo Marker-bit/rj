@@ -33,6 +33,7 @@ export function ShareBookModal({
   book: Book;
 }) {
   const [loading, setLoading] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const { copyToClipboard, isCopied } = useCopyToClipboard();
 
   const createLink = async () => {
@@ -51,12 +52,15 @@ export function ShareBookModal({
   };
 
   const deleteLink = async (id: string) => {
+    setDeletingId(id);
     toast.promise(
       async () => {
-        setLoading(true);
-        await deleteBookLink(id);
-        setLoading(false);
-        void revalidate("books");
+        try {
+          await deleteBookLink(id);
+          void revalidate("books");
+        } finally {
+          setDeletingId(null);
+        }
       },
       {
         loading: "Удаление ссылки...",
@@ -109,7 +113,7 @@ export function ShareBookModal({
                 aria-label="Удалить ссылку"
                 title="Удалить ссылку"
                 onClick={() => deleteLink(link.id)}
-                disabled={loading}
+                disabled={deletingId === link.id}
                 variant="outline"
                 size="icon"
                 className="shrink-0"

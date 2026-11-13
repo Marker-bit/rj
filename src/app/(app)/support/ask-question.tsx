@@ -49,17 +49,24 @@ export default function AskQuestion() {
 
   async function onSubmit({ title, content }: z.infer<typeof formSchema>) {
     setLoading(true);
-    const res = await createQuestion(title, content);
-    setLoading(false);
-    if (res.error) {
-      toast.error("Проблема при отправке вопроса", {
-        description: res.error,
+    try {
+      const res = await createQuestion(title, content);
+      if (res.error) {
+        toast.error("Проблема при отправке вопроса", {
+          description: res.error,
+        });
+      } else {
+        toast.success(res.message);
+        form.reset();
+        setOpen(false);
+        void revalidate("support");
+      }
+    } catch {
+      toast.error("Не удалось выполнить действие", {
+        description: "Проверьте соединение и попробуйте ещё раз.",
       });
-    } else {
-      toast.success(res.message);
-      form.reset();
-      setOpen(false);
-      void revalidate("support");
+    } finally {
+      setLoading(false);
     }
   }
 

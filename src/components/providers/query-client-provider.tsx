@@ -8,6 +8,7 @@ import {
 } from "@tanstack/react-query";
 import React from "react";
 import { toast } from "sonner";
+import { shouldReportMutationError } from "@/lib/mutation-error";
 
 export const QueryProvider = ({ children }: { children: React.ReactNode }) => {
   const [queryClient] = React.useState(
@@ -26,8 +27,11 @@ export const QueryProvider = ({ children }: { children: React.ReactNode }) => {
           },
         }),
         mutationCache: new MutationCache({
-          onError: () => {
-            toast.error("Не удалось загрузить данные");
+          onError: (_error, _variables, _context, mutation) => {
+            if (!shouldReportMutationError(mutation.meta)) return;
+            toast.error("Не удалось выполнить действие", {
+              description: "Проверьте соединение и попробуйте ещё раз.",
+            });
           },
         }),
       }),

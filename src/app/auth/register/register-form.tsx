@@ -80,6 +80,7 @@ export function RegisterForm({ returnTo }: { returnTo: string }) {
           "Не удалось связаться с сервером. Проверьте подключение и попробуйте ещё раз.",
       });
     },
+    meta: { errorHandled: true },
   });
 
   function onSubmit(values: z.infer<typeof registerSchema>) {

@@ -103,6 +103,7 @@ export function EditBookModal({
           "Проверьте соединение и попробуйте ещё раз. Введённые данные сохранены в форме.",
       });
     },
+    meta: { errorHandled: true },
     onSuccess: (_, values) => {
       queryClient.invalidateQueries({
         queryKey: ["books"],

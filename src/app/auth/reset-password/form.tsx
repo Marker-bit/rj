@@ -96,13 +96,20 @@ export default function ResetPasswordForm() {
 
   async function onSubmit(values: z.input<typeof formSchema>) {
     setLoading(true);
-    const res = await resetPassword(values);
-    setLoading(false);
-    if (res.error) {
-      toast.error(res.message);
-    } else {
-      toast.success("Пароль успешно изменен!");
-      router.push("/auth/login");
+    try {
+      const res = await resetPassword(values);
+      if (res.error) {
+        toast.error(res.message);
+      } else {
+        toast.success("Пароль успешно изменен!");
+        router.push("/auth/login");
+      }
+    } catch {
+      toast.error("Не удалось выполнить действие", {
+        description: "Проверьте соединение и попробуйте ещё раз.",
+      });
+    } finally {
+      setLoading(false);
     }
   }
 

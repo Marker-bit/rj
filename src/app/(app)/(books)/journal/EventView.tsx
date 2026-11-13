@@ -35,6 +35,7 @@ export function EventView({
           "Проверьте соединение и попробуйте ещё раз. Запись сохранена.",
       });
     },
+    meta: { errorHandled: true },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["events"],

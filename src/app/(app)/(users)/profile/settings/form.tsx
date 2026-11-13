@@ -119,17 +119,24 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
         method: "PATCH",
         body: JSON.stringify(values),
       });
-      const res = await req.json();
-      if (res.error) {
-        toast.error("Возникла проблема при обновлении профиля", {
-          description: res.error,
-        });
-        throw new Error(res.error);
+      const res = await req.json().catch(() => null);
+      if (!req.ok || res?.error) {
+        throw new Error(
+          typeof res?.error === "string"
+            ? res.error
+            : "Не удалось сохранить профиль",
+        );
       }
+    },
+    onError: (error) => {
+      toast.error("Возникла проблема при обновлении профиля", {
+        description: error.message,
+      });
     },
     onSuccess: () => {
       toast.success("Профиль обновлен");
     },
+    meta: { errorHandled: true },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -405,7 +412,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
         </div>
         <h2 className="mb-2 text-center text-lg font-semibold">Аккаунт</h2>
         <div className="mx-3 flex flex-wrap justify-center gap-2">
-          <Button type="submit">
+          <Button type="submit" disabled={userMutation.isPending}>
             {userMutation.isPending ? (
               <>
                 <Loader invert className="mr-2 size-6" />

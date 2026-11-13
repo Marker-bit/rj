@@ -42,6 +42,7 @@ export function DateReadModal({
         description: "Проверьте подключение к интернету и попробуйте ещё раз.",
       });
     },
+    meta: { errorHandled: true },
     onSuccess: () => {
       setIsOpen(false);
       toast.success("Событие сохранено");
