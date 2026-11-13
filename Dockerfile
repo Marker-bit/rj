@@ -18,8 +18,11 @@ RUN pnpm exec prisma generate
 
 # Builder
 FROM base AS builder
+# Railway injects RAILWAY_GIT_COMMIT_SHA as a build arg; COMMIT_SHA can be
+# supplied by CI or a manual `docker build --build-arg`.
 ARG COMMIT_SHA
-ENV NEXT_PUBLIC_COMMIT_SHA=$COMMIT_SHA
+ARG RAILWAY_GIT_COMMIT_SHA
+ENV NEXT_PUBLIC_COMMIT_SHA=${COMMIT_SHA:-$RAILWAY_GIT_COMMIT_SHA}
 
 WORKDIR /app
 
