@@ -28,7 +28,7 @@ export default async function LastReadCard() {
       )}
       <div className="flex min-w-0 flex-col items-start">
         <div className="text-sm text-muted-foreground">Вы остановились на</div>
-        <div className="text-2xl font-bold">{pages} странице</div>
+        <div className="text-2xl font-bold">странице {pages}</div>
         <div className="text-muted-foreground text-pretty">
           В книге {lastReadBook.title} — {lastReadBook.author}
         </div>

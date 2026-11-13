@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Читательский дневник",
     short_name: "RJ",
-    description: "Читательский дневник - социальная сеть для читателей",
+    description: "Читательский дневник — личный дневник чтения",
     start_url: "/home",
     display: "standalone",
     background_color: "#ffffff",

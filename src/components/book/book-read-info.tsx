@@ -70,6 +70,9 @@ export default function BookReadInfo({
     chartData.length > 0
       ? chartData.reduce((a, b) => a + b.pagesRead, 0) / chartData.length
       : 0;
+  const averageLabel = Number.isInteger(avg)
+    ? declOfNum(avg, ["страница", "страницы", "страниц"])
+    : "страницы";
 
   const steps: Step[] = [
     {
@@ -91,10 +94,7 @@ export default function BookReadInfo({
     {
       id: "average",
       title: "В среднем, вы читали",
-      highlightedText: `${avg.toFixed(1).replace(".", ",")} ${declOfNum(
-        Math.floor(avg),
-        ["страницу", "страницы", "страниц"],
-      )}`,
+      highlightedText: `${avg.toFixed(1).replace(".", ",")} ${averageLabel}`,
       highlightedTextDescription: "в день",
     },
     {

@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -99,9 +98,6 @@ export function LoginForm({ returnTo }: { returnTo: string }) {
               <FormControl>
                 <Input placeholder="ivan.ivanov" {...field} />
               </FormControl>
-              <FormDescription>
-                По этому имени пользователя вас можно будет найти в поиске.
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -134,7 +130,7 @@ export function LoginForm({ returnTo }: { returnTo: string }) {
           </Button>
         </div>
         <p className="text-xs">
-          При авторизации, вы соглашаетесь с{" "}
+          При авторизации вы соглашаетесь с{" "}
           <Link
             href="/privacy-policy"
             className="text-blue-500 underline underline-offset-2"

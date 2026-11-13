@@ -175,7 +175,7 @@ export function RegisterForm({ returnTo }: { returnTo: string }) {
           </Button>
         </div>
         <p className="text-xs">
-          При регистрации, вы соглашаетесь с{" "}
+          При регистрации вы соглашаетесь с{" "}
           <Link
             href="/privacy-policy"
             className="text-blue-500 underline underline-offset-2"
