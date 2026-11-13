@@ -101,7 +101,7 @@ function StreakButtonContent() {
                   </button>
                 </TooltipTrigger>
                 <TooltipContent className="text-center">
-                  <div className="text-primary-foreground/70">
+                  <div className="text-background/70">
                     {daysPassed === 0
                       ? "Сегодня"
                       : daysPassed > 0
@@ -115,7 +115,7 @@ function StreakButtonContent() {
                             ["день", "дня", "дней"],
                           )} вперёд`}
                   </div>
-                  <div className="text-primary-foreground/70">
+                  <div className="text-background/70">
                     {format(date, "d MMMM", { locale: ru, weekStartsOn: 1 })}
                   </div>
                   {pages}{" "}
