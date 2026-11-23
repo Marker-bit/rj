@@ -2,10 +2,10 @@
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { BadgeCheck, UserPlus, UserX } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { revalidate } from "@/lib/actions/revalidate";
@@ -64,38 +64,54 @@ export function FriendView({
     }
   };
 
+  const name = [friend.firstName, friend.lastName].filter(Boolean).join(" ");
+  const initials = `${friend.firstName?.trim()[0] ?? ""}${friend.lastName?.trim()[0] ?? ""}`;
+
   return (
-    <div className="group flex cursor-pointer items-center gap-2 rounded-md border p-4 transition-colors">
+    <div className="flex items-center gap-3 rounded-md border px-3 py-2">
       <Link
         href={`/profile/${friend.username}`}
         className="flex min-w-0 flex-1 items-center gap-2"
       >
-        <Image
-          src={friend.avatarUrl ? friend.avatarUrl : "/no-avatar.png"}
-          alt="avatar"
-          width={100}
-          height={100}
-          className="size-16 rounded-full"
-        />
-        <div className="flex flex-col">
-          <div className="flex items-center gap-2 text-xl font-semibold">
-            {friend.firstName} {friend.lastName}
-            {friend.verified && (
-              <BadgeCheck className="size-6 text-yellow-500" />
+        <Avatar className="size-9" aria-hidden="true">
+          <AvatarImage
+            src={friend.avatarUrl || undefined}
+            alt=""
+            className="object-cover"
+          />
+          <AvatarFallback className="text-xs font-medium uppercase">
+            {initials || friend.username.slice(0, 2)}
+          </AvatarFallback>
+        </Avatar>
+        <div className="min-w-0 text-sm">
+          {name && (
+            <div className="flex items-center gap-1 font-semibold">
+              <span className="truncate">{name}</span>
+              {friend.verified && (
+                <BadgeCheck
+                  className="size-4 shrink-0 text-yellow-500"
+                  aria-label="Подтверждённый профиль"
+                />
+              )}
+            </div>
+          )}
+          <div className="flex items-center gap-1.5">
+            <span className="truncate text-xs text-muted-foreground">
+              @{friend.username}
+            </span>
+            {currentUserId === friend.id && (
+              <Badge className="shrink-0">Вы</Badge>
             )}
           </div>
-          <div className="text-sm text-muted-foreground">
-            @{friend.username}
-          </div>
-          {currentUserId === friend.id && <Badge className="w-fit">Вы</Badge>}
         </div>
       </Link>
       {currentUserId !== friend.id &&
         (followingRes === undefined && userQuery.isPending ? (
-          <Skeleton className="h-10 w-48 rounded-md" />
+          <Skeleton className="h-8 w-28 shrink-0 rounded-full" />
         ) : (
           <Button
-            className="mt-2 w-fit gap-2"
+            size="sm"
+            className="shrink-0 gap-1.5"
             onClick={() => void follow()}
             disabled={loading}
             variant={followingRes === true ? "outline" : "default"}
