@@ -4,7 +4,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Check, Pencil } from "lucide-react";
 import { useId, useState } from "react";
 import { toast } from "sonner";
-import { CollectionIconTile } from "@/components/book/collection-mark";
+import {
+  CollectionIconTile,
+  CollectionMark,
+} from "@/components/book/collection-mark";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -175,6 +178,9 @@ function CollectionEditForm({
 
       <div className="flex items-center justify-end gap-2">
         <CollectionIconTile icon={icon} color={color} className="size-9" />
+        <div className="grid size-9 shrink-0 place-items-center text-muted-foreground">
+          <CollectionMark icon={icon} color={color} className="size-5" />
+        </div>
         <Button type="submit" disabled={!name.trim() || save.isPending}>
           Сохранить
         </Button>
