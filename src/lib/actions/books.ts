@@ -1,7 +1,7 @@
 "use server";
 
 import type { BackgroundColor } from "@/generated/prisma/enums";
-import { prettifyError } from "zod";
+import { prettifyError, z } from "zod";
 import { fetchBooks } from "../books";
 import { db } from "../db";
 import { validateRequest } from "../server-validate-request";
@@ -25,17 +25,15 @@ export async function getBooks(
   return books;
 }
 
-export async function createBook(book: {
-  title: string;
-  pages: number;
-  author: string;
-  coverUrl?: string;
-  description?: string;
-  fields: {
-    title: string;
-    value: string;
-  }[];
-}) {
+const normalizeBookName = (value: string) =>
+  value.trim().replace(/\s+/g, " ").toLowerCase();
+
+class DuplicateLookupError extends Error {}
+
+export async function createBook(
+  book: z.input<typeof bookSchema>,
+  mode?: "add-anyway",
+) {
   const { user } = await validateRequest();
 
   if (!user) {
@@ -47,18 +45,57 @@ export async function createBook(book: {
     throw new Error(prettifyError(data.error));
   }
 
-  const newBook = await db.book.create({
-    data: {
-      title: book.title,
-      pages: book.pages,
-      author: book.author,
-      coverUrl: book.coverUrl,
-      description: book.description,
-      userId: user.id,
-      fields: book.fields,
-    },
-  });
-  return newBook;
+  const bookData = { ...data.data, userId: user.id };
+  if (mode === "add-anyway") {
+    await db.book.create({ data: bookData });
+    return { kind: "created" } as const;
+  }
+
+  const title = normalizeBookName(bookData.title);
+  const author = normalizeBookName(bookData.author);
+
+  try {
+    return await db.$transaction(
+      async (tx) => {
+        const books = await tx.book
+          .findMany({
+            where: { userId: user.id },
+            select: {
+              id: true,
+              title: true,
+              author: true,
+              pages: true,
+              status: true,
+            },
+            orderBy: [{ status: "asc" }, { createdAt: "desc" }, { id: "asc" }],
+          })
+          .catch((cause: unknown) => {
+            throw new DuplicateLookupError("Book duplicate lookup failed", {
+              cause,
+            });
+          });
+        const matches = books.filter(
+          (existing) =>
+            normalizeBookName(existing.title) === title &&
+            normalizeBookName(existing.author) === author,
+        );
+
+        if (matches.length > 0) {
+          return { kind: "duplicate", matches } as const;
+        }
+
+        await tx.book.create({ data: bookData });
+        return { kind: "created" } as const;
+      },
+      { isolationLevel: "Serializable" },
+    );
+  } catch (error) {
+    if (error instanceof DuplicateLookupError) {
+      console.error(error);
+      return { kind: "lookup-failed" } as const;
+    }
+    throw error;
+  }
 }
 
 export async function deleteBook(bookId: string) {
