@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Check, Pencil } from "lucide-react";
 import { useId, useState } from "react";
 import { toast } from "sonner";
+import { CollectionIconTile } from "@/components/book/collection-mark";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -172,13 +173,12 @@ function CollectionEditForm({
         </div>
       </fieldset>
 
-      <Button
-        type="submit"
-        className="justify-self-end"
-        disabled={!name.trim() || save.isPending}
-      >
-        Сохранить
-      </Button>
+      <div className="flex items-center justify-end gap-2">
+        <CollectionIconTile icon={icon} color={color} className="size-9" />
+        <Button type="submit" disabled={!name.trim() || save.isPending}>
+          Сохранить
+        </Button>
+      </div>
     </form>
   );
 }
