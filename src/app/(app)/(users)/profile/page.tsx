@@ -1,6 +1,7 @@
-import { ChevronLeft, Settings } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
+import { SettingsButton } from "@/components/settings/settings-button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -57,11 +58,7 @@ export default async function ProfilePage() {
         </Button>
         Профиль
         <div className="ml-auto">
-          <Button asChild variant="secondary" size="icon" className="size-8">
-            <Link href="/profile/settings" aria-label="Настройки профиля">
-              <Settings />
-            </Link>
-          </Button>
+          <SettingsButton />
         </div>
       </div>
       <div className="m-3 flex items-center gap-2 rounded-md border p-4">

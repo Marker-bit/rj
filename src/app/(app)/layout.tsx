@@ -6,6 +6,7 @@ import NavBar from "@/components/navigation/navbar";
 import { StreakEventsProvider } from "@/components/main/streak-context";
 import RecommendationBar from "@/components/navigation/recommendation-bar";
 import { QueryProvider } from "@/components/providers/query-client-provider";
+import { SettingsProvider } from "@/components/settings/settings-dialog";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { getBuildInfo } from "@/lib/build-info";
@@ -87,14 +88,16 @@ export default async function Layout({
   return (
     <QueryProvider>
       <TooltipProvider>
-        <StreakEventsProvider events={events}>
-          <div>
-            <NavBar auth={auth} build={build} />
-            <RecommendationBar recommendations={recommendationsAvailable} />
-            <div className="w-full overflow-auto">{children}</div>
-            <AgentGate aiEnabled={aiEnabled} />
-          </div>
-        </StreakEventsProvider>
+        <SettingsProvider user={authResult.then(({ user }) => user)}>
+          <StreakEventsProvider events={events}>
+            <div>
+              <NavBar auth={auth} build={build} />
+              <RecommendationBar recommendations={recommendationsAvailable} />
+              <div className="w-full overflow-auto">{children}</div>
+              <AgentGate aiEnabled={aiEnabled} />
+            </div>
+          </StreakEventsProvider>
+        </SettingsProvider>
         <Toaster />
       </TooltipProvider>
     </QueryProvider>

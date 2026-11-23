@@ -1,5 +1,7 @@
 import AdminNavBar from "@/components/navigation/admin-navbar";
 import { getBuildInfo } from "@/lib/build-info";
+import { QueryProvider } from "@/components/providers/query-client-provider";
+import { SettingsProvider } from "@/components/settings/settings-dialog";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { db } from "@/lib/db";
@@ -37,10 +39,14 @@ export default async function Layout({
 
   return (
     <TooltipProvider>
-      <div className="flex min-h-screen w-full flex-col">
-        <AdminNavBar auth={auth} build={getBuildInfo()} />
-        {children}
-      </div>
+      <QueryProvider>
+        <SettingsProvider user={Promise.resolve(user)}>
+          <div className="flex min-h-screen w-full flex-col">
+            <AdminNavBar auth={auth} build={getBuildInfo()} />
+            {children}
+          </div>
+        </SettingsProvider>
+      </QueryProvider>
       <Toaster />
     </TooltipProvider>
   );

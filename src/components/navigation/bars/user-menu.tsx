@@ -13,7 +13,11 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { use } from "react";
+import { use, useRef } from "react";
+import {
+  SettingsShortcut,
+  useOpenSettings,
+} from "@/components/settings/settings-dialog";
 import CheckMark from "@/components/checkmark";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -40,6 +44,8 @@ export default function UserMenu({
   const { user, unread } = use(auth);
   const router = useRouter();
   const pathname = usePathname();
+  const openSettings = useOpenSettings();
+  const menuTrigger = useRef<HTMLButtonElement>(null);
 
   if (!user) {
     return null;
@@ -55,6 +61,7 @@ export default function UserMenu({
       <SimpleTooltip text="Профиль">
         <DropdownMenuTrigger asChild suppressHydrationWarning>
           <Button
+            ref={menuTrigger}
             variant="ghost"
             className="h-auto p-0 hover:bg-transparent! rounded-full relative"
           >
@@ -74,7 +81,7 @@ export default function UserMenu({
           </Button>
         </DropdownMenuTrigger>
       </SimpleTooltip>
-      <DropdownMenuContent className="max-w-64" align="end">
+      <DropdownMenuContent className="w-max max-w-64" align="end">
         <DropdownMenuLabel className="flex min-w-0 flex-col">
           <div className="flex items-center gap-2">
             <span className="text-foreground truncate text-sm font-medium">
@@ -136,12 +143,15 @@ export default function UserMenu({
               <span>Профиль</span>
             </DropdownMenuItem>
           </Link>
-          <Link href="/profile/settings">
-            <DropdownMenuItem active={pathname === "/profile/settings"}>
-              <BoltIcon size={16} className="opacity-60" aria-hidden="true" />
-              <span>Настройки</span>
-            </DropdownMenuItem>
-          </Link>
+          <DropdownMenuItem
+            aria-haspopup="dialog"
+            aria-keyshortcuts="Meta+Shift+, Control+Shift+,"
+            onSelect={() => openSettings(menuTrigger.current)}
+          >
+            <BoltIcon size={16} className="opacity-60" aria-hidden="true" />
+            <span className="mr-auto">Настройки</span>
+            <SettingsShortcut />
+          </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <Link href="/activity">
