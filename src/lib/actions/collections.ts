@@ -2,6 +2,7 @@
 
 import { db } from "../db";
 import { validateRequest } from "../server-validate-request";
+import { revalidate } from "./revalidate";
 
 export async function getCollections() {
   const { user } = await validateRequest();
@@ -47,6 +48,7 @@ export async function deleteCollection(id: string) {
   await db.collection.delete({
     where: { id, userId: user.id },
   });
+  await revalidate("collections");
 
   return { message: "Коллекция удалена" };
 }

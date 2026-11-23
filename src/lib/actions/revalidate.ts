@@ -21,6 +21,7 @@ const pagePaths = {
 
 const dynamicPagePaths: Partial<Record<keyof typeof pagePaths, string[]>> = {
   books: ["/books/[bookId]"],
+  collections: ["/books/tags/[tagId]", "/books/[bookId]"],
   groups: ["/groups/[groupId]"],
   profile: ["/profile/[username]"],
   support: ["/admin/support/[questionId]"],

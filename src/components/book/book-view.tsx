@@ -6,6 +6,7 @@ import { DrawerDialog } from "@/components/ui/drawer-dialog";
 import { IconBadge } from "@/components/ui/icon-badge";
 import { SimpleTooltip } from "@/components/ui/simple-tooltip";
 import type { Book } from "@/lib/api-types";
+import { bookTagHref } from "@/lib/book-back";
 import { backgroundColors } from "@/lib/colors";
 import { dateToString } from "@/lib/date";
 import { getReadingState } from "@/lib/reading-events";
@@ -24,6 +25,7 @@ import {
   Link2,
   Share,
   Trash,
+  Tag,
   Users,
 } from "lucide-react";
 import nextDynamic from "next/dynamic";
@@ -111,11 +113,13 @@ export type BookDialog =
 
 export function BookView({
   book,
+  titleHref,
   onUpdate,
   history = false,
   initialReadOpen = false,
 }: {
   book: Book;
+  titleHref?: string;
   onUpdate?: () => void;
   history?: boolean;
   initialReadOpen?: boolean;
@@ -292,7 +296,18 @@ export function BookView({
             />
           )}
           <div className="flex flex-col">
-            <div className="text-xl font-bold">{book.title}</div>
+            <div className="text-xl font-bold">
+              {titleHref ? (
+                <Link
+                  href={titleHref}
+                  className="wrap-anywhere underline-offset-4 hover:underline focus-visible:underline"
+                >
+                  {book.title}
+                </Link>
+              ) : (
+                book.title
+              )}
+            </div>
             <div className="text-sm">{book.author}</div>
             <div className="my-2 flex flex-wrap items-center gap-2">
               {book.readEvents.length === 0 ? (
@@ -375,12 +390,19 @@ export function BookView({
             </div>
             <div className="flex flex-wrap gap-1">
               {book.collections.map((collection) => (
-                <div
+                <Button
                   key={collection.id}
-                  className="h-full rounded-4xl border px-4 py-2"
+                  variant="outline"
+                  className="h-auto min-h-9 max-w-full px-3 py-2 whitespace-normal"
+                  asChild
                 >
-                  {collection.name}
-                </div>
+                  <Link href={bookTagHref(collection.id)}>
+                    <Tag aria-hidden="true" />
+                    <span className="min-w-0 wrap-anywhere text-left">
+                      {collection.name}
+                    </span>
+                  </Link>
+                </Button>
               ))}
               <SimpleTooltip text="Добавить в коллекцию">
                 <Button

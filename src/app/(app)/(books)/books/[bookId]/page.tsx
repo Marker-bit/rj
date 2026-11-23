@@ -30,7 +30,9 @@ export default async function Page(props: {
               ? "К истории"
               : back === "/books/archive"
                 ? "К архиву"
-                : "Все книги"}
+                : back === "/books"
+                  ? "Все книги"
+                  : "К коллекции"}
         </Link>
       </Button>
       <BookView book={book} />

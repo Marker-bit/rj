@@ -1,6 +1,59 @@
+import type { Prisma } from "@/generated/prisma/client";
 import { BookStatus } from "@/generated/prisma/enums";
 import type { Book } from "./api-types";
 import { db } from "./db";
+
+const bookListSelect = {
+  id: true,
+  title: true,
+  author: true,
+  pages: true,
+  createdAt: true,
+  description: true,
+  coverUrl: true,
+  background: true,
+  status: true,
+  fields: true,
+  userId: true,
+  groupBookId: true,
+  fromRecommendationId: true,
+  readEvents: {
+    select: {
+      id: true,
+      pagesRead: true,
+      readAt: true,
+    },
+    orderBy: [
+      { pagesRead: "desc" },
+      {
+        readAt: "desc",
+      },
+    ],
+  },
+  collections: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
+  groupBook: {
+    select: {
+      id: true,
+      groupId: true,
+      group: {
+        select: {
+          id: true,
+          title: true,
+        },
+      },
+    },
+  },
+  links: {
+    select: {
+      id: true,
+    },
+  },
+} satisfies Prisma.BookSelect;
 
 type FetchBooksOptions =
   | {
@@ -28,57 +81,7 @@ export async function fetchBooks(
               not: BookStatus.ARCHIVED,
             },
     },
-    select: {
-      id: true,
-      title: true,
-      author: true,
-      pages: true,
-      createdAt: true,
-      description: true,
-      coverUrl: true,
-      background: true,
-      status: true,
-      fields: true,
-      userId: true,
-      groupBookId: true,
-      fromRecommendationId: true,
-      readEvents: {
-        select: {
-          id: true,
-          pagesRead: true,
-          readAt: true,
-        },
-        orderBy: [
-          { pagesRead: "desc" },
-          {
-            readAt: "desc",
-          },
-        ],
-      },
-      collections: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
-      groupBook: {
-        select: {
-          id: true,
-          groupId: true,
-          group: {
-            select: {
-              id: true,
-              title: true,
-            },
-          },
-        },
-      },
-      links: {
-        select: {
-          id: true,
-        },
-      },
-    },
+    select: bookListSelect,
   });
   const compareBooksByPercent = (a: Book, b: Book) => {
     let aPages = a.readEvents[0]?.pagesRead;
@@ -121,6 +124,29 @@ export async function fetchBooks(
         : compareBooksByActivity,
   );
   return books;
+}
+
+export async function fetchBookTag({
+  tagId,
+  userId,
+}: {
+  tagId: string;
+  userId: string;
+}) {
+  return db.collection.findUnique({
+    where: { id: tagId, userId },
+    select: {
+      name: true,
+      books: {
+        where: { userId },
+        select: {
+          ...bookListSelect,
+          collections: { ...bookListSelect.collections, where: { userId } },
+        },
+        orderBy: [{ title: "asc" }, { id: "asc" }],
+      },
+    },
+  });
 }
 
 export async function fetchBook(id: string, userId?: string) {
