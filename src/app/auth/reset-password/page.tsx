@@ -29,11 +29,16 @@ export default async function ResetPassword() {
               Если у вас меньше трёх личных книг
             </h2>
             <p>
-              Эта форма не сможет сбросить пароль. Если аккаунт открыт на другом
-              устройстве, обратитесь в поддержку с него и опишите проблему со
-              входом. Доступ к поддержке требует входа в аккаунт.
+              Эта форма не сможет сбросить пароль. Опишите проблему со входом в
+              письме в поддержку. Написать можно без входа в аккаунт.
             </p>
             <div className="flex flex-wrap gap-x-4 gap-y-2">
+              <a
+                className="underline underline-offset-4"
+                href="mailto:support@rj.markerbit.dev"
+              >
+                Связаться с поддержкой
+              </a>
               <Link className="underline underline-offset-4" href="/auth/login">
                 Вернуться ко входу
               </Link>
