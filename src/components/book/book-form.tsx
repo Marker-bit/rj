@@ -1,6 +1,15 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
-import { BookOpen, Plus, Trash, TriangleAlert, X } from "lucide-react";
+import {
+  Archive,
+  BookOpen,
+  EyeOff,
+  Library,
+  Plus,
+  Trash,
+  TriangleAlert,
+  X,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { capture } from "@/lib/posthog";
@@ -38,6 +47,12 @@ type DuplicateWarning = Extract<
   Awaited<ReturnType<typeof createBook>>,
   { kind: "duplicate" }
 > & { values: BookValues };
+
+const matchStatuses = {
+  NONE: { Icon: Library, label: "В библиотеке" },
+  ARCHIVED: { Icon: Archive, label: "В архиве" },
+  HIDDEN: { Icon: EyeOff, label: "Скрыта" },
+};
 
 export function BookForm({
   onSuccess,
@@ -155,40 +170,42 @@ export function BookForm({
               Возможный дубликат
             </h2>
             <p className="text-sm text-muted-foreground">
-              В вашем дневнике уже есть книги с таким названием и автором. Если
-              у вас другое издание, его можно добавить отдельно.
+              В вашем дневнике уже есть{" "}
+              {warning.matches.length === 1 ? "книга" : "книги"} с таким
+              названием и автором. Если у вас другое издание, его можно добавить
+              отдельно.
             </p>
           </div>
           <ul className="max-h-[min(40dvh,20rem)] space-y-2 overflow-y-auto">
-            {warning.matches.map((book) => (
-              <li
-                key={book.id}
-                className="flex flex-wrap items-center justify-between gap-2 rounded-md border p-3"
-              >
-                <div className="min-w-0 flex-1 break-words text-sm">
-                  <p className="font-medium">{book.title}</p>
-                  <p className="text-muted-foreground">
-                    {book.author} · {book.pages} стр.
-                  </p>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {book.status === "ARCHIVED"
-                      ? "В архиве"
-                      : book.status === "HIDDEN"
-                        ? "Скрыта"
-                        : "В библиотеке"}
-                  </p>
-                </div>
-                <Button asChild variant="outline" size="sm">
-                  <Link
-                    href={bookDetailHref(book.id, "books")}
-                    aria-label={`Открыть «${book.title}», ${book.pages} стр.`}
-                  >
-                    <BookOpen aria-hidden="true" />
-                    Открыть
-                  </Link>
-                </Button>
-              </li>
-            ))}
+            {warning.matches.map((book) => {
+              const { Icon, label } = matchStatuses[book.status];
+              return (
+                <li
+                  key={book.id}
+                  className="flex flex-wrap items-center justify-between gap-2 rounded-md border p-3"
+                >
+                  <div className="min-w-0 flex-1 break-words text-sm">
+                    <p className="font-medium">{book.title}</p>
+                    <p className="text-muted-foreground">
+                      {book.author} · {book.pages} стр.
+                    </p>
+                    <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+                      <Icon aria-hidden="true" className="size-3 shrink-0" />
+                      {label}
+                    </p>
+                  </div>
+                  <Button asChild variant="outline" size="sm">
+                    <Link
+                      href={bookDetailHref(book.id, "books")}
+                      aria-label={`Открыть «${book.title}», ${book.pages} стр.`}
+                    >
+                      <BookOpen aria-hidden="true" />
+                      Открыть
+                    </Link>
+                  </Button>
+                </li>
+              );
+            })}
           </ul>
           <div className="flex flex-wrap justify-end gap-2">
             <Button
