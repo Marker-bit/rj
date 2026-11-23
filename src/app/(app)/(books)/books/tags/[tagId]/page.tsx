@@ -1,5 +1,6 @@
 import { BookOpen, ChevronLeft, Tag } from "lucide-react";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { BookView } from "@/components/book/book-view";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,6 +22,7 @@ export default async function BookTagPage({
   const { tagId } = await params;
   const user = await requireUser(bookTagHref(tagId));
   const tag = await fetchBookTag({ tagId, userId: user.id });
+  if (!tag) notFound();
 
   return (
     <main className="mx-auto flex max-w-2xl flex-col gap-4 p-2 pb-24 sm:pt-6">
@@ -36,14 +38,12 @@ export default async function BookTagPage({
           <Tag className="size-5" aria-hidden="true" />
         </div>
         <div className="min-w-0">
-          {tag && <p className="text-sm text-muted-foreground">Коллекция</p>}
-          <h1 className="wrap-anywhere text-3xl font-bold">
-            {tag?.name ?? "Коллекция недоступна"}
-          </h1>
+          <p className="text-sm text-muted-foreground">Коллекция</p>
+          <h1 className="wrap-anywhere text-3xl font-bold">{tag.name}</h1>
         </div>
       </header>
 
-      {tag?.books.length ? (
+      {tag.books.length ? (
         <ul className="flex flex-col gap-2">
           {tag.books.map((book) => (
             <li key={book.id}>
@@ -54,7 +54,7 @@ export default async function BookTagPage({
             </li>
           ))}
         </ul>
-      ) : tag ? (
+      ) : (
         <Empty className="border">
           <EmptyHeader>
             <EmptyMedia variant="icon">
@@ -66,10 +66,6 @@ export default async function BookTagPage({
             </EmptyDescription>
           </EmptyHeader>
         </Empty>
-      ) : (
-        <p className="text-sm text-muted-foreground">
-          Откройте список книг и выберите доступную коллекцию.
-        </p>
       )}
     </main>
   );
