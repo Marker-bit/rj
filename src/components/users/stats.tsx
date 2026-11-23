@@ -16,30 +16,58 @@ import {
   UsersIcon,
 } from "lucide-react";
 import Link from "next/link";
+import { Card } from "@/components/ui/card";
 import { getStreak } from "@/lib/stats";
-import type { FollowEdge, PublicUser } from "@/lib/user-types";
-import { declOfNum } from "@/lib/utils";
 
-function StatLink({
+function StatRow({
+  icon: Icon,
+  label,
+  value,
   href,
-  children,
 }: {
+  icon: typeof BookOpen;
+  label: string;
+  value: number;
   href?: string;
-  children: React.ReactNode;
 }) {
-  return href ? <Link href={href}>{children}</Link> : <>{children}</>;
+  const row = (
+    <>
+      <Icon
+        aria-hidden="true"
+        className="size-4 shrink-0 text-muted-foreground"
+      />
+      <span className="flex-1">{label}</span>
+      <span className="font-semibold tabular-nums">{value}</span>
+    </>
+  );
+  const className = "flex min-h-10 items-center gap-3 px-4 py-2 text-sm";
+
+  return (
+    <li>
+      {href ? (
+        <Link
+          href={href}
+          className={`${className} transition-colors hover:bg-muted focus-visible:bg-muted`}
+        >
+          {row}
+        </Link>
+      ) : (
+        <div className={className}>{row}</div>
+      )}
+    </li>
+  );
 }
 
-export async function Stats({
-  profile,
+export function Stats({
+  subscriptionCount,
+  followerCount,
   events,
   books,
-  isOwnProfile,
+  subscriptionHref,
+  followerHref,
 }: {
-  profile: PublicUser & {
-    follower: FollowEdge[];
-    following: FollowEdge[];
-  };
+  subscriptionCount?: number;
+  followerCount?: number;
   events: (ReadEvent & {
     book: {
       id: string;
@@ -58,7 +86,8 @@ export async function Stats({
     }[];
     pages: number;
   }[];
-  isOwnProfile: boolean;
+  subscriptionHref?: string;
+  followerHref?: string;
 }) {
   const startAndEndOfWeek = () => {
     const monday = startOfISOWeek(new Date());
@@ -169,73 +198,40 @@ export async function Stats({
   }
 
   return (
-    <div id="stats" className="grid grid-cols-2 gap-2 p-2">
-      <div className="flex items-center gap-1 rounded-md border p-2">
-        <CalendarRange className="size-6" />
-        <div className="flex flex-col">
-          <div className="font-bold">{streak}</div>
-          <div className="-mt-1 text-xs lowercase text-muted-foreground">
-            {declOfNum(streak, ["день", "дня", "дней"])} подряд
-          </div>
-        </div>
-      </div>
-      <div className="flex items-center gap-1 rounded-md border p-2">
-        <BookOpen className="size-6" />
-        <div className="flex flex-col">
-          <div className="font-bold">{readWeekSum}</div>
-          <div className="-mt-1 text-xs lowercase text-muted-foreground">
-            {declOfNum(readWeekSum, [
-              "страница прочитана",
-              "страницы прочитаны",
-              "страниц прочитано",
-            ])}{" "}
-            за последнюю неделю
-          </div>
-        </div>
-      </div>
-      <div className="col-span-2 flex items-center gap-1 rounded-md border p-2">
-        <BookCheck className="size-6" />
-        <div className="flex flex-col">
-          <div className="font-bold">{readBooks.length}</div>
-          <div className="-mt-1 text-xs lowercase text-muted-foreground">
-            {declOfNum(readBooks.length, [
-              "прочитанная книга",
-              "прочитанные книги",
-              "прочитанных книг",
-            ])}
-          </div>
-        </div>
-      </div>
-      <StatLink href={isOwnProfile ? "/friends" : undefined}>
-        <div className="flex items-center gap-1 rounded-md border p-2 transition-colors hover:bg-muted">
-          <Users2 className="size-6" />
-          <div className="flex flex-col">
-            <div className="font-bold">{profile.follower.length}</div>
-            <div className="-mt-1 text-xs lowercase text-muted-foreground">
-              {declOfNum(profile.follower.length, [
-                "подписка",
-                "подписки",
-                "подписок",
-              ])}
-            </div>
-          </div>
-        </div>
-      </StatLink>
-      <StatLink href={isOwnProfile ? "/followers" : undefined}>
-        <div className="flex items-center gap-1 rounded-md border p-2 transition-colors hover:bg-muted">
-          <UsersIcon className="size-6" />
-          <div className="flex flex-col">
-            <div className="font-bold">{profile.following.length}</div>
-            <div className="-mt-1 text-xs lowercase text-muted-foreground">
-              {declOfNum(profile.following.length, [
-                "подписчик",
-                "подписчика",
-                "подписчиков",
-              ])}
-            </div>
-          </div>
-        </div>
-      </StatLink>
-    </div>
+    <Card id="stats" className="py-0">
+      <ul className="divide-y">
+        <StatRow
+          icon={CalendarRange}
+          label="Дней чтения подряд"
+          value={streak}
+        />
+        <StatRow
+          icon={BookOpen}
+          label="Страниц за неделю"
+          value={readWeekSum}
+        />
+        <StatRow
+          icon={BookCheck}
+          label="Прочитано книг"
+          value={readBooks.length}
+        />
+        {subscriptionCount !== undefined && (
+          <StatRow
+            icon={Users2}
+            label="Подписки"
+            value={subscriptionCount}
+            href={subscriptionHref}
+          />
+        )}
+        {followerCount !== undefined && (
+          <StatRow
+            icon={UsersIcon}
+            label="Подписчики"
+            value={followerCount}
+            href={followerHref}
+          />
+        )}
+      </ul>
+    </Card>
   );
 }
