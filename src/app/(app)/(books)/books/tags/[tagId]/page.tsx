@@ -14,6 +14,7 @@ import {
 import { bookDetailHref, bookTagHref } from "@/lib/book-back";
 import { fetchBookTag } from "@/lib/books";
 import { requireUser } from "@/lib/require-user";
+import { CollectionPageActions } from "./collection-page-actions";
 
 export default async function BookTagPage({
   params,
@@ -42,10 +43,19 @@ export default async function BookTagPage({
             className="size-5"
           />
         </div>
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <p className="text-sm text-muted-foreground">Коллекция</p>
           <h1 className="wrap-anywhere text-3xl font-bold">{tag.name}</h1>
         </div>
+        <CollectionPageActions
+          collection={{
+            id: tagId,
+            name: tag.name,
+            icon: tag.icon,
+            color: tag.color,
+            bookCount: tag.books.length,
+          }}
+        />
       </header>
 
       {tag.books.length ? (

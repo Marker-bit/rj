@@ -1,11 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  ArrowRightIcon,
-  Loader,
-  Palette,
-  PlusIcon,
-  TrashIcon,
-} from "lucide-react";
+import { ArrowRightIcon, Loader, PlusIcon, TrashIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { CollectionMark } from "@/components/book/collection-mark";
@@ -29,7 +23,7 @@ import { Button } from "../../ui/button";
 import { Checkbox } from "../../ui/checkbox";
 import { DialogDescription, DialogHeader, DialogTitle } from "../../ui/dialog";
 import { revalidate } from "@/lib/actions/revalidate";
-import { CollectionAppearanceEditor } from "./collection-appearance-editor";
+import { CollectionEditPopover } from "./collection-appearance-editor";
 
 export function BookCollectionsModal({
   open,
@@ -40,9 +34,6 @@ export function BookCollectionsModal({
   setOpen: (v: boolean) => void;
   book: Book;
 }) {
-  const [editingCollectionId, setEditingCollectionId] = useState<string | null>(
-    null,
-  );
   const [newCollectionTitle, setNewCollectionTitle] = useState("");
   const [selectedCollections, setSelectedCollections] = useState(
     book.collections.map((c) => c.id),
@@ -138,88 +129,64 @@ export function BookCollectionsModal({
                 У вас пока нет коллекций. Создайте первую ниже.
               </p>
             )}
-            {collectionsData?.map((collection) => {
-              const editing = editingCollectionId === collection.id;
-
-              return (
-                <div
-                  key={collection.id}
-                  className="rounded-2xl border shadow-xs"
-                >
-                  <div className="flex items-center gap-2 p-3">
-                    <Checkbox
-                      id={collection.id}
-                      aria-describedby={`${collection.id}-description`}
-                      checked={selectedCollections.includes(collection.id)}
-                      onCheckedChange={(checked) =>
-                        setSelectedCollections((selected) =>
-                          checked
-                            ? [...selected, collection.id]
-                            : selected.filter((id) => id !== collection.id),
-                        )
-                      }
+            {collectionsData?.map((collection) => (
+              <div key={collection.id} className="rounded-2xl border shadow-xs">
+                <div className="flex items-center gap-2 p-3">
+                  <Checkbox
+                    id={collection.id}
+                    aria-describedby={`${collection.id}-description`}
+                    checked={selectedCollections.includes(collection.id)}
+                    onCheckedChange={(checked) =>
+                      setSelectedCollections((selected) =>
+                        checked
+                          ? [...selected, collection.id]
+                          : selected.filter((id) => id !== collection.id),
+                      )
+                    }
+                  />
+                  <Label
+                    htmlFor={collection.id}
+                    className="min-w-0 grow cursor-pointer"
+                  >
+                    <CollectionMark
+                      icon={collection.icon}
+                      color={collection.color}
+                      className="size-4 shrink-0"
                     />
-                    <Label
-                      htmlFor={collection.id}
-                      className="min-w-0 grow cursor-pointer"
-                    >
-                      <CollectionMark
-                        icon={collection.icon}
-                        color={collection.color}
-                        className="size-4 shrink-0"
-                      />
-                      <span className="min-w-0 wrap-anywhere">
-                        {collection.name}
-                        <span
-                          id={`${collection.id}-description`}
-                          className="block text-xs text-muted-foreground"
-                        >
-                          {collection.books.length}{" "}
-                          {declOfNum(collection.books.length, [
-                            "книга",
-                            "книги",
-                            "книг",
-                          ])}
-                        </span>
+                    <span className="min-w-0 wrap-anywhere">
+                      {collection.name}
+                      <span
+                        id={`${collection.id}-description`}
+                        className="block text-xs text-muted-foreground"
+                      >
+                        {collection.books.length}{" "}
+                        {declOfNum(collection.books.length, [
+                          "книга",
+                          "книги",
+                          "книг",
+                        ])}
                       </span>
-                    </Label>
-                    <Button
-                      type="button"
-                      size="icon"
-                      variant="outline"
-                      aria-label={`Оформление коллекции «${collection.name}»`}
-                      aria-expanded={editing}
-                      onClick={() =>
-                        setEditingCollectionId(editing ? null : collection.id)
-                      }
-                    >
-                      <Palette aria-hidden="true" />
-                    </Button>
-                    <Button
-                      type="button"
-                      size="icon"
-                      variant="outline"
-                      aria-label={`Удалить коллекцию «${collection.name}»`}
-                      disabled={deleteMutation.isPending}
-                      onClick={() => deleteMutation.mutate(collection.id)}
-                    >
-                      {deleteMutation.isPending &&
-                      deleteMutation.variables === collection.id ? (
-                        <Spinner />
-                      ) : (
-                        <TrashIcon aria-hidden="true" />
-                      )}
-                    </Button>
-                  </div>
-                  {editing && (
-                    <CollectionAppearanceEditor
-                      collection={collection}
-                      onClose={() => setEditingCollectionId(null)}
-                    />
-                  )}
+                    </span>
+                  </Label>
+                  <CollectionEditPopover collection={collection} />
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant="outline"
+                    aria-label={`Удалить коллекцию «${collection.name}»`}
+                    disabled={deleteMutation.isPending}
+                    onClick={() => deleteMutation.mutate(collection.id)}
+                  >
+                    {deleteMutation.isPending &&
+                    deleteMutation.variables === collection.id ? (
+                      <Spinner />
+                    ) : (
+                      <TrashIcon aria-hidden="true" />
+                    )}
+                  </Button>
                 </div>
-              );
-            })}
+              </div>
+            ))}
             <form
               onSubmit={(e) => {
                 e.preventDefault();

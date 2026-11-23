@@ -1,39 +1,89 @@
+"use client";
+
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Check, Pencil } from "lucide-react";
 import { useId, useState } from "react";
 import { toast } from "sonner";
-import { CollectionMark } from "@/components/book/collection-mark";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { updateCollectionAppearance } from "@/lib/actions/collections";
 import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { updateCollection } from "@/lib/actions/collections";
+import {
+  collectionColors,
   collectionIcons,
-  isCollectionColor,
   isCollectionIcon,
   type CollectionIcon,
 } from "@/lib/collection-appearance";
 
-export function CollectionAppearanceEditor({
+type EditableCollection = {
+  id: string;
+  name: string;
+  icon: string | null;
+  color: string | null;
+};
+
+export function CollectionEditPopover({
+  collection,
+}: {
+  collection: EditableCollection;
+}) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Popover modal open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          size="icon"
+          variant="ghost"
+          className="rounded-md"
+          aria-label={`Редактировать коллекцию «${collection.name}»`}
+        >
+          <Pencil aria-hidden="true" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent
+        align="end"
+        className="z-60 w-80 max-w-[calc(100vw-1rem)] max-h-(--radix-popover-content-available-height) overflow-y-auto"
+        aria-label="Редактирование коллекции"
+      >
+        <CollectionEditForm
+          collection={collection}
+          onClose={() => setOpen(false)}
+        />
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+function CollectionEditForm({
   collection,
   onClose,
 }: {
-  collection: { id: string; icon: string | null; color: string | null };
+  collection: EditableCollection;
   onClose: () => void;
 }) {
+  const [name, setName] = useState(collection.name);
   const [icon, setIcon] = useState<CollectionIcon>(
     isCollectionIcon(collection.icon) ? collection.icon : "tag",
   );
-  const [color, setColor] = useState(collection.color ?? "");
-  const colorId = useId();
-  const hexId = useId();
-  const validColor = color === "" || isCollectionColor(color);
+  const [color, setColor] = useState(
+    collectionColors.find(({ value }) => value === collection.color)?.value ??
+      null,
+  );
+  const nameId = useId();
   const queryClient = useQueryClient();
 
   const save = useMutation({
     mutationFn: () =>
-      updateCollectionAppearance({
+      updateCollection({
         id: collection.id,
+        name,
         icon: icon === "tag" ? null : icon,
-        color: color || null,
+        color,
       }),
     onSuccess: (result) => {
       if (result.error) {
@@ -45,29 +95,41 @@ export function CollectionAppearanceEditor({
       toast.success(result.message);
       onClose();
     },
-    onError: () => toast.error("Не удалось сохранить оформление коллекции"),
+    onError: () => toast.error("Не удалось обновить коллекцию"),
   });
 
   return (
     <form
-      className="grid gap-3 border-t p-3"
+      className="grid gap-3"
       onSubmit={(event) => {
         event.preventDefault();
-        if (validColor) save.mutate();
+        if (name.trim() && !save.isPending) save.mutate();
       }}
     >
-      <fieldset className="grid gap-2" disabled={save.isPending}>
+      <label htmlFor={nameId} className="grid gap-1 text-sm font-medium">
+        Название
+        <Input
+          id={nameId}
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          disabled={save.isPending}
+          required
+        />
+      </label>
+
+      <fieldset className="min-w-0" disabled={save.isPending}>
         <legend className="mb-1 text-sm font-medium">
           Значок: {collectionIcons[icon].label}
         </legend>
-        <div className="grid max-h-44 grid-cols-6 gap-1 overflow-y-auto p-1 sm:grid-cols-10">
+        <div className="flex max-h-36 flex-wrap content-start gap-1 overflow-y-auto p-1">
           {Object.entries(collectionIcons).map(
             ([value, { icon: Icon, label }]) => (
               <Button
                 key={value}
                 type="button"
-                size="icon"
-                variant={value === icon ? "default" : "outline"}
+                size="icon-sm"
+                variant="ghost"
+                className="rounded-md aria-pressed:bg-muted aria-pressed:border-border"
                 aria-label={label}
                 aria-pressed={value === icon}
                 title={label}
@@ -82,60 +144,41 @@ export function CollectionAppearanceEditor({
         </div>
       </fieldset>
 
-      <div className="flex flex-wrap items-end gap-2">
-        <label htmlFor={colorId} className="grid gap-1 text-sm font-medium">
-          Цвет
-          <Input
-            id={colorId}
-            type="color"
-            value={isCollectionColor(color) ? color : "#808080"}
-            onChange={(event) => setColor(event.target.value)}
-            className="w-14 p-1"
-            disabled={save.isPending}
-          />
-        </label>
-        <label htmlFor={hexId} className="grid gap-1 text-sm font-medium">
-          HEX
-          <Input
-            id={hexId}
-            value={color}
-            placeholder="#805AD5"
-            maxLength={7}
-            onChange={(event) => setColor(event.target.value)}
-            aria-invalid={!validColor}
-            className="w-28"
-            disabled={save.isPending}
-          />
-        </label>
-        <Button
-          type="button"
-          variant="ghost"
-          disabled={!color || save.isPending}
-          onClick={() => setColor("")}
-        >
-          Сбросить цвет
-        </Button>
-      </div>
-      {!validColor && (
-        <p className="text-sm text-destructive">
-          Введите цвет в формате #RRGGBB.
-        </p>
-      )}
+      <fieldset className="min-w-0" disabled={save.isPending}>
+        <legend className="mb-1 text-sm font-medium">Цвет</legend>
+        <div className="flex flex-wrap gap-1">
+          {collectionColors.map(({ value, label }) => (
+            <Button
+              key={value}
+              type="button"
+              size="icon-sm"
+              variant="ghost"
+              className="rounded-md aria-pressed:bg-muted aria-pressed:border-border"
+              aria-label={label}
+              aria-pressed={color === value}
+              title={label}
+              onClick={() => setColor(color === value ? null : value)}
+            >
+              <span
+                className="grid size-5 place-items-center rounded-full text-white"
+                style={{ backgroundColor: value }}
+              >
+                {color === value && (
+                  <Check className="size-3" aria-hidden="true" />
+                )}
+              </span>
+            </Button>
+          ))}
+        </div>
+      </fieldset>
 
-      <div className="flex flex-wrap items-center gap-2">
-        <CollectionMark icon={icon} color={color} className="size-5" />
-        <Button type="submit" disabled={!validColor || save.isPending}>
-          Сохранить оформление
-        </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          onClick={onClose}
-          disabled={save.isPending}
-        >
-          Отмена
-        </Button>
-      </div>
+      <Button
+        type="submit"
+        className="justify-self-end"
+        disabled={!name.trim() || save.isPending}
+      >
+        Сохранить
+      </Button>
     </form>
   );
 }

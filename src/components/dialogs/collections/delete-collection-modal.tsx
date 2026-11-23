@@ -1,6 +1,5 @@
 "use client";
 
-import type { Book, Collection } from "@/generated/prisma/browser";
 import { Trash } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -10,32 +9,35 @@ import { deleteCollection } from "@/lib/actions/collections";
 import { declOfNum } from "@/lib/utils";
 import { Button } from "../../ui/button";
 import { DialogDescription, DialogHeader, DialogTitle } from "../../ui/dialog";
-import { revalidate } from "@/lib/actions/revalidate";
 
 export function DeleteCollectionModal({
   open,
   setOpen,
   collection,
+  onDeleted,
 }: {
   open: boolean;
   setOpen: (v: boolean) => void;
-  collection: Collection & { books: Book[] };
+  collection: { id: string; name: string; bookCount: number };
+  onDeleted: () => void;
 }) {
   const [loading, setLoading] = useState(false);
 
   const runAction = async () => {
     setLoading(true);
-    const res = await deleteCollection(collection.id);
-    setLoading(false);
-    if (res.error) {
-      toast.error("Возникла проблема при удалении коллекции", {
-        description: res.error,
-      });
-    }
-    if (res.message) {
+    try {
+      const res = await deleteCollection(collection.id);
+      if (res.error) {
+        toast.error(res.error);
+        return;
+      }
       toast.success(res.message);
       setOpen(false);
-      void revalidate("collections");
+      onDeleted();
+    } catch {
+      toast.error("Не удалось удалить коллекцию");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -44,10 +46,9 @@ export function DeleteCollectionModal({
       <DialogHeader>
         <DialogTitle>Удалить коллекцию?</DialogTitle>
         <DialogDescription>
-          Вы уверены, что хотите удалить коллекцию &quot;{collection.name}
-          &quot; (в ней {collection.books.length}{" "}
-          {declOfNum(collection.books.length, ["книга", "книги", "книг"])})? Это
-          действие невозможно отменить.
+          Коллекция «{collection.name}» будет удалена. Её {collection.bookCount}{" "}
+          {declOfNum(collection.bookCount, ["книга", "книги", "книг"])}{" "}
+          останутся в библиотеке.
         </DialogDescription>
       </DialogHeader>
       <div className="flex gap-2 max-sm:flex-col md:ml-auto md:w-fit">

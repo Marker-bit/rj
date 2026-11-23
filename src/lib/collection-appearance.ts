@@ -107,6 +107,15 @@ export const collectionIcons = {
 
 export type CollectionIcon = keyof typeof collectionIcons;
 
+export const collectionColors = [
+  { value: "#dc5252", label: "Красный" },
+  { value: "#c47724", label: "Оранжевый" },
+  { value: "#8b7a27", label: "Жёлтый" },
+  { value: "#358354", label: "Зелёный" },
+  { value: "#4174c4", label: "Синий" },
+  { value: "#8964bb", label: "Фиолетовый" },
+];
+
 export function isCollectionIcon(value: unknown): value is CollectionIcon {
   return typeof value === "string" && Object.hasOwn(collectionIcons, value);
 }
