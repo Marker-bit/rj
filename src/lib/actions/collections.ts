@@ -1,5 +1,11 @@
 "use server";
 
+import { z } from "zod";
+import {
+  isCollectionColor,
+  isCollectionIcon,
+  type CollectionIcon,
+} from "../collection-appearance";
 import { db } from "../db";
 import { validateRequest } from "../server-validate-request";
 import { revalidate } from "./revalidate";
@@ -51,4 +57,28 @@ export async function deleteCollection(id: string) {
   await revalidate("collections");
 
   return { message: "Коллекция удалена" };
+}
+
+const appearanceSchema = z.object({
+  id: z.string().min(1),
+  icon: z.custom<CollectionIcon>(isCollectionIcon).nullable(),
+  color: z.string().refine(isCollectionColor).nullable(),
+});
+
+export async function updateCollectionAppearance(input: unknown) {
+  const { user } = await validateRequest();
+  if (!user) return { error: "Не авторизован" };
+
+  const parsed = appearanceSchema.safeParse(input);
+  if (!parsed.success) return { error: "Проверьте значок и цвет коллекции" };
+
+  const { id, icon, color } = parsed.data;
+  const { count } = await db.collection.updateMany({
+    where: { id, userId: user.id },
+    data: { icon, color: color?.toLowerCase() ?? null },
+  });
+  if (!count) return { error: "Коллекция недоступна" };
+
+  await revalidate("books");
+  return { message: "Оформление коллекции сохранено" };
 }

@@ -34,6 +34,8 @@ const bookListSelect = {
     select: {
       id: true,
       name: true,
+      icon: true,
+      color: true,
     },
   },
   groupBook: {
@@ -137,6 +139,8 @@ export async function fetchBookTag({
     where: { id: tagId, userId },
     select: {
       name: true,
+      icon: true,
+      color: true,
       books: {
         where: { userId },
         select: {

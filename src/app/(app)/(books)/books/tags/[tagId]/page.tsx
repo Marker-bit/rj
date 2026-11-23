@@ -1,7 +1,8 @@
-import { BookOpen, ChevronLeft, Tag } from "lucide-react";
+import { BookOpen, ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BookView } from "@/components/book/book-view";
+import { CollectionMark } from "@/components/book/collection-mark";
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -35,7 +36,11 @@ export default async function BookTagPage({
 
       <header className="flex items-start gap-3">
         <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted text-muted-foreground">
-          <Tag className="size-5" aria-hidden="true" />
+          <CollectionMark
+            icon={tag.icon}
+            color={tag.color}
+            className="size-5"
+          />
         </div>
         <div className="min-w-0">
           <p className="text-sm text-muted-foreground">Коллекция</p>

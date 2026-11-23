@@ -157,8 +157,10 @@ model ReadEvent {
 }
 
 model Collection {
-  id    String @id @default(cuid())
+  id    String  @id @default(cuid())
   name  String
+  icon  String?
+  color String?
   books Book[]
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
