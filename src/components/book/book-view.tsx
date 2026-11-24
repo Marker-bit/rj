@@ -25,7 +25,6 @@ import {
   Link2,
   Share,
   Trash,
-  Tag,
   Users,
 } from "lucide-react";
 import nextDynamic from "next/dynamic";
@@ -40,6 +39,7 @@ import { HideBookButton } from "./buttons/hide-book";
 import { UndoEventButton } from "./buttons/undo-event-button";
 import Palette from "./palette";
 import { ArchiveBookButton } from "./buttons/archive-book";
+import { CollectionMark } from "./collection-mark";
 
 // Dialogs and panels are only mounted after they are opened for the first time,
 // so heavy dependencies (charts, rich text editor, upload widget) stay out of
@@ -397,7 +397,10 @@ export function BookView({
                   asChild
                 >
                   <Link href={bookTagHref(collection.id)}>
-                    <Tag aria-hidden="true" />
+                    <CollectionMark
+                      icon={collection.icon}
+                      color={collection.color}
+                    />
                     <span className="min-w-0 wrap-anywhere text-left">
                       {collection.name}
                     </span>

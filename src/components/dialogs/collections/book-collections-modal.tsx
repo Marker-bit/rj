@@ -1,9 +1,8 @@
-/* oxlint-disable eslint-plugin-jsx-a11y(prefer-tag-over-role) */
-import type { Book as PrismaBook } from "@/generated/prisma/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowRightIcon, Loader, PlusIcon, TrashIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { CollectionMark } from "@/components/book/collection-mark";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
 import {
   InputGroup,
@@ -24,6 +23,7 @@ import { Button } from "../../ui/button";
 import { Checkbox } from "../../ui/checkbox";
 import { DialogDescription, DialogHeader, DialogTitle } from "../../ui/dialog";
 import { revalidate } from "@/lib/actions/revalidate";
+import { CollectionEditPopover } from "./collection-appearance-editor";
 
 export function BookCollectionsModal({
   open,
@@ -111,7 +111,7 @@ export function BookCollectionsModal({
           Выберите коллекции, в которых должна быть эта книга.
         </DialogDescription>
       </DialogHeader>
-      <div className="mt-2">
+      <div className="mt-2 min-h-0 overflow-y-auto overscroll-contain p-1">
         {collectionsLoading ? (
           <div className="flex h-[20vh] items-center justify-center">
             <Spinner className="size-6" />
@@ -129,87 +129,64 @@ export function BookCollectionsModal({
                 У вас пока нет коллекций. Создайте первую ниже.
               </p>
             )}
-            {collectionsData?.map(
-              (collection: {
-                id: string;
-                name: string;
-                books: PrismaBook[];
-              }) => (
-                <div
-                  className="border-input has-data-[state=checked]:border-primary/50 relative flex w-full items-start gap-2 rounded-2xl border p-4 shadow-xs outline-none"
-                  key={collection.id}
-                  role="checkbox"
-                  tabIndex={0}
-                  aria-checked={selectedCollections.includes(collection.id)}
-                  onClick={() =>
-                    setSelectedCollections(
-                      selectedCollections.includes(collection.id)
-                        ? selectedCollections.filter((c) => c !== collection.id)
-                        : [...selectedCollections, collection.id],
-                    )
-                  }
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter" || event.key === " ") {
-                      event.preventDefault();
-                      setSelectedCollections(
-                        selectedCollections.includes(collection.id)
-                          ? selectedCollections.filter(
-                              (c) => c !== collection.id,
-                            )
-                          : [...selectedCollections, collection.id],
-                      );
-                    }
-                  }}
-                >
+            {collectionsData?.map((collection) => (
+              <div key={collection.id} className="rounded-2xl border shadow-xs">
+                <div className="flex items-center gap-2 p-3">
                   <Checkbox
                     id={collection.id}
                     aria-describedby={`${collection.id}-description`}
                     checked={selectedCollections.includes(collection.id)}
-                    onCheckedChange={() =>
-                      setSelectedCollections(
-                        selectedCollections.includes(collection.id)
-                          ? selectedCollections.filter(
-                              (c) => c !== collection.id,
-                            )
-                          : [...selectedCollections, collection.id],
+                    onCheckedChange={(checked) =>
+                      setSelectedCollections((selected) =>
+                        checked
+                          ? [...selected, collection.id]
+                          : selected.filter((id) => id !== collection.id),
                       )
                     }
                   />
-                  <div className="grid grow gap-2">
-                    <Label>{collection.name}</Label>
-                    <p
-                      id={`${collection.id}-description`}
-                      className="text-muted-foreground text-xs"
-                    >
-                      {collection.books.length}{" "}
-                      {declOfNum(collection.books.length, [
-                        "книга",
-                        "книги",
-                        "книг",
-                      ])}
-                    </p>
-                  </div>
+                  <Label
+                    htmlFor={collection.id}
+                    className="min-w-0 grow cursor-pointer"
+                  >
+                    <CollectionMark
+                      icon={collection.icon}
+                      color={collection.color}
+                      className="size-4 shrink-0"
+                    />
+                    <span className="min-w-0 wrap-anywhere">
+                      {collection.name}
+                      <span
+                        id={`${collection.id}-description`}
+                        className="block text-xs text-muted-foreground"
+                      >
+                        {collection.books.length}{" "}
+                        {declOfNum(collection.books.length, [
+                          "книга",
+                          "книги",
+                          "книг",
+                        ])}
+                      </span>
+                    </span>
+                  </Label>
+                  <CollectionEditPopover collection={collection} />
                   <Button
                     type="button"
                     size="icon"
                     variant="outline"
-                    className="top-2 right-2"
+                    aria-label={`Удалить коллекцию «${collection.name}»`}
                     disabled={deleteMutation.isPending}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      deleteMutation.mutate(collection.id);
-                    }}
+                    onClick={() => deleteMutation.mutate(collection.id)}
                   >
                     {deleteMutation.isPending &&
                     deleteMutation.variables === collection.id ? (
                       <Spinner />
                     ) : (
-                      <TrashIcon />
+                      <TrashIcon aria-hidden="true" />
                     )}
                   </Button>
                 </div>
-              ),
-            )}
+              </div>
+            ))}
             <form
               onSubmit={(e) => {
                 e.preventDefault();
