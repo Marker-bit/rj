@@ -46,6 +46,7 @@ export async function proxy(request: NextRequest) {
     "/terms-of-service",
     "/manifest.json",
     "/icon.png",
+    "/no-avatar.png",
     "/yandex_82f007f1c17a7d7a.html",
     "/sitemap.xml",
     "/robots.txt",
