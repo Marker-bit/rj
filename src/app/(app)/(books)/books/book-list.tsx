@@ -1,15 +1,14 @@
 "use client";
 
-import { BackgroundColor } from "@/generated/prisma/enums";
 import {
   BookMinus,
   BookOpen,
   BookOpenCheck,
   Calendar,
-  Percent,
   SearchIcon,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { BookOrderSelect } from "@/components/book/book-order-select";
 import { BookView } from "@/components/book/book-view";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -23,6 +22,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useBookOrder } from "@/hooks/use-book-order";
+import { sortBooks } from "@/lib/book-order";
 import type { Book } from "@/lib/api-types";
 import { getReadingState } from "@/lib/reading-events";
 
@@ -37,7 +38,7 @@ function getBookStatus(book: Book): Exclude<StatusFilter, "all"> {
 export function BookList({ books }: { books: Book[] }) {
   const [notStarted, _setNotStarted] = useState(false);
   const [searchText, setSearchText] = useState("");
-  const [sort, _setSort] = useState<"percent" | "activity">("percent");
+  const [sort, setSort] = useBookOrder();
   const [statusFilter, _setStatusFilter] = useState<StatusFilter>("all");
   const [FuseClass, setFuseClass] = useState<
     typeof import("fuse.js").default | null
@@ -45,12 +46,7 @@ export function BookList({ books }: { books: Book[] }) {
 
   useEffect(() => {
     const localStorageNotStarted = localStorage.getItem("notStarted");
-    const localStorageSort = localStorage.getItem("orderBy");
     const localStorageStatusFilter = localStorage.getItem("bookStatusFilter");
-    const storedSort = localStorageSort?.replace(/"/g, "");
-    if (storedSort === "percent" || storedSort === "activity") {
-      _setSort(storedSort);
-    }
     if (localStorageNotStarted) {
       _setNotStarted(JSON.parse(localStorageNotStarted));
     }
@@ -67,11 +63,6 @@ export function BookList({ books }: { books: Book[] }) {
   function setNotStarted(value: boolean) {
     localStorage.setItem("notStarted", JSON.stringify(value));
     _setNotStarted(value);
-  }
-
-  function setSort(value: string) {
-    localStorage.setItem("orderBy", JSON.stringify(value));
-    _setSort(value as "percent" | "activity");
   }
 
   function setStatusFilter(value: string) {
@@ -115,26 +106,17 @@ export function BookList({ books }: { books: Book[] }) {
     return nextBooks;
   }, [books, notStarted, statusFilter]);
 
-  const sortedBooks = useMemo(() => {
-    const percent = (book: Book) => {
-      const latest = book.readEvents[0];
-      return latest && book.pages > 0 ? latest.pagesRead / book.pages : 0;
-    };
-    const activity = (book: Book) =>
-      (book.readEvents[0]?.readAt ?? book.createdAt).getTime();
-
-    return [...filteredBooks].sort(
-      sort === "percent"
-        ? (a: Book, b: Book) => percent(b) - percent(a)
-        : (a: Book, b: Book) => activity(b) - activity(a),
-    );
-  }, [filteredBooks, sort]);
+  const sortedBooks = useMemo(
+    () => sortBooks(filteredBooks, sort),
+    [filteredBooks, sort],
+  );
 
   const fuse = useMemo(
     () =>
       FuseClass
         ? new FuseClass(sortedBooks, {
             keys: ["title", "author"],
+            shouldSort: false,
           })
         : null,
     [FuseClass, sortedBooks],
@@ -159,23 +141,17 @@ export function BookList({ books }: { books: Book[] }) {
 
   const booksForRender = useMemo(() => {
     const trimmedSearch = searchText.trim();
-    const matched =
-      trimmedSearch === ""
-        ? sortedBooks
-        : fuse
-          ? fuse.search(trimmedSearch).map((result) => result.item)
-          : sortedBooks.filter((book) => {
-              const query = trimmedSearch.toLowerCase();
-              return (
-                book.title.toLowerCase().includes(query) ||
-                book.author.toLowerCase().includes(query)
-              );
-            });
-
-    return [
-      ...matched.filter((book) => book.background !== BackgroundColor.NONE),
-      ...matched.filter((book) => book.background === BackgroundColor.NONE),
-    ];
+    return trimmedSearch === ""
+      ? sortedBooks
+      : fuse
+        ? fuse.search(trimmedSearch).map((result) => result.item)
+        : sortedBooks.filter((book) => {
+            const query = trimmedSearch.toLowerCase();
+            return (
+              book.title.toLowerCase().includes(query) ||
+              book.author.toLowerCase().includes(query)
+            );
+          });
   }, [fuse, searchText, sortedBooks]);
   const filtersActive = notStarted || statusFilter !== "all";
 
@@ -281,31 +257,8 @@ export function BookList({ books }: { books: Book[] }) {
               </SelectContent>
             </Select>
           </div>
-          <div className="group relative w-full sm:w-[50%] md:w-[30%]">
-            <label
-              htmlFor="sort"
-              className="bg-background text-foreground absolute start-1 top-0 z-10 block -translate-y-1/2 px-2 text-xs font-medium group-has-disabled:opacity-50"
-            >
-              Сортировка
-            </label>
-            <Select value={sort} onValueChange={setSort}>
-              <SelectTrigger
-                id="sort"
-                className="[&>span_svg]:text-muted-foreground [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_svg]:shrink-0 w-full"
-              >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="[&_*[role=option]>span>svg]:text-muted-foreground [&_*[role=option]>span]:flex [&_*[role=option]>span]:gap-2 [&_*[role=option]>span>svg]:shrink-0">
-                <SelectItem value="percent">
-                  <Percent size={16} aria-hidden="true" />
-                  <span className="truncate">По прогрессу в книге</span>
-                </SelectItem>
-                <SelectItem value="activity">
-                  <Calendar size={16} aria-hidden="true" />
-                  <span className="truncate">По последней активности</span>
-                </SelectItem>
-              </SelectContent>
-            </Select>
+          <div className="w-full sm:w-[50%] md:w-[30%]">
+            <BookOrderSelect sort={sort} onChange={setSort} />
           </div>
         </div>
 

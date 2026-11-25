@@ -2,12 +2,15 @@
 
 import { z } from "zod";
 import { apiFetch } from "@/lib/api-fetch";
-import type { Book, Group, GroupBook } from "@/generated/prisma/browser";
+import type { Group, GroupBook } from "@/generated/prisma/browser";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
 import { Loader } from "@/components/ui/loader";
+import { useBookOrder } from "@/hooks/use-book-order";
+import type { Book } from "@/lib/api-types";
+import { sortBooks } from "@/lib/book-order";
 import { getBooks } from "@/lib/actions/books";
 import { revalidate } from "@/lib/actions/revalidate";
 
@@ -22,6 +25,7 @@ export default function BindBookModal({
 }) {
   const [loading, setLoading] = useState<string>();
   const [books, setBooks] = useState<Book[]>();
+  const [sort] = useBookOrder();
 
   useEffect(() => {
     const updateBooks = async () => {
@@ -64,7 +68,7 @@ export default function BindBookModal({
         <div>Загрузка...</div>
       ) : (
         <div className="flex flex-col gap-4">
-          {books.map((book) => (
+          {sortBooks(books, sort).map((book) => (
             <button
               type="button"
               disabled={!!loading}

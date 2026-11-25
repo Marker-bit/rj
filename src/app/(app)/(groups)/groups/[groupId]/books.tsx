@@ -56,6 +56,7 @@ export default function Books({
       FuseClass
         ? new FuseClass(group.groupBooks, {
             keys: ["title", "author", "description"],
+            shouldSort: false,
           })
         : null,
     [FuseClass, group.groupBooks],

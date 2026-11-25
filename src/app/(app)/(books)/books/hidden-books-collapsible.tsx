@@ -1,3 +1,5 @@
+"use client";
+
 import { ChevronDown } from "lucide-react";
 import { BookView } from "@/components/book/book-view";
 import { Button } from "@/components/ui/button";
@@ -6,6 +8,8 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { useBookOrder } from "@/hooks/use-book-order";
+import { sortBooks } from "@/lib/book-order";
 import type { Book } from "@/lib/api-types";
 
 export default function HiddenBooksCollapsible({
@@ -13,6 +17,8 @@ export default function HiddenBooksCollapsible({
 }: {
   hiddenBooks: Book[];
 }) {
+  const [sort] = useBookOrder();
+
   return (
     <Collapsible>
       <div className="flex items-center justify-between">
@@ -29,7 +35,7 @@ export default function HiddenBooksCollapsible({
         </CollapsibleTrigger>
       </div>
       <CollapsibleContent className="flex flex-col gap-2 mt-2">
-        {hiddenBooks.map((b) => (
+        {sortBooks(hiddenBooks, sort).map((b) => (
           <BookView key={b.id} book={b} />
         ))}
       </CollapsibleContent>

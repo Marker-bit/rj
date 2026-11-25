@@ -14,7 +14,6 @@ import {
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import { useLocalStorage } from "usehooks-ts";
 import { BookView } from "@/components/book/book-view";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,6 +31,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useBookOrder } from "@/hooks/use-book-order";
 import { getBooks } from "@/lib/actions/books";
 
 const AddBookDialog = dynamic(
@@ -49,25 +49,12 @@ export default function BooksCard() {
     }
   }, [open]);
 
-  const [orderBy, setOrderBy] = useLocalStorage<"percent" | "activity">(
-    "orderBy",
-    "percent",
-  );
+  const [orderBy, setOrderBy] = useBookOrder();
   const queryClient = useQueryClient();
-
-  const percentBooks = useQuery({
-    queryKey: ["books", "percent"],
-    queryFn: () => getBooks("percent", true),
-    enabled: orderBy === "percent", // only fetch when percent is selected
+  const booksQuery = useQuery({
+    queryKey: ["books", orderBy],
+    queryFn: () => getBooks(orderBy, true),
   });
-
-  const activityBooks = useQuery({
-    queryKey: ["books", "activity"],
-    queryFn: () => getBooks("activity", true),
-    enabled: orderBy === "activity", // only fetch when activity is selected
-  });
-
-  const booksQuery = orderBy === "percent" ? percentBooks : activityBooks;
 
   return (
     <>

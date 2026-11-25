@@ -40,6 +40,7 @@ export default async function Page(props: {
     where: { id: params.groupId, members: { some: { userId: user.id } } },
     include: {
       groupBooks: {
+        orderBy: [{ title: "asc" }, { id: "asc" }],
         include: {
           group: true,
           book: {

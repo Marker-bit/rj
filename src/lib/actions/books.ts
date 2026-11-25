@@ -2,13 +2,14 @@
 
 import type { BackgroundColor } from "@/generated/prisma/enums";
 import { prettifyError, z } from "zod";
+import { defaultBookOrder, type BookOrder } from "../book-order";
 import { fetchBooks } from "../books";
 import { db } from "../db";
 import { validateRequest } from "../server-validate-request";
 import { bookSchema } from "../validation/schemas";
 
 export async function getBooks(
-  orderBy: "percent" | "activity" = "percent",
+  orderBy: BookOrder = defaultBookOrder,
   mainPage: boolean = false,
 ) {
   const { user } = await validateRequest();
