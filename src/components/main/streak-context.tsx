@@ -1,12 +1,14 @@
 "use client";
 
+import { addDays, startOfDay } from "date-fns";
 import {
   createContext,
   use,
+  useMemo,
   useSyncExternalStore,
   type ReactNode,
 } from "react";
-import type { StreakEvent } from "@/lib/stats";
+import { getReadingStats, type StreakEvent } from "@/lib/stats";
 
 const StreakEventsContext = createContext<Promise<StreakEvent[]> | null>(null);
 
@@ -26,12 +28,44 @@ export function useStreakEvents() {
   return use(events);
 }
 
-const subscribe = () => () => {};
+function subscribeToLocalDay(onChange: () => void) {
+  let timeout: ReturnType<typeof setTimeout>;
 
-export function useBrowserTimeZone() {
-  return useSyncExternalStore(
-    subscribe,
-    () => true,
-    () => false,
+  function refresh() {
+    clearTimeout(timeout);
+    const now = new Date();
+    const nextDay = startOfDay(addDays(now, 1));
+    timeout = setTimeout(refresh, nextDay.getTime() - now.getTime());
+    onChange();
+  }
+
+  refresh();
+  window.addEventListener("focus", refresh);
+  return () => {
+    clearTimeout(timeout);
+    window.removeEventListener("focus", refresh);
+  };
+}
+
+function getLocalDaySnapshot() {
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  return `${timeZone}|${startOfDay(new Date()).getTime()}`;
+}
+
+export function useReadingStats(events: readonly StreakEvent[]) {
+  const localDay = useSyncExternalStore(
+    subscribeToLocalDay,
+    getLocalDaySnapshot,
+    () => null,
   );
+
+  return useMemo(() => {
+    if (localDay === null) return null;
+    const [timeZone, dayStart] = localDay.split("|");
+    return getReadingStats({
+      events,
+      timeZone,
+      now: new Date(Number(dayStart)),
+    });
+  }, [events, localDay]);
 }
