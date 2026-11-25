@@ -5,7 +5,7 @@ import FirstSteps from "@/components/main/first-steps";
 import { Stats } from "@/components/main/stats";
 import { StreakInfo } from "@/components/main/streak-info";
 import { Skeleton } from "@/components/ui/skeleton";
-import { NewWebsiteWarning } from "@/components/new-website-warning";
+import { HomeWidget } from "@/components/main/home-widget";
 import { pageMetadata } from "@/lib/page-metadata";
 
 export const metadata = pageMetadata("Главная");
@@ -16,42 +16,50 @@ export default function Home() {
       <div className="mb-[15vh]">
         <div className="m-2 flex items-center text-3xl font-bold">Главная</div>
         <div className="flex flex-col gap-2">
-          <div className="grid lg:grid-cols-2 gap-2">
+          <div className="grid gap-2 empty:hidden lg:grid-cols-2">
             <Suspense fallback={<></>}>
               <FirstSteps />
             </Suspense>
-            <Suspense
-              fallback={
-                <Skeleton className="rounded-md h-full min-h-60 w-full" />
-              }
-            >
-              <StreakInfo />
-            </Suspense>
-            <Suspense
-              fallback={
-                <Skeleton className="rounded-md h-full min-h-60 w-full" />
-              }
-            >
-              <LastReadCard />
-            </Suspense>
+            <HomeWidget widget="streak">
+              <Suspense
+                fallback={
+                  <Skeleton className="rounded-md h-full min-h-60 w-full" />
+                }
+              >
+                <StreakInfo />
+              </Suspense>
+            </HomeWidget>
+            <HomeWidget widget="lastRead">
+              <Suspense
+                fallback={
+                  <Skeleton className="rounded-md h-full min-h-60 w-full" />
+                }
+              >
+                <LastReadCard />
+              </Suspense>
+            </HomeWidget>
           </div>
-          <Suspense
-            fallback={
-              <div className="flex flex-col gap-2">
-                <Skeleton className="h-12 w-56" />
-                <Skeleton className="h-44 w-full" />
-                <Skeleton className="h-44 w-full" />
-                <Skeleton className="h-44 w-full" />
-              </div>
-            }
-          >
-            <BooksCard />
-          </Suspense>
-          <Suspense
-            fallback={<Skeleton className="rounded-md h-[300px] w-full" />}
-          >
-            <Stats />
-          </Suspense>
+          <HomeWidget widget="recentBooks">
+            <Suspense
+              fallback={
+                <div className="flex flex-col gap-2">
+                  <Skeleton className="h-12 w-56" />
+                  <Skeleton className="h-44 w-full" />
+                  <Skeleton className="h-44 w-full" />
+                  <Skeleton className="h-44 w-full" />
+                </div>
+              }
+            >
+              <BooksCard />
+            </Suspense>
+          </HomeWidget>
+          <HomeWidget widget="stats">
+            <Suspense
+              fallback={<Skeleton className="rounded-md h-[300px] w-full" />}
+            >
+              <Stats />
+            </Suspense>
+          </HomeWidget>
         </div>
       </div>
     </div>

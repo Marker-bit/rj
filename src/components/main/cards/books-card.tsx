@@ -14,7 +14,7 @@ import {
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import { useLocalStorage } from "usehooks-ts";
+import { bookSortLabels, useBookSort } from "@/hooks/use-journal-preferences";
 import { BookView } from "@/components/book/book-view";
 import { Button } from "@/components/ui/button";
 import {
@@ -49,10 +49,7 @@ export default function BooksCard() {
     }
   }, [open]);
 
-  const [orderBy, setOrderBy] = useLocalStorage<"percent" | "activity">(
-    "orderBy",
-    "percent",
-  );
+  const [orderBy, setOrderBy] = useBookSort();
   const queryClient = useQueryClient();
 
   const percentBooks = useQuery({
@@ -88,13 +85,13 @@ export default function BooksCard() {
               <DropdownMenuContent>
                 <DropdownMenuItem onClick={() => setOrderBy("percent")}>
                   <PercentIcon />
-                  По прогрессу чтения
+                  {bookSortLabels.percent}
                   {orderBy === "percent" && (
                     <CheckIcon className="ml-auto opacity-60" />
                   )}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setOrderBy("activity")}>
-                  <CalendarIcon /> По дате последней активности
+                  <CalendarIcon /> {bookSortLabels.activity}
                   {orderBy === "activity" && (
                     <CheckIcon className="ml-auto opacity-60" />
                   )}

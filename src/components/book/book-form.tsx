@@ -40,6 +40,7 @@ import { DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { DrawerDialog } from "../ui/drawer-dialog";
 import { Loader } from "../ui/loader";
 import { ScanDialog } from "./scan-dialog";
+import { useWarnAboutDuplicates } from "@/hooks/use-journal-preferences";
 import { useReadLocalStorage } from "usehooks-ts";
 
 type BookValues = z.input<typeof bookSchema>;
@@ -61,6 +62,7 @@ export function BookForm({
   onSuccess?: (book: z.input<typeof bookSchema>) => void;
   isEdit?: boolean;
 }) {
+  const [warnAboutDuplicates] = useWarnAboutDuplicates();
   const defaultFields = useReadLocalStorage<string[]>(
     DEFAULT_FIELDS_STORAGE_KEY,
   );
@@ -114,9 +116,10 @@ export function BookForm({
   async function save(values: BookValues, mode?: "add-anyway") {
     if (saving.current || fileUploading) return;
     saving.current = true;
-    setPending(mode === "add-anyway" ? "save" : "check");
+    const createMode = warnAboutDuplicates ? mode : "add-anyway";
+    setPending(createMode === "add-anyway" ? "save" : "check");
     try {
-      const result = await createBook(values, mode);
+      const result = await createBook(values, createMode);
       setLookupFailed(result.kind === "lookup-failed");
       if (result.kind === "lookup-failed") return;
       if (result.kind === "duplicate") {

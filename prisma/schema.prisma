@@ -92,10 +92,12 @@ model AnswerRead {
 }
 
 model Session {
-  id        String   @id
+  id        String    @id
   userId    String
   expiresAt DateTime
-  user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
+  createdAt DateTime? @default(now())
+  userAgent String?
+  user      User      @relation(references: [id], fields: [userId], onDelete: Cascade)
 }
 
 enum BackgroundColor {
@@ -244,8 +246,8 @@ model GroupBook {
   group   Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
   groupId String
 
-  addedBy   GroupMember @relation(fields: [addedById], references: [id], onDelete: Cascade)
-  addedById String
+  addedBy   GroupMember? @relation(fields: [addedById], references: [id], onDelete: Cascade)
+  addedById String?
 
   title       String
   author      String

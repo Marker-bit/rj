@@ -99,7 +99,9 @@ export async function POST(request: NextRequest) {
     },
   });
 
-  const session = await lucia.createSession(createdUser.id, {});
+  const session = await lucia.createSession(createdUser.id, {
+    userAgent: request.headers.get("user-agent")?.slice(0, 512) ?? null,
+  });
   const sessionCookie = lucia.createSessionCookie(session.id);
   (await cookies()).set(
     sessionCookie.name,

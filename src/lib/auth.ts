@@ -37,6 +37,7 @@ declare module "lucia" {
   interface Register {
     Lucia: typeof lucia;
     DatabaseUserAttributes: DatabaseUserAttributes;
+    DatabaseSessionAttributes: { userAgent: string | null };
   }
 }
 
