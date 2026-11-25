@@ -13,6 +13,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "../../ui/button";
+import { SimpleTooltip } from "@/components/ui/simple-tooltip";
 import { dateToString } from "@/lib/date";
 import { undoEventMutationOptions } from "@/lib/mutations/books";
 
@@ -40,21 +41,19 @@ export function UndoEventButton({
 
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger asChild>
-        <Button
-          variant="outline"
-          size="icon"
-          aria-label={`Отменить событие от ${label}`}
-          disabled={undoEventMutation.isPending}
-          className="size-8 p-1"
-        >
-          {undoEventMutation.isPending ? (
-            <Loader className="size-4" />
-          ) : (
-            <Undo className="size-4" />
-          )}
-        </Button>
-      </AlertDialogTrigger>
+      <SimpleTooltip text="Отменить событие">
+        <AlertDialogTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon-xs"
+            aria-label={`Отменить событие от ${label}`}
+            disabled={undoEventMutation.isPending}
+            className="size-4 cursor-pointer"
+          >
+            {undoEventMutation.isPending ? <Loader /> : <Undo />}
+          </Button>
+        </AlertDialogTrigger>
+      </SimpleTooltip>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Отменить событие?</AlertDialogTitle>
