@@ -3,6 +3,7 @@ import { endOfDay, isToday, startOfDay } from "date-fns";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { PagesButtonGroup } from "@/components/dialogs/books/read/pages-button-group";
+import { usePrefillReadingPage } from "@/hooks/use-journal-preferences";
 import { DateCalendar } from "@/components/date-calendar";
 import {
   DialogDescription,
@@ -52,9 +53,8 @@ export function DateReadModal({
 
   const today = new Date();
   const [date, setDate] = useState<Date | undefined>(new Date());
-  const [changePages, setChangePages] = useState<number | "">(
-    lastEvent?.pagesRead ?? "",
-  );
+  const [prefill] = usePrefillReadingPage();
+  const [changePages, setChangePages] = useState<number | "">("");
   const input = useRef<HTMLInputElement>(null);
 
   const lastPages = useRef(lastEvent?.pagesRead);
@@ -63,8 +63,8 @@ export function DateReadModal({
   useEffect(() => {
     if (!isOpen) return;
     setDate(new Date());
-    setChangePages(lastPages.current ?? "");
-  }, [isOpen]);
+    setChangePages(prefill ? (lastPages.current ?? "") : "");
+  }, [isOpen, prefill]);
 
   const days = useMemo(() => {
     const eventDays: Date[] = [];

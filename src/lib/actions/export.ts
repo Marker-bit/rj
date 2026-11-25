@@ -1,40 +1,34 @@
 "use server";
 
-import { differenceInDays } from "date-fns";
 import YAML from "yaml";
 import { db } from "../db";
-import type { exportDefaultItems } from "../export";
+import { exportDataSchema } from "../export";
 import { validateRequest } from "../server-validate-request";
 
-type ExportDataType = (typeof exportDefaultItems)[number]["value"];
+export async function exportData(input: unknown) {
+  const requested = exportDataSchema.safeParse(input);
+  if (!requested.success) return { error: "Выберите данные и формат экспорта" };
+  const requestedData = requested.data;
 
-type RequestedData = {
-  data: ExportDataType[];
-  format: "json" | "yaml";
-};
-
-export async function exportData(requestedData: RequestedData) {
   const { user } = await validateRequest();
   if (!user) {
     return { error: "Не авторизован" };
   }
 
-  const userDb = await db.user.findUnique({
-    where: { id: user.id },
+  const now = new Date();
+  const cutoff = new Date(now.getTime() - 48 * 60 * 60 * 1000);
+  const canExport = await db.user.findFirst({
+    where: {
+      id: user.id,
+      OR: [{ lastExport: null }, { lastExport: { lte: cutoff } }],
+    },
+    select: { id: true },
   });
-  if (
-    userDb?.lastExport &&
-    differenceInDays(new Date(), userDb.lastExport) < 2
-  ) {
+  if (!canExport) {
     return {
-      error: "Вы не можете экспортировать данные, 48 часов ещё не прошло",
+      error: "Повторный экспорт доступен через 48 часов после предыдущего",
     };
   }
-
-  await db.user.update({
-    where: { id: user.id },
-    data: { lastExport: new Date() },
-  });
 
   let results = {};
   if (requestedData.data.includes("books")) {
@@ -92,12 +86,65 @@ export async function exportData(requestedData: RequestedData) {
     };
   }
 
-  let text = "";
-  if (requestedData.format === "json") {
-    text = JSON.stringify(results, null, 2);
-  } else if (requestedData.format === "yaml") {
-    text = YAML.stringify(results);
+  if (requestedData.data.includes("collections")) {
+    const collections = await db.collection.findMany({
+      where: { userId: user.id },
+      select: {
+        id: true,
+        name: true,
+        books: {
+          where: { userId: user.id },
+          select: { id: true, title: true, author: true },
+        },
+      },
+      orderBy: { name: "asc" },
+    });
+    results = { ...results, collections };
   }
-  const base64 = Buffer.from(text).toString("base64");
-  return { data: base64 };
+
+  if (requestedData.data.includes("profile")) {
+    const {
+      username,
+      firstName,
+      lastName,
+      avatarUrl,
+      shareFollowers,
+      shareSubscriptions,
+      shareStats,
+      hideActivity,
+    } = user;
+    results = {
+      ...results,
+      profile: {
+        username,
+        firstName,
+        lastName,
+        avatarUrl,
+        shareFollowers,
+        shareSubscriptions,
+        shareStats,
+        hideActivity,
+      },
+    };
+  }
+
+  const text =
+    requestedData.format === "json"
+      ? JSON.stringify(results, null, 2)
+      : YAML.stringify(results);
+
+  const saved = await db.user.updateMany({
+    where: {
+      id: user.id,
+      OR: [{ lastExport: null }, { lastExport: { lte: cutoff } }],
+    },
+    data: { lastExport: new Date() },
+  });
+  if (saved.count === 0) {
+    return {
+      error: "Повторный экспорт доступен через 48 часов после предыдущего",
+    };
+  }
+
+  return { data: Buffer.from(text).toString("base64") };
 }

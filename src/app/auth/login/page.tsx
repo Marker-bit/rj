@@ -1,3 +1,5 @@
+import { cookies } from "next/headers";
+import { parseStartPage, START_PAGE_COOKIE } from "@/lib/start-page";
 import { authReturnPath } from "@/lib/auth-return-path";
 import { NewWebsiteWarning } from "@/components/new-website-warning";
 import { LoginForm } from "./login-form";
@@ -7,7 +9,11 @@ export default async function Page({
 }: {
   searchParams: Promise<{ returnTo?: string | string[] }>;
 }) {
-  const returnTo = authReturnPath((await searchParams).returnTo);
+  const { returnTo: requestedPath } = await searchParams;
+  const returnTo =
+    requestedPath === undefined
+      ? parseStartPage((await cookies()).get(START_PAGE_COOKIE)?.value)
+      : authReturnPath(requestedPath);
   return (
     <div className="flex md:min-h-screen md:items-center md:justify-center">
       <div className="flex flex-col gap-2 max-sm:w-full md:max-w-[50vw] md:m-1">

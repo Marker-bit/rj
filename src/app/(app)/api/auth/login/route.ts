@@ -44,7 +44,9 @@ export async function POST(request: NextRequest) {
     const validPassword = await verify(user.hashedPassword, password);
 
     if (validPassword) {
-      const session = await lucia.createSession(user.id, {});
+      const session = await lucia.createSession(user.id, {
+        userAgent: request.headers.get("user-agent")?.slice(0, 512) ?? null,
+      });
       const sessionCookie = lucia.createSessionCookie(session.id);
       (await cookies()).set(
         sessionCookie.name,

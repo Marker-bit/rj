@@ -6,8 +6,11 @@ import { useMutation } from "@tanstack/react-query";
 import type { User as LuciaUser } from "lucia";
 import {
   BookOpen,
+  LibraryBig,
+  House,
+  Monitor,
+  Database,
   Check,
-  Download,
   LogOut,
   PlusIcon,
   Shield,
@@ -54,12 +57,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import ExportDataButton from "@/components/users/export-data-button";
+import { BookLinksSettings } from "./book-links-settings";
+import { DeleteAccountDialog } from "./delete-account-dialog";
+import { SessionSettings } from "./session-settings";
+import { DataSettings } from "./data-settings";
+import { AccountSecuritySettings } from "./account-security-settings";
 import { useUsernameAvailability } from "@/hooks/use-username-availability";
 import { USERNAME_REGEX } from "@/lib/api-validate";
 import { DEFAULT_FIELDS_STORAGE_KEY } from "@/lib/default-fields";
+import {
+  AppearanceSettings,
+  HomeSettings,
+  LibrarySettings,
+  ReadingSettings,
+} from "./browser-settings";
 import { settingsSchema } from "@/lib/validation/schemas";
 
 const AvatarField = dynamic(
@@ -73,24 +85,23 @@ const AvatarField = dynamic(
 const categories = [
   { value: "profile", label: "Профиль", icon: UserRound },
   { value: "privacy", label: "Приватность", icon: Shield },
+  { value: "appearance", label: "Внешний вид", icon: Monitor },
+  { value: "home", label: "Главная", icon: House },
+  { value: "library", label: "Библиотека", icon: LibraryBig },
   { value: "reading", label: "Чтение", icon: BookOpen },
+  { value: "data", label: "Данные", icon: Database },
   { value: "account", label: "Аккаунт", icon: KeyRound },
 ];
+
+const panelClassName = "min-h-0 space-y-4 overflow-y-auto p-5 md:p-8";
 
 export function SettingsForm({ user }: { user: LuciaUser }) {
   const [logOutLoading, setLogOutLoading] = useState(false);
   const [usernameBaseline, setUsernameBaseline] = useState(user.username);
   const { found: usernameFound, check: checkUsername } =
     useUsernameAvailability(usernameBaseline);
-  const [disableRecs, setDisableRecs] = useLocalStorage("disableRecs", false);
   const [category, setCategory] = useState("profile");
   const router = useRouter();
-  const [fields, setFields] = useLocalStorage<string[]>(
-    DEFAULT_FIELDS_STORAGE_KEY,
-    [],
-  );
-  const fieldToFocus = useRef<number | null>(null);
-  const defaultFields = fields.map((value, index) => ({ value, index }));
 
   const form = useForm<z.infer<typeof settingsSchema>>({
     resolver: zodResolver(settingsSchema),
@@ -144,7 +155,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
       });
     },
     onSuccess: (_data, variables) => {
-      toast.success("Профиль обновлен");
+      toast.success("Настройки сохранены");
       setUsernameBaseline(variables.username);
       router.refresh();
     },
@@ -159,7 +170,14 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
     <Form {...form}>
       <form
         className="min-h-0"
-        onSubmit={form.handleSubmit(onSubmit, () => setCategory("profile"))}
+        onSubmit={(event) => {
+          event.preventDefault();
+          if (category === "profile" || category === "privacy") {
+            void form.handleSubmit(onSubmit, () => setCategory("profile"))(
+              event,
+            );
+          }
+        }}
       >
         <Tabs
           value={category}
@@ -167,7 +185,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
           orientation="vertical"
           className="grid h-full min-h-0 grid-rows-[auto_minmax(0,1fr)] gap-0 md:grid-cols-[13rem_minmax(0,1fr)] md:grid-rows-1"
         >
-          <div className="border-b bg-muted/50 px-5 py-4 md:border-r md:border-b-0 md:p-4 md:pt-8">
+          <div className="border-b bg-muted/50 px-5 py-4 md:overflow-y-auto md:border-r md:border-b-0 md:p-4 md:pt-8">
             <DialogTitle className="mb-3 md:mb-5 md:px-2 md:text-xl md:leading-7">
               Настройки
             </DialogTitle>
@@ -206,10 +224,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
             </TabsList>
           </div>
           <div className="flex min-h-0 min-w-0 flex-col">
-            <TabsContent
-              value="profile"
-              className="min-h-0 space-y-4 overflow-y-auto p-5 md:p-8"
-            >
+            <TabsContent value="profile" className={panelClassName}>
               <h2 className="pr-6 text-xl font-semibold">Профиль</h2>
               <FormField
                 control={form.control}
@@ -291,10 +306,7 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
                 )}
               />
             </TabsContent>
-            <TabsContent
-              value="privacy"
-              className="min-h-0 space-y-4 overflow-y-auto p-5 md:p-8"
-            >
+            <TabsContent value="privacy" className={panelClassName}>
               <h2 className="pr-6 text-xl font-semibold">Приватность</h2>
               <FormField
                 control={form.control}
@@ -368,12 +380,6 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
                   </FormItem>
                 )}
               />
-            </TabsContent>
-            <TabsContent
-              value="reading"
-              className="min-h-0 space-y-4 overflow-y-auto p-5 md:p-8"
-            >
-              <h2 className="pr-6 text-xl font-semibold">Чтение</h2>
               <FormField
                 control={form.control}
                 name="hideActivity"
@@ -397,126 +403,33 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
                   </FormItem>
                 )}
               />
-              <div className="flex flex-row items-center justify-between gap-3 rounded-lg border p-4">
-                <div className="space-y-0.5">
-                  <Label
-                    htmlFor="disable-recommendations"
-                    className="text-base"
-                  >
-                    Не показывать рекомендации
-                  </Label>
-                  <p
-                    id="disable-recommendations-description"
-                    className="text-sm text-muted-foreground"
-                  >
-                    Включите, чтобы еженедельные баннеры рекомендаций больше не
-                    появлялись
-                  </p>
-                </div>
-                <div>
-                  <Switch
-                    id="disable-recommendations"
-                    aria-describedby="disable-recommendations-description"
-                    checked={disableRecs}
-                    onCheckedChange={setDisableRecs}
-                  />
-                </div>
-              </div>
-              <section
-                className="space-y-3 rounded-lg border p-4"
-                aria-labelledby="default-book-fields"
-              >
-                <div className="space-y-0.5">
-                  <h3 id="default-book-fields" className="font-medium">
-                    Поля по умолчанию
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    Эти поля добавляются к новым книгам. Изменения сохраняются
-                    автоматически в этом браузере.
-                  </p>
-                </div>
-                {defaultFields.map(({ value, index }) => (
-                  <div className="flex items-center gap-2" key={index}>
-                    <Input
-                      ref={(input) => {
-                        if (input && fieldToFocus.current === index) {
-                          fieldToFocus.current = null;
-                          input.focus();
-                        }
-                      }}
-                      aria-label={`Название поля ${index + 1}`}
-                      value={value}
-                      onChange={(event) => {
-                        const title = event.target.value;
-                        setFields((currentFields) =>
-                          currentFields.map((field, fieldIndex) =>
-                            fieldIndex === index ? title : field,
-                          ),
-                        );
-                      }}
-                      onKeyDown={(event) => {
-                        if (
-                          event.key === "Enter" &&
-                          !event.nativeEvent.isComposing
-                        ) {
-                          event.preventDefault();
-                        }
-                      }}
-                      placeholder="Название поля"
-                    />
-                    <SimpleTooltip text="Удалить поле">
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        type="button"
-                        className="shrink-0"
-                        aria-label={`Удалить поле ${index + 1}`}
-                        onClick={() =>
-                          setFields((currentFields) =>
-                            currentFields.filter(
-                              (_, fieldIndex) => fieldIndex !== index,
-                            ),
-                          )
-                        }
-                      >
-                        <Trash2 />
-                      </Button>
-                    </SimpleTooltip>
-                  </div>
-                ))}
-                <Button
-                  size="sm"
-                  variant="outline"
-                  type="button"
-                  onClick={() => {
-                    fieldToFocus.current = fields.length;
-                    setFields((currentFields) => [...currentFields, ""]);
-                  }}
-                >
-                  <PlusIcon data-icon="inline-start" />
-                  Добавить поле
-                </Button>
-              </section>
             </TabsContent>
-            <TabsContent
-              value="account"
-              className="min-h-0 space-y-4 overflow-y-auto p-5 md:p-8"
-            >
+            <TabsContent value="appearance" className={panelClassName}>
+              <h2 className="pr-6 text-xl font-semibold">Внешний вид</h2>
+              <AppearanceSettings />
+            </TabsContent>
+            <TabsContent value="home" className={panelClassName}>
+              <h2 className="pr-6 text-xl font-semibold">Главная</h2>
+              <HomeSettings />
+            </TabsContent>
+            <TabsContent value="library" className={panelClassName}>
+              <h2 className="pr-6 text-xl font-semibold">Библиотека</h2>
+              <LibrarySettings />
+              <DefaultBookFields />
+            </TabsContent>
+            <TabsContent value="reading" className={panelClassName}>
+              <h2 className="pr-6 text-xl font-semibold">Чтение</h2>
+              <ReadingSettings />
+            </TabsContent>
+            <TabsContent value="data" className={panelClassName}>
+              <h2 className="pr-6 text-xl font-semibold">Данные</h2>
+              <BookLinksSettings userId={user.id} />
+              <DataSettings />
+            </TabsContent>
+            <TabsContent value="account" className={panelClassName}>
               <h2 className="pr-6 text-xl font-semibold">Аккаунт</h2>
-              <Item variant="outline">
-                <ItemMedia variant="icon">
-                  <Download aria-hidden="true" />
-                </ItemMedia>
-                <ItemContent className="min-w-0 basis-40">
-                  <ItemTitle>Экспорт данных</ItemTitle>
-                  <ItemDescription>
-                    Скачайте копию книг, журнала и групп в JSON или YAML.
-                  </ItemDescription>
-                </ItemContent>
-                <ItemActions className="ml-auto">
-                  <ExportDataButton type="button" />
-                </ItemActions>
-              </Item>
+              <AccountSecuritySettings />
+              <SessionSettings userId={user.id} />
               <Item variant="outline">
                 <ItemMedia variant="icon">
                   <LogOut aria-hidden="true" />
@@ -553,8 +466,22 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
                   </Button>
                 </ItemActions>
               </Item>
+              <Item variant="outline">
+                <ItemMedia variant="icon">
+                  <Trash2 aria-hidden="true" />
+                </ItemMedia>
+                <ItemContent className="min-w-0 basis-40">
+                  <ItemTitle>Удаление аккаунта</ItemTitle>
+                  <ItemDescription>
+                    Безвозвратно удалить аккаунт и личный дневник.
+                  </ItemDescription>
+                </ItemContent>
+                <ItemActions className="ml-auto">
+                  <DeleteAccountDialog />
+                </ItemActions>
+              </Item>
             </TabsContent>
-            {category !== "account" && (
+            {(category === "profile" || category === "privacy") && (
               <div className="flex justify-end border-t px-5 py-3 md:px-8">
                 <Button type="submit" disabled={userMutation.isPending}>
                   {userMutation.isPending ? (
@@ -575,5 +502,87 @@ export function SettingsForm({ user }: { user: LuciaUser }) {
         </Tabs>
       </form>
     </Form>
+  );
+}
+
+function DefaultBookFields() {
+  const [fields, setFields] = useLocalStorage<string[]>(
+    DEFAULT_FIELDS_STORAGE_KEY,
+    [],
+    { initializeWithValue: false },
+  );
+  const fieldToFocus = useRef<number | null>(null);
+
+  return (
+    <section
+      className="space-y-3 rounded-lg border p-4"
+      aria-labelledby="default-book-fields"
+    >
+      <div className="space-y-0.5">
+        <h3 id="default-book-fields" className="font-medium">
+          Поля по умолчанию
+        </h3>
+        <p className="text-sm text-muted-foreground">
+          Эти поля добавляются к новым книгам. Изменения сохраняются
+          автоматически в этом браузере.
+        </p>
+      </div>
+      {fields.map((value, index) => (
+        <div className="flex items-center gap-2" key={index}>
+          <Input
+            ref={(input) => {
+              if (input && fieldToFocus.current === index) {
+                fieldToFocus.current = null;
+                input.focus();
+              }
+            }}
+            aria-label={`Название поля ${index + 1}`}
+            value={value}
+            onChange={(event) => {
+              const title = event.target.value;
+              setFields((currentFields) =>
+                currentFields.map((field, fieldIndex) =>
+                  fieldIndex === index ? title : field,
+                ),
+              );
+            }}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" && !event.nativeEvent.isComposing) {
+                event.preventDefault();
+              }
+            }}
+            placeholder="Название поля"
+          />
+          <SimpleTooltip text="Удалить поле">
+            <Button
+              size="icon"
+              variant="ghost"
+              type="button"
+              className="shrink-0"
+              aria-label={`Удалить поле ${index + 1}`}
+              onClick={() =>
+                setFields((currentFields) =>
+                  currentFields.filter((_, fieldIndex) => fieldIndex !== index),
+                )
+              }
+            >
+              <Trash2 />
+            </Button>
+          </SimpleTooltip>
+        </div>
+      ))}
+      <Button
+        size="sm"
+        variant="outline"
+        type="button"
+        onClick={() => {
+          fieldToFocus.current = fields.length;
+          setFields((currentFields) => [...currentFields, ""]);
+        }}
+      >
+        <PlusIcon data-icon="inline-start" />
+        Добавить поле
+      </Button>
+    </section>
   );
 }

@@ -1,0 +1,1 @@
+ALTER TABLE "GroupBook" ALTER COLUMN "addedById" DROP NOT NULL;

@@ -121,6 +121,17 @@ export async function setBookColor(bookId: string, color: BackgroundColor) {
   });
 }
 
+export async function listBookLinks() {
+  const { user } = await validateRequest();
+  if (!user) throw new Error("Войдите в аккаунт снова");
+
+  return db.bookLink.findMany({
+    where: { book: { userId: user.id } },
+    select: { id: true, book: { select: { title: true, author: true } } },
+    orderBy: [{ book: { title: "asc" } }, { id: "asc" }],
+  });
+}
+
 export async function deleteBookLink(linkId: string) {
   const { user } = await validateRequest();
 

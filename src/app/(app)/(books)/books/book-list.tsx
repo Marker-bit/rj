@@ -26,59 +26,29 @@ import {
 import type { Book } from "@/lib/api-types";
 import { getReadingState } from "@/lib/reading-events";
 
-type StatusFilter = "all" | "planned" | "reading" | "finished";
+import {
+  bookSortLabels,
+  bookStatusLabels,
+  useBookSort,
+  useBookStatusFilter,
+  useHideUnstartedBooks,
+  type BookStatusFilter,
+} from "@/hooks/use-journal-preferences";
 
-function getBookStatus(book: Book): Exclude<StatusFilter, "all"> {
+function getBookStatus(book: Book): Exclude<BookStatusFilter, "all"> {
   const { latest, progressPages } = getReadingState(book.readEvents);
   if (!latest) return "planned";
   return progressPages >= book.pages ? "finished" : "reading";
 }
 
 export function BookList({ books }: { books: Book[] }) {
-  const [notStarted, _setNotStarted] = useState(false);
+  const [notStarted, setNotStarted] = useHideUnstartedBooks();
   const [searchText, setSearchText] = useState("");
-  const [sort, _setSort] = useState<"percent" | "activity">("percent");
-  const [statusFilter, _setStatusFilter] = useState<StatusFilter>("all");
+  const [sort, setSort] = useBookSort();
+  const [statusFilter, setStatusFilter] = useBookStatusFilter();
   const [FuseClass, setFuseClass] = useState<
     typeof import("fuse.js").default | null
   >(null);
-
-  useEffect(() => {
-    const localStorageNotStarted = localStorage.getItem("notStarted");
-    const localStorageSort = localStorage.getItem("orderBy");
-    const localStorageStatusFilter = localStorage.getItem("bookStatusFilter");
-    const storedSort = localStorageSort?.replace(/"/g, "");
-    if (storedSort === "percent" || storedSort === "activity") {
-      _setSort(storedSort);
-    }
-    if (localStorageNotStarted) {
-      _setNotStarted(JSON.parse(localStorageNotStarted));
-    }
-    if (
-      localStorageStatusFilter &&
-      ["all", "planned", "reading", "finished"].includes(
-        JSON.parse(localStorageStatusFilter),
-      )
-    ) {
-      _setStatusFilter(JSON.parse(localStorageStatusFilter));
-    }
-  }, []);
-
-  function setNotStarted(value: boolean) {
-    localStorage.setItem("notStarted", JSON.stringify(value));
-    _setNotStarted(value);
-  }
-
-  function setSort(value: string) {
-    localStorage.setItem("orderBy", JSON.stringify(value));
-    _setSort(value as "percent" | "activity");
-  }
-
-  function setStatusFilter(value: string) {
-    const nextStatus = value as StatusFilter;
-    localStorage.setItem("bookStatusFilter", JSON.stringify(nextStatus));
-    _setStatusFilter(nextStatus);
-  }
 
   const statusCounts = useMemo(
     () =>
@@ -208,7 +178,7 @@ export function BookList({ books }: { books: Book[] }) {
               id="notStarted"
               aria-describedby="notStarted-description"
               checked={notStarted}
-              onCheckedChange={setNotStarted}
+              onCheckedChange={(checked) => setNotStarted(checked === true)}
             />
             <div className="grid grow gap-2">
               <div className="text-sm font-medium leading-none">
@@ -264,19 +234,19 @@ export function BookList({ books }: { books: Book[] }) {
               <SelectContent className="[&_*[role=option]>span>svg]:text-muted-foreground [&_*[role=option]>span]:flex [&_*[role=option]>span]:gap-2 [&_*[role=option]>span>svg]:shrink-0">
                 <SelectItem value="all">
                   <BookMinus size={16} aria-hidden="true" />
-                  <span className="truncate">Все книги</span>
+                  <span className="truncate">{bookStatusLabels.all}</span>
                 </SelectItem>
                 <SelectItem value="planned">
                   <Calendar size={16} aria-hidden="true" />
-                  <span className="truncate">Запланированные</span>
+                  <span className="truncate">{bookStatusLabels.planned}</span>
                 </SelectItem>
                 <SelectItem value="reading">
                   <BookOpen size={16} aria-hidden="true" />
-                  <span className="truncate">Читаю</span>
+                  <span className="truncate">{bookStatusLabels.reading}</span>
                 </SelectItem>
                 <SelectItem value="finished">
                   <BookOpenCheck size={16} aria-hidden="true" />
-                  <span className="truncate">Прочитанные</span>
+                  <span className="truncate">{bookStatusLabels.finished}</span>
                 </SelectItem>
               </SelectContent>
             </Select>
@@ -298,11 +268,11 @@ export function BookList({ books }: { books: Book[] }) {
               <SelectContent className="[&_*[role=option]>span>svg]:text-muted-foreground [&_*[role=option]>span]:flex [&_*[role=option]>span]:gap-2 [&_*[role=option]>span>svg]:shrink-0">
                 <SelectItem value="percent">
                   <Percent size={16} aria-hidden="true" />
-                  <span className="truncate">По прогрессу в книге</span>
+                  <span className="truncate">{bookSortLabels.percent}</span>
                 </SelectItem>
                 <SelectItem value="activity">
                   <Calendar size={16} aria-hidden="true" />
-                  <span className="truncate">По последней активности</span>
+                  <span className="truncate">{bookSortLabels.activity}</span>
                 </SelectItem>
               </SelectContent>
             </Select>

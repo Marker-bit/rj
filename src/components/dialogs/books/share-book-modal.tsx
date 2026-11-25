@@ -47,6 +47,7 @@ export function ShareBookModal({
       if (!resp.ok) throw new Error("Не удалось создать ссылку");
       toast.success("Ссылка создана");
       queryClient.invalidateQueries({ queryKey: ["books"] });
+      queryClient.invalidateQueries({ queryKey: ["settings", "book-links"] });
       void revalidate("books");
     } catch {
       toast.error("Возникла проблема при создании ссылки");
@@ -61,6 +62,9 @@ export function ShareBookModal({
       async () => {
         try {
           await deleteBookLink(id);
+          queryClient.invalidateQueries({
+            queryKey: ["settings", "book-links"],
+          });
           queryClient.invalidateQueries({ queryKey: ["books"] });
           void revalidate("books");
         } finally {

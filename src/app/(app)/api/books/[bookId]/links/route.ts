@@ -13,6 +13,12 @@ export async function POST(
       status: 401,
     });
   }
+  const book = await db.book.findUnique({
+    where: { id: bookId, userId: user.id },
+    select: { id: true },
+  });
+  if (!book) return new NextResponse("Not Found", { status: 404 });
+
   const link = await db.bookLink.create({
     data: {
       bookId,

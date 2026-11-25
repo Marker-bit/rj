@@ -4,6 +4,7 @@ import { Check } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { useFirstStepsDismissed } from "@/hooks/use-journal-preferences";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import {
@@ -40,11 +41,10 @@ function StepIcon({ index, completed }: { index: number; completed: boolean }) {
 
 export function FirstStepsCard({ steps }: { steps: FirstStep[] }) {
   const [skippedCover, setSkippedCover] = useState(false);
-  const [dismissed, setDismissed] = useState(false);
+  const [dismissed, setDismissed] = useFirstStepsDismissed();
 
   useEffect(() => {
     setSkippedCover(localStorage.getItem("skipCoverStep") === "true");
-    setDismissed(localStorage.getItem("firstStepsDismissed") === "true");
   }, []);
 
   const visibleSteps = steps.filter(
@@ -71,7 +71,6 @@ export function FirstStepsCard({ steps }: { steps: FirstStep[] }) {
             size="sm"
             aria-label="Скрыть подсказки"
             onClick={() => {
-              localStorage.setItem("firstStepsDismissed", "true");
               setDismissed(true);
               toast.success("Подсказки скрыты");
             }}
