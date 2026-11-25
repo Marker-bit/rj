@@ -7,6 +7,10 @@ import { Button } from "../ui/button";
 import { SimpleTooltip } from "../ui/simple-tooltip";
 import { DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { DrawerDialog } from "../ui/drawer-dialog";
+import { useBookOrder } from "@/hooks/use-book-order";
+import { getBooks } from "@/lib/actions/books";
+import { sortBooks } from "@/lib/book-order";
+import type { Book } from "@/lib/api-types";
 import { revalidate } from "@/lib/actions/revalidate";
 
 export function AddFromMyBooks({
@@ -18,14 +22,14 @@ export function AddFromMyBooks({
   open: boolean;
   setOpen: (open: boolean) => void;
 }) {
-  const [books, setBooks] = useState<any[]>();
+  const [books, setBooks] = useState<Book[]>();
   const [bookLoadingId, setBookLoadingId] = useState<string>();
   const [search, setSearch] = useState("");
 
+  const [sort] = useBookOrder();
+
   useEffect(() => {
-    fetch("/api/books")
-      .then((res) => res.json())
-      .then((res) => setBooks(res));
+    void getBooks().then(setBooks);
   }, []);
 
   const filteredBooks = (books ?? []).filter(
@@ -62,7 +66,7 @@ export function AddFromMyBooks({
           {books.length === 0 ? "У вас пока нет книг." : "Ничего не найдено."}
         </p>
       )}
-      {filteredBooks.map((book) => (
+      {sortBooks(filteredBooks, sort).map((book) => (
         <div
           key={book.id}
           className="flex items-center gap-2 rounded-xl p-2 transition-all hover:bg-muted/10"

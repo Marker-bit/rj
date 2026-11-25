@@ -1,7 +1,6 @@
 import { BookOpen, ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { BookView } from "@/components/book/book-view";
 import { CollectionIconTile } from "@/components/book/collection-mark";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,9 +10,10 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { bookDetailHref, bookTagHref } from "@/lib/book-back";
+import { bookTagHref } from "@/lib/book-back";
 import { fetchBookTag } from "@/lib/books";
 import { requireUser } from "@/lib/require-user";
+import { CollectionBookList } from "./collection-book-list";
 import { CollectionPageActions } from "./collection-page-actions";
 
 export default async function BookTagPage({
@@ -53,16 +53,7 @@ export default async function BookTagPage({
       </header>
 
       {tag.books.length ? (
-        <ul className="flex flex-col gap-2">
-          {tag.books.map((book) => (
-            <li key={book.id}>
-              <BookView
-                book={book}
-                titleHref={bookDetailHref(book.id, `tag:${tagId}`)}
-              />
-            </li>
-          ))}
-        </ul>
+        <CollectionBookList books={tag.books} tagId={tagId} />
       ) : (
         <Empty className="border">
           <EmptyHeader>

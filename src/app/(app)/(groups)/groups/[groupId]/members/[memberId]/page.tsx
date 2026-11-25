@@ -1,3 +1,4 @@
+import { sortBooks } from "@/lib/book-order";
 import {
   BookOpen,
   Check,
@@ -90,12 +91,6 @@ export default async function Page(props: {
     },
   });
 
-  booksSaved.sort(
-    (a, b) =>
-      (b.readEvents[0]?.pagesRead || 0) / b.pages -
-      (a.readEvents[0]?.pagesRead || 0) / a.pages,
-  );
-
   return (
     <div className="flex flex-col p-8 max-sm:mb-24">
       <Link href={`/groups/${params.groupId}`} className="mb-2">
@@ -142,7 +137,7 @@ export default async function Page(props: {
           Книги
         </div>
         <div className="mt-2 flex flex-col">
-          {booksSaved.map((book, _i) => (
+          {sortBooks(booksSaved, "percent").map((book, _i) => (
             <div
               className="flex items-center gap-2 rounded-md p-2"
               key={book.id}

@@ -1,6 +1,6 @@
 import type { Prisma } from "@/generated/prisma/client";
 import { BookStatus } from "@/generated/prisma/enums";
-import type { Book } from "./api-types";
+import { defaultBookOrder, sortBooks, type BookOrder } from "./book-order";
 import { db } from "./db";
 
 const bookListSelect = {
@@ -59,7 +59,7 @@ const bookListSelect = {
 
 type FetchBooksOptions =
   | {
-      orderBy: "percent" | "activity";
+      orderBy: BookOrder;
       all?: boolean;
     }
   | { history: true }
@@ -67,12 +67,12 @@ type FetchBooksOptions =
 
 export async function fetchBooks(
   userId: string,
-  options: FetchBooksOptions = { orderBy: "percent" },
+  options: FetchBooksOptions = { orderBy: defaultBookOrder },
 ) {
   const isHistory = "history" in options;
   const isArchive = "archive" in options;
   const all = !isHistory && !isArchive && options.all;
-  let books = await db.book.findMany({
+  const books = await db.book.findMany({
     where: {
       userId: userId,
       status: all
@@ -85,47 +85,19 @@ export async function fetchBooks(
     },
     select: bookListSelect,
   });
-  const compareBooksByPercent = (a: Book, b: Book) => {
-    let aPages = a.readEvents[0]?.pagesRead;
-    let bPages = b.readEvents[0]?.pagesRead;
-    if (!aPages && !bPages) return 0;
-    if (!aPages) return 1;
-    if (!bPages) return -1;
-    aPages = aPages / a.pages;
-    bPages = bPages / b.pages;
-    if (aPages > bPages) return -1;
-    if (aPages === bPages) return 0;
-    if (aPages < bPages) return 1;
-    return 0;
-  };
-  const compareBooksByActivity = (a: Book, b: Book) => {
-    const aTime = a.readEvents[0]?.readAt.getTime() || a.createdAt.getTime();
-    const bTime = b.readEvents[0]?.readAt.getTime() ?? b.createdAt.getTime();
+  const matchingBooks =
+    isArchive || all
+      ? books
+      : books.filter(
+          (book) =>
+            book.readEvents.some((event) => event.pagesRead === book.pages) ===
+            isHistory,
+        );
 
-    if (aTime === undefined && bTime === undefined) return 0;
-    if (aTime === undefined) return 1;
-    if (bTime === undefined) return -1;
-
-    return bTime - aTime;
-  };
-  if (isArchive) {
-    return books;
-  }
-  if (!all) {
-    books = books.filter((b) =>
-      isHistory
-        ? b.readEvents.find((e) => e.pagesRead === b.pages)
-        : !b.readEvents.find((e) => e.pagesRead === b.pages),
-    );
-  }
-  books.sort(
-    isHistory
-      ? compareBooksByActivity
-      : options.orderBy === "percent"
-        ? compareBooksByPercent
-        : compareBooksByActivity,
+  return sortBooks(
+    matchingBooks,
+    isHistory || isArchive ? "activity" : options.orderBy,
   );
-  return books;
 }
 
 export async function fetchBookTag({
@@ -147,7 +119,6 @@ export async function fetchBookTag({
           ...bookListSelect,
           collections: { ...bookListSelect.collections, where: { userId } },
         },
-        orderBy: [{ title: "asc" }, { id: "asc" }],
       },
     },
   });
