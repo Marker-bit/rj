@@ -68,6 +68,17 @@ describe("reading stats", () => {
     expect(result.history().map((day) => day.pagesRead)).toEqual([5, 0, 12, 0]);
   });
 
+  it("counts only new pages after a later lower entry, while keeping its activity", () => {
+    const result = stats([
+      event("2026-01-12T10:00:00Z", 80),
+      event("2026-01-13T10:00:00Z", 20),
+      event("2026-01-14T10:00:00Z", 90),
+    ]);
+
+    expect(result.streak).toBe(3);
+    expect(result.history().map((day) => day.pagesRead)).toEqual([80, 0, 10]);
+  });
+
   it("includes both calendar days when the final event is earlier in the day", () => {
     const result = stats([
       event("2026-01-14T01:00:00Z", 12),

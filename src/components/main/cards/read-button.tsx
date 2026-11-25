@@ -12,6 +12,7 @@ import {
 import { BookCheckIcon, BookOpenIcon, BookOpenTextIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
+import { getReadingState } from "@/lib/reading-events";
 import { revalidate } from "@/lib/actions/revalidate";
 
 const DateReadModal = dynamic(
@@ -34,6 +35,7 @@ export function ReadButton({
 }: {
   book: {
     readEvents: {
+      id: string;
       readAt: Date;
       pagesRead: number;
     }[];
@@ -68,7 +70,7 @@ export function ReadButton({
     setActiveDialog(open ? dialog : null);
 
   const router = useRouter();
-  const lastEvent = book.readEvents[0];
+  const { furthest } = getReadingState(book.readEvents);
 
   const queryClient = useQueryClient();
 
@@ -88,7 +90,7 @@ export function ReadButton({
             void revalidate("books");
           }}
           book={book}
-          lastEvent={lastEvent}
+          lastEvent={furthest ?? undefined}
         />
       )}
       {mountedDialogs.has("done") && (

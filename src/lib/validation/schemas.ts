@@ -39,10 +39,17 @@ export const settingsSchema = z.object({
   hideActivity: z.boolean(),
 });
 
+const positivePageNumber = z.int32().positive();
+
+export const submittedPageNumber = z
+  .union([z.number(), z.string()])
+  .transform(Number)
+  .pipe(positivePageNumber);
+
 export const bookSchema = z.object({
   title: z.string().min(1),
   author: z.string().min(1),
-  pages: z.coerce.number<number>().min(1),
+  pages: z.coerce.number<number>().pipe(positivePageNumber),
   description: z.string().optional(),
   coverUrl: z.string().optional(),
   fields: z.array(

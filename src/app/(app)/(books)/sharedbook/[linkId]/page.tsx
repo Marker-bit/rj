@@ -1,3 +1,4 @@
+import { isBookComplete } from "@/lib/reading-events";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -44,7 +45,7 @@ export default async function Page(props: {
           <div className="-mt-1 text-zinc-500">{book.author}</div>
           {book.readEvents.length === 0 ? (
             <Badge className="w-fit">Запланирована</Badge>
-          ) : book.readEvents[0]?.pagesRead === book.pages ? (
+          ) : isBookComplete(book) ? (
             <Badge className="w-fit">Прочитана</Badge>
           ) : (
             <Badge className="w-fit">

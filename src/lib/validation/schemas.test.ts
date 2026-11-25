@@ -5,6 +5,7 @@ import {
   registerSchema,
   resetPasswordSchema,
   settingsSchema,
+  submittedPageNumber,
 } from "./schemas";
 
 const validRegistration = {
@@ -189,5 +190,17 @@ describe("resetPasswordSchema", () => {
     });
 
     expect(result.success).toBe(true);
+  });
+});
+
+describe("submittedPageNumber", () => {
+  it.each([0, -1, 12.5, 2147483648, "12.5", true, null, []])(
+    "rejects invalid page counts (%s)",
+    (value) => expect(submittedPageNumber.safeParse(value).success).toBe(false),
+  );
+
+  it("accepts a whole page count from a form or JSON", () => {
+    expect(submittedPageNumber.parse("123")).toBe(123);
+    expect(submittedPageNumber.parse(2147483647)).toBe(2147483647);
   });
 });

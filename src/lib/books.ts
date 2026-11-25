@@ -2,6 +2,7 @@ import type { Prisma } from "@/generated/prisma/client";
 import { BookStatus } from "@/generated/prisma/enums";
 import { defaultBookOrder, sortBooks, type BookOrder } from "./book-order";
 import { db } from "./db";
+import { getLastReadProgress, isBookComplete } from "./reading-events";
 
 const bookListSelect = {
   id: true,
@@ -88,11 +89,7 @@ export async function fetchBooks(
   const matchingBooks =
     isArchive || all
       ? books
-      : books.filter(
-          (book) =>
-            book.readEvents.some((event) => event.pagesRead === book.pages) ===
-            isHistory,
-        );
+      : books.filter((book) => isBookComplete(book) === isHistory);
 
   return sortBooks(
     matchingBooks,
@@ -151,37 +148,9 @@ export async function fetchBook(id: string, userId?: string) {
 }
 
 export async function getLastReadBook(userId: string) {
-  const readEvents = await db.readEvent.findMany({
-    where: {
-      book: {
-        userId: userId,
-      },
-    },
-    include: {
-      book: {
-        include: {
-          readEvents: {
-            orderBy: {
-              readAt: "desc",
-            },
-          },
-        },
-      },
-    },
-    orderBy: {
-      readAt: "desc",
-    },
+  const books = await db.book.findMany({
+    where: { userId, readEvents: { some: {} } },
+    include: { readEvents: true },
   });
-  const books: string[] = [];
-  for (const readEvent of readEvents) {
-    if (
-      readEvent.book.pages !== readEvent.pagesRead &&
-      !books.includes(readEvent.book.id)
-    ) {
-      return { book: readEvent.book, pages: readEvent.pagesRead };
-    }
-    books.push(readEvent.book.id);
-  }
-
-  return null;
+  return getLastReadProgress(books);
 }

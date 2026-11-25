@@ -1,5 +1,6 @@
 "use client";
 
+import { reachedPageCount } from "@/lib/reading-events";
 import type { Book } from "@/generated/prisma/browser";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { BookOpen, BookOpenCheck, Loader, Undo } from "lucide-react";
@@ -49,7 +50,7 @@ export function EventView({
   });
   return (
     <div className="flex cursor-default flex-wrap items-center gap-1 rounded-xl border p-2">
-      {event.pagesRead === event.book.pages ? (
+      {reachedPageCount(event.pagesRead, event.book.pages) ? (
         <>
           <BookOpenCheck className="mr-1 size-4 text-green-500" />
           <Link

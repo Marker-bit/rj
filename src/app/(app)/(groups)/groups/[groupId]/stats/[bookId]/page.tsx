@@ -1,3 +1,4 @@
+import { isBookComplete } from "@/lib/reading-events";
 import { BarChartHorizontalBig, ChevronLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -158,27 +159,20 @@ export default async function Page(props: {
                 {(
                   (group.members.length === 0
                     ? 0
-                    : groupBook.book.filter(
-                        (book) => book.readEvents[0]?.pagesRead === book.pages,
-                      ).length / group.members.length) * 100
+                    : groupBook.book.filter((book) => isBookComplete(book))
+                        .length / group.members.length) * 100
                 ).toFixed(1)}
                 %
               </div>
               <div className="text-sm text-muted-foreground">
-                {
-                  groupBook.book.filter(
-                    (book) => book.readEvents[0]?.pagesRead === book.pages,
-                  ).length
-                }
-                /{group.members.length}
+                {groupBook.book.filter((book) => isBookComplete(book)).length}/
+                {group.members.length}
               </div>
             </div>
           </div>
           <Progress
             value={
-              (groupBook.book.filter(
-                (book) => book.readEvents[0]?.pagesRead === book.pages,
-              ).length /
+              (groupBook.book.filter((book) => isBookComplete(book)).length /
                 group.members.length) *
               100
             }

@@ -1,6 +1,7 @@
 "use client";
 
-import { addDays, isSameDay, subMonths } from "date-fns";
+import { format, parseISO } from "date-fns";
+import { useReadingStats, useStreakEvents } from "./streak-context";
 import { ChartColumnIcon, LineChartIcon } from "lucide-react";
 import { useState } from "react";
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, XAxis } from "recharts";
@@ -34,57 +35,18 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export default function MainChart({
-  events,
-  profile: _profile,
-}: {
-  events: any[];
-  profile: any;
-}) {
+export default function MainChart() {
+  const events = useStreakEvents();
+  const stats = useReadingStats(events);
   const [chartType, setChartType] = useState<"line" | "bar">("line");
-  const threeMonthsAgo = subMonths(new Date(), 3);
-  const threeMonthsEvents = events.filter((event) => {
-    return event.readAt > threeMonthsAgo;
-  });
-  const chartData = [];
-  let day = threeMonthsAgo;
-  while (day <= new Date()) {
-    let result = 0;
-    const todayEvents = threeMonthsEvents.filter((e) => {
-      return isSameDay(e.readAt, day);
-    });
-    todayEvents.forEach((event) => {
-      const bookEvents = threeMonthsEvents.filter((e) => {
-        return event.bookId === e.book.id;
-      });
-      if (bookEvents.length === 1 || bookEvents.indexOf(event) === 0) {
-        result += event.pagesRead;
-      } else {
-        const previousEventIndex = bookEvents.indexOf(event) - 1;
-        const previousEvent = bookEvents[previousEventIndex];
-        result += event.pagesRead - previousEvent.pagesRead;
-      }
-    });
-    chartData.push({
-      date: day.toISOString().split("T")[0],
-      desktop: result,
-    });
-    day = addDays(day, 1);
-  }
   const [timeRange, setTimeRange] = useState("90d");
-
-  const filteredData = chartData.filter((item) => {
-    const date = new Date(item.date);
-    const now = new Date();
-    let daysToSubtract = 90;
-    if (timeRange === "30d") {
-      daysToSubtract = 30;
-    } else if (timeRange === "7d") {
-      daysToSubtract = 7;
-    }
-    now.setDate(now.getDate() - daysToSubtract);
-    return date >= now;
-  });
+  const filteredData =
+    stats
+      ?.recentDays(timeRange === "30d" ? 30 : 90)
+      .map(({ date, pagesRead }) => ({
+        date: format(date, "yyyy-MM-dd"),
+        desktop: pagesRead,
+      })) ?? [];
 
   return (
     <Card>
@@ -164,7 +126,7 @@ export default function MainChart({
                 tickMargin={8}
                 minTickGap={32}
                 tickFormatter={(value) => {
-                  const date = new Date(value);
+                  const date = parseISO(value);
                   return date.toLocaleDateString("ru-RU", {
                     month: "short",
                     day: "numeric",
@@ -176,7 +138,7 @@ export default function MainChart({
                 content={
                   <ChartTooltipContent
                     labelFormatter={(value) => {
-                      return new Date(value).toLocaleDateString("ru-RU", {
+                      return parseISO(value).toLocaleDateString("ru-RU", {
                         month: "short",
                         day: "numeric",
                       });
@@ -204,7 +166,7 @@ export default function MainChart({
                 tickMargin={8}
                 minTickGap={32}
                 tickFormatter={(value) => {
-                  const date = new Date(value);
+                  const date = parseISO(value);
                   return date.toLocaleDateString("ru-RU", {
                     month: "short",
                     day: "numeric",
@@ -215,7 +177,7 @@ export default function MainChart({
                 content={
                   <ChartTooltipContent
                     labelFormatter={(value) => {
-                      return new Date(value).toLocaleDateString("ru-RU", {
+                      return parseISO(value).toLocaleDateString("ru-RU", {
                         month: "short",
                         day: "numeric",
                       });
