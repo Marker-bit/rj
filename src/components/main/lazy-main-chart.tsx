@@ -20,13 +20,7 @@ const MainChart = dynamic(() => import("./main-chart"), {
  * Charts are the largest client dependency on the home page and sit below the
  * fold. Only fetch the chart bundle once the placeholder becomes visible.
  */
-export function LazyMainChart({
-  events,
-  profile,
-}: {
-  events: any[];
-  profile: any;
-}) {
+export function LazyMainChart() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -55,7 +49,7 @@ export function LazyMainChart({
   return (
     <div ref={containerRef}>
       {visible ? (
-        <MainChart events={events} profile={profile} />
+        <MainChart />
       ) : (
         <div className="flex flex-col gap-2">
           <Skeleton className="h-12 w-56" />

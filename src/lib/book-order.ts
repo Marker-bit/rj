@@ -32,7 +32,7 @@ export function sortBooks<T extends BookForOrdering>(
 
       return {
         book,
-        progress: book.pages > 0 ? furthestPage / book.pages : 0,
+        progress: book.pages > 0 ? Math.min(1, furthestPage / book.pages) : 0,
         activity: book.readEvents.length
           ? latestActivity
           : new Date(book.createdAt).getTime(),

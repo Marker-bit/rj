@@ -32,23 +32,8 @@ import {
 import { Calligraph } from "calligraph";
 import { AnimatePresence, motion } from "motion/react";
 import { revalidate } from "@/lib/actions/revalidate";
+import { bookSchema } from "@/lib/validation/schemas";
 import { parseBookFields } from "@/lib/book-fields";
-
-const bookSchema = z.object({
-  title: z.string().min(1),
-  author: z.string().min(1),
-  pages: z.coerce.number<number>().min(1),
-  description: z.string().optional(),
-  coverUrl: z.string().optional(),
-  fields: z.array(
-    z.object({
-      title: z.string({ error: "Название поля обязательно" }),
-      value: z.string({
-        error: "Значение поля обязательно",
-      }),
-    }),
-  ),
-});
 
 export function EditBookModal({
   open,

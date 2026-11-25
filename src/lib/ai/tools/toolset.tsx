@@ -1,6 +1,8 @@
 import { tool } from "ai";
 import type { User } from "lucia";
 import z from "zod";
+import { getReadingState, reachedPageCount } from "@/lib/reading-events";
+import { recordReadingProgress } from "@/lib/book-progress-write";
 import { fetchBooks } from "@/lib/books";
 import { db } from "@/lib/db";
 import { endOfDay, isToday } from "date-fns";
@@ -26,26 +28,30 @@ export const toolSetForUser = (user: User) => ({
         orderBy: orderBy,
         all: true,
       });
-      return books.map((book) => ({
-        id: book.id,
-        title: book.title,
-        author: book.author,
-        pages: book.pages,
-        lastEvent: book.readEvents.at(0),
-        collections: book.collections.map((collection) => ({
-          id: collection.id,
-          name: collection.name,
-        })),
-        isRead: book.readEvents.at(0)?.pagesRead === book.pages,
-        hasCover:
-          book.coverUrl !== undefined &&
-          book.coverUrl !== "" &&
-          book.coverUrl !== null,
-        backgroundColor: book.background,
-        description: book.description,
-        fields: book.fields,
-        status: book.status,
-      }));
+      return books.map((book) => {
+        const { latest, progressPages } = getReadingState(book.readEvents);
+        return {
+          id: book.id,
+          title: book.title,
+          author: book.author,
+          pages: book.pages,
+          lastEvent: latest,
+          progressPages,
+          collections: book.collections.map((collection) => ({
+            id: collection.id,
+            name: collection.name,
+          })),
+          isRead: reachedPageCount(progressPages, book.pages),
+          hasCover:
+            book.coverUrl !== undefined &&
+            book.coverUrl !== "" &&
+            book.coverUrl !== null,
+          backgroundColor: book.background,
+          description: book.description,
+          fields: book.fields,
+          status: book.status,
+        };
+      });
     },
   }),
   getBookById: tool({
@@ -421,24 +427,6 @@ export const toolSetForUser = (user: User) => ({
       dateRead: z.iso.date().describe("Дата прочтения в ISO 8601 формате"),
     }),
     execute: async ({ id, pagesRead, dateRead }) => {
-      const book = await db.book.findFirst({
-        where: {
-          id,
-          userId: user.id,
-        },
-      });
-
-      if (!book) {
-        return { success: false, error: "Книга не найдена" };
-      }
-
-      if (pagesRead > book.pages) {
-        return {
-          success: false,
-          error: `Страница не может быть больше количества страниц в книге (${book.pages})`,
-        };
-      }
-
       const [year, month, day] = dateRead.split("-").map(Number);
       const date = new Date(year, month - 1, day);
       const today = new Date();
@@ -455,13 +443,22 @@ export const toolSetForUser = (user: User) => ({
         };
       }
 
-      const event = await db.readEvent.create({
-        data: {
-          bookId: book.id,
-          pagesRead,
-          readAt: isToday(date) ? new Date() : endOfDay(date),
-        },
+      const result = await recordReadingProgress({
+        bookId: id,
+        userId: user.id,
+        pagesRead,
+        readAt: isToday(date) ? new Date() : endOfDay(date),
       });
+      if (result.kind === "not-found") {
+        return { success: false, error: "Книга не найдена" };
+      }
+      if (result.kind === "out-of-range") {
+        return {
+          success: false,
+          error: `Страница не может быть больше количества страниц в книге (${result.pages})`,
+        };
+      }
+      const { event } = result;
 
       return {
         success: true,

@@ -10,7 +10,7 @@ import type { Book } from "@/lib/api-types";
 import { bookTagHref } from "@/lib/book-back";
 import { backgroundColors } from "@/lib/colors";
 import { dateToString } from "@/lib/date";
-import { getReadingState } from "@/lib/reading-events";
+import { getReadingState, reachedPageCount } from "@/lib/reading-events";
 import { cn, declOfNum } from "@/lib/utils";
 import { BackgroundColor, BookStatus } from "@/generated/prisma/enums";
 import {
@@ -152,6 +152,9 @@ export function BookView({
   const reading = getReadingState(book.readEvents);
   const latestEvent = reading.latest;
   const progressPages = reading.progressPages;
+  const complete = reachedPageCount(progressPages, book.pages);
+  const percent =
+    book.pages > 0 ? Math.min(100, (progressPages / book.pages) * 100) : 0;
 
   const color =
     book.background !== BackgroundColor.NONE
@@ -199,7 +202,7 @@ export function BookView({
               : "bg-neutral-100/50 dark:bg-neutral-900/50",
           )}
           style={{
-            width: `${(progressPages / book.pages) * 100}%`,
+            width: `${percent}%`,
           }}
         />
 
@@ -246,7 +249,7 @@ export function BookView({
               void revalidate("books");
             }}
             book={book}
-            lastEvent={reading.latest ?? undefined}
+            lastEvent={reading.furthest ?? undefined}
           />
         )}
         {mountedDialogs.has("done") && (
@@ -311,20 +314,20 @@ export function BookView({
             </div>
             <div className="text-sm">{book.author}</div>
             <div className="my-2 flex flex-wrap items-center gap-2">
-              {book.readEvents.length === 0 ? (
+              {!latestEvent ? (
                 <>
                   <IconBadge icon={CalendarDays}>Запланирована</IconBadge>
                   <IconBadge variant="secondary" icon={BookOpen}>
                     {book.pages} страниц всего
                   </IconBadge>
                 </>
-              ) : progressPages === book.pages ? (
+              ) : complete ? (
                 <>
                   <IconBadge icon={BookOpenCheck}>Прочитана</IconBadge>
                   <UndoEventButton
                     bookId={book.id}
-                    eventId={latestEvent!.id}
-                    eventDate={latestEvent!.readAt}
+                    eventId={latestEvent.id}
+                    eventDate={latestEvent.readAt}
                     onDone={() => {
                       onUpdate?.();
                       void revalidate("books");
@@ -336,9 +339,7 @@ export function BookView({
                     всего
                   </IconBadge>
                   <IconBadge variant="outline" icon={CalendarDays}>
-                    {latestEvent
-                      ? dateToString(new Date(latestEvent.readAt))
-                      : ""}
+                    {dateToString(new Date(latestEvent.readAt))}
                   </IconBadge>
                 </>
               ) : (
@@ -347,16 +348,14 @@ export function BookView({
                   <IconBadge variant="secondary" icon={BookOpen}>
                     {progressPages}/{book.pages}{" "}
                     {declOfNum(book.pages, ["страницы", "страниц", "страниц"])}{" "}
-                    ({((progressPages / book.pages) * 100).toFixed(1)}%)
+                    ({percent.toFixed(1)}%)
                   </IconBadge>
                   <IconBadge variant="outline" icon={CalendarDays}>
-                    {latestEvent
-                      ? dateToString(new Date(latestEvent.readAt))
-                      : ""}
+                    {dateToString(new Date(latestEvent.readAt))}
                     <UndoEventButton
                       bookId={book.id}
-                      eventId={latestEvent!.id}
-                      eventDate={latestEvent!.readAt}
+                      eventId={latestEvent.id}
+                      eventDate={latestEvent.readAt}
                       onDone={() => {
                         onUpdate?.();
                         void revalidate("books");
@@ -442,7 +441,7 @@ export function BookView({
           >
             <Info className="size-4" />
           </HelpButton>
-          {progressPages !== book.pages && (
+          {!complete && (
             <>
               <HelpButton
                 className="gap-2"

@@ -1,3 +1,4 @@
+import { isBookComplete } from "@/lib/reading-events";
 import { sortBooks } from "@/lib/book-order";
 import {
   BookOpen,
@@ -184,7 +185,7 @@ export default async function Page(props: {
                       Человек добавил себе эту книгу, но не читал её.
                     </TooltipContent>
                   </Tooltip>
-                ) : book.readEvents[0].pagesRead === book.pages ? (
+                ) : isBookComplete(book) ? (
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Check className="size-4 text-green-500" />

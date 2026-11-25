@@ -25,7 +25,7 @@ export function getReadingStats({
 }) {
   const today = calendarDay(now, timeZone);
   const pagesByDay = new Map<number, number>();
-  const previousPagesByBook = new Map<string, number>();
+  const furthestPagesByBook = new Map<string, number>();
   let firstDay = Infinity;
   let lastDay = -Infinity;
 
@@ -33,9 +33,12 @@ export function getReadingStats({
     (a, b) => new Date(a.readAt).getTime() - new Date(b.readAt).getTime(),
   )) {
     const day = calendarDay(new Date(event.readAt), timeZone);
-    const previousPages = previousPagesByBook.get(event.bookId) ?? 0;
-    const pagesRead = Math.max(event.pagesRead - previousPages, 0);
-    previousPagesByBook.set(event.bookId, event.pagesRead);
+    const furthestPages = furthestPagesByBook.get(event.bookId) ?? 0;
+    const pagesRead = Math.max(event.pagesRead - furthestPages, 0);
+    furthestPagesByBook.set(
+      event.bookId,
+      Math.max(furthestPages, event.pagesRead),
+    );
     pagesByDay.set(day, (pagesByDay.get(day) ?? 0) + pagesRead);
     firstDay = Math.min(firstDay, day);
     lastDay = Math.max(lastDay, day);
@@ -69,7 +72,7 @@ export function getReadingStats({
     readToday,
     pagesReadToday: pagesByDay.get(today) ?? 0,
     daysSinceLastRead: pagesByDay.size ? today - lastDay : null,
-    recentDays: () => daysFrom(today - 6, 7),
+    recentDays: (length = 7) => daysFrom(today - length + 1, length),
     week: (offset = 0) => {
       const weekday = new Date(today * DAY_MS).getUTCDay();
       const monday = today - ((weekday + 6) % 7);

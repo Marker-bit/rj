@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { FriendView } from "@/components/users/friend-view";
 import { Stats } from "@/components/users/stats";
+import { isBookComplete } from "@/lib/reading-events";
 import { db } from "@/lib/db";
 import { publicUserSelect } from "@/lib/user-select";
 
@@ -192,13 +193,7 @@ export async function ProfileSections({
                 canSeeFollowers ? peopleHref("followers") : undefined
               }
               events={events}
-              booksRead={
-                books.filter((book) =>
-                  book.readEvents.some(
-                    (event) => event.pagesRead >= book.pages,
-                  ),
-                ).length
-              }
+              booksRead={books.filter(isBookComplete).length}
             />
           </section>
         )

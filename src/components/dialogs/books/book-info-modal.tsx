@@ -1,4 +1,9 @@
-import type { Collection, ReadEvent } from "@/generated/prisma/client";
+import type { Book } from "@/lib/api-types";
+import {
+  compareReadingEventDates,
+  isBookComplete,
+  reachedPageCount,
+} from "@/lib/reading-events";
 import {
   BookOpen,
   BookOpenCheck,
@@ -31,10 +36,11 @@ export function BookInfoModal({
 }: {
   open: boolean;
   setOpen: (b: boolean) => void;
-  book: any;
+  book: Book;
   setActiveDialog: (dialog: BookDialog | null) => void;
 }) {
-  const lastEvent = book.readEvents[0];
+  const complete = isBookComplete(book);
+  const hasEvents = book.readEvents.length > 0;
 
   return (
     <DrawerDialog open={open} onOpenChange={setOpen} className="min-w-[50vw]">
@@ -58,11 +64,9 @@ export function BookInfoModal({
               {declOfNum(book.pages, ["страница", "страницы", "страниц"])}
             </div>
             <div className="w-fit">
-              {lastEvent?.pagesRead === book.pages && <Badge>Прочитана</Badge>}
-              {!lastEvent && <Badge>Запланирована</Badge>}
-              {lastEvent && lastEvent?.pagesRead !== book.pages && (
-                <Badge>Читается</Badge>
-              )}
+              {complete && <Badge>Прочитана</Badge>}
+              {!hasEvents && <Badge>Запланирована</Badge>}
+              {hasEvents && !complete && <Badge>Читается</Badge>}
             </div>
             {book.description && (
               <button
@@ -87,39 +91,41 @@ export function BookInfoModal({
             </div>
             <CollapsibleContent>
               <div className="flex flex-col gap-2">
-                {book.readEvents.map((event: ReadEvent) => (
-                  <div className="flex items-center gap-2" key={event.id}>
-                    {event.pagesRead === book.pages ? (
-                      <>
-                        <BookOpenCheck className="size-4 text-green-500" />
-                        <div className="flex flex-col">
-                          <div>Книга прочитана!</div>
-                          <div className="text-xs text-black/50 dark:text-white/50">
-                            {dateToString(new Date(event.readAt))}
+                {book.readEvents
+                  .toSorted((a, b) => compareReadingEventDates(b, a))
+                  .map((event) => (
+                    <div className="flex items-center gap-2" key={event.id}>
+                      {reachedPageCount(event.pagesRead, book.pages) ? (
+                        <>
+                          <BookOpenCheck className="size-4 text-green-500" />
+                          <div className="flex flex-col">
+                            <div>Книга прочитана!</div>
+                            <div className="text-xs text-black/50 dark:text-white/50">
+                              {dateToString(new Date(event.readAt))}
+                            </div>
                           </div>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <BookOpen className="size-4" />
-                        <div className="flex flex-col">
-                          <div>
-                            {event.pagesRead}{" "}
-                            {declOfNum(event.pagesRead, [
-                              "страница",
-                              "страницы",
-                              "страниц",
-                            ])}{" "}
-                            прочитано
+                        </>
+                      ) : (
+                        <>
+                          <BookOpen className="size-4" />
+                          <div className="flex flex-col">
+                            <div>
+                              {event.pagesRead}{" "}
+                              {declOfNum(event.pagesRead, [
+                                "страница",
+                                "страницы",
+                                "страниц",
+                              ])}{" "}
+                              прочитано
+                            </div>
+                            <div className="text-xs text-black/50 dark:text-white/50">
+                              {dateToString(new Date(event.readAt))}
+                            </div>
                           </div>
-                          <div className="text-xs text-black/50 dark:text-white/50">
-                            {dateToString(new Date(event.readAt))}
-                          </div>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                ))}
+                        </>
+                      )}
+                    </div>
+                  ))}
               </div>
             </CollapsibleContent>
           </Collapsible>
@@ -127,7 +133,7 @@ export function BookInfoModal({
 
         <h3>Коллекции</h3>
         <div className="flex flex-col gap-2">
-          {book.collections.map((collection: Collection) => (
+          {book.collections.map((collection) => (
             <div className="flex flex-col gap-2" key={collection.id}>
               <h4 className="text-lg">{collection.name}</h4>
             </div>
@@ -164,7 +170,7 @@ export function BookInfoModal({
             <Trash />
             Удалить
           </Button>
-          {lastEvent?.pagesRead !== book.pages && (
+          {!complete && (
             <>
               <Button
                 className="gap-2"

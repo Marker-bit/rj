@@ -1,3 +1,4 @@
+import { isBookComplete } from "@/lib/reading-events";
 import { GroupMemberRole } from "@/generated/prisma/enums";
 import {
   BadgeCheck,
@@ -46,7 +47,7 @@ export default async function Page(props: {
           book: {
             include: {
               readEvents: {
-                orderBy: { readAt: "desc" },
+                orderBy: [{ pagesRead: "desc" }, { readAt: "desc" }],
               },
             },
           },
@@ -92,7 +93,7 @@ export default async function Page(props: {
     },
     include: {
       readEvents: {
-        orderBy: { readAt: "desc" },
+        orderBy: [{ pagesRead: "desc" }, { readAt: "desc" }],
       },
     },
   });
@@ -146,9 +147,7 @@ export default async function Page(props: {
 
   const currentMember = group.members.find((m) => m.userId === user?.id);
 
-  const fullyReadBooks = myBooksFromGroup.filter((b) =>
-    b.readEvents.find((r) => r.pagesRead === b.pages),
-  );
+  const fullyReadBooks = myBooksFromGroup.filter((b) => isBookComplete(b));
 
   return (
     <div className="p-2 max-sm:mb-[15vh]">
@@ -355,7 +354,7 @@ export default async function Page(props: {
                           groupBook.book.find(
                             (book) =>
                               book.userId === member.userId &&
-                              book.readEvents[0]?.pagesRead === book.pages,
+                              isBookComplete(book),
                           ),
                         ).length
                       }{" "}

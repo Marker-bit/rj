@@ -1,3 +1,4 @@
+import { reachedPageCount } from "@/lib/reading-events";
 import type { Book, ReadEvent } from "@/generated/prisma/client";
 import { BookCheck, BookOpen } from "lucide-react";
 import Image from "next/image";
@@ -15,7 +16,7 @@ export default function Event({
   const book = event.book;
   const user = book.user;
 
-  const fullyRead = event.pagesRead === book.pages;
+  const fullyRead = reachedPageCount(event.pagesRead, book.pages);
 
   return (
     <div className="flex flex-col gap-2 rounded-xl border p-2">

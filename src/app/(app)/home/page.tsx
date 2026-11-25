@@ -2,10 +2,9 @@ import { Suspense } from "react";
 import BooksCard from "@/components/main/cards/books-card";
 import LastReadCard from "@/components/main/cards/last-read-card";
 import FirstSteps from "@/components/main/first-steps";
-import { Stats } from "@/components/main/stats";
+import { LazyMainChart } from "@/components/main/lazy-main-chart";
 import { StreakInfo } from "@/components/main/streak-info";
 import { Skeleton } from "@/components/ui/skeleton";
-import { NewWebsiteWarning } from "@/components/new-website-warning";
 import { pageMetadata } from "@/lib/page-metadata";
 
 export const metadata = pageMetadata("Главная");
@@ -50,7 +49,7 @@ export default function Home() {
           <Suspense
             fallback={<Skeleton className="rounded-md h-[300px] w-full" />}
           >
-            <Stats />
+            <LazyMainChart />
           </Suspense>
         </div>
       </div>

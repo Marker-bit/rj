@@ -1,8 +1,14 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { lockOwnedBook } from "@/lib/book-progress-write";
 import { db } from "@/lib/db";
 import { validateRequest } from "@/lib/server-validate-request";
-import { bookSchema } from "@/lib/validation/schemas";
+import { bookSchema, submittedPageNumber } from "@/lib/validation/schemas";
+
+const editBookSchema = bookSchema.extend({
+  pages: submittedPageNumber,
+  clamp: z.boolean().optional(),
+});
 
 export async function GET(
   _req: NextRequest,
@@ -47,65 +53,36 @@ export async function PATCH(
       status: 401,
     });
   }
-  const { clamp, ...data } = await req.json();
-
-  const d = bookSchema.safeParse(data);
-  if (!d.success) {
-    return NextResponse.json(
-      {
-        errors: d.error,
-      },
-      {
-        status: 400,
-      },
-    );
+  const parsed = editBookSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json({ errors: parsed.error }, { status: 400 });
   }
+  const { clamp, ...data } = parsed.data;
 
-  const originalBook = await db.book.findUnique({
-    where: {
-      id: bookId,
-      userId: user.id,
-    },
-  });
+  const updateBook = await db.$transaction(async (tx) => {
+    const original = await lockOwnedBook(tx, { bookId, userId: user.id });
+    if (!original) return null;
 
-  if (!originalBook) {
-    return new NextResponse("Not Found", {
-      status: 404,
-    });
-  }
-
-  const updateBook = await db.book.update({
-    where: {
-      id: bookId,
-      userId: user.id,
-    },
-    data: {
-      ...d.data,
-      userId: user.id,
-    },
-  });
-
-  if (clamp && originalBook.pages !== updateBook.pages) {
-    const bookEvents = await db.readEvent.findMany({
-      where: {
-        bookId: updateBook.id,
-      },
+    const book = await tx.book.update({
+      where: { id: bookId, userId: user.id },
+      data,
     });
 
-    if (bookEvents.length > 0) {
-      await db.$transaction(
-        bookEvents.map((event) => {
-          return db.readEvent.update({
-            where: { id: event.id },
-            data: {
-              pagesRead: Math.round(
-                (event.pagesRead / originalBook.pages) * d.data.pages,
-              ),
-            },
-          });
-        }),
-      );
+    // Legacy totals at or below zero have no meaningful scale.
+    if (clamp && original.pages > 0 && original.pages !== data.pages) {
+      await tx.$executeRaw`
+        UPDATE "ReadEvent"
+        SET "pagesRead" = GREATEST(1, ROUND(
+          LEAST("pagesRead", ${original.pages})::numeric * ${data.pages} / ${original.pages}
+        ))::integer
+        WHERE "bookId" = ${bookId} AND "pagesRead" > 0
+      `;
     }
+    return book;
+  });
+
+  if (!updateBook) {
+    return new NextResponse("Not Found", { status: 404 });
   }
   return NextResponse.json(updateBook, {
     status: 200,
