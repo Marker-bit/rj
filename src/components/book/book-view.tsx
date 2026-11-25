@@ -1,5 +1,6 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DrawerDialog } from "@/components/ui/drawer-dialog";
@@ -352,17 +353,15 @@ export function BookView({
                     {latestEvent
                       ? dateToString(new Date(latestEvent.readAt))
                       : ""}
-                    <SimpleTooltip text="Отменить событие">
-                      <UndoEventButton
-                        bookId={book.id}
-                        eventId={latestEvent!.id}
-                        eventDate={latestEvent!.readAt}
-                        onDone={() => {
-                          onUpdate?.();
-                          void revalidate("books");
-                        }}
-                      />
-                    </SimpleTooltip>
+                    <UndoEventButton
+                      bookId={book.id}
+                      eventId={latestEvent!.id}
+                      eventDate={latestEvent!.readAt}
+                      onDone={() => {
+                        onUpdate?.();
+                        void revalidate("books");
+                      }}
+                    />
                   </IconBadge>
                 </>
               )}
@@ -377,15 +376,27 @@ export function BookView({
               )}
 
               {book.links.length !== 0 && (
-                <IconBadge
+                <Badge
+                  asChild
                   variant="outline"
-                  onClick={() => setActiveDialog("share")}
-                  className="cursor-pointer"
-                  icon={Link2}
+                  className="cursor-pointer hover:bg-muted"
                 >
-                  {book.links.length}{" "}
-                  {declOfNum(book.links.length, ["ссылка", "ссылки", "ссылок"])}
-                </IconBadge>
+                  <button
+                    type="button"
+                    aria-haspopup="dialog"
+                    onClick={() => setActiveDialog("share")}
+                  >
+                    <Link2 className="-ms-0.5 opacity-60" aria-hidden="true" />
+                    <span>
+                      {book.links.length}{" "}
+                      {declOfNum(book.links.length, [
+                        "ссылка",
+                        "ссылки",
+                        "ссылок",
+                      ])}
+                    </span>
+                  </button>
+                </Badge>
               )}
             </div>
             <div className="flex flex-wrap gap-1">
