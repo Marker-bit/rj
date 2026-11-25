@@ -1,6 +1,5 @@
 "use client";
 
-import { differenceInDays } from "date-fns";
 import {
   Card,
   CardAction,
@@ -9,15 +8,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getDays2, getStreak, type StreakEvent } from "@/lib/stats";
+import type { getReadingStats } from "@/lib/stats";
 import { declOfNum } from "@/lib/utils";
 import { ConfettiButton } from "./confetti-button";
 
-export default function StreakBlock({ events }: { events: StreakEvent[] }) {
-  const { streak, breakDay, readToday } = getStreak(events);
-  const days = getDays2(events);
-  const pagesReadToday = days[days.length - 1].pagesRead;
-  const daysSinceBreak = breakDay ? differenceInDays(new Date(), breakDay) : 0;
+export default function StreakBlock({
+  stats,
+}: {
+  stats: ReturnType<typeof getReadingStats>;
+}) {
+  const { streak, readToday, pagesReadToday, daysSinceLastRead } = stats;
+  const days = stats.recentDays();
+  const daysSinceBreak = daysSinceLastRead ?? 0;
   const breakLabel =
     daysSinceBreak > 365
       ? "больше года"
@@ -27,7 +29,7 @@ export default function StreakBlock({ events }: { events: StreakEvent[] }) {
   const goodNumbers = [
     5, 10, 20, 50, 100, 200, 300, 365, 400, 500, 600, 730, 800, 900, 1000,
   ];
-  const hasntRead = events.length === 0;
+  const hasntRead = daysSinceLastRead === null;
   const maxPages = Math.max(...days.map((day) => day.pagesRead), 1);
   const points = days
     .map((day, index) => {

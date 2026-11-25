@@ -1,6 +1,6 @@
 "use client";
 
-import { differenceInDays, endOfDay, formatDate, startOfDay } from "date-fns";
+import { formatDate } from "date-fns";
 import { ru } from "date-fns/locale";
 import { ChevronLeft, ChevronRight, XIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
@@ -8,7 +8,7 @@ import { useEffect, useMemo, useState } from "react";
 import useMeasure from "react-use-measure";
 import type { Book } from "@/lib/api-types";
 import { getReadingState } from "@/lib/reading-events";
-import { getEventDays } from "@/lib/stats";
+import { useReadingStats } from "@/components/main/streak-context";
 import { cn, declOfNum } from "@/lib/utils";
 import { Button } from "../ui/button";
 import {
@@ -37,35 +37,19 @@ export default function BookReadInfo({
   setOpen: (open: boolean) => void;
   book: Book;
 }) {
-  const [isClient, setIsClient] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [direction, setDirection] = useState<-1 | 0 | 1>(0);
-  const chartData = useMemo(
-    () =>
-      getEventDays(
-        [...book.readEvents]
-          .sort(
-            (a, b) =>
-              new Date(a.readAt).getTime() - new Date(b.readAt).getTime(),
-          )
-          .map((event) => ({
-            ...event,
-            bookId: book.id,
-          })),
-      ),
+  const events = useMemo(
+    () => book.readEvents.map((event) => ({ ...event, bookId: book.id })),
     [book.readEvents, book.id],
   );
+  const stats = useReadingStats(events);
+  const chartData = useMemo(() => stats?.history() ?? [], [stats]);
 
   const { first: firstEvent, latest: lastEvent } = getReadingState(
     book.readEvents,
   );
-  const readingTime =
-    firstEvent && lastEvent
-      ? differenceInDays(
-          endOfDay(lastEvent.readAt),
-          startOfDay(firstEvent.readAt),
-        ) + 1
-      : 1;
+  const readingTime = chartData.length;
   const avg =
     chartData.length > 0
       ? chartData.reduce((a, b) => a + b.pagesRead, 0) / chartData.length
@@ -110,10 +94,6 @@ export default function BookReadInfo({
   const step = steps[currentStep];
 
   useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  useEffect(() => {
     if (currentStep >= steps.length) {
       setCurrentStep(Math.max(steps.length - 1, 0));
     }
@@ -126,7 +106,7 @@ export default function BookReadInfo({
     }
   };
 
-  if (!isClient) {
+  if (!stats) {
     return null;
   }
 

@@ -1,110 +1,79 @@
-import type { ReadEvent } from "@/generated/prisma/client";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
+import { getReadingStats, type StreakEvent } from "./stats";
 
-import { getDays, getEventDays, getStreak } from "./stats";
+const now = new Date("2026-01-14T12:00:00Z");
 
-const NOW = new Date(2026, 0, 14, 12, 0, 0); // Wednesday, 14 Jan 2026
-
-function event(bookId: string, readAt: Date, pagesRead: number): ReadEvent {
-  return {
-    id: `${bookId}-${readAt.getTime()}-${pagesRead}`,
-    bookId,
-    readAt,
-    pagesRead,
-  };
+function event(
+  readAt: string,
+  pagesRead: number,
+  bookId = "book",
+): StreakEvent {
+  return { readAt: new Date(readAt), bookId, pagesRead };
 }
 
-function daysAgo(days: number, hours = 10): Date {
-  const date = new Date(NOW);
-  date.setDate(date.getDate() - days);
-  date.setHours(hours, 0, 0, 0);
-  return date;
+function stats(events: StreakEvent[]) {
+  return getReadingStats({ events, timeZone: "UTC", now });
 }
 
-describe("getStreak", () => {
-  beforeEach(() => {
-    vi.useFakeTimers({ now: NOW });
-  });
+describe("reading stats", () => {
+  it("returns an empty streak and a zero-filled week without events", () => {
+    const result = stats([]);
 
-  afterEach(() => {
-    vi.useRealTimers();
-  });
-
-  it("returns an empty streak without events", () => {
-    expect(getStreak([])).toEqual({
+    expect(result).toMatchObject({
       streak: 0,
-      breakDay: new Date(2026, 0, 14),
+      daysSinceLastRead: null,
       readToday: false,
+    });
+    expect(result.week().map((day) => day.pagesRead)).toEqual(Array(7).fill(0));
+    expect(result.history()).toEqual([]);
+  });
+
+  it("keeps a streak alive through today and stops it at a gap", () => {
+    const result = stats([
+      event("2026-01-11T18:00:00Z", 5),
+      event("2026-01-13T10:00:00Z", 15),
+    ]);
+
+    expect(result).toMatchObject({
+      streak: 1,
+      readToday: false,
+      daysSinceLastRead: 1,
     });
   });
 
-  it("counts a single event today", () => {
-    const result = getStreak([event("book-1", daysAgo(0), 10)]);
-
-    expect(result.streak).toBe(1);
-    expect(result.readToday).toBe(true);
-  });
-
-  it("counts consecutive days ending today", () => {
-    const result = getStreak([
-      event("book-1", daysAgo(0), 10),
-      event("book-1", daysAgo(1), 20),
+  it("uses the same page deltas in the streak, recent days, and week calendars", () => {
+    const result = stats([
+      event("2026-01-14T10:00:00Z", 15),
+      event("2026-01-11T18:00:00Z", 5),
+      event("2026-01-13T10:00:00Z", 15),
+      event("2026-01-13T11:00:00Z", 2, "another-book"),
     ]);
 
-    expect(result.streak).toBe(2);
-    expect(result.readToday).toBe(true);
+    expect(result).toMatchObject({
+      streak: 2,
+      readToday: true,
+      pagesReadToday: 0,
+    });
+    expect(result.recentDays().map((day) => day.pagesRead)).toEqual([
+      0, 0, 0, 5, 0, 12, 0,
+    ]);
+    expect(result.week().map((day) => day.pagesRead)).toEqual([
+      0, 12, 0, 0, 0, 0, 0,
+    ]);
+    expect(result.week(-1).map((day) => day.pagesRead)).toEqual([
+      0, 0, 0, 0, 0, 0, 5,
+    ]);
+    expect(result.week()[2].daysAgo).toBe(0);
+    expect(result.week(-1)[6].daysAgo).toBe(3);
+    expect(result.history().map((day) => day.pagesRead)).toEqual([5, 0, 12, 0]);
   });
 
-  it("stops the streak at a gap", () => {
-    const result = getStreak([
-      event("book-1", daysAgo(0), 10),
-      event("book-1", daysAgo(2), 20),
+  it("includes both calendar days when the final event is earlier in the day", () => {
+    const result = stats([
+      event("2026-01-14T01:00:00Z", 12),
+      event("2026-01-13T23:00:00Z", 5),
     ]);
 
-    expect(result.streak).toBe(1);
-    expect(result.readToday).toBe(true);
-  });
-});
-
-describe("getDays", () => {
-  beforeEach(() => {
-    vi.useFakeTimers({ now: NOW });
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-  });
-
-  it("returns seven numeric entries", () => {
-    const days = getDays([]);
-    const values = Object.values(days);
-
-    expect(values).toHaveLength(7);
-    for (const value of values) {
-      expect(typeof value).toBe("number");
-    }
-  });
-
-  it("counts pages read during the current week", () => {
-    const days = getDays([event("book-1", daysAgo(0), 10)]);
-    const total = Object.values(days).reduce((sum, value) => sum + value, 0);
-
-    expect(total).toBe(10);
-  });
-});
-
-describe("getEventDays", () => {
-  it("counts the delta for repeated events of the same book on one day", () => {
-    const readAt = daysAgo(0);
-    const later = new Date(readAt);
-    later.setHours(11, 0, 0, 0);
-
-    const days = getEventDays([
-      event("book-1", readAt, 5),
-      event("book-1", later, 12),
-    ]);
-
-    expect(days).toHaveLength(1);
-    expect(days[0].pagesRead).toBe(12);
+    expect(result.history().map((day) => day.pagesRead)).toEqual([5, 7]);
   });
 });

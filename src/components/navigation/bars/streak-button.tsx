@@ -1,18 +1,11 @@
 "use client";
 
-import {
-  addDays,
-  addWeeks,
-  differenceInDays,
-  format,
-  startOfDay,
-  startOfWeek,
-} from "date-fns";
+import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { CalendarIcon } from "lucide-react";
 import { useState } from "react";
 import {
-  useBrowserTimeZone,
+  useReadingStats,
   useStreakEvents,
 } from "@/components/main/streak-context";
 import { Button } from "@/components/ui/button";
@@ -27,49 +20,31 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { getDays, getStreak } from "@/lib/stats";
 import { capitalizeFirstLetter, cn, declOfNum } from "@/lib/utils";
 
 export function StreakButton() {
-  const ready = useBrowserTimeZone();
-  return ready ? <StreakButtonContent /> : <div className="h-9 w-14" />;
-}
-
-function StreakButtonContent() {
-  const [weekPadding, setWeekPadding] = useState(0);
+  const [weekOffset, setWeekOffset] = useState(0);
   const events = useStreakEvents();
-  const { streak } = getStreak(events);
-  const days = getDays(events, weekPadding);
-  const weekStart = startOfWeek(addWeeks(new Date(), weekPadding), {
-    weekStartsOn: 1,
-  });
-  const nowDay = differenceInDays(new Date(), weekStart);
-  const weekDays = Array.from({ length: 7 }, (_, dayIndex) => {
-    const date = addDays(weekStart, dayIndex);
-    return {
-      date,
-      pages: days[dayIndex] ?? 0,
-    };
-  });
+  const stats = useReadingStats(events);
+  if (!stats) return <div className="h-9 w-14" />;
+  const weekDays = stats.week(weekOffset);
 
   return (
     <Popover>
       <SimpleTooltip text="Ваш стрик">
-        <PopoverTrigger asChild suppressHydrationWarning>
+        <PopoverTrigger asChild>
           <Button
             variant="ghost"
             className="flex items-center gap-2 rounded-full"
           >
             <CalendarIcon className="size-4" />
-            {streak}
+            {stats.streak}
           </Button>
         </PopoverTrigger>
       </SimpleTooltip>
       <PopoverContent className="w-fit">
         <div className="flex gap-2">
-          {weekDays.map(({ date, pages }, dayIndex) => {
-            const daysPassed = differenceInDays(startOfDay(new Date()), date);
-
+          {weekDays.map(({ date, pagesRead: pages, daysAgo: daysPassed }) => {
             return (
               <Tooltip key={date.toISOString()}>
                 <TooltipTrigger asChild>
@@ -84,8 +59,7 @@ function StreakButtonContent() {
                         pages === 0
                           ? "bg-zinc-300 dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-700"
                           : "bg-green-300 dark:bg-green-700 border border-green-500",
-                        weekPadding === 0 &&
-                          nowDay === dayIndex &&
+                        daysPassed === 0 &&
                           "border-4 border-black dark:border-white",
                       )}
                     />
@@ -128,17 +102,17 @@ function StreakButtonContent() {
         <div className="flex gap-2 items-center justify-between mt-2">
           <button
             type="button"
-            onClick={() => setWeekPadding((w) => w - 1)}
+            onClick={() => setWeekOffset((w) => w - 1)}
             className="text-xs font-medium hover:underline disabled:no-underline disabled:opacity-50"
           >
             Назад
           </button>
           <div className="text-muted-foreground text-xs">
-            {weekPadding === 0
+            {weekOffset === 0
               ? "Эта неделя"
-              : weekPadding === -1
+              : weekOffset === -1
                 ? "Прошлая неделя"
-                : `${Math.abs(weekPadding)} ${declOfNum(Math.abs(weekPadding), [
+                : `${Math.abs(weekOffset)} ${declOfNum(Math.abs(weekOffset), [
                     "неделя",
                     "недели",
                     "недель",
@@ -147,8 +121,8 @@ function StreakButtonContent() {
           <button
             type="button"
             className="text-xs font-medium hover:underline disabled:no-underline disabled:opacity-50"
-            disabled={weekPadding === 0}
-            onClick={() => setWeekPadding((w) => w + 1)}
+            disabled={weekOffset === 0}
+            onClick={() => setWeekOffset((w) => w + 1)}
           >
             Вперёд
           </button>

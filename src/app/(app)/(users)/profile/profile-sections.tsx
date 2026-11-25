@@ -78,12 +78,15 @@ export async function ProfileSections({
       ? await Promise.all([
           db.readEvent.findMany({
             where: { book: { userId } },
-            include: { book: true },
+            select: { readAt: true, bookId: true, pagesRead: true },
             orderBy: { readAt: "asc" },
           }),
           db.book.findMany({
             where: { userId },
-            include: { readEvents: { orderBy: { readAt: "desc" } } },
+            select: {
+              pages: true,
+              readEvents: { select: { pagesRead: true } },
+            },
           }),
         ])
       : [[], []];
@@ -189,7 +192,13 @@ export async function ProfileSections({
                 canSeeFollowers ? peopleHref("followers") : undefined
               }
               events={events}
-              books={books}
+              booksRead={
+                books.filter((book) =>
+                  book.readEvents.some(
+                    (event) => event.pagesRead >= book.pages,
+                  ),
+                ).length
+              }
             />
           </section>
         )
