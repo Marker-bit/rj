@@ -1,17 +1,12 @@
 "use client";
 
-import type { Book as DbBook, ReadEvent } from "@/generated/prisma/browser";
-import {
-  endOfDay,
-  format,
-  isAfter,
-  isBefore,
-  isWithinInterval,
-  startOfDay,
-} from "date-fns";
-import { BookMinus, ChevronDownIcon, ChevronLeft } from "lucide-react";
+import { Close as PopoverClose } from "@radix-ui/react-popover";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { format, isSameDay } from "date-fns";
+import { ru } from "date-fns/locale";
+import { BookMinus, CalendarDays, ChevronLeft, Loader } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { DateRange } from "react-day-picker";
 import { DateCalendar } from "@/components/date-calendar";
 import { Button } from "@/components/ui/button";
@@ -29,83 +24,171 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Skeleton } from "@/components/ui/skeleton";
+import { journalDateBounds } from "@/lib/journal-date-range";
+import type { JournalPage, JournalRow } from "@/lib/journal-page";
 import { EventView } from "./EventView";
 
-export default function JournalView({
-  events,
-}: {
-  events: (ReadEvent & { book: DbBook })[];
-}) {
+const initialCursor: JournalPage["nextCursor"] = null;
+
+function dateFilterLabel(range: DateRange | undefined) {
+  const from = range?.from && format(range.from, "dd.MM.yyyy");
+  const to = range?.to && format(range.to, "dd.MM.yyyy");
+  if (from && to) return from === to ? from : `${from} — ${to}`;
+  if (from) return `С ${from}`;
+  if (to) return `До ${to}`;
+  return "Все даты";
+}
+
+export default function JournalView({ userId }: { userId: string }) {
   const today = new Date();
   const [dates, setDates] = useState<DateRange | undefined>();
-
-  const filtered = events.filter((event) => {
-    if (!dates) return true;
-    if (dates.from && dates.to) {
-      return isWithinInterval(event.readAt, {
-        start: startOfDay(dates.from),
-        end: endOfDay(dates.to),
-      });
-    }
-    if (dates.from) {
-      return !isBefore(event.readAt, dates.from);
-    }
-    if (dates.to) {
-      return !isAfter(event.readAt, dates.to);
-    }
-    return true;
+  const endRef = useRef<HTMLDivElement>(null);
+  const [manualPagination, setManualPagination] = useState(false);
+  const { from, until } = journalDateBounds(dates);
+  const query = useInfiniteQuery({
+    queryKey: ["events", "journal", userId, from, until],
+    initialPageParam: initialCursor,
+    gcTime: 0,
+    queryFn: async ({ pageParam, signal }): Promise<JournalPage> => {
+      const params = new URLSearchParams();
+      if (from) params.set("from", from);
+      if (until) params.set("until", until);
+      if (pageParam) {
+        params.set("cursorReadAt", pageParam.readAt);
+        params.set("cursorId", pageParam.id);
+      }
+      const response = await fetch(`/api/journal/page?${params}`, { signal });
+      if (!response.ok) throw new Error("Could not load journal");
+      return response.json();
+    },
+    getNextPageParam: (page): JournalPage["nextCursor"] => page.nextCursor,
   });
+  const { fetchNextPage, hasNextPage, isFetching, isFetchNextPageError } =
+    query;
+  useEffect(() => {
+    const end = endRef.current;
+    if (!end || !hasNextPage || isFetching || isFetchNextPageError) return;
+    if (typeof IntersectionObserver === "undefined") {
+      setManualPagination(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        observer.disconnect();
+        void fetchNextPage({ cancelRefetch: false });
+      },
+      { rootMargin: "0px 0px 320px" },
+    );
+    observer.observe(end);
+    return () => observer.disconnect();
+  }, [
+    fetchNextPage,
+    from,
+    until,
+    hasNextPage,
+    isFetching,
+    isFetchNextPageError,
+  ]);
+
+  const days: { key: string; date: Date; events: JournalRow[] }[] = [];
+  for (const page of query.data?.pages ?? []) {
+    for (const event of page.events) {
+      const date = new Date(event.readAt);
+      const day = days.at(-1);
+      if (day && isSameDay(day.date, date)) day.events.push(event);
+      else
+        days.push({ key: format(date, "yyyy-MM-dd"), date, events: [event] });
+    }
+  }
+  const hasEvents = query.data?.pages[0]?.hasEvents;
 
   return (
-    <div className="max-sm:mb-[15vh]">
-      <div className="m-2 flex items-center gap-2 text-3xl font-bold">
-        <SimpleTooltip text="Назад">
-          <Link href="/home" aria-label="Назад">
-            <Button variant="ghost" size="icon">
-              <ChevronLeft className="size-8" />
-            </Button>
-          </Link>
-        </SimpleTooltip>
-        Журнал
-      </div>
-      <div className="flex flex-col gap-2 p-3">
-        <Popover>
-          <PopoverTrigger asChild>
+    <main className="mx-auto flex w-full max-w-3xl flex-col gap-3 px-3 pt-2 pb-24 sm:px-6 sm:pt-5">
+      <header className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-1">
+          <SimpleTooltip text="Назад">
             <Button
-              variant="outline"
-              id="dates"
-              className="h-auto min-h-9 min-w-0 w-full md:w-fit md:min-w-80 justify-between whitespace-normal text-left font-normal"
+              asChild
+              variant="ghost"
+              size="icon"
+              className="size-11 touch-manipulation"
             >
-              <span>
-                Фильтр по дням{" "}
-                {dates?.from && `с ${format(dates.from, "dd.MM.yyyy")}`}{" "}
-                {dates?.to && `до ${format(dates.to, "dd.MM.yyyy")}`}
-                {!dates && "выключен"}
-              </span>
-              <ChevronDownIcon className="shrink-0" />
+              <Link href="/home" aria-label="Назад">
+                <ChevronLeft className="size-5" />
+              </Link>
             </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto overflow-hidden p-0" align="start">
-            <DateCalendar
-              mode="range"
-              selected={dates}
-              onSelect={(range) => {
-                setDates(range);
-              }}
-              disabled={{ after: today }}
-            />
-          </PopoverContent>
-        </Popover>
-        {dates && (
-          <Button
-            variant="ghost"
-            className="w-fit"
-            onClick={() => setDates(undefined)}
-          >
-            Сбросить фильтр
+          </SimpleTooltip>
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+            Журнал
+          </h1>
+        </div>
+        <div className="ml-auto flex min-w-0 max-w-full items-center gap-1">
+          {dates && (
+            <Button
+              variant="ghost"
+              aria-label="Сбросить фильтр"
+              className="shrink-0 touch-manipulation"
+              onClick={() => setDates(undefined)}
+            >
+              Сбросить
+            </Button>
+          )}
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                id="dates"
+                aria-label={`Фильтр по датам. ${dateFilterLabel(dates)}`}
+                className="min-w-0 touch-manipulation"
+              >
+                <CalendarDays className="size-4 shrink-0 text-muted-foreground" />
+                <span className="min-w-0 truncate">
+                  {dateFilterLabel(dates)}
+                </span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent
+              className="max-h-(--radix-popover-content-available-height) w-auto max-w-[calc(100vw-1rem)] overflow-auto p-0"
+              align="end"
+              collisionPadding={8}
+            >
+              <DateCalendar
+                mode="range"
+                fixedWeeks
+                selected={dates}
+                onSelect={setDates}
+                defaultMonth={dates?.from ?? dates?.to}
+                disabled={{ after: today }}
+              />
+              <div className="flex justify-end border-t p-2">
+                <PopoverClose asChild>
+                  <Button
+                    variant="ghost"
+                    className="min-h-11 touch-manipulation"
+                  >
+                    Готово
+                  </Button>
+                </PopoverClose>
+              </div>
+            </PopoverContent>
+          </Popover>
+        </div>
+      </header>
+      <div className="flex flex-col gap-3">
+        {query.isPending && (
+          <div role="status" aria-label="Загрузка журнала">
+            <Skeleton className="h-12 w-full rounded-xl" />
+          </div>
+        )}
+        {query.isError && !query.data && (
+          <Button variant="outline" onClick={() => void query.refetch()}>
+            Повторить загрузку
           </Button>
         )}
-        {filtered.length === 0 && events.length === 0 ? (
+        {hasEvents === false && (
           <Empty>
             <EmptyHeader>
               <EmptyMedia variant="icon">
@@ -122,26 +205,68 @@ export default function JournalView({
               </Button>
             </EmptyContent>
           </Empty>
-        ) : (
-          filtered.length === 0 && (
-            <div className="flex items-center gap-2 rounded-xl border p-2">
-              <BookMinus className="size-10" />
-              Фильтры ничего не выбрали
-            </div>
-          )
         )}
-        {filtered.map(
-          (event: {
-            id: string;
-            bookId: string;
-            book: DbBook;
-            pagesRead: number;
-            readAt: string | Date;
-          }) => (
-            <EventView event={event} key={event.id} />
-          ),
+        {hasEvents && days.length === 0 && (
+          <Empty className="rounded-xl border">
+            <EmptyHeader>
+              <EmptyMedia variant="icon">
+                <CalendarDays />
+              </EmptyMedia>
+              <EmptyTitle>
+                {dates?.from && dates.to && isSameDay(dates.from, dates.to)
+                  ? "За этот день записей нет"
+                  : "За эти даты записей нет"}
+              </EmptyTitle>
+            </EmptyHeader>
+          </Empty>
+        )}
+        {days.map(({ key, date, events }) => (
+          <section key={key} className="flex flex-col gap-1">
+            <h2 className="px-1 text-sm font-medium text-muted-foreground">
+              <time dateTime={key}>
+                {format(date, "d MMMM yyyy", { locale: ru })}
+              </time>
+            </h2>
+            <ul className="divide-y rounded-xl border bg-card">
+              {events.map((event) => (
+                <EventView event={event} key={event.id} />
+              ))}
+            </ul>
+          </section>
+        ))}
+        {hasNextPage && (
+          <div ref={endRef} className="flex min-h-11 justify-center">
+            {isFetchNextPageError || manualPagination ? (
+              <Button
+                variant="outline"
+                disabled={isFetching}
+                onClick={() => void fetchNextPage({ cancelRefetch: false })}
+              >
+                {query.isFetchingNextPage
+                  ? "Загрузка…"
+                  : isFetchNextPageError
+                    ? "Повторить загрузку"
+                    : "Загрузить ещё"}
+              </Button>
+            ) : (
+              <div
+                role="status"
+                className="flex items-center gap-2 text-sm text-muted-foreground"
+              >
+                {query.isFetchingNextPage && (
+                  <>
+                    <Loader
+                      aria-hidden="true"
+                      className="size-4 motion-safe:animate-spin"
+                    />
+                    Загрузка записей…
+                  </>
+                )}
+              </div>
+            )}
+          </div>
         )}
       </div>
-    </div>
+    </main>
   );
 }

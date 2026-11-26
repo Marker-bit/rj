@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation";
-import { db } from "@/lib/db";
 import { pageMetadata } from "@/lib/page-metadata";
 import { validateRequest } from "@/lib/server-validate-request";
 import JournalView from "./journal-view";
@@ -13,19 +12,5 @@ export default async function JournalPage() {
     return redirect("/auth/login");
   }
 
-  const events = await db.readEvent.findMany({
-    where: {
-      book: {
-        userId: user.id,
-      },
-    },
-    include: {
-      book: true,
-    },
-    orderBy: {
-      readAt: "desc",
-    },
-  });
-
-  return <JournalView events={events} />;
+  return <JournalView userId={user.id} />;
 }
