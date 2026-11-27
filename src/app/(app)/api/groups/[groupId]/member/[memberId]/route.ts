@@ -139,6 +139,15 @@ export async function DELETE(
     (groupMember) => groupMember.id === params.memberId,
   );
 
+  if (!member) {
+    return NextResponse.json(
+      {
+        error: "Не существует участника группы",
+      },
+      { status: 404 },
+    );
+  }
+
   if (
     userMember?.role === GroupMemberRole.MODERATOR &&
     member?.role === GroupMemberRole.MODERATOR
@@ -171,24 +180,42 @@ export async function DELETE(
     );
   }
 
-  await db.groupMember.delete({
-    where: {
-      id: params.memberId,
-    },
-  });
+  const memberRemoved = await db.$transaction(async (tx) => {
+    const { count } = await tx.groupMember.deleteMany({
+      where: {
+        id: params.memberId,
+        groupId: params.groupId,
+      },
+    });
 
-  await db.group.update({
-    where: {
-      id: params.groupId,
-    },
-    data: {
-      blockedUsers: {
-        connect: {
-          id: member?.userId,
+    if (count === 0) {
+      return false;
+    }
+
+    await tx.group.update({
+      where: {
+        id: params.groupId,
+      },
+      data: {
+        blockedUsers: {
+          connect: {
+            id: member.userId,
+          },
         },
       },
-    },
+    });
+
+    return true;
   });
+
+  if (!memberRemoved) {
+    return NextResponse.json(
+      {
+        error: "Не существует участника группы",
+      },
+      { status: 404 },
+    );
+  }
 
   return NextResponse.json({ message: "Участник исключен" }, { status: 200 });
 }
